@@ -118,7 +118,7 @@ const Login: React.FC = () => {
                 <div className="create-account">
                   <IonText>
                     Don't have an account?{' '}
-                    <a href="/signup" className="create-account-link">Sign In</a>
+                    <a href="/signup" className="create-account-link">Sign up</a>
                   </IonText>
                 </div>
               </form>
