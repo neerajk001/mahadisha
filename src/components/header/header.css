@@ -1,0 +1,181 @@
+/* Reset Ionic default styles and set light gray background */
+.custom-header {
+  background: #f5f5f5 !important;
+  border: none !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.custom-toolbar {
+  --background: #f5f5f5 !important;
+  --color: #333 !important;
+  background: #f5f5f5 !important;
+  color: #333 !important;
+  padding: 0 16px;
+  min-height: 60px;
+  border: none !important;
+}
+
+.custom-title {
+  color: #333 !important;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+/* Title container styles */
+.title-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.logo-image {
+  height: 90px;
+  width: auto;
+}
+
+/* Desktop Navigation */
+.desktop-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.nav-button {
+  --background: transparent !important;
+  --color: #333 !important;
+  --border-radius: 4px !important;
+  background: transparent !important;
+  color: #333 !important;
+  border: none !important;
+  padding: 8px 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.nav-button:hover {
+  background: #e0e0e0 !important;
+  color: #000 !important;
+}
+
+.login-button {
+ background-color: blueviolet;
+  --color: #fff !important;
+  --border: 1px solid #333 !important;
+  --border-radius: 4px !important;
+    background-color: blueviolet;
+  color: #fff !important;
+  border: 1px solid #333 !important;
+  padding: 8px 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.login-button:hover {
+   background: #6a5acd !important; /* blue-violet shade */
+  border-color: #6a5acd !important;
+}
+
+/* Mobile Navigation */
+.mobile-nav {
+  display: none;
+}
+
+.mobile-menu-button {
+  --background: transparent !important;
+  --color: #333 !important;
+  background: transparent !important;
+  color: #333 !important;
+  border: none !important;
+  padding: 8px;
+}
+
+/* Mobile dropdown menu */
+.mobile-dropdown {
+  background: #f0f0f0;
+  border-top: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: none;
+}
+
+.mobile-menu-list {
+  --background: transparent !important;
+  background: transparent !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.mobile-menu-item {
+  --background: transparent !important;
+  --color: #333 !important;
+  --border-color: #ddd !important;
+  --padding-start: 16px !important;
+  --padding-end: 16px !important;
+  background: transparent !important;
+  color: #333 !important;
+  border-bottom: 1px solid #ddd !important;
+  padding: 12px 16px !important;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.mobile-menu-item:hover {
+  background: #e8e8e8 !important;
+}
+
+.mobile-menu-item:last-child {
+  border-bottom: none !important;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  
+  .mobile-nav {
+    display: flex !important;
+  }
+  
+  .mobile-dropdown {
+    display: block !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .desktop-nav {
+    display: flex !important;
+  }
+  
+  .mobile-nav {
+    display: none !important;
+  }
+  
+  .mobile-dropdown {
+    display: none !important;
+  }
+}
+/* image logo */
+.logo-image {
+
+}
+
+/* Remove all ion-button default styling */
+ion-button {
+  --box-shadow: none !important;
+  --background-activated: transparent !important;
+  --background-focused: transparent !important;
+  --background-hover: transparent !important;
+  --ripple-color: transparent !important;
+}
+
+/* Remove ion-item default styling */
+ion-item {
+  --inner-padding-end: 0 !important;
+  --inner-padding-start: 0 !important;
+  --padding-end: 0 !important;
+  --padding-start: 0 !important;
+  --background-activated: transparent !important;
+  --background-focused: transparent !important;
+  --background-hover: transparent !important;
+  --ripple-color: transparent !important;
+}
+

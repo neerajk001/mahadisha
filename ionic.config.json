@@ -1,0 +1,7 @@
+{
+  "name": "mahadisha_app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

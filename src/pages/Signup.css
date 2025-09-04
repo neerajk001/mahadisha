@@ -1,0 +1,400 @@
+.signup-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+/* Left Section - Logo */
+.signup-left-section {
+  flex: 1;
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  gap: 2rem;
+}
+
+.mahadisha-logo {
+  max-width: 60%;
+  max-height: 40%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+}
+
+.welcome-message {
+  text-align: center;
+  color: #2c3e50;
+  max-width: 80%;
+}
+
+.welcome-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.02em;
+}
+
+.welcome-subtitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.welcome-description {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ecf0f1;
+  margin: 0 0 1.5rem 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  line-height: 1.4;
+}
+
+.welcome-greeting {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #bdc3c7;
+  margin: 0;
+  line-height: 1.5;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Right Section - Form */
+.signup-right-section {
+  flex: 1;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.signup-form-container {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  width: 100%;
+  max-width: 600px;
+}
+
+.signup-form-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.input-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.input-label {
+  font-weight: 600;
+  color: #34495e;
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+
+.error-message {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
+.error-message ion-text {
+  font-weight: 500;
+}
+
+.signup-input-item {
+  --border-radius: 8px;
+  --border-width: 1px;
+  --border-color: #e1e8ed;
+  --border-color-focused: #3498db;
+  --background: #f8f9fa;
+  --padding-start: 0.5rem;
+  --padding-end: 0.5rem;
+  --padding-top: 0.2rem;
+  --padding-bottom: 0.2rem;
+  margin-bottom: 0;
+}
+
+.signup-input-item ion-input {
+  --placeholder-color: #95a5a6;
+  --placeholder-opacity: 0.8;
+  font-size: 0.8rem;
+  height: 28px;
+}
+
+.picture-upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.picture-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px dashed #e1e8ed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #f8f9fa;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  color: #95a5a6;
+  font-size: 0.7rem;
+}
+
+.placeholder-icon {
+  font-size: 1.5rem;
+  color: #bdc3c7;
+}
+
+.upload-btn {
+  --border-radius: 20px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 0.5rem;
+  --padding-bottom: 0.5rem;
+  --border-color: #3498db;
+  --color: #3498db;
+  font-weight: 600;
+  font-size: 0.8rem;
+  height: 32px;
+}
+
+.signup-submit-btn {
+  --background: #3498db;
+  --background-hover: #2980b9;
+  --border-radius: 8px;
+  --padding-top: 0.5rem;
+  --padding-bottom: 0.5rem;
+  --font-weight: 600;
+  --font-size: 0.85rem;
+  height: 36px;
+  margin-top: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.signup-submit-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.signup-submit-btn:disabled {
+  --background: #bdc3c7;
+  --background-hover: #bdc3c7;
+  transform: none;
+  box-shadow: none;
+}
+
+.signup-footer {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.signin-link {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.signin-link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) and (min-width: 769px) {
+  /* Medium screens - 14 inch laptops */
+  .signup-form-container {
+    max-width: 400px;
+    padding: 1.25rem;
+  }
+  
+  .signup-form-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .signup-form {
+    gap: 0.5rem;
+  }
+  
+  .form-row {
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .input-group {
+    gap: 0.25rem;
+  }
+  
+  .input-label {
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
+  }
+  
+  .signup-input-item {
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+    --padding-top: 0.2rem;
+    --padding-bottom: 0.2rem;
+  }
+  
+  .signup-input-item ion-input {
+    font-size: 0.8rem;
+    height: 28px;
+  }
+  
+  .signup-submit-btn {
+    height: 32px;
+    margin-top: 0.5rem;
+    --padding-top: 0.4rem;
+    --padding-bottom: 0.4rem;
+    --font-size: 0.8rem;
+  }
+  
+  .picture-preview {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .upload-btn {
+    height: 28px;
+    --padding-start: 0.75rem;
+    --padding-end: 0.75rem;
+    --padding-top: 0.4rem;
+    --padding-bottom: 0.4rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .signup-container {
+    flex-direction: column;
+  }
+  
+  .signup-left-section {
+    flex: none;
+    height: 30vh;
+    padding: 1rem;
+  }
+  
+  .signup-right-section {
+    flex: none;
+    height: 70vh;
+    padding: 1rem;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .signup-form-container {
+    padding: 1.5rem;
+  }
+  
+  .signup-form-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .mahadisha-logo {
+    max-width: 90%;
+    max-height: 70%;
+  }
+  
+  .welcome-message {
+    max-width: 90%;
+  }
+  
+  .welcome-title {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .welcome-subtitle {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .welcome-description {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+  
+  .welcome-greeting {
+    font-size: 0.85rem;
+  }
+  
+  .picture-preview {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .signup-left-section {
+    height: 25vh;
+  }
+  
+  .signup-right-section {
+    height: 75vh;
+  }
+  
+  .signup-form-container {
+    padding: 1rem;
+  }
+  
+  .signup-form-title {
+    font-size: 1.25rem;
+  }
+}

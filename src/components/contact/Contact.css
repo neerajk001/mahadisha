@@ -1,0 +1,146 @@
+.contact-section {
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e8 100%);
+  border-left: 4px solid #ffd700;
+}
+
+.contact-title {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2d5a2d;
+  margin-bottom: 3rem;
+  line-height: 1.4;
+}
+
+.contact-panels {
+  display: flex;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.contact-panel {
+  flex: 1;
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.registered-office {
+  border-left: 4px solid #3498db;
+}
+
+.head-office {
+  border-right: 4px solid #3498db;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.panel-icon {
+  font-size: 1.5rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+}
+
+.registered-icon {
+  color: #e74c3c;
+  background: rgba(231, 76, 60, 0.1);
+}
+
+.head-office-icon {
+  color: #3498db;
+  background: rgba(52, 152, 219, 0.1);
+}
+
+.panel-header h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2d5a2d;
+  margin: 0;
+}
+
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.contact-icon {
+  font-size: 1.25rem;
+  color: #27ae60;
+  margin-top: 0.125rem;
+  flex-shrink: 0;
+}
+
+.contact-text {
+  font-size: 0.95rem;
+  color: #2c3e50;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .contact-section {
+    padding: 3rem 1rem;
+  }
+  
+  .contact-title {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  
+  .contact-panels {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .contact-panel {
+    padding: 1.5rem;
+  }
+  
+  .panel-header h3 {
+    font-size: 1.125rem;
+  }
+  
+  .contact-text {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-section {
+    padding: 2rem 1rem;
+  }
+  
+  .contact-title {
+    font-size: 1.125rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .contact-panel {
+    padding: 1.25rem;
+  }
+  
+  .panel-header {
+    margin-bottom: 1rem;
+  }
+  
+  .contact-details {
+    gap: 1rem;
+  }
+}

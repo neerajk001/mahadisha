@@ -1,0 +1,239 @@
+.login-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+/* Left Section - Teal Background */
+.login-left-section {
+  flex: 1;
+  background: linear-gradient(135deg, #008080 0%, #006666 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+}
+
+.login-logo-container {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  margin-bottom: 2rem;
+}
+
+.login-logo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.mahadisha-logo {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+}
+
+.logo-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #333;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.logo-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0.5rem 0 0 0;
+  line-height: 1.4;
+  max-width: 250px;
+}
+
+.login-welcome h2 {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  text-align: center;
+}
+
+/* Right Section - White Background with Form */
+.login-right-section {
+  flex: 2;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.login-form-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-form-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  margin-bottom: 2rem;
+  letter-spacing: -0.01em;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-label {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.2rem;
+  margin-bottom: 0.25rem;
+}
+
+.login-input-item {
+  --border-radius: 12px;
+  --border-width: 2px;
+  --border-color: #e1e5e9;
+  --border-color-focused: #008080;
+  --background: #f8f9fa;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 0.5rem;
+  --padding-bottom: 0.5rem;
+  margin-bottom: 0;
+  width: 100%;
+}
+
+.login-input-item ion-input {
+  --placeholder-color: #999;
+  --placeholder-opacity: 0.8;
+  font-size: 1rem;
+  --padding-top: 0.5rem;
+  --padding-bottom: 0.5rem;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  height: 40px;
+}
+
+.password-toggle-btn {
+  --color: #008080;
+  --padding-start: 0.5rem;
+  --padding-end: 0.5rem;
+}
+
+.forgot-password {
+  text-align: right;
+  margin-top: -0.5rem;
+}
+
+.forgot-password-link {
+  color: #008080;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
+}
+
+.login-submit-btn {
+  --background: #008080;
+  --background-hover: #006666;
+  --border-radius: 12px;
+  --padding-top: 1rem;
+  --padding-bottom: 1rem;
+  --font-weight: 600;
+  --font-size: 1.1rem;
+  margin-top: 1rem;
+  height: 50px;
+}
+
+.create-account {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.create-account-link {
+  color: #008080;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.create-account-link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+  }
+  
+  .login-left-section {
+    flex: none;
+    height: 40vh;
+    padding: 1rem;
+  }
+  
+  .login-right-section {
+    flex: none;
+    height: 60vh;
+    padding: 1rem;
+  }
+  
+  .login-logo-container {
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .logo-title {
+    font-size: 1.5rem;
+  }
+  
+  .logo-subtitle {
+    font-size: 0.8rem;
+  }
+  
+  .login-welcome h2 {
+    font-size: 2rem;
+  }
+  
+  .login-form-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-left-section {
+    height: 35vh;
+  }
+  
+  .login-right-section {
+    height: 65vh;
+  }
+  
+  .login-logo-container {
+    padding: 1rem;
+  }
+  
+  .mahadisha-logo {
+    width: 100px;
+  }
+}
