@@ -1,29 +1,81 @@
-import React from 'react';
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonButton, IonIcon, IonGrid, IonRow, IonCol } from '@ionic/react';
-import { cashOutline, cardOutline, giftOutline, arrowForwardOutline } from 'ionicons/icons';
+import React, { useState } from 'react';
+import { 
+  IonCard, 
+  IonCardContent, 
+  IonCardHeader, 
+  IonCardTitle, 
+  IonButton, 
+  IonIcon, 
+  IonGrid, 
+  IonRow, 
+  IonCol,
+  IonModal,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent
+} from '@ionic/react';
+import { cashOutline, cardOutline, giftOutline, arrowForwardOutline, closeOutline } from 'ionicons/icons';
 import './SchemeCategories.css';
 
 const SchemeCategories: React.FC = () => {
+  const [selectedScheme, setSelectedScheme] = useState<string | null>(null);
+
   const schemes = [
     {
       title: 'Direct Finance Scheme',
       description: 'Empowering rural entrepreneurs through direct credit.',
       icon: cashOutline,
-      color: 'primary'
+      color: 'primary',
+      hasModal: false
     },
     {
       title: 'Margin Money Scheme',
       description: 'Bridging credit gaps for small businesses.',
       icon: cardOutline,
-      color: 'secondary'
+      color: 'secondary',
+      hasModal: true,
+      modalTitle: 'Margin Money Scheme (State)',
+      details: [
+        { label: 'Loan Range', value: '₹50,001 - ₹5,00,000' },
+        { label: 'Subsidy', value: '100% (Max ₹50,000)' },
+        { label: 'Own Contribution', value: '5%' },
+        { label: 'MPBCDC Interest', value: '4%' },
+        { label: 'Partner Share', value: '75%' },
+        { label: 'Tenure', value: '3 - 5 years' },
+        { label: 'Interest', value: 'Simple Interest' }
+      ]
     },
     {
       title: 'Subsidy Scheme',
       description: 'Providing subsidies for economic upliftment.',
       icon: giftOutline,
-      color: 'tertiary'
+      color: 'tertiary',
+      hasModal: true,
+      modalTitle: 'Subsidy Scheme (State)',
+      details: [
+        { label: 'Loan Range', value: '₹0 - ₹50,000' },
+        { label: 'Subsidy', value: '100% (Max ₹25,000)' },
+        { label: 'Own Contribution', value: '0%' },
+        { label: 'MPBCDC Interest', value: '0%' },
+        { label: 'Partner Share', value: '50%' },
+        { label: 'Tenure', value: '0 - 3 years' },
+        { label: 'Interest', value: 'Simple Interest' }
+      ]
     },
   ];
+
+  const openModal = (schemeTitle: string) => {
+    setSelectedScheme(schemeTitle);
+  };
+
+  const closeModal = () => {
+    setSelectedScheme(null);
+  };
+
+  const getSelectedSchemeData = () => {
+    return schemes.find(scheme => scheme.title === selectedScheme);
+  };
 
   return (
     <div className="scheme-categories">
@@ -65,8 +117,12 @@ const SchemeCategories: React.FC = () => {
                     {scheme.description}
                   </p>
                   
-                  <IonButton fill="clear" color={scheme.color}>
-                    View Details
+                  <IonButton 
+                    fill="clear" 
+                    color={scheme.color}
+                    onClick={() => scheme.hasModal ? openModal(scheme.title) : null}
+                  >
+                    {scheme.hasModal ? 'Read More' : 'View Details'}
                     <IonIcon icon={arrowForwardOutline} slot="end" />
                   </IonButton>
                 </IonCardContent>
@@ -75,6 +131,39 @@ const SchemeCategories: React.FC = () => {
           ))}
         </IonRow>
       </IonGrid>
+
+      {/* Modal for Scheme Details */}
+      <IonModal isOpen={!!selectedScheme} onDidDismiss={closeModal}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>{getSelectedSchemeData()?.modalTitle}</IonTitle>
+            <IonButton slot="end" fill="clear" onClick={closeModal}>
+              <IonIcon icon={closeOutline} />
+            </IonButton>
+          </IonToolbar>
+        </IonHeader>
+        
+        <IonContent className="scheme-modal-content">
+          <div className="scheme-details">
+            {getSelectedSchemeData()?.details?.map((detail, index) => (
+              <div key={index} className="scheme-detail-item">
+                <span className="detail-label">{detail.label}:</span>
+                <span className="detail-value">{detail.value}</span>
+              </div>
+            ))}
+          </div>
+          
+          <div className="scheme-modal-actions">
+            <IonButton 
+              expand="block" 
+              className="apply-now-btn"
+              onClick={closeModal}
+            >
+              Apply Now
+            </IonButton>
+          </div>
+        </IonContent>
+      </IonModal>
     </div>
   );
 };
