@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import {
+  IonPage,
   IonContent,
   IonHeader,
   IonToolbar,
@@ -13,9 +14,13 @@ import {
   IonButtons
 } from '@ionic/react';
 import { personOutline, cameraOutline } from 'ionicons/icons';
+import { useHistory } from 'react-router-dom';
 import './Signup.css';
 
 const Signup: React.FC = () => {
+  console.log('Signup component is rendering!'); // Debug log
+  const history = useHistory();
+  
   const [fullName, setFullName] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -106,7 +111,7 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <>
+    <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -264,7 +269,9 @@ const Signup: React.FC = () => {
                 <div className="signup-footer">
                   <IonText>
                     Already have an account?{' '}
-                    <a href="/login" className="signin-link">Sign In</a>
+                    <IonButton fill="clear" size="small" onClick={() => history.push('/login')}>
+                      Sign In
+                    </IonButton>
                   </IonText>
                 </div>
               </form>
@@ -272,7 +279,7 @@ const Signup: React.FC = () => {
           </div>
         </div>
       </IonContent>
-    </>
+    </IonPage>
   );
 };
 

@@ -1,0 +1,401 @@
+/* View Details Page Styles */
+.view-details-header {
+  --background: var(--color-bg-primary);
+  --color: var(--color-text-primary);
+}
+
+.page-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.request-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.summary-info h2 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.summary-info p {
+  margin: 0 0 0.5rem 0;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.status-chip {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.summary-amount {
+  text-align: right;
+}
+
+.amount-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.amount-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.tabs-container {
+  padding: 0 1.5rem;
+  background: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.tabs-container ion-segment {
+  --background: transparent;
+}
+
+.tabs-container ion-segment-button {
+  --color: var(--color-text-secondary);
+  --color-checked: var(--color-primary);
+  --background-checked: var(--color-primary-light);
+  --border-radius: 8px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 0.5rem;
+  --padding-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0 0.25rem;
+}
+
+.view-details-content {
+  --background: var(--color-bg-secondary);
+  --padding-start: 1.5rem;
+  --padding-end: 1.5rem;
+  --padding-top: 1.5rem;
+  --padding-bottom: 1.5rem;
+}
+
+.details-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.info-card {
+  --background: var(--color-bg-primary);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+  height: fit-content;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.title-icon {
+  margin-right: 0.5rem;
+  color: var(--color-primary);
+  font-size: 1.2rem;
+}
+
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-icon {
+  margin-right: 0.75rem;
+  color: var(--color-primary);
+  font-size: 1.1rem;
+  min-width: 20px;
+}
+
+.info-label {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  min-width: 140px;
+  margin-right: 1rem;
+}
+
+.info-value {
+  color: var(--color-text-primary);
+  font-weight: 500;
+  flex: 1;
+}
+
+/* Documents List */
+.documents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.document-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--color-bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--color-border-light);
+}
+
+.document-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.document-icon {
+  margin-right: 0.75rem;
+  color: var(--color-primary);
+  font-size: 1.2rem;
+}
+
+.document-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.document-name {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.document-category {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  text-transform: capitalize;
+}
+
+/* Guarantors List */
+.guarantors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.guarantor-item {
+  padding: 1rem;
+  background: var(--color-bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--color-border-light);
+}
+
+.guarantor-info {
+  display: flex;
+  align-items: center;
+}
+
+.guarantor-icon {
+  margin-right: 0.75rem;
+  color: var(--color-primary);
+  font-size: 1.2rem;
+}
+
+.guarantor-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.guarantor-name {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.guarantor-relationship {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.guarantor-mobile {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+/* Collaterals List */
+.collaterals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.collateral-item {
+  padding: 1rem;
+  background: var(--color-bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--color-border-light);
+}
+
+.collateral-info {
+  display: flex;
+  align-items: center;
+}
+
+.collateral-icon {
+  margin-right: 0.75rem;
+  color: var(--color-primary);
+  font-size: 1.2rem;
+}
+
+.collateral-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.collateral-type {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.collateral-description {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.collateral-value {
+  font-size: 0.9rem;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.collateral-location {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+/* Loading and Error States */
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  text-align: center;
+}
+
+.loading-container p,
+.error-container p {
+  margin-top: 1rem;
+  color: var(--color-text-secondary);
+}
+
+/* Three Card Layout */
+.three-card-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.three-card-layout .info-card {
+  margin-bottom: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .request-summary {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .summary-amount {
+    text-align: left;
+  }
+
+  .tabs-container {
+    padding: 0 1rem;
+  }
+
+  .tabs-container ion-segment-button {
+    --padding-start: 0.75rem;
+    --padding-end: 0.75rem;
+    font-size: 0.8rem;
+    margin: 0 0.125rem;
+  }
+
+  .view-details-content {
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+  }
+
+  .info-label {
+    min-width: 120px;
+    font-size: 0.9rem;
+  }
+
+  .info-value {
+    font-size: 0.9rem;
+  }
+
+  .document-item,
+  .guarantor-item,
+  .collateral-item {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 1rem;
+  }
+
+  .summary-info h2 {
+    font-size: 1.2rem;
+  }
+
+  .amount-value {
+    font-size: 1.3rem;
+  }
+
+  .tabs-container ion-segment-button {
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .info-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .info-label {
+    min-width: auto;
+    margin-right: 0;
+  }
+}

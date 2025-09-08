@@ -1,0 +1,485 @@
+/* Action Masters Page Styles */
+.action-masters-content {
+  --background: var(--color-bg-secondary);
+  --padding-start: 1.5rem;
+  --padding-end: 1.5rem;
+  --padding-top: 1.5rem;
+  --padding-bottom: 1.5rem;
+}
+
+.actions-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header Section */
+.actions-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.actions-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.actions-header p {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Actions Section */
+.actions-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.actions-search {
+  flex: 1;
+  min-width: 300px;
+  --background: var(--color-bg-primary);
+  --border-radius: 8px;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-action-button {
+  --background: var(--color-primary);
+  --color: white;
+  --border-radius: 8px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.add-action-button:hover {
+  --background: var(--color-primary-dark);
+}
+
+/* Table Card */
+.actions-table-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.table-container {
+  padding: 0;
+  overflow-x: auto;
+}
+
+/* Table Styles */
+.actions-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-bg-primary);
+}
+
+.actions-table th {
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 2px solid var(--color-border-medium);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-icon {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.filter-icon:hover {
+  color: var(--color-primary);
+}
+
+.actions-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+}
+
+.actions-table tbody tr:hover {
+  background: var(--color-bg-secondary);
+}
+
+.actions-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Row Styling */
+.even-row {
+  background: var(--color-bg-primary);
+}
+
+.odd-row {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+/* Cell Styles */
+.action-name-cell {
+  min-width: 300px;
+}
+
+.action-name {
+  font-weight: 600;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.action-name:hover {
+  color: var(--color-primary-dark);
+}
+
+.actions-cell {
+  min-width: 120px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.edit-button {
+  --color: white;
+  --background: #17a2b8;
+  --border-radius: 6px;
+  --padding: 0.5rem;
+  width: 40px;
+  height: 40px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.edit-button:hover {
+  --background: #138496;
+  transform: scale(1.05);
+}
+
+.delete-button {
+  --color: white;
+  --background: var(--color-error);
+  --border-radius: 6px;
+  --padding: 0.5rem;
+  width: 40px;
+  height: 40px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.delete-button:hover {
+  --background: #c82333;
+  transform: scale(1.05);
+}
+
+/* Pagination */
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--color-bg-primary);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-info p {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pagination-button {
+  --color: var(--color-primary);
+  --background: transparent;
+  --border-radius: 6px;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  font-weight: 500;
+  min-width: 100px;
+}
+
+.pagination-button:disabled {
+  --color: var(--color-text-disabled);
+  opacity: 0.5;
+}
+
+.page-info {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  padding: 0.5rem 1rem;
+  background: var(--color-bg-secondary);
+  border-radius: 6px;
+  border: 1px solid var(--color-border-light);
+}
+
+/* Edit Modal Styles */
+.edit-modal {
+  background: var(--color-bg-primary);
+  border-radius: 12px;
+  margin: 2rem;
+  max-width: 500px;
+  margin: 2rem auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1000;
+}
+
+/* Modal backdrop blur effect */
+ion-modal {
+  --backdrop-opacity: 0.5;
+}
+
+ion-modal::part(backdrop) {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1.5rem 0 1.5rem;
+  border-bottom: 1px solid var(--color-border-light);
+  margin-bottom: 1.5rem;
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.close-button {
+  --color: var(--color-text-secondary);
+  --background: transparent;
+  --padding: 0.5rem;
+  width: 40px;
+  height: 40px;
+}
+
+.close-button:hover {
+  --background: var(--color-bg-secondary);
+}
+
+.modal-content {
+  padding: 0 1.5rem;
+}
+
+.form-item {
+  --background: transparent;
+  --border-radius: 8px;
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-padding-end: 0;
+  --inner-padding-start: 0;
+  margin-bottom: 1rem;
+}
+
+.form-item ion-label {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.form-item ion-input,
+.form-item ion-select {
+  --background: var(--color-bg-secondary);
+  --border-radius: 8px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  border: 1px solid var(--color-border-light);
+  font-size: 1rem;
+}
+
+.form-item ion-input:focus,
+.form-item ion-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.modal-footer {
+  padding: 1.5rem;
+  border-top: 1px solid var(--color-border-light);
+  margin-top: 1.5rem;
+}
+
+.save-button {
+  --background: #28a745;
+  --color: white;
+  --border-radius: 8px;
+  --padding-start: 2rem;
+  --padding-end: 2rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.save-button:hover {
+  --background: #218838;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .action-masters-content {
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+  }
+
+  .actions-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .actions-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .actions-search {
+    min-width: auto;
+  }
+
+  .actions-table th,
+  .actions-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .action-buttons {
+    gap: 0.5rem;
+    flex-direction: row;
+  }
+
+  .edit-button,
+  .delete-button {
+    width: 36px;
+    height: 36px;
+    --padding: 0.4rem;
+    font-size: 0.9rem;
+  }
+
+  .pagination-container {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .pagination-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pagination-button {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .edit-modal {
+    margin: 1rem;
+  }
+
+  .modal-header {
+    padding: 1rem 1rem 0 1rem;
+  }
+
+  .modal-content {
+    padding: 0 1rem;
+  }
+
+  .modal-footer {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .actions-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .actions-header p {
+    font-size: 0.9rem;
+  }
+
+  .actions-table th,
+  .actions-table td {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  .action-buttons {
+    flex-direction: row;
+    gap: 0.4rem;
+  }
+
+  .edit-button,
+  .delete-button {
+    width: 32px;
+    height: 32px;
+    --padding: 0.3rem;
+    font-size: 0.8rem;
+  }
+
+  .pagination-controls {
+    gap: 0.25rem;
+  }
+
+  .modal-header h2 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Scrollbar Styling */
+.table-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: var(--color-border-medium);
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}

@@ -77,7 +77,9 @@ const ForgotPassword: React.FC = () => {
                <div className="signup-link-section">
                  <IonText>
                    Don't have an account?{' '}
-                   <a href="/signup" className="signup-link">Sign Up</a>
+                   <IonButton fill="clear" size="small" onClick={() => history.push('/signup')}>
+                     Sign Up
+                   </IonButton>
                  </IonText>
                </div>
             </div>

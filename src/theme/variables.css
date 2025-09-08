@@ -1,6 +1,123 @@
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
 
+/* ========================================
+   CENTRALIZED COLOR SYSTEM
+   ======================================== */
+
+:root {
+  /* Primary Colors - Main brand colors */
+  --color-primary: #008080;           /* Teal - Main brand color */
+  --color-primary-dark: #006666;      /* Darker teal for gradients */
+  --color-primary-light: #00a0a0;     /* Lighter teal for hover states */
+  --color-primary-rgb: 0, 128, 128;   /* RGB values for rgba() usage */
+  
+  /* Secondary Colors - Supporting colors */
+  --color-secondary: #6A5ACD;         /* Blue violet - Secondary brand color */
+  --color-secondary-dark: #5a4db8;    /* Darker blue violet */
+  --color-secondary-light: #7a6cdd;   /* Lighter blue violet */
+  --color-secondary-rgb: 106, 90, 205; /* RGB values for rgba() usage */
+  
+  /* Tertiary Colors - Accent colors */
+  --color-tertiary: #27ae60;          /* Green for success states */
+  --color-tertiary-dark: #229954;     /* Darker green */
+  --color-tertiary-light: #2ecc71;    /* Lighter green */
+  --color-tertiary-rgb: 39, 174, 96;  /* RGB values for rgba() usage */
+  
+  /* Neutral Colors - Text and backgrounds */
+  --color-text-primary: #333333;      /* Main text color */
+  --color-text-secondary: #666666;    /* Secondary text color */
+  --color-text-muted: #999999;        /* Muted text color */
+  --color-text-light: #cccccc;        /* Light text color */
+  --color-text-white: #ffffff;        /* White text */
+  
+  /* Background Colors */
+  --color-bg-primary: #ffffff;        /* Main background */
+  --color-bg-secondary: #f8f9fa;      /* Secondary background */
+  --color-bg-tertiary: #f5f5f5;       /* Tertiary background */
+  --color-bg-light: #f0f0f0;          /* Light background */
+  --color-bg-dark: #2c3e50;           /* Dark background */
+  
+  /* Border Colors */
+  --color-border-light: #e1e5e9;      /* Light borders */
+  --color-border-medium: #ddd;        /* Medium borders */
+  --color-border-dark: #333;          /* Dark borders */
+  
+  /* Status Colors */
+  --color-success: #27ae60;           /* Success green */
+  --color-warning: #f39c12;           /* Warning orange */
+  --color-error: #e74c3c;             /* Error red */
+  --color-info: #3498db;              /* Info blue */
+  
+  /* Shadow Colors */
+  --color-shadow-light: rgba(0, 0, 0, 0.08);
+  --color-shadow-medium: rgba(0, 0, 0, 0.12);
+  --color-shadow-dark: rgba(0, 0, 0, 0.2);
+  --color-shadow-primary: rgba(0, 128, 128, 0.2);
+  --color-shadow-secondary: rgba(106, 90, 205, 0.3);
+  
+  /* Gradient Definitions */
+  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-dark) 100%);
+  --gradient-tertiary: linear-gradient(135deg, var(--color-tertiary) 0%, var(--color-tertiary-dark) 100%);
+  --gradient-mixed: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 50%, var(--color-tertiary) 100%);
+  
+  /* Opacity Variations */
+  --color-primary-10: rgba(var(--color-primary-rgb), 0.1);
+  --color-primary-15: rgba(var(--color-primary-rgb), 0.15);
+  --color-primary-20: rgba(var(--color-primary-rgb), 0.2);
+  --color-primary-30: rgba(var(--color-primary-rgb), 0.3);
+  
+  --color-secondary-10: rgba(var(--color-secondary-rgb), 0.1);
+  --color-secondary-15: rgba(var(--color-secondary-rgb), 0.15);
+  --color-secondary-20: rgba(var(--color-secondary-rgb), 0.2);
+  --color-secondary-30: rgba(var(--color-secondary-rgb), 0.3);
+  
+  --color-tertiary-10: rgba(var(--color-tertiary-rgb), 0.1);
+  --color-tertiary-15: rgba(var(--color-tertiary-rgb), 0.15);
+  --color-tertiary-20: rgba(var(--color-tertiary-rgb), 0.2);
+  --color-tertiary-30: rgba(var(--color-tertiary-rgb), 0.3);
+}
+
+/* ========================================
+   IONIC THEME VARIABLES
+   ======================================== */
+
+:root {
+  /* Ionic Color Variables - mapped to our centralized colors */
+  --ion-color-primary: var(--color-primary);
+  --ion-color-primary-rgb: var(--color-primary-rgb);
+  --ion-color-primary-contrast: var(--color-text-white);
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: var(--color-primary-dark);
+  --ion-color-primary-tint: var(--color-primary-light);
+  
+  --ion-color-secondary: var(--color-secondary);
+  --ion-color-secondary-rgb: var(--color-secondary-rgb);
+  --ion-color-secondary-contrast: var(--color-text-white);
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: var(--color-secondary-dark);
+  --ion-color-secondary-tint: var(--color-secondary-light);
+  
+  --ion-color-tertiary: var(--color-tertiary);
+  --ion-color-tertiary-rgb: var(--color-tertiary-rgb);
+  --ion-color-tertiary-contrast: var(--color-text-white);
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: var(--color-tertiary-dark);
+  --ion-color-tertiary-tint: var(--color-tertiary-light);
+  
+  --ion-color-success: var(--color-success);
+  --ion-color-warning: var(--color-warning);
+  --ion-color-danger: var(--color-error);
+  --ion-color-medium: var(--color-text-secondary);
+  --ion-color-dark: var(--color-text-primary);
+  --ion-color-light: var(--color-bg-tertiary);
+}
+
+/* ========================================
+   GLOBAL STYLES
+   ======================================== */
+
 /* Global scrollbar hiding for entire application */
 * {
   scrollbar-width: none; /* Firefox */
@@ -18,4 +135,121 @@ html, body {
 
 html::-webkit-scrollbar, body::-webkit-scrollbar {
   display: none; /* Webkit browsers */
+}
+
+/* ========================================
+   GLOBAL UNDERLINE AND BORDER FIXES
+   ======================================== */
+
+/* Remove default underlines from all elements */
+*, *::before, *::after {
+  text-decoration: none !important;
+  border-bottom: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+/* Specifically target Ionic components to remove unwanted borders */
+ion-item {
+  --border-width: 0 !important;
+  --border-style: none !important;
+  --border-color: transparent !important;
+  --inner-border-width: 0 !important;
+  --inner-border-style: none !important;
+  --inner-border-color: transparent !important;
+}
+
+ion-select {
+  --border-width: 0 !important;
+  --border-style: none !important;
+  --border-color: transparent !important;
+}
+
+ion-input {
+  --border-width: 0 !important;
+  --border-style: none !important;
+  --border-color: transparent !important;
+}
+
+/* Remove focus outlines that might appear as underlines */
+ion-item:focus,
+ion-select:focus,
+ion-input:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove any default text decoration */
+a, button, input, select, textarea {
+  text-decoration: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Remove Ionic's default item borders */
+ion-item.item-has-focus {
+  --border-width: 0 !important;
+  --border-style: none !important;
+  --border-color: transparent !important;
+}
+
+/* Remove any default underlines from links */
+a {
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
+/* Remove default button borders */
+button {
+  border: none !important;
+  outline: none !important;
+  text-decoration: none !important;
+}
+
+/* Remove default input borders */
+input, select, textarea {
+  border: none !important;
+  outline: none !important;
+  text-decoration: none !important;
+}
+
+/* ========================================
+   SIDEBAR SPECIFIC OVERRIDES
+   ======================================== */
+
+/* Ensure sidebar displays properly */
+ion-menu {
+  --border: none !important;
+  --border-width: 0 !important;
+  --border-style: none !important;
+  --border-color: transparent !important;
+}
+
+ion-menu ion-header {
+  --border: none !important;
+  --border-width: 0 !important;
+  --border-style: none !important;
+  --border-color: transparent !important;
+}
+
+ion-menu ion-toolbar {
+  --border: none !important;
+  --border-width: 0 !important;
+  --border-style: none !important;
+  --border-color: transparent !important;
+}
+
+/* Allow specific borders for sidebar submenu items */
+.sidebar-item.submenu-item {
+  border-bottom: 1px solid var(--color-border-light) !important;
+}
+
+.menu-header {
+  border-bottom: 1px solid var(--color-border-light) !important;
+}
+
+.submenu {
+  border-left: 3px solid var(--color-primary) !important;
 }

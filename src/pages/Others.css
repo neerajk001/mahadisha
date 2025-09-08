@@ -1,0 +1,108 @@
+/* Others Page Styles */
+.others-content {
+  --background: var(--color-bg-secondary);
+  --padding-start: 1.5rem;
+  --padding-end: 1.5rem;
+  --padding-top: 1.5rem;
+  --padding-bottom: 1.5rem;
+}
+
+.others-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header Section */
+.others-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.others-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.others-header p {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Content Card */
+.others-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.others-card ion-card-header {
+  background: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.others-card ion-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.others-card ion-card-content {
+  padding: 1.5rem;
+}
+
+.others-card p {
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.others-card ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.others-card li {
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .others-content {
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+  }
+
+  .others-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .others-card ion-card-content {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .others-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .others-header p {
+    font-size: 0.9rem;
+  }
+
+  .others-card ion-card-content {
+    padding: 0.75rem;
+  }
+
+  .others-card p,
+  .others-card li {
+    font-size: 0.9rem;
+  }
+}

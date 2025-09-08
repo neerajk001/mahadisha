@@ -29,7 +29,7 @@
   text-align: center;
   border-radius: 20px;
   border: none;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px var(--color-shadow-light);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   position: relative;
@@ -49,7 +49,7 @@
 
 .scheme-categories__card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 20px 40px var(--color-shadow-medium);
 }
 
 .scheme-categories__card:hover::before {
@@ -72,7 +72,7 @@
 
 .scheme-categories__card:hover .scheme-categories__icon-container {
   transform: scale(1.1);
-  background: linear-gradient(135deg, rgba(var(--ion-color-primary-rgb), 0.15) 0%, rgba(var(--ion-color-secondary-rgb), 0.15) 100%);
+  background: linear-gradient(135deg, var(--color-primary-15) 0%, var(--color-secondary-15) 100%);
 }
 
 .scheme-categories__icon {
@@ -126,7 +126,7 @@
 
 .scheme-categories__card ion-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(var(--ion-color-primary-rgb), 0.3);
+  box-shadow: 0 8px 25px var(--color-shadow-secondary);
 }
 
 /* State Schemes Button */
@@ -143,14 +143,14 @@
   --padding-top: 1rem;
   --padding-bottom: 1rem;
   --border-width: 2px;
-  --border-color: var(--ion-color-primary);
-  --color: var(--ion-color-dark);
-  --background: #ffffff;
+  --border-color: var(--color-primary);
+  --color: var(--color-text-primary);
+  --background: var(--color-bg-primary);
   font-weight: 700;
   font-size: 1rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px var(--color-shadow-light);
   transition: all 0.3s ease;
   width: 100%;
   max-width: 100%;
@@ -158,9 +158,9 @@
 
 .scheme-categories__state-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  --background: var(--ion-color-primary);
-  --color: #ffffff;
+  box-shadow: 0 8px 25px var(--color-shadow-medium);
+  --background: var(--color-primary);
+  --color: var(--color-text-white);
 }
 
 /* Modal Styles */
@@ -180,7 +180,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--color-bg-light);
 }
 
 .scheme-detail-item:last-child {
@@ -189,13 +189,13 @@
 
 .detail-label {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--color-bg-dark);
   font-size: 0.95rem;
 }
 
 .detail-value {
   font-weight: 500;
-  color: #34495e;
+  color: var(--color-text-primary);
   font-size: 0.9rem;
   text-align: right;
 }
@@ -205,8 +205,8 @@
 }
 
 .apply-now-btn {
-  --background: #27ae60;
-  --background-hover: #229954;
+  --background: var(--color-tertiary);
+  --background-hover: var(--color-tertiary-dark);
   --border-radius: 25px;
   --padding-top: 1rem;
   --padding-bottom: 1rem;
@@ -214,13 +214,13 @@
   --font-size: 1rem;
   height: 48px;
   margin: 0;
-  box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+  box-shadow: 0 4px 15px var(--color-tertiary-30);
   transition: all 0.3s ease;
 }
 
 .apply-now-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+  box-shadow: 0 6px 20px var(--color-tertiary-30);
 }
 
 /* Modal Header Styling */
@@ -229,8 +229,8 @@ ion-modal ion-header {
 }
 
 ion-modal ion-toolbar {
-  --background: white;
-  --color: #2c3e50;
+  --background: var(--color-bg-primary);
+  --color: var(--color-bg-dark);
 }
 
 ion-modal ion-title {
@@ -292,12 +292,12 @@ ion-modal ion-title {
     background: transparent;
   }
   
-  .scheme-categories__card {
-    background: transparent;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  }
+.scheme-categories__card {
+  background: transparent;
+  box-shadow: 0 4px 20px var(--color-shadow-dark);
+}
   
-  .scheme-categories__card:hover {
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  }
+.scheme-categories__card:hover {
+  box-shadow: 0 20px 40px var(--color-shadow-dark);
+}
 }

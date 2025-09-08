@@ -1,0 +1,619 @@
+/* Status Mapping Page Styles */
+.status-mapping-content {
+  --background: var(--color-bg-secondary);
+  --padding-start: 1.5rem;
+  --padding-end: 1.5rem;
+  --padding-top: 1.5rem;
+  --padding-bottom: 1.5rem;
+}
+
+.mappings-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header Section */
+.mappings-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.mappings-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.mappings-header p {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Actions Section */
+.mappings-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.add-mapping-button {
+  --background: #17a2b8;
+  --color: white;
+  --border-radius: 8px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.add-mapping-button:hover {
+  --background: #138496;
+}
+
+.clear-filters-text {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.clear-filters-text:hover {
+  color: var(--color-primary);
+}
+
+/* Table Card */
+.mappings-table-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.table-container {
+  padding: 0;
+  overflow-x: auto;
+}
+
+/* Table Styles */
+.mappings-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-bg-primary);
+}
+
+.mappings-table th {
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 2px solid var(--color-border-medium);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-icon {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.filter-icon:hover {
+  color: var(--color-primary);
+}
+
+.mappings-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+}
+
+.mappings-table tbody tr:hover {
+  background: var(--color-bg-secondary);
+}
+
+.mappings-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Row Styling */
+.even-row {
+  background: var(--color-bg-primary);
+}
+
+.odd-row {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+/* Cell Styles */
+.status-cell {
+  min-width: 200px;
+}
+
+.status-text {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-icon {
+  font-size: 1rem;
+}
+
+.status-icon.success {
+  color: #28a745;
+}
+
+.status-icon.error {
+  color: #dc3545;
+}
+
+.status-icon.warning {
+  color: #ffc107;
+}
+
+.role-cell {
+  min-width: 250px;
+}
+
+.role-text {
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.visible-fields-cell {
+  min-width: 300px;
+}
+
+.visible-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.visible-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--color-text-primary);
+}
+
+.actions-cell {
+  min-width: 120px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.edit-button {
+  --color: white;
+  --background: #17a2b8;
+  --border-radius: 6px;
+  --padding: 0.5rem;
+  width: 40px;
+  height: 40px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.edit-button:hover {
+  --background: #138496;
+  transform: scale(1.05);
+}
+
+.delete-button {
+  --color: white;
+  --background: var(--color-error);
+  --border-radius: 6px;
+  --padding: 0.5rem;
+  width: 40px;
+  height: 40px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.delete-button:hover {
+  --background: #c82333;
+  transform: scale(1.05);
+}
+
+/* Pagination */
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--color-bg-primary);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-info p {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pagination-button {
+  --color: var(--color-primary);
+  --background: transparent;
+  --border-radius: 6px;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  font-weight: 500;
+  min-width: 100px;
+}
+
+.pagination-button:disabled {
+  --color: var(--color-text-disabled);
+  opacity: 0.5;
+}
+
+.page-info {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  padding: 0.5rem 1rem;
+  background: var(--color-bg-secondary);
+  border-radius: 6px;
+  border: 1px solid var(--color-border-light);
+}
+
+/* Modal Styles */
+.mapping-modal {
+  background: var(--color-bg-primary);
+  border-radius: 12px;
+  margin: 2rem;
+  max-width: 600px;
+  margin: 2rem auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1000;
+}
+
+/* Modal backdrop blur effect */
+ion-modal {
+  --backdrop-opacity: 0.5;
+}
+
+ion-modal::part(backdrop) {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1.5rem 0 1.5rem;
+  border-bottom: 1px solid var(--color-border-light);
+  margin-bottom: 1.5rem;
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.close-button {
+  --color: var(--color-text-secondary);
+  --background: transparent;
+  --padding: 0.5rem;
+  width: 40px;
+  height: 40px;
+}
+
+.close-button:hover {
+  --background: var(--color-bg-secondary);
+}
+
+.modal-content {
+  padding: 0 1.5rem;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.form-section {
+  margin-bottom: 1.5rem;
+}
+
+.section-label {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+  display: block;
+  font-size: 1rem;
+}
+
+.form-item {
+  --background: transparent;
+  --border-radius: 8px;
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-padding-end: 0;
+  --inner-padding-start: 0;
+  margin-bottom: 0.5rem;
+}
+
+.form-item ion-input {
+  --background: var(--color-bg-secondary);
+  --border-radius: 8px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  border: 1px solid var(--color-border-light);
+  font-size: 1rem;
+}
+
+.form-item ion-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+/* Visible Fields Section */
+.visible-fields-section {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.search-field {
+  flex: 1;
+}
+
+.visible-fields-list {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sub-label {
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.5rem;
+  display: block;
+  font-size: 0.9rem;
+}
+
+.reorder-icon {
+  font-size: 1.2rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  margin-top: 1.5rem;
+}
+
+.reorder-icon:hover {
+  color: var(--color-primary);
+}
+
+.modal-footer {
+  padding: 1.5rem;
+  border-top: 1px solid var(--color-border-light);
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.save-button {
+  --background: #17a2b8;
+  --color: white;
+  --border-radius: 8px;
+  --padding-start: 2rem;
+  --padding-end: 2rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.save-button:hover {
+  --background: #138496;
+}
+
+.cancel-button {
+  --color: var(--color-text-secondary);
+  --background: transparent;
+  --border-radius: 8px;
+  --padding-start: 1.5rem;
+  --padding-end: 1.5rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.cancel-button:hover {
+  --background: var(--color-bg-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .status-mapping-content {
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+  }
+
+  .mappings-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .mappings-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .clear-filters-text {
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .mappings-table th,
+  .mappings-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .visible-fields {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .action-buttons {
+    gap: 0.5rem;
+    flex-direction: row;
+  }
+
+  .edit-button,
+  .delete-button {
+    width: 36px;
+    height: 36px;
+    --padding: 0.4rem;
+    font-size: 0.9rem;
+  }
+
+  .pagination-container {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .pagination-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pagination-button {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .mapping-modal {
+    margin: 1rem;
+  }
+
+  .modal-header {
+    padding: 1rem 1rem 0 1rem;
+  }
+
+  .modal-content {
+    padding: 0 1rem;
+  }
+
+  .modal-footer {
+    padding: 1rem;
+    flex-direction: column;
+  }
+
+  .visible-fields-section {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mappings-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .mappings-header p {
+    font-size: 0.9rem;
+  }
+
+  .mappings-table th,
+  .mappings-table td {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  .action-buttons {
+    flex-direction: row;
+    gap: 0.4rem;
+  }
+
+  .edit-button,
+  .delete-button {
+    width: 32px;
+    height: 32px;
+    --padding: 0.3rem;
+    font-size: 0.8rem;
+  }
+
+  .pagination-controls {
+    gap: 0.25rem;
+  }
+
+  .modal-header h2 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Scrollbar Styling */
+.table-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: var(--color-border-medium);
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+  border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: var(--color-border-medium);
+  border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}

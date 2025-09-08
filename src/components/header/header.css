@@ -1,22 +1,22 @@
 /* Reset Ionic default styles and set light gray background */
 .custom-header {
-  background: #f5f5f5 !important;
+  background: var(--color-bg-tertiary) !important;
   border: none !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px var(--color-shadow-light);
 }
 
 .custom-toolbar {
-  --background: #f5f5f5 !important;
-  --color: #333 !important;
-  background: #f5f5f5 !important;
-  color: #333 !important;
+  --background: var(--color-bg-tertiary) !important;
+  --color: var(--color-text-primary) !important;
+  background: var(--color-bg-tertiary) !important;
+  color: var(--color-text-primary) !important;
   padding: 0 16px;
   min-height: 60px;
   border: none !important;
 }
 
 .custom-title {
-  color: #333 !important;
+  color: var(--color-text-primary) !important;
   font-weight: 600;
   font-size: 18px;
 }
@@ -41,37 +41,41 @@
 
 .nav-button {
   --background: transparent !important;
-  --color: #333 !important;
+  --color: var(--color-text-primary) !important;
   --border-radius: 4px !important;
   background: transparent !important;
-  color: #333 !important;
+  color: var(--color-text-primary) !important;
   border: none !important;
   padding: 8px 16px;
   font-weight: 600;
   transition: all 0.3s ease;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  z-index: 10 !important;
+  position: relative !important;
 }
 
 .nav-button:hover {
-  background: #e0e0e0 !important;
-  color: #000 !important;
+  background: var(--color-bg-light) !important;
+  color: var(--color-text-primary) !important;
 }
 
 .login-button {
- background-color: blueviolet;
-  --color: #fff !important;
-  --border: 1px solid #333 !important;
+  background-color: var(--color-secondary);
+  --color: var(--color-text-white) !important;
+  --border: 1px solid var(--color-border-dark) !important;
   --border-radius: 4px !important;
-    background-color: blueviolet;
-  color: #fff !important;
-  border: 1px solid #333 !important;
+  background-color: var(--color-secondary);
+  color: var(--color-text-white) !important;
+  border: 1px solid var(--color-border-dark) !important;
   padding: 8px 16px;
   font-weight: 500;
   transition: all 0.3s ease;
 }
 
 .login-button:hover {
-   background: #6a5acd !important; /* blue-violet shade */
-  border-color: #6a5acd !important;
+  background: var(--color-secondary-dark) !important;
+  border-color: var(--color-secondary-dark) !important;
 }
 
 /* Mobile Navigation */
@@ -81,18 +85,18 @@
 
 .mobile-menu-button {
   --background: transparent !important;
-  --color: #333 !important;
+  --color: var(--color-text-primary) !important;
   background: transparent !important;
-  color: #333 !important;
+  color: var(--color-text-primary) !important;
   border: none !important;
   padding: 8px;
 }
 
 /* Mobile dropdown menu */
 .mobile-dropdown {
-  background: #f0f0f0;
-  border-top: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: var(--color-bg-light);
+  border-top: 1px solid var(--color-border-medium);
+  box-shadow: 0 2px 4px var(--color-shadow-light);
   display: none;
 }
 
@@ -105,20 +109,24 @@
 
 .mobile-menu-item {
   --background: transparent !important;
-  --color: #333 !important;
-  --border-color: #ddd !important;
+  --color: var(--color-text-primary) !important;
+  --border-color: var(--color-border-medium) !important;
   --padding-start: 16px !important;
   --padding-end: 16px !important;
   background: transparent !important;
-  color: #333 !important;
-  border-bottom: 1px solid #ddd !important;
+  color: var(--color-text-primary) !important;
+  border-bottom: 1px solid var(--color-border-medium) !important;
   padding: 12px 16px !important;
   font-weight: 600;
   transition: background-color 0.3s ease;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  z-index: 10 !important;
+  position: relative !important;
 }
 
 .mobile-menu-item:hover {
-  background: #e8e8e8 !important;
+  background: var(--color-bg-light) !important;
 }
 
 .mobile-menu-item:last-child {

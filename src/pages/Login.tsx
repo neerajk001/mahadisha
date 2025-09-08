@@ -12,19 +12,47 @@ import {
   IonItem,
   IonText,
   IonBackButton,
-  IonButtons
+  IonButtons,
+  IonAlert
 } from '@ionic/react';
 import { eyeOutline, eyeOffOutline, arrowBackOutline } from 'ionicons/icons';
+import { useHistory } from 'react-router-dom';
 import './Login.css';
 
 const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const history = useHistory();
+
+  // Test credentials for admin login
+  const ADMIN_CREDENTIALS = {
+    username: 'admin',
+    password: 'admin123'
+  };
 
   const handleLogin = () => {
-    // Handle login logic here
-    console.log('Login attempt:', { username, password });
+    // Check if credentials match test admin credentials
+    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+      // Store user information in localStorage
+      const userInfo = {
+        name: 'Admin User',
+        role: 'Admin',
+        level: 'Master Admin',
+        username: username
+      };
+      localStorage.setItem('currentUser', JSON.stringify(userInfo));
+      
+      // Successful login - redirect to dashboard
+      console.log('Admin login successful');
+      history.push('/dashboard');
+    } else {
+      // Invalid credentials
+      setAlertMessage('Invalid username or password. Please use admin/admin123 for testing.');
+      setShowAlert(true);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -102,7 +130,9 @@ const Login: React.FC = () => {
 
                 <div className="forgot-password">
                   <IonText color="primary">
-                    <a href="/forgot-password" className="forgot-password-link">Forgot Password?</a>
+                    <IonButton fill="clear" size="small" onClick={() => history.push('/forgot-password')}>
+                      Forgot Password?
+                    </IonButton>
                   </IonText>
                 </div>
 
@@ -118,7 +148,9 @@ const Login: React.FC = () => {
                 <div className="create-account">
                   <IonText>
                     Don't have an account?{' '}
-                    <a href="/signup" className="create-account-link">Sign up</a>
+                    <IonButton fill="clear" size="small" onClick={() => history.push('/signup')}>
+                      Sign up
+                    </IonButton>
                   </IonText>
                 </div>
               </form>
@@ -126,6 +158,15 @@ const Login: React.FC = () => {
           </div>
         </div>
       </IonContent>
+
+      {/* Alert for invalid credentials */}
+      <IonAlert
+        isOpen={showAlert}
+        onDidDismiss={() => setShowAlert(false)}
+        header="Login Failed"
+        message={alertMessage}
+        buttons={['OK']}
+      />
     </IonPage>
   );
 };

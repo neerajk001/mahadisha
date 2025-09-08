@@ -1,0 +1,448 @@
+/* Manage Pages Page Styles */
+.manage-pages-content {
+  --background: var(--color-bg-secondary);
+  --padding-start: 1.5rem;
+  --padding-end: 1.5rem;
+  --padding-top: 1.5rem;
+  --padding-bottom: 1.5rem;
+}
+
+.pages-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header Section */
+.pages-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.pages-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.pages-header p {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Actions Section */
+.pages-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.pages-search {
+  flex: 1;
+  min-width: 300px;
+  --background: var(--color-bg-primary);
+  --border-radius: 8px;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-page-button {
+  --background: var(--color-primary);
+  --color: white;
+  --border-radius: 8px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.add-page-button:hover {
+  --background: var(--color-primary-dark);
+}
+
+/* Table Card */
+.pages-table-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.table-container {
+  padding: 0;
+  overflow-x: auto;
+}
+
+/* Table Styles */
+.pages-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-bg-primary);
+}
+
+.pages-table th {
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 2px solid var(--color-border-medium);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-icon {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.filter-icon:hover {
+  color: var(--color-primary);
+}
+
+.pages-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+}
+
+.pages-table tbody tr:hover {
+  background: var(--color-bg-secondary);
+}
+
+.pages-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Row Styling */
+.even-row {
+  background: var(--color-bg-primary);
+}
+
+.odd-row {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+/* Cell Styles */
+.name-cell {
+  min-width: 200px;
+}
+
+.page-name {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.page-icon {
+  font-size: 1.2rem;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.url-cell {
+  min-width: 150px;
+}
+
+.url-code {
+  background: var(--color-bg-secondary);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-light);
+}
+
+.icon-cell {
+  min-width: 150px;
+}
+
+.icon-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.display-icon {
+  font-size: 1.1rem;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.icon-name {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  font-family: 'Courier New', monospace;
+}
+
+.actions-cell {
+  min-width: 120px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.edit-button {
+  --color: var(--color-primary);
+  --background: rgba(0, 123, 255, 0.1);
+  --border-radius: 6px;
+  --padding: 0.5rem;
+  width: 40px;
+  height: 40px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.edit-button:hover {
+  --background: rgba(0, 123, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.delete-button {
+  --color: var(--color-error);
+  --background: rgba(220, 53, 69, 0.1);
+  --border-radius: 6px;
+  --padding: 0.5rem;
+  width: 40px;
+  height: 40px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.delete-button:hover {
+  --background: rgba(220, 53, 69, 0.2);
+  transform: scale(1.05);
+}
+
+/* Pagination */
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--color-bg-primary);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 1.5rem;
+}
+
+.pagination-info p {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pagination-button {
+  --color: var(--color-primary);
+  --background: transparent;
+  --border-radius: 6px;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  font-weight: 500;
+  min-width: 100px;
+}
+
+.pagination-button:disabled {
+  --color: var(--color-text-disabled);
+  opacity: 0.5;
+}
+
+.page-info {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  padding: 0.5rem 1rem;
+  background: var(--color-bg-secondary);
+  border-radius: 6px;
+  border: 1px solid var(--color-border-light);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .manage-pages-content {
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+  }
+
+  .pages-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .pages-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .pages-search {
+    min-width: auto;
+  }
+
+  .pages-table th,
+  .pages-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .page-name {
+    gap: 0.5rem;
+  }
+
+  .page-icon {
+    font-size: 1rem;
+  }
+
+  .action-buttons {
+    gap: 0.5rem;
+    flex-direction: row;
+  }
+
+  .edit-button,
+  .delete-button {
+    width: 36px;
+    height: 36px;
+    --padding: 0.4rem;
+    font-size: 0.9rem;
+  }
+
+  .pagination-container {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .pagination-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pagination-button {
+    min-width: auto;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .pages-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .pages-header p {
+    font-size: 0.9rem;
+  }
+
+  .pages-table th,
+  .pages-table td {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  .page-name {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .icon-display {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .action-buttons {
+    flex-direction: row;
+    gap: 0.4rem;
+  }
+
+  .edit-button,
+  .delete-button {
+    width: 32px;
+    height: 32px;
+    --padding: 0.3rem;
+    font-size: 0.8rem;
+  }
+
+  .pagination-controls {
+    gap: 0.25rem;
+  }
+}
+
+/* Scrollbar Styling */
+.table-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: var(--color-border-medium);
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Loading and Empty States */
+.pages-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  text-align: center;
+}
+
+.pages-loading p {
+  margin-top: 1rem;
+  color: var(--color-text-secondary);
+}
+
+.pages-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 40vh;
+  text-align: center;
+  background: var(--color-bg-primary);
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.pages-empty h3 {
+  color: var(--color-text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.pages-empty p {
+  color: var(--color-text-disabled);
+  margin: 0;
+}

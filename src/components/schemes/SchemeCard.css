@@ -1,0 +1,204 @@
+/* Scheme Card Styles */
+.scheme-card {
+  --background: var(--color-bg-primary);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+  height: fit-content;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.scheme-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.scheme-card-content {
+  padding: 1.5rem;
+}
+
+.scheme-header {
+  margin-bottom: 1.5rem;
+}
+
+.scheme-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.scheme-details {
+  margin-bottom: 1.5rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.detail-value {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  text-align: right;
+  flex: 1;
+}
+
+.scheme-actions {
+  margin-bottom: 1rem;
+}
+
+.scheme-actions ion-button {
+  --color: black !important;
+  color: black !important;
+}
+
+.scheme-actions ion-button .button-native {
+  color: black !important;
+}
+
+.scheme-actions ion-button .button-inner {
+  color: black !important;
+}
+
+.apply-button {
+  --background: #007bff;
+  --color: black !important;
+  --border-radius: 8px;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: none;
+  color: black !important;
+  min-height: 44px;
+}
+
+.apply-button:hover {
+  --background: #0056b3;
+  --color: black !important;
+  color: black !important;
+}
+
+.apply-button ion-button {
+  color: black !important;
+}
+
+.apply-button .button-native {
+  color: black !important;
+}
+
+.scheme-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border-light);
+}
+
+.footer-action {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.footer-action:hover {
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.edit-action {
+  color: var(--color-text-secondary);
+}
+
+.edit-action:hover {
+  color: var(--color-warning);
+  background-color: rgba(255, 193, 7, 0.1);
+}
+
+.delete-action {
+  color: var(--color-error) !important;
+}
+
+.delete-action:hover {
+  color: var(--color-error) !important;
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+.delete-action .action-icon {
+  color: var(--color-error) !important;
+}
+
+.action-icon {
+  font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .scheme-card-content {
+    padding: 1rem;
+  }
+
+  .scheme-title {
+    font-size: 1rem;
+  }
+
+  .detail-label,
+  .detail-value {
+    font-size: 0.85rem;
+  }
+
+  .apply-button {
+    font-size: 0.9rem;
+  }
+
+  .footer-action {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .detail-value {
+    text-align: left;
+  }
+
+  .scheme-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+
+  .footer-action {
+    justify-content: center;
+  }
+}

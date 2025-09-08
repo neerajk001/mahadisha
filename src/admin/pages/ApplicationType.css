@@ -1,0 +1,330 @@
+/* Application Type Page Styles */
+.application-type-content {
+  --background: var(--color-bg-secondary);
+  --padding-start: 2rem;
+  --padding-end: 2rem;
+  --padding-top: 2rem;
+  --padding-bottom: 2rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Split Pane Configuration */
+ion-split-pane {
+  --side-width: 250px;
+  --side-min-width: 250px;
+  --side-max-width: 250px;
+}
+
+.application-type-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Page Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem 2rem;
+  background: var(--color-bg-primary);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px var(--color-shadow-light);
+  border: 1px solid var(--color-border-light);
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.page-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* List Container */
+.list-container {
+  background: var(--color-bg-primary);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px var(--color-shadow-light);
+  overflow: hidden;
+  border: 1px solid var(--color-border-light);
+  margin-bottom: 2rem;
+}
+
+.list-header {
+  background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg-primary) 100%);
+  padding: 1.25rem 2rem;
+  border-bottom: 1px solid var(--color-border-light);
+  position: relative;
+}
+
+.list-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+}
+
+.column-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filter-icon {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+
+/* Application Types List */
+.application-types-list {
+  --background: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+.application-type-item {
+  --background: var(--color-bg-primary);
+  --color: var(--color-text-primary);
+  --padding-start: 2rem;
+  --padding-end: 2rem;
+  --padding-top: 1.25rem;
+  --padding-bottom: 1.25rem;
+  --inner-padding-end: 0;
+  --inner-padding-start: 0;
+  --border-width: 0;
+  --border-style: none;
+  --border-color: transparent;
+  margin: 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+
+.application-type-item:last-child {
+  border-bottom: none;
+}
+
+.application-type-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  flex: 1;
+  letter-spacing: 0.3px;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.edit-button {
+  --color: var(--color-primary);
+  --background: rgba(52, 152, 219, 0.1);
+  --border-radius: 10px;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  --padding-top: 0.5rem;
+  --padding-bottom: 0.5rem;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+}
+
+
+.delete-button {
+  --color: var(--color-error);
+  --background: rgba(231, 76, 60, 0.1);
+  --border-radius: 10px;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  --padding-top: 0.5rem;
+  --padding-bottom: 0.5rem;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2);
+}
+
+
+/* Floating Action Button */
+.fab-button {
+  --background: var(--color-primary);
+  --color: var(--color-text-white);
+  --border-radius: 50%;
+  --box-shadow: 0 4px 16px var(--color-shadow-primary);
+  width: 56px;
+  height: 56px;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .application-type-content {
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    --padding-top: 1rem;
+    --padding-bottom: 1rem;
+  }
+  
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+  }
+  
+  .page-title {
+    font-size: 1.5rem;
+  }
+  
+  .list-header {
+    padding: 1rem 1.5rem;
+  }
+  
+  .application-type-item {
+    --padding-start: 1.5rem;
+    --padding-end: 1.5rem;
+  }
+  
+  .action-buttons {
+    gap: 0.5rem;
+  }
+  
+  .edit-button,
+  .delete-button {
+    width: 40px;
+    height: 40px;
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .application-type-content {
+    --padding-start: 0.75rem;
+    --padding-end: 0.75rem;
+    --padding-top: 0.75rem;
+    --padding-bottom: 0.75rem;
+  }
+  
+  .page-header {
+    padding: 0.75rem 1rem;
+  }
+  
+  .page-title {
+    font-size: 1.3rem;
+  }
+  
+  .list-header {
+    padding: 0.75rem 1rem;
+  }
+  
+  .application-type-item {
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    --padding-top: 1rem;
+    --padding-bottom: 1rem;
+  }
+  
+  .application-type-name {
+    font-size: 1rem;
+  }
+  
+  .edit-button,
+  .delete-button {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Loading and Error States */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  background: var(--color-bg-primary);
+  border-radius: 12px;
+  margin: 1rem 0;
+}
+
+.loading-container ion-spinner {
+  margin-bottom: 1rem;
+  --color: var(--color-primary);
+}
+
+.loading-container p {
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  background: var(--color-bg-primary);
+  border-radius: 12px;
+  margin: 1rem 0;
+  border: 1px solid var(--color-border-light);
+}
+
+.error-container p {
+  color: var(--color-error);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.error-container ion-button {
+  --color: var(--color-primary);
+  --border-color: var(--color-primary);
+}
+
+/* Animation for list items */
+.application-type-item {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered animation for list items */
+.application-type-item:nth-child(1) { animation-delay: 0.1s; }
+.application-type-item:nth-child(2) { animation-delay: 0.2s; }
+.application-type-item:nth-child(3) { animation-delay: 0.3s; }
+.application-type-item:nth-child(4) { animation-delay: 0.4s; }
+.application-type-item:nth-child(5) { animation-delay: 0.5s; }
+.application-type-item:nth-child(6) { animation-delay: 0.6s; }
+.application-type-item:nth-child(7) { animation-delay: 0.7s; }

@@ -1,0 +1,8 @@
+/* Public Schemes Page Styles */
+.public-schemes-page {
+  --background: var(--color-bg-secondary);
+}
+
+.public-schemes-page ion-content {
+  --background: var(--color-bg-secondary);
+}
