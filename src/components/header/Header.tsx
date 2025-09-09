@@ -83,14 +83,17 @@ const Header: React.FC = () => {
           </IonTitle>
           
           {/* Desktop Navigation */}
-          <IonButtons slot="end" className="desktop-nav">
-            <IonButton className="nav-button" onClick={() => history.push('/about')}>
+          <div slot="end" className="desktop-nav">
+            <div className="mpbcdc-logo-nav">
+              <img src="/mpbcdclogo.png" alt="MPBCDC" className="mpbcdc-logo-nav-image" />
+            </div>
+            <button className="nav-button" onClick={() => history.push('/about')}>
               About
-            </IonButton>
-            <IonButton className="nav-button" onClick={() => history.push('/schemes')}>
+            </button>
+            <button className="nav-button" onClick={() => history.push('/schemes')}>
               Schemes
-            </IonButton>
-            <IonButton 
+            </button>
+            <button 
               className="nav-button" 
               onClick={() => {
                 console.log('Desktop signup button clicked');
@@ -111,12 +114,12 @@ const Header: React.FC = () => {
               }}
             >
               Signup
-            </IonButton>
-            <IonButton className="login-button" onClick={() => history.push('/login')}>
-              <IonIcon icon={personOutline} slot="start" />
+            </button>
+            <button className="login-button" onClick={() => history.push('/login')}>
+              <IonIcon icon={personOutline} />
               Login
-            </IonButton>
-          </IonButtons>
+            </button>
+          </div>
           
           {/* Mobile Menu Button */}
           <IonButtons slot="end" className="mobile-nav">

@@ -5,15 +5,6 @@
   box-shadow: 0 2px 4px var(--color-shadow-light);
 }
 
-.custom-toolbar {
-  --background: var(--color-bg-tertiary) !important;
-  --color: var(--color-text-primary) !important;
-  background: var(--color-bg-tertiary) !important;
-  color: var(--color-text-primary) !important;
-  padding: 0 16px;
-  min-height: 60px;
-  border: none !important;
-}
 
 .custom-title {
   color: var(--color-text-primary) !important;
@@ -29,30 +20,60 @@
 }
 
 .logo-image {
-  height: 90px;
+  height: 60px;
   width: auto;
+}
+
+
+.custom-toolbar {
+  --background: var(--color-bg-tertiary) !important;
+  --color: var(--color-text-primary) !important;
+  background: var(--color-bg-tertiary) !important;
+  color: var(--color-text-primary) !important;
+  padding: 0 16px;
+  min-height: 50px;
+  border: none !important;
 }
 
 /* Desktop Navigation */
 .desktop-nav {
   display: flex;
-  gap: 8px;
+  gap: 12px;
+  align-items: center;
+}
+
+/* MPBCDC Logo in Navigation */
+.mpbcdc-logo-nav {
+  display: flex;
+  align-items: center;
+  /* margin-right: 4px; */
+}
+
+.mpbcdc-logo-nav-image {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
 }
 
 .nav-button {
-  --background: transparent !important;
-  --color: var(--color-text-primary) !important;
-  --border-radius: 4px !important;
-  background: transparent !important;
-  color: var(--color-text-primary) !important;
-  border: none !important;
-  padding: 8px 16px;
-  font-weight: 600;
+  background: transparent;
+  color: var(--color-text-primary);
+  border: none;
+  padding: 6px 8px !important;
+  font-weight: 400;
+  font-size: 14px;
   transition: all 0.3s ease;
-  cursor: pointer !important;
-  pointer-events: auto !important;
-  z-index: 10 !important;
-  position: relative !important;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  /* Override Ionic CSS custom properties */
+  --padding-start: 8px !important;
+  --padding-end: 8px !important;
+  --padding-top: 6px !important;
+  --padding-bottom: 6px !important;
+  min-width: auto !important;
 }
 
 .nav-button:hover {
@@ -62,15 +83,23 @@
 
 .login-button {
   background-color: var(--color-secondary);
-  --color: var(--color-text-white) !important;
-  --border: 1px solid var(--color-border-dark) !important;
-  --border-radius: 4px !important;
-  background-color: var(--color-secondary);
-  color: var(--color-text-white) !important;
-  border: 1px solid var(--color-border-dark) !important;
-  padding: 8px 16px;
-  font-weight: 500;
+  color: var(--color-text-white);
+  border: 1px solid var(--color-border-dark);
+  border-radius: 4px;
+  padding: 6px 8px !important;
+  font-weight: 400;
+  font-size: 14px;
   transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  /* Override Ionic CSS custom properties */
+  --padding-start: 8px !important;
+  --padding-end: 8px !important;
+  --padding-top: 6px !important;
+  --padding-bottom: 6px !important;
+  min-width: auto !important;
 }
 
 .login-button:hover {
@@ -145,6 +174,18 @@
   
   .mobile-dropdown {
     display: block !important;
+  }
+  
+  .logo-image {
+    height: 45px;
+  }
+  
+  .mpbcdc-logo-nav-image {
+    height: 45px;
+  }
+  
+  .mpbcdc-logo-nav {
+    margin-right: 4px;
   }
 }
 
