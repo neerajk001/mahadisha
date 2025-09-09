@@ -15,11 +15,12 @@ import {
   IonTitle,
   IonContent
 } from '@ionic/react';
-import { cashOutline, cardOutline, giftOutline, arrowForwardOutline, closeOutline } from 'ionicons/icons';
+import { cashOutline, cardOutline, giftOutline, arrowForwardOutline, closeOutline, globeOutline, documentTextOutline } from 'ionicons/icons';
 import './SchemeCategories.css';
 
 const SchemeCategories: React.FC = () => {
   const [selectedScheme, setSelectedScheme] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<string>('State Schemes');
 
   const schemes = [
     {
@@ -77,23 +78,41 @@ const SchemeCategories: React.FC = () => {
     return schemes.find(scheme => scheme.title === selectedScheme);
   };
 
+  const schemeTabs = [
+    { name: 'State Schemes', icon: globeOutline },
+    { name: 'NSFDC Schemes', icon: globeOutline },
+    { name: 'SFDVScheme', icon: documentTextOutline },
+    { name: 'Central Schemes', icon: globeOutline },
+    { name: 'Bank Schemes', icon: cashOutline },
+    { name: 'Cooperative Schemes', icon: cardOutline },
+    { name: 'Women Schemes', icon: giftOutline },
+    { name: 'Youth Schemes', icon: arrowForwardOutline },
+    { name: 'Senior Citizen Schemes', icon: documentTextOutline },
+    { name: 'Farmer Schemes', icon: globeOutline }
+  ];
+
   return (
     <div className="scheme-categories">
-      <h2 className="scheme-categories__title">
-        Scheme Categories
-      </h2>
-      
-      {/* State Schemes Button - Above the cards */}
-      <div className="scheme-categories__state-button-container">
-        <IonButton 
-          className="scheme-categories__state-button"
-          fill="outline" 
-          color="primary"
-          size="large"
-          expand="block"
-        >
-          STATE SCHEMES
-        </IonButton>
+      <div className="scheme-header-row">
+        <h2 className="scheme-categories__title">
+          Scheme Categories
+        </h2>
+        
+        {/* Horizontal scrollable tabs */}
+        <div className="scheme-tabs-container">
+          <div className="scheme-tabs">
+            {schemeTabs.map((tab, index) => (
+              <div 
+                key={index}
+                className={`scheme-tab ${activeTab === tab.name ? 'active' : ''}`}
+                onClick={() => setActiveTab(tab.name)}
+              >
+                <IonIcon icon={tab.icon} className="scheme-tab-icon" />
+                <span className="scheme-tab-text">{tab.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
       
       <IonGrid>

@@ -28,7 +28,7 @@ const Hero: React.FC = () => {
     <div className="hero-section">
       <div className="hero-content">
         <h1 className="hero-title">
-          Empowering Communities, Fostering Growth
+          Empowering <br /> the backward class communities
         </h1>
         
         <p className="hero-description">

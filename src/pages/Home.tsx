@@ -11,16 +11,17 @@ import './Home.css';
 
 const Home: React.FC = () => {
   return (
-    <IonPage>
+    <IonPage className="home-page">
       <Header />
-      <IonContent fullscreen>
-        <Hero />
-        <AboutSection />
-        <SchemeCategories />
-        <Contact />
-        <Statistics />
-        <CallToAction />
-        
+      <IonContent fullscreen scrollY={true}>
+        <div className="home-sections">
+          <Hero />
+          <AboutSection />
+          <SchemeCategories />
+          <Contact />
+          <Statistics />
+          <CallToAction />
+        </div>
       </IonContent>
     </IonPage>
   );

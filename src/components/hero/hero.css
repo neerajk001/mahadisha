@@ -4,14 +4,14 @@
   height: 600px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  background-image: url('/hero.png');
-  background-size: cover;
-  background-position: center;
+  justify-content: flex-start;
+  text-align: left;
+  background-image: url('/farmer2.png');
+  background-size: 100%;
+  background-position: 60% center;
   background-repeat: no-repeat;
   color: white;
-  padding: 2rem;
+  padding: 2rem 2rem 2rem 4rem;
   overflow: hidden;
 }
 
@@ -24,12 +24,12 @@
   right: 0;
   bottom: 0;
   background-image: 
-    linear-gradient(rgba(0, 0,  0.7), rgba(0, 0, 0, 0)),
-    url('/hero.png');
-  background-size: cover;
-  background-position: center;
+    linear-gradient(rgba(0, 0,  0), rgba(0, 0, 0, 0)),
+    url('/farmer2.png');
+  background-size: 100%;
+  background-position: 60% center;
   background-repeat: no-repeat;
-  opacity: 0.7;
+  opacity: 0.2;
   z-index: 1;
 }
 
@@ -42,13 +42,13 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.1);
   z-index: 2;
 }
 
 /* Hero Content Container */
 .hero-content {
-  max-width: 800px;
+  max-width: 500px;
   z-index: 10;
   width: 100%;
   position: relative;
@@ -56,9 +56,9 @@
 
 /* Hero Title */
 .hero-title {
-  font-size: 4rem;
+  font-size: 2.5rem;
   font-weight: bold;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   line-height: 1.2;
   margin-top: 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -66,13 +66,11 @@
 
 /* Hero Description */
 .hero-description {
-  font-size: 1.1rem;
-  margin-bottom: 2rem;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
   opacity: 0.95;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.6;
+  max-width: 450px;
+  line-height: 1.5;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
 }
 
@@ -81,7 +79,7 @@
   display: flex;
   flex-direction: row;
   gap: 1rem;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   position: relative;
   z-index: 15;
@@ -89,62 +87,62 @@
 
 /* Explore Button (Solid) */
 .explore-button {
-  --background: var(--color-secondary) !important;
+  --background: #03002e !important;
   --color: var(--color-text-white) !important;
   --border: none !important;
-  --border-radius: 8px !important;
-  --padding-start: 24px !important;
-  --padding-end: 24px !important;
-  --padding-top: 12px !important;
-  --padding-bottom: 12px !important;
+  --border-radius: 6px !important;
+  --padding-start: 20px !important;
+  --padding-end: 20px !important;
+  --padding-top: 10px !important;
+  --padding-bottom: 10px !important;
   --box-shadow: 0 4px 12px var(--color-shadow-dark) !important;
-  background: var(--color-secondary) !important;
+  background: #03002e !important;
   color: var(--color-text-white);
   border: none !important;
-  font-size: 1rem !important;
+  font-size: 0.9rem !important;
   font-weight: 600 !important;
-  height: 48px !important;
-  min-width: 160px !important;
+  height: 40px !important;
+  min-width: 140px !important;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
 }
 
 .explore-button:hover {
-  --background: var(--color-secondary-dark) !important;
-  background: var(--color-secondary-dark) !important;
+  --background: #03002e !important;
+  background: #03002e!important;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px var(--color-shadow-dark) !important;
 }
 
 /* Apply Button (Outline) */
 .apply-button {
-  --background: rgba(255, 255, 255, 0.1) !important;
-  --color: var(--color-text-white) !important;
-  --border: 2px solid rgba(255, 255, 255, 0.8) !important;
-  --border-radius: 8px !important;
-  --padding-start: 24px !important;
-  --padding-end: 24px !important;
-  --padding-top: 12px !important;
-  --padding-bottom: 12px !important;
+  --background: #FFFFFF !important;
+  --color: #333333 !important;
+  --border: 2px solid #FFFFFF !important;
+  --border-radius: 6px !important;
+  --padding-start: 20px !important;
+  --padding-end: 20px !important;
+  --padding-top: 10px !important;
+  --padding-bottom: 10px !important;
   --box-shadow: 0 4px 12px var(--color-shadow-light) !important;
-  background: rgba(255, 255, 255, 0.1) !important;
-  color: var(--color-text-white) !important;
-  border: 2px solid rgba(255, 255, 255, 0.8) !important;
-  font-size: 1rem !important;
+  background: #FFFFFF !important;
+  color: #333333 !important;
+  border: 2px solid #FFFFFF !important;
+  font-size: 0.9rem !important;
   font-weight: 600 !important;
-  height: 48px !important;
-  min-width: 160px !important;
+  height: 40px !important;
+  min-width: 140px !important;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
 }
 
 .apply-button:hover {
-  --background: rgba(255, 255, 255, 0.95) !important;
-  --color: var(--color-text-primary) !important;
-  --border: 2px solid var(--color-text-white) !important;
-  background: rgba(255, 255, 255, 0.95) !important;
-  color: var(--color-text-primary) !important;
-  border: 2px solid var(--color-text-white) !important;
+  --background: #F5F5F5 !important;
+  --color: #333333 !important;
+  --border: 2px solid #F5F5F5 !important;
+  background: #F5F5F5 !important;
+  color: #333333 !important;
+  border: 2px solid #F5F5F5 !important;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px var(--color-shadow-medium) !important;
 }
@@ -164,11 +162,11 @@
 /* Tablet Styles */
 @media (max-width: 1024px) {
   .hero-title {
-    font-size: 3rem;
+    font-size: 2.2rem;
   }
   
   .hero-description {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 }
 
@@ -177,6 +175,8 @@
   .hero-section {
     height: 500px;
     padding: 1.5rem;
+    justify-content: center;
+    text-align: center;
   }
   
   .hero-title {
@@ -191,6 +191,7 @@
   .hero-buttons {
     flex-direction: column;
     gap: 0.75rem;
+    justify-content: center;
   }
   
   .explore-button,

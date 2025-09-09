@@ -1,9 +1,69 @@
 .scheme-categories {
-  padding: 4rem 2rem;
+  padding: 2rem 2rem 4rem 2rem;
   min-height: 100vh;
   /* Hide scrollbar for webkit browsers */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+/* Horizontal scrollable tabs */
+.scheme-tabs-container {
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  flex: 1;
+  min-width: 0; /* Allow flex item to shrink below content size */
+  scroll-behavior: smooth;
+}
+
+.scheme-tabs-container::-webkit-scrollbar {
+  display: none; /* Webkit browsers */
+}
+
+.scheme-tabs {
+  display: flex;
+  gap: 1rem;
+  min-width: max-content;
+  padding: 0.5rem 0; /* Add some vertical padding for better touch targets */
+}
+
+.scheme-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.scheme-tab:hover {
+  background: #e9ecef;
+  border-color: #dee2e6;
+  transform: translateY(-1px);
+}
+
+.scheme-tab.active {
+  background: #007bff;
+  border-color: #007bff;
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.scheme-tab-icon {
+  font-size: 1rem;
+  color: inherit;
+}
+
+.scheme-tab-text {
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 /* Hide scrollbar for webkit browsers */
@@ -11,18 +71,26 @@
   display: none;
 }
 
-.scheme-categories__title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  text-align: center;
-  color: var(--ion-color-dark);
-  margin-bottom: 3rem;
-  background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: -0.02em;
+/* Header row with title and tabs horizontally aligned */
+.scheme-header-row {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding: 0 2rem;
+  flex-wrap: nowrap;
+  overflow: hidden;
 }
+
+.scheme-categories__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000000;
+  margin: 0;
+  text-align: left;
+  flex-shrink: 0;
+}
+
 
 .scheme-categories__card {
   height: 100%;
@@ -270,9 +338,23 @@ ion-modal ion-title {
     padding: 2rem 1rem;
   }
   
+  .scheme-header-row {
+    padding: 0 1rem;
+    gap: 1rem;
+  }
+  
   .scheme-categories__title {
-    font-size: 2rem;
-    margin-bottom: 2rem;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+  
+  .scheme-tab {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .scheme-tab-icon {
+    font-size: 0.9rem;
   }
   
   .scheme-categories__icon-container {
