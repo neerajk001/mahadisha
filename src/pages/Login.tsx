@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   IonPage,
   IonContent,
@@ -26,6 +26,16 @@ const Login: React.FC = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const history = useHistory();
+
+  // Prevent body scrolling when login page is mounted
+  useEffect(() => {
+    document.body.classList.add('login-page-active');
+    
+    // Cleanup: remove class when component unmounts
+    return () => {
+      document.body.classList.remove('login-page-active');
+    };
+  }, []);
 
   // Test credentials for admin login
   const ADMIN_CREDENTIALS = {
