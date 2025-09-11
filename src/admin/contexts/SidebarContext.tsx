@@ -19,9 +19,13 @@ export const SidebarProvider: React.FC<SidebarProviderProps> = ({ children }) =>
   // Auto-hide sidebar on mobile view
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 768) {
+      const isMobile = window.innerWidth <= 768;
+      
+      if (isMobile) {
+        // Always close sidebar on mobile
         setIsSidebarOpen(false);
       } else {
+        // Open sidebar on desktop/tablet
         setIsSidebarOpen(true);
       }
     };
@@ -29,12 +33,19 @@ export const SidebarProvider: React.FC<SidebarProviderProps> = ({ children }) =>
     // Check initial screen size
     handleResize();
 
-    // Add event listener for window resize
-    window.addEventListener('resize', handleResize);
+    // Add event listener for window resize with debouncing
+    let resizeTimeout: NodeJS.Timeout;
+    const debouncedHandleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(handleResize, 100);
+    };
+
+    window.addEventListener('resize', debouncedHandleResize);
 
     // Cleanup event listener
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', debouncedHandleResize);
+      clearTimeout(resizeTimeout);
     };
   }, []);
 

@@ -84,6 +84,38 @@ export interface RequestFilters {
   priority?: string;
 }
 
+// Advanced Scheme Filters
+export interface SchemeFilters {
+  status?: string[];
+  type?: string[];
+  priority?: string[];
+  loanAmountRange?: {
+    min: number;
+    max: number;
+  };
+  interestRateRange?: {
+    min: number;
+    max: number;
+  };
+  tenureRange?: {
+    min: number;
+    max: number;
+  };
+  subsidyRange?: {
+    min: number;
+    max: number;
+  };
+  tags?: string[];
+  dateRange?: {
+    start: string;
+    end: string;
+  };
+  usageCount?: {
+    min: number;
+    max: number;
+  };
+}
+
 export interface RequestSearchParams {
   query?: string;
   filters?: RequestFilters;
@@ -158,6 +190,16 @@ export interface Scheme {
   interestType: string;
   partnerInvolvement: boolean;
   recoveryByPartner: boolean;
+  status: 'active' | 'inactive' | 'under_review' | 'archived';
+  description?: string;
+  eligibilityCriteria?: string[];
+  requiredDocuments?: string[];
+  faq?: { question: string; answer: string }[];
+  documents?: DocumentInfo[];
+  priority: 'low' | 'medium' | 'high';
+  tags?: string[];
+  usageCount: number;
+  lastUsed?: string;
   createdAt: string;
   updatedAt: string;
 }

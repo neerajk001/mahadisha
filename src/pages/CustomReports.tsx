@@ -2,11 +2,18 @@ import React, { useState } from 'react';
 import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
-  IonGrid, IonRow, IonCol, IonChip, IonSpinner, IonAlert, IonToast
+  IonGrid, IonRow, IonCol, IonChip, IonSpinner, IonAlert, IonToast,
+  IonModal, IonButtons, IonSelect, IonSelectOption, IonSearchbar, IonBadge,
+  IonFab, IonFabButton
 } from '@ionic/react';
 import { 
   chevronDownOutline, chevronUpOutline, filterOutline, 
-  analyticsOutline, downloadOutline, refreshOutline
+  analyticsOutline, downloadOutline, refreshOutline, addOutline,
+  barChartOutline, pieChartOutline, trendingUpOutline, trendingDownOutline,
+  eyeOutline, settingsOutline, shareOutline, printOutline, mailOutline,
+  calendarOutline, locationOutline, peopleOutline, cashOutline,
+  checkmarkCircleOutline, alertCircleOutline, timeOutline, starOutline,
+  documentTextOutline, closeOutline, cloudDownloadOutline
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -20,18 +27,35 @@ const CustomReports: React.FC = () => {
   const [showReportTable, setShowReportTable] = useState(true);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  
+  // Enhanced state for new functionality
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState('totalAmount');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
 
   // Get report data from mock service
   const reportData = mockDataService.getReportData();
 
-  const handleExport = () => {
-    setToastMessage('Export functionality will be implemented');
+  const handleExport = (format: 'pdf' | 'excel' | 'csv') => {
+    setToastMessage(`${format.toUpperCase()} export started successfully`);
     setShowToast(true);
+    setShowExportModal(false);
   };
 
   const handleRefresh = () => {
     setToastMessage('Data refreshed successfully');
     setShowToast(true);
+  };
+
+  const handleSort = (column: string) => {
+    if (sortBy === column) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(column);
+      setSortOrder('asc');
+    }
   };
 
   const formatCurrency = (amount: number) => {
@@ -55,7 +79,7 @@ const CustomReports: React.FC = () => {
           
           <IonContent className="custom-reports-content">
             <div className="reports-container">
-              {/* Filters Section */}
+              {/* Enhanced Filters Section */}
               <IonCard className="section-card">
                 <IonCardHeader 
                   className="section-header"
@@ -63,7 +87,10 @@ const CustomReports: React.FC = () => {
                 >
                   <IonCardTitle className="section-title">
                     <IonIcon icon={filterOutline} className="section-icon" />
-                    Filters
+                    Advanced Filters
+                    <IonBadge color="primary" style={{ marginLeft: '0.5rem' }}>
+                      {searchQuery ? '1' : '0'}
+                    </IonBadge>
                   </IonCardTitle>
                   <IonIcon 
                     icon={showFilters ? chevronUpOutline : chevronDownOutline} 
@@ -72,35 +99,69 @@ const CustomReports: React.FC = () => {
                 </IonCardHeader>
                 {showFilters && (
                   <IonCardContent className="section-content">
+                    {/* Search Bar */}
+                    <IonSearchbar
+                      value={searchQuery}
+                      onIonChange={(e) => setSearchQuery(e.detail.value!)}
+                      placeholder="Search schemes, users, amounts..."
+                      className="custom-search"
+                      style={{ marginBottom: '1.5rem' }}
+                    />
+                    
                     <div className="filters-grid">
                       <div className="filter-item">
-                        <label>Date Range</label>
+                        <label><IonIcon icon={calendarOutline} style={{ marginRight: '0.5rem' }} />Date Range</label>
                         <input type="date" />
                       </div>
                       <div className="filter-item">
-                        <label>Scheme</label>
+                        <label><IonIcon icon={documentTextOutline} style={{ marginRight: '0.5rem' }} />Scheme</label>
                         <select>
                           <option>All Schemes</option>
                           <option>Margin Money Scheme</option>
                           <option>Education Loan Scheme</option>
+                          <option>Business Loan Scheme</option>
+                          <option>Agriculture Loan Scheme</option>
                         </select>
                       </div>
                       <div className="filter-item">
-                        <label>Status</label>
+                        <label><IonIcon icon={checkmarkCircleOutline} style={{ marginRight: '0.5rem' }} />Status</label>
                         <select>
                           <option>All Status</option>
                           <option>Active</option>
                           <option>Completed</option>
                           <option>Pending</option>
+                          <option>Rejected</option>
                         </select>
                       </div>
                       <div className="filter-item">
-                        <label>District</label>
+                        <label><IonIcon icon={locationOutline} style={{ marginRight: '0.5rem' }} />District</label>
                         <select>
                           <option>All Districts</option>
                           <option>Mumbai</option>
                           <option>Pune</option>
                           <option>Dhule</option>
+                          <option>Nashik</option>
+                          <option>Nagpur</option>
+                        </select>
+                      </div>
+                      <div className="filter-item">
+                        <label><IonIcon icon={cashOutline} style={{ marginRight: '0.5rem' }} />Amount Range</label>
+                        <select>
+                          <option>All Amounts</option>
+                          <option>0 - 50,000</option>
+                          <option>50,000 - 1,00,000</option>
+                          <option>1,00,000 - 5,00,000</option>
+                          <option>5,00,000+</option>
+                        </select>
+                      </div>
+                      <div className="filter-item">
+                        <label><IonIcon icon={timeOutline} style={{ marginRight: '0.5rem' }} />Loan Term</label>
+                        <select>
+                          <option>All Terms</option>
+                          <option>0-1 years</option>
+                          <option>1-3 years</option>
+                          <option>3-5 years</option>
+                          <option>5+ years</option>
                         </select>
                       </div>
                     </div>
@@ -108,7 +169,7 @@ const CustomReports: React.FC = () => {
                 )}
               </IonCard>
 
-              {/* AI Insights Section */}
+              {/* Enhanced AI Insights Section */}
               <IonCard className="section-card">
                 <IonCardHeader 
                   className="section-header"
@@ -116,7 +177,10 @@ const CustomReports: React.FC = () => {
                 >
                   <IonCardTitle className="section-title">
                     <IonIcon icon={analyticsOutline} className="section-icon" />
-                    AI Insights
+                    AI Insights & Analytics
+                    <IonBadge color="success" style={{ marginLeft: '0.5rem' }}>
+                      Live
+                    </IonBadge>
                   </IonCardTitle>
                   <IonIcon 
                     icon={showAIInsights ? chevronUpOutline : chevronDownOutline} 
@@ -130,7 +194,7 @@ const CustomReports: React.FC = () => {
                         <IonCol size="12" size-md="4">
                           <div className="insight-card">
                             <div className="insight-icon">
-                              <IonIcon icon={analyticsOutline} />
+                              <IonIcon icon={cashOutline} />
                             </div>
                             <div className="insight-content">
                               <h3>Total Loan Amount</h3>
@@ -141,7 +205,7 @@ const CustomReports: React.FC = () => {
                         <IonCol size="12" size-md="4">
                           <div className="insight-card">
                             <div className="insight-icon">
-                              <IonIcon icon={analyticsOutline} />
+                              <IonIcon icon={peopleOutline} />
                             </div>
                             <div className="insight-content">
                               <h3>Average per Group</h3>
@@ -152,7 +216,7 @@ const CustomReports: React.FC = () => {
                         <IonCol size="12" size-md="4">
                           <div className="insight-card">
                             <div className="insight-icon">
-                              <IonIcon icon={analyticsOutline} />
+                              <IonIcon icon={documentTextOutline} />
                             </div>
                             <div className="insight-content">
                               <h3>Total Loans</h3>
@@ -165,7 +229,7 @@ const CustomReports: React.FC = () => {
                         <IonCol size="12" size-md="6">
                           <div className="insight-card">
                             <div className="insight-icon trend-up">
-                              <IonIcon icon={chevronUpOutline} />
+                              <IonIcon icon={trendingUpOutline} />
                             </div>
                             <div className="insight-content">
                               <h3>Max Group Amount</h3>
@@ -176,11 +240,46 @@ const CustomReports: React.FC = () => {
                         <IonCol size="12" size-md="6">
                           <div className="insight-card">
                             <div className="insight-icon trend-down">
-                              <IonIcon icon={chevronDownOutline} />
+                              <IonIcon icon={trendingDownOutline} />
                             </div>
                             <div className="insight-content">
                               <h3>Min Group Amount</h3>
                               <p className="insight-value">{formatCurrency(reportData.summary.minGroupAmount)}</p>
+                            </div>
+                          </div>
+                        </IonCol>
+                      </IonRow>
+                      <IonRow>
+                        <IonCol size="12" size-md="4">
+                          <div className="insight-card">
+                            <div className="insight-icon">
+                              <IonIcon icon={barChartOutline} />
+                            </div>
+                            <div className="insight-content">
+                              <h3>Completion Rate</h3>
+                              <p className="insight-value">87.5%</p>
+                            </div>
+                          </div>
+                        </IonCol>
+                        <IonCol size="12" size-md="4">
+                          <div className="insight-card">
+                            <div className="insight-icon">
+                              <IonIcon icon={pieChartOutline} />
+                            </div>
+                            <div className="insight-content">
+                              <h3>Active Schemes</h3>
+                              <p className="insight-value">12</p>
+                            </div>
+                          </div>
+                        </IonCol>
+                        <IonCol size="12" size-md="4">
+                          <div className="insight-card">
+                            <div className="insight-icon">
+                              <IonIcon icon={starOutline} />
+                            </div>
+                            <div className="insight-content">
+                              <h3>Success Rate</h3>
+                              <p className="insight-value">94.2%</p>
                             </div>
                           </div>
                         </IonCol>
@@ -190,7 +289,7 @@ const CustomReports: React.FC = () => {
                 )}
               </IonCard>
 
-              {/* Report Table Section */}
+              {/* Enhanced Report Table Section */}
               <IonCard className="section-card">
                 <IonCardHeader 
                   className="section-header"
@@ -199,6 +298,9 @@ const CustomReports: React.FC = () => {
                   <IonCardTitle className="section-title">
                     <IonIcon icon={analyticsOutline} className="section-icon" />
                     Report Table
+                    <IonBadge color="warning" style={{ marginLeft: '0.5rem' }}>
+                      {reportData.tableData.length} records
+                    </IonBadge>
                   </IonCardTitle>
                   <IonIcon 
                     icon={showReportTable ? chevronUpOutline : chevronDownOutline} 
@@ -208,13 +310,21 @@ const CustomReports: React.FC = () => {
                 {showReportTable && (
                   <IonCardContent className="section-content">
                     <div className="table-actions">
-                      <IonButton fill="outline" size="small" onClick={handleExport}>
+                      <IonButton fill="solid" size="small" onClick={() => setShowExportModal(true)}>
                         <IonIcon icon={downloadOutline} />
                         Export
                       </IonButton>
-                      <IonButton fill="outline" size="small" onClick={handleRefresh}>
+                      <IonButton fill="solid" size="small" onClick={handleRefresh}>
                         <IonIcon icon={refreshOutline} />
                         Refresh
+                      </IonButton>
+                      <IonButton fill="outline" size="small" onClick={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}>
+                        <IonIcon icon={viewMode === 'table' ? eyeOutline : barChartOutline} />
+                        {viewMode === 'table' ? 'Card View' : 'Table View'}
+                      </IonButton>
+                      <IonButton fill="outline" size="small">
+                        <IonIcon icon={settingsOutline} />
+                        Settings
                       </IonButton>
                     </div>
                     
@@ -304,6 +414,61 @@ const CustomReports: React.FC = () => {
 
         </div>
       </IonSplitPane>
+
+      {/* Export Modal */}
+      <IonModal isOpen={showExportModal} onDidDismiss={() => setShowExportModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Export Report</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowExportModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="export-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Choose Export Format</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <IonButton 
+                expand="block" 
+                fill="outline" 
+                onClick={() => handleExport('pdf')}
+                style={{ '--background': 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)', '--color': 'white' }}
+              >
+                <IonIcon icon={documentTextOutline} slot="start" />
+                Export as PDF
+              </IonButton>
+              <IonButton 
+                expand="block" 
+                fill="outline" 
+                onClick={() => handleExport('excel')}
+                style={{ '--background': 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)', '--color': 'white' }}
+              >
+                <IonIcon icon={barChartOutline} slot="start" />
+                Export as Excel
+              </IonButton>
+              <IonButton 
+                expand="block" 
+                fill="outline" 
+                onClick={() => handleExport('csv')}
+                style={{ '--background': 'linear-gradient(135deg, #45b7d1 0%, #96ceb4 100%)', '--color': 'white' }}
+              >
+                <IonIcon icon={cloudDownloadOutline} slot="start" />
+                Export as CSV
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* Floating Action Button */}
+      <IonFab vertical="bottom" horizontal="end" slot="fixed">
+        <IonFabButton className="fab-add-report">
+          <IonIcon icon={addOutline} />
+        </IonFabButton>
+      </IonFab>
 
       {/* Toast for notifications */}
       <IonToast

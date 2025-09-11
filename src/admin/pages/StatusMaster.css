@@ -1,6 +1,6 @@
 /* Status Master Page Styles */
 .status-master-content {
-  --background: var(--color-bg-secondary);
+  --background: linear-gradient(135deg, #F9F6F2 0%, #FFF7F0 100%);
   --padding-start: 1.5rem;
   --padding-end: 1.5rem;
   --padding-top: 1.5rem;
@@ -480,4 +480,59 @@ ion-modal::part(backdrop) {
 
 .table-container::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-secondary);
+}
+
+/* Extra Small Devices */
+@media (max-width: 360px) {
+  .status-master-content {
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+    --padding-top: 0.5rem;
+    --padding-bottom: 0.5rem;
+  }
+  
+  .statuses-container {
+    padding: 0.5rem;
+  }
+  
+  .page-header h1 {
+    font-size: 1.2rem;
+  }
+  
+  .page-header p {
+    font-size: 0.8rem;
+  }
+  
+  .actions-section {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+  
+  .action-buttons {
+    justify-content: center;
+    min-width: auto;
+  }
+  
+  .statuses-table {
+    font-size: 0.8rem;
+  }
+  
+  .statuses-table th,
+  .statuses-table td {
+    padding: 0.5rem 0.25rem;
+  }
+  
+  .edit-button,
+  .delete-button,
+  .view-button {
+    min-width: 28px;
+    height: 28px;
+  }
+  
+  .edit-button ion-icon,
+  .delete-button ion-icon,
+  .view-button ion-icon {
+    font-size: 0.9rem;
+  }
 }

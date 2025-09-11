@@ -1,6 +1,6 @@
 /* Roles Page Styles */
 .roles-content {
-  --background: var(--color-bg-secondary);
+  --background: linear-gradient(135deg, #F9F6F2 0%, #FFF7F0 100%);
   --padding-start: 1.5rem;
   --padding-end: 1.5rem;
   --padding-top: 1.5rem;

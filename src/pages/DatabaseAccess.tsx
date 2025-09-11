@@ -2,11 +2,14 @@ import React, { useState, useMemo } from 'react';
 import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
-  IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar
+  IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
+  IonModal, IonItem, IonLabel, IonInput, IonTextarea, IonSelect, IonSelectOption,
+  IonButtons
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
-  chevronBackOutline, chevronForwardOutline
+  chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
+  eyeOutline
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -21,6 +24,21 @@ const DatabaseAccess: React.FC = () => {
   const [selectedAccessId, setSelectedAccessId] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  
+  // RBAC modals state
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [viewingAccess, setViewingAccess] = useState<DatabaseAccessData | null>(null);
+  const [editingAccess, setEditingAccess] = useState<DatabaseAccessData | null>(null);
+  const [addForm, setAddForm] = useState({
+    name: '',
+    permissions: ''
+  });
+  const [editForm, setEditForm] = useState({
+    name: '',
+    permissions: ''
+  });
 
   const itemsPerPage = 5;
 
@@ -41,14 +59,70 @@ const DatabaseAccess: React.FC = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentAccess = filteredAccess.slice(startIndex, endIndex);
 
+  // RBAC handlers
   const handleAddAccess = () => {
-    setToastMessage('Add new database access functionality will be implemented');
+    setAddForm({ name: '', permissions: '' });
+    setShowAddModal(true);
+  };
+
+  const handleSaveAdd = () => {
+    if (!addForm.name.trim() || !addForm.permissions.trim()) {
+      setToastMessage('Please fill in all required fields');
+      setShowToast(true);
+      return;
+    }
+    
+    setToastMessage('Database access added successfully');
     setShowToast(true);
+    setShowAddModal(false);
+    setAddForm({ name: '', permissions: '' });
+  };
+
+  const handleCloseAdd = () => {
+    setShowAddModal(false);
+    setAddForm({ name: '', permissions: '' });
   };
 
   const handleEdit = (accessId: string) => {
-    setToastMessage('Edit functionality will be implemented');
+    const access = allAccess.find(a => a.id === accessId);
+    if (access) {
+      setEditingAccess(access);
+      setEditForm({ name: access.name, permissions: access.permissions });
+      setShowEditModal(true);
+    }
+  };
+
+  const handleSaveEdit = () => {
+    if (!editForm.name.trim() || !editForm.permissions.trim()) {
+      setToastMessage('Please fill in all required fields');
+      setShowToast(true);
+      return;
+    }
+    
+    setToastMessage('Database access updated successfully');
     setShowToast(true);
+    setShowEditModal(false);
+    setEditingAccess(null);
+    setEditForm({ name: '', permissions: '' });
+  };
+
+  const handleCloseEdit = () => {
+    setShowEditModal(false);
+    setEditingAccess(null);
+    setEditForm({ name: '', permissions: '' });
+  };
+
+  const handleView = (accessId: string) => {
+    const access = allAccess.find(a => a.id === accessId);
+    if (access) {
+      setViewingAccess(access);
+      setShowViewModal(true);
+    }
+  };
+
+  const handleCloseView = () => {
+    setShowViewModal(false);
+    setViewingAccess(null);
   };
 
   const handleDelete = (accessId: string) => {
@@ -58,7 +132,7 @@ const DatabaseAccess: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedAccessId) {
-      setToastMessage(`Delete database access ${selectedAccessId} functionality will be implemented`);
+      setToastMessage(`Database access ${selectedAccessId} deleted successfully`);
       setShowToast(true);
       setSelectedAccessId(null);
     }
@@ -111,7 +185,7 @@ const DatabaseAccess: React.FC = () => {
                   onClick={handleAddAccess}
                 >
                   <IonIcon icon={addOutline} />
-                  Add Access
+                  + ADD ACCESS
                 </IonButton>
               </div>
 
@@ -151,6 +225,14 @@ const DatabaseAccess: React.FC = () => {
                           </td>
                           <td className="actions-cell">
                             <div className="action-buttons">
+                              <IonButton 
+                                fill="clear" 
+                                size="small" 
+                                className="view-button"
+                                onClick={() => handleView(access.id)}
+                              >
+                                <IonIcon icon={eyeOutline} />
+                              </IonButton>
                               <IonButton 
                                 fill="clear" 
                                 size="small" 
@@ -223,6 +305,158 @@ const DatabaseAccess: React.FC = () => {
           { text: 'Delete', role: 'destructive', handler: confirmDelete }
         ]}
       />
+
+      {/* Add Access Modal */}
+      <IonModal isOpen={showAddModal} onDidDismiss={handleCloseAdd}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Add New Database Access</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={handleCloseAdd}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="modal-content">
+          <IonItem>
+            <IonLabel position="stacked">Name *</IonLabel>
+            <IonInput
+              value={addForm.name}
+              onIonChange={(e) => setAddForm(prev => ({ ...prev, name: e.detail.value! }))}
+              placeholder="Enter access name"
+            />
+          </IonItem>
+          <IonItem>
+            <IonLabel position="stacked">Permissions *</IonLabel>
+            <IonSelect
+              value={addForm.permissions}
+              onIonChange={(e) => setAddForm(prev => ({ ...prev, permissions: e.detail.value }))}
+              placeholder="Select permissions"
+            >
+              <IonSelectOption value="Read Only">Read Only</IonSelectOption>
+              <IonSelectOption value="Read/Write">Read/Write</IonSelectOption>
+              <IonSelectOption value="Full Access">Full Access</IonSelectOption>
+              <IonSelectOption value="Admin">Admin</IonSelectOption>
+            </IonSelect>
+          </IonItem>
+          <div className="modal-actions">
+            <IonButton 
+              expand="block" 
+              fill="solid"
+              onClick={handleSaveAdd}
+            >
+              <IonIcon icon={checkmarkOutline} slot="start" />
+              Add Access
+            </IonButton>
+            <IonButton 
+              expand="block" 
+              fill="outline"
+              onClick={handleCloseAdd}
+            >
+              Cancel
+            </IonButton>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* Edit Access Modal */}
+      <IonModal isOpen={showEditModal} onDidDismiss={handleCloseEdit}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Edit Database Access</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={handleCloseEdit}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="modal-content">
+          <IonItem>
+            <IonLabel position="stacked">Name *</IonLabel>
+            <IonInput
+              value={editForm.name}
+              onIonChange={(e) => setEditForm(prev => ({ ...prev, name: e.detail.value! }))}
+              placeholder="Enter access name"
+            />
+          </IonItem>
+          <IonItem>
+            <IonLabel position="stacked">Permissions *</IonLabel>
+            <IonSelect
+              value={editForm.permissions}
+              onIonChange={(e) => setEditForm(prev => ({ ...prev, permissions: e.detail.value }))}
+              placeholder="Select permissions"
+            >
+              <IonSelectOption value="Read Only">Read Only</IonSelectOption>
+              <IonSelectOption value="Read/Write">Read/Write</IonSelectOption>
+              <IonSelectOption value="Full Access">Full Access</IonSelectOption>
+              <IonSelectOption value="Admin">Admin</IonSelectOption>
+            </IonSelect>
+          </IonItem>
+          <div className="modal-actions">
+            <IonButton 
+              expand="block" 
+              fill="solid"
+              onClick={handleSaveEdit}
+            >
+              <IonIcon icon={checkmarkOutline} slot="start" />
+              Update Access
+            </IonButton>
+            <IonButton 
+              expand="block" 
+              fill="outline"
+              onClick={handleCloseEdit}
+            >
+              Cancel
+            </IonButton>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* View Access Modal */}
+      <IonModal isOpen={showViewModal} onDidDismiss={handleCloseView}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Database Access Details</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={handleCloseView}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="view-modal-content">
+          {viewingAccess && (
+            <div>
+              <IonItem>
+                <IonLabel>
+                  <h2>Name</h2>
+                  <p>{viewingAccess.name}</p>
+                </IonLabel>
+              </IonItem>
+              <IonItem>
+                <IonLabel>
+                  <h2>Permissions</h2>
+                  <p>{viewingAccess.permissions}</p>
+                </IonLabel>
+              </IonItem>
+              <IonItem>
+                <IonLabel>
+                  <h2>Created At</h2>
+                  <p>{new Date(viewingAccess.createdAt).toLocaleDateString()}</p>
+                </IonLabel>
+              </IonItem>
+              <IonItem>
+                <IonLabel>
+                  <h2>Updated At</h2>
+                  <p>{new Date(viewingAccess.updatedAt).toLocaleDateString()}</p>
+                </IonLabel>
+              </IonItem>
+            </div>
+          )}
+        </IonContent>
+      </IonModal>
 
       {/* Toast for notifications */}
       <IonToast

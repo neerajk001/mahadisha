@@ -1,6 +1,6 @@
 /* Branch Master Page Styles */
 .branch-master-content {
-  --background: var(--color-bg-secondary);
+  --background: linear-gradient(135deg, #F9F6F2 0%, #FFF7F0 100%);
   --padding-start: 1.5rem;
   --padding-end: 1.5rem;
   --padding-top: 1.5rem;
@@ -162,7 +162,10 @@
 }
 
 .actions-cell {
-  min-width: 120px;
+  min-width: 140px;
+  text-align: center;
+  padding: 1rem;
+  white-space: nowrap;
 }
 
 .action-buttons {
@@ -360,4 +363,185 @@
 
 .table-container::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-secondary);
+}
+
+/* RBAC Functionalities Styles */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+}
+
+.advanced-filters-card {
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.bulk-actions-card {
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.bulk-actions-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+.bulk-actions-info h3 {
+  margin: 0;
+  color: white;
+}
+
+.bulk-action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.checkbox-column {
+  width: 50px;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.export-modal-content {
+  padding: 2rem;
+}
+
+.export-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.view-button {
+  --color: #4ecdc4;
+  --background: rgba(78, 205, 196, 0.2);
+  --border-radius: 8px;
+  --padding: 0.5rem;
+  width: 40px;
+  height: 40px;
+  font-weight: 600;
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+  border: 1px solid rgba(78, 205, 196, 0.4);
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.view-button ion-icon {
+  color: #4ecdc4 !important;
+  font-size: 1.2rem !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.view-button:hover {
+  --background: rgba(78, 205, 196, 0.25);
+  --color: #2a9d8f;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
+  border: 1px solid rgba(78, 205, 196, 0.5);
+}
+
+.view-button:hover ion-icon {
+  color: #2a9d8f !important;
+}
+
+.modal-content {
+  padding: 2rem;
+}
+
+.modal-actions {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.view-modal-content {
+  padding: 1rem;
+}
+
+.view-modal-content IonItem {
+  --background: transparent;
+  --border-color: rgba(255, 255, 255, 0.1);
+}
+
+.view-modal-content h2 {
+  color: var(--color-text-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.view-modal-content p {
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Extra Small Devices */
+@media (max-width: 360px) {
+  .branch-master-content {
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+    --padding-top: 0.5rem;
+    --padding-bottom: 0.5rem;
+  }
+  
+  .branches-container {
+    padding: 0.5rem;
+  }
+  
+  .page-header h1 {
+    font-size: 1.2rem;
+  }
+  
+  .page-header p {
+    font-size: 0.8rem;
+  }
+  
+  .actions-section {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+  
+  .action-buttons {
+    justify-content: center;
+    min-width: auto;
+  }
+  
+  .branches-table {
+    font-size: 0.8rem;
+  }
+  
+  .branches-table th,
+  .branches-table td {
+    padding: 0.5rem 0.25rem;
+  }
+  
+  .edit-button,
+  .delete-button,
+  .view-button {
+    min-width: 28px;
+    height: 28px;
+  }
+  
+  .edit-button ion-icon,
+  .delete-button ion-icon,
+  .view-button ion-icon {
+    font-size: 0.9rem;
+  }
 }

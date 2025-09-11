@@ -11,7 +11,7 @@ const Statistics: React.FC = () => {
   return (
     <div style={{
       padding: 'clamp(2rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem)',
-      background: 'white',
+      background: 'linear-gradient(180deg, #f1f3f4 0%, #e8eaed 100%)',
       width: '100%',
       maxWidth: '100%',
       overflow: 'hidden'
