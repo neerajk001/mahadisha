@@ -394,8 +394,47 @@ export interface PincodeMappingData {
   id: string;
   district: string;
   pincodes: string[];
+  state?: string;
+  region?: string;
+  description?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+// Enhanced Pincode Mapping Types
+export interface PincodeMappingFormData {
+  district: string;
+  pincodes: string[];
+  state: string;
+  region: string;
+  description: string;
+}
+
+export interface PincodeValidation {
+  isValid: boolean;
+  errors: string[];
+  suggestions?: string[];
+}
+
+export interface PincodeFilters {
+  state: string;
+  region: string;
+  pincodeRange: {
+    start: string;
+    end: string;
+  };
+  districtType: 'urban' | 'rural' | 'mixed' | '';
+  pincodeCount: {
+    min: number;
+    max: number;
+  };
+}
+
+export interface BulkImportResult {
+  success: number;
+  failed: number;
+  errors: string[];
+  warnings: string[];
 }
 
 // Members Types
@@ -406,7 +445,7 @@ export interface MembersData {
   phone: string;
   district: string;
   role: string;
-  status: 'Active' | 'Deleted';
+  status: 'Active' | 'Suspended' | 'Inactive' | 'Deleted';
   roleHistoryCount: number;
   createdAt: string;
   updatedAt: string;

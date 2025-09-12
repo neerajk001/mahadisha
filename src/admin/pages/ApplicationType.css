@@ -60,7 +60,7 @@ ion-split-pane {
 }
 
 .admin-search {
-  flex: 1;
+  flex: 3;
   --background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
   --border-radius: 12px;
   --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -69,7 +69,7 @@ ion-split-pane {
 }
 
 .status-filter {
-  min-width: 180px;
+  /* min-width: 120px; */
   --background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
   --border-radius: 12px;
   --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -85,9 +85,32 @@ ion-split-pane {
     0 4px 16px rgba(0, 0, 0, 0.03),
     inset 0 1px 0 rgba(255, 255, 255, 0.8),
     inset 0 -1px 0 rgba(0, 0, 0, 0.02);
-  overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 2px solid #000000;
   margin-bottom: 2rem;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Custom scrollbar for horizontal scroll */
+.list-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.list-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.list-container::-webkit-scrollbar-thumb {
+  background: rgba(92, 168, 163, 0.3);
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.list-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(92, 168, 163, 0.5);
 }
 
 .list-header {
@@ -107,6 +130,12 @@ ion-split-pane {
   background: linear-gradient(90deg, #5CA8A3 0%, #E6C17C 100%);
 }
 
+/* Table Wrapper */
+.table-wrapper {
+  min-width: 800px;
+  width: 100%;
+}
+
 /* Header Row */
 .header-row {
   display: grid;
@@ -114,6 +143,7 @@ ion-split-pane {
   gap: 1rem;
   align-items: center;
   width: 100%;
+  min-width: 800px;
 }
 
 .header-column {
@@ -173,6 +203,7 @@ ion-split-pane {
   gap: 1rem;
   align-items: center;
   width: 100%;
+  min-width: 800px;
   padding: 1rem 2rem;
 }
 
@@ -426,6 +457,7 @@ ion-split-pane {
   .search-filter-container {
     flex-direction: column;
     gap: 0.75rem;
+    width: 100%;
   }
   
   .status-filter {
@@ -480,7 +512,8 @@ ion-split-pane {
     gap: 0.75rem;
   }
 }
-  
+
+@media (max-width: 768px) {
   .page-header {
     flex-direction: column;
     align-items: flex-start;

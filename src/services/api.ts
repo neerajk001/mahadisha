@@ -1645,6 +1645,9 @@ export const mockDataService = {
       id: '1',
       district: 'Latur',
       pincodes: ['413515', '413522', '413520', '413511', '413513', '413519', '413532', '413607', '413516', '413523', '413524', '413521', '413530', '431522', '413527', '413544', '413514', '413531', '413517', '413518', '413512', '413529', '413510', '413581'],
+      state: 'Maharashtra',
+      region: 'Marathwada',
+      description: 'Latur district pincode mapping for loan disbursement',
       createdAt: '2024-01-01',
       updatedAt: '2024-01-01'
     },
@@ -1652,6 +1655,9 @@ export const mockDataService = {
       id: '2',
       district: 'Akola',
       pincodes: ['444126', '444101', '444511', '444302', '444401', '444102', '444111', '444004', '444103', '444005', '444405', '444106', '444107', '444501', '444407', '444006', '444108', '444502', '444109', '444002', '444311', '444001', '444104', '444117', '444003', '444007'],
+      state: 'Maharashtra',
+      region: 'Vidarbha',
+      description: 'Akola district pincode mapping for agricultural loans',
       createdAt: '2024-01-02',
       updatedAt: '2024-01-02'
     },
@@ -1659,8 +1665,31 @@ export const mockDataService = {
       id: '3',
       district: 'Raigad',
       pincodes: ['410206', '400707', '410201', '410221', '410220', '410208', '402302', '402403', '402102', '402103', '402401', '402209', '402104', '402105', '402309', '402305', '410205', '402107', '402303', '402108', '402208', '402202', '402109', '402122', '402110', '402112', '402306', '402113', '402201', '410216', '410222', '410203', '402404', '402106', '402125', '402301', '402111', '402207', '402115', '410101', '410207', '400702', '402101', '402308', '402203', '402304', '402204', '402120', '402126', '402307', '410218', '410210', '410204', '402402', '410202', '400704', '402114', '402116', '410102', '415213', '402117', '410209'],
+      state: 'Maharashtra',
+      region: 'Konkan',
+      description: 'Raigad district pincode mapping for coastal area loans',
       createdAt: '2024-01-03',
       updatedAt: '2024-01-03'
+    },
+    {
+      id: '4',
+      district: 'Pune',
+      pincodes: ['411001', '411002', '411003', '411004', '411005', '411006', '411007', '411008', '411009', '411010', '411011', '411012', '411013', '411014', '411015', '411016', '411017', '411018', '411019', '411020', '411021', '411022', '411023', '411024', '411025', '411026', '411027', '411028', '411029', '411030', '411031', '411032', '411033', '411034', '411035', '411036', '411037', '411038', '411039', '411040', '411041', '411042', '411043', '411044', '411045', '411046', '411047', '411048', '411049', '411050'],
+      state: 'Maharashtra',
+      region: 'Western Maharashtra',
+      description: 'Pune district pincode mapping for urban development loans',
+      createdAt: '2024-01-04',
+      updatedAt: '2024-01-04'
+    },
+    {
+      id: '5',
+      district: 'Nashik',
+      pincodes: ['422001', '422002', '422003', '422004', '422005', '422006', '422007', '422008', '422009', '422010', '422011', '422012', '422013', '422014', '422015', '422016', '422017', '422018', '422019', '422020', '422021', '422022', '422023', '422024', '422025', '422026', '422027', '422028', '422029', '422030'],
+      state: 'Maharashtra',
+      region: 'North Maharashtra',
+      description: 'Nashik district pincode mapping for industrial loans',
+      createdAt: '2024-01-05',
+      updatedAt: '2024-01-05'
     }
   ],
 
@@ -1673,7 +1702,7 @@ export const mockDataService = {
       phone: '0987654322',
       district: 'Sindhudurga',
       role: 'Sindhudurga_DM',
-      status: 'Deleted',
+      status: 'Suspended',
       roleHistoryCount: 0,
       createdAt: '2024-01-01',
       updatedAt: '2024-01-01'
@@ -1685,7 +1714,7 @@ export const mockDataService = {
       phone: '9022741235',
       district: 'Sindhudurga',
       role: 'Sindhudurga_Scrutiny Clerk',
-      status: 'Active',
+      status: 'Inactive',
       roleHistoryCount: 0,
       createdAt: '2024-01-02',
       updatedAt: '2024-01-02'

@@ -16,7 +16,7 @@ import {
 import { 
   eyeOutline, 
   mailOutline, 
-  documentOutline, 
+  documentOutline,
   cardOutline,
   listOutline,
   refreshOutline
@@ -24,7 +24,7 @@ import {
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 // Import RequestCard component
-import RequestCard from '../../components/requests/RequestCardNew';
+import RequestCardNew from '../../components/requests/RequestCardNew';
 import RequestList from '../../components/requests/RequestList';
 import { useLoanRequests } from '../hooks/useLoanRequests';
 import { RequestSearchParams, RequestFilters } from '../../types';
@@ -150,7 +150,7 @@ const NewRequests: React.FC = () => {
 
   return (
     <IonPage>
-      <IonSplitPane contentId="dashboard-content" when="md">
+      <IonSplitPane contentId="dashboard-content">
         {/* Sidebar */}
         <Sidebar />
         
@@ -178,7 +178,7 @@ const NewRequests: React.FC = () => {
                     <label className="filter-label">Status</label>
                     <IonSelect
                       value={filters.status}
-                      onIonChange={(e) => setFilters(prev => ({ ...prev, status: e.detail.value }))}
+                      onIonChange={(e) => setFilters((prev: RequestFilters) => ({ ...prev, status: e.detail.value }))}
                       placeholder="Select Status"
                       className="filter-select"
                     >
@@ -194,7 +194,7 @@ const NewRequests: React.FC = () => {
                     <label className="filter-label">District</label>
                     <IonSelect
                       value={filters.district}
-                      onIonChange={(e) => setFilters(prev => ({ ...prev, district: e.detail.value }))}
+                      onIonChange={(e) => setFilters((prev: RequestFilters) => ({ ...prev, district: e.detail.value }))}
                       placeholder="Select District"
                       className="filter-select"
                     >
@@ -262,7 +262,7 @@ const NewRequests: React.FC = () => {
                     </div>
                     
                         {viewMode === 'card' ? (
-                          <RequestCard
+                          <RequestCardNew
                             requests={requests || []}
                             onStatusChange={handleStatusChange}
                             onViewDetails={handleViewDetails}

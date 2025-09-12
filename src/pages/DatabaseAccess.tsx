@@ -39,11 +39,15 @@ const DatabaseAccess: React.FC = () => {
     name: '',
     permissions: ''
   });
+  
+  // State for managing new database access items
+  const [databaseAccessItems, setDatabaseAccessItems] = useState<DatabaseAccessData[]>([]);
 
   const itemsPerPage = 5;
 
-  // Get database access data from mock service
-  const allAccess = mockDataService.getDatabaseAccessData();
+  // Get database access data from mock service and combine with new items
+  const mockAccess = mockDataService.getDatabaseAccessData();
+  const allAccess = [...mockAccess, ...databaseAccessItems];
   
   // Filter access based on search query
   const filteredAccess = useMemo(() => {
@@ -71,8 +75,27 @@ const DatabaseAccess: React.FC = () => {
       setShowToast(true);
       return;
     }
+
+    // Check if access name already exists
+    if (allAccess.some(access => access.name.toLowerCase() === addForm.name.toLowerCase())) {
+      setToastMessage('Access name already exists. Please choose a different name.');
+      setShowToast(true);
+      return;
+    }
     
-    setToastMessage('Database access added successfully');
+    // Create new database access item
+    const newAccess: DatabaseAccessData = {
+      id: `db_access_${Date.now()}`,
+      name: addForm.name.trim(),
+      permissions: addForm.permissions,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    // Add to state
+    setDatabaseAccessItems(prev => [...prev, newAccess]);
+    
+    setToastMessage(`Database access "${addForm.name}" added successfully`);
     setShowToast(true);
     setShowAddModal(false);
     setAddForm({ name: '', permissions: '' });
@@ -98,8 +121,29 @@ const DatabaseAccess: React.FC = () => {
       setShowToast(true);
       return;
     }
+
+    if (!editingAccess) return;
+
+    // Check if access name already exists (excluding current item)
+    if (allAccess.some(access => 
+      access.id !== editingAccess.id && 
+      access.name.toLowerCase() === editForm.name.toLowerCase()
+    )) {
+      setToastMessage('Access name already exists. Please choose a different name.');
+      setShowToast(true);
+      return;
+    }
     
-    setToastMessage('Database access updated successfully');
+    // Update the item in state
+    setDatabaseAccessItems(prev => 
+      prev.map(item => 
+        item.id === editingAccess.id 
+          ? { ...item, name: editForm.name.trim(), permissions: editForm.permissions, updatedAt: new Date().toISOString() }
+          : item
+      )
+    );
+    
+    setToastMessage(`Database access "${editForm.name}" updated successfully`);
     setShowToast(true);
     setShowEditModal(false);
     setEditingAccess(null);
@@ -132,7 +176,11 @@ const DatabaseAccess: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedAccessId) {
-      setToastMessage(`Database access ${selectedAccessId} deleted successfully`);
+      // Remove from state
+      setDatabaseAccessItems(prev => prev.filter(item => item.id !== selectedAccessId));
+      
+      const accessToDelete = allAccess.find(access => access.id === selectedAccessId);
+      setToastMessage(`Database access "${accessToDelete?.name || selectedAccessId}" deleted successfully`);
       setShowToast(true);
       setSelectedAccessId(null);
     }
@@ -308,53 +356,56 @@ const DatabaseAccess: React.FC = () => {
 
       {/* Add Access Modal */}
       <IonModal isOpen={showAddModal} onDidDismiss={handleCloseAdd}>
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Add New Database Access</IonTitle>
-            <IonButtons slot="end">
-              <IonButton onClick={handleCloseAdd}>
-                <IonIcon icon={closeOutline} />
-              </IonButton>
-            </IonButtons>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="modal-content">
-          <IonItem>
-            <IonLabel position="stacked">Name *</IonLabel>
-            <IonInput
-              value={addForm.name}
-              onIonChange={(e) => setAddForm(prev => ({ ...prev, name: e.detail.value! }))}
-              placeholder="Enter access name"
-            />
-          </IonItem>
-          <IonItem>
-            <IonLabel position="stacked">Permissions *</IonLabel>
-            <IonSelect
-              value={addForm.permissions}
-              onIonChange={(e) => setAddForm(prev => ({ ...prev, permissions: e.detail.value }))}
-              placeholder="Select permissions"
-            >
-              <IonSelectOption value="Read Only">Read Only</IonSelectOption>
-              <IonSelectOption value="Read/Write">Read/Write</IonSelectOption>
-              <IonSelectOption value="Full Access">Full Access</IonSelectOption>
-              <IonSelectOption value="Admin">Admin</IonSelectOption>
-            </IonSelect>
-          </IonItem>
+        <IonContent className="add-access-modal">
+          <div className="modal-header">
+            <h2>Add New Database Access</h2>
+            <IonButton fill="clear" onClick={handleCloseAdd}>
+              <IonIcon icon={closeOutline} />
+            </IonButton>
+          </div>
+          
+          <div className="modal-content">
+            <div className="form-group">
+              <IonLabel className="form-label">Name *</IonLabel>
+              <IonInput
+                value={addForm.name}
+                onIonChange={(e) => setAddForm(prev => ({ ...prev, name: e.detail.value! }))}
+                placeholder="Enter access name"
+                className="form-input"
+              />
+            </div>
+            
+            <div className="form-group">
+              <IonLabel className="form-label">Permissions *</IonLabel>
+              <IonSelect
+                value={addForm.permissions}
+                onIonChange={(e) => setAddForm(prev => ({ ...prev, permissions: e.detail.value }))}
+                placeholder="Select permissions"
+                className="form-select"
+              >
+                <IonSelectOption value="Read Only">Read Only</IonSelectOption>
+                <IonSelectOption value="Read/Write">Read/Write</IonSelectOption>
+                <IonSelectOption value="Full Access">Full Access</IonSelectOption>
+                <IonSelectOption value="Admin">Admin</IonSelectOption>
+              </IonSelect>
+            </div>
+          </div>
+          
           <div className="modal-actions">
             <IonButton 
-              expand="block" 
               fill="solid"
               onClick={handleSaveAdd}
+              className="add-button"
             >
               <IonIcon icon={checkmarkOutline} slot="start" />
-              Add Access
+              ADD ACCESS
             </IonButton>
             <IonButton 
-              expand="block" 
               fill="outline"
               onClick={handleCloseAdd}
+              className="cancel-button"
             >
-              Cancel
+              CANCEL
             </IonButton>
           </div>
         </IonContent>

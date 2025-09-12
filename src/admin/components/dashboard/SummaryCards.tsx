@@ -23,61 +23,77 @@ interface SummaryCardsProps {
 const SummaryCards: React.FC<SummaryCardsProps> = ({ data }) => {
   const summaryData = data ? [
     {
-      title: 'Total Applications',
+      title: 'Total Requests',
       value: data.totalApplications.toString(),
       icon: briefcaseOutline,
       color: 'primary',
-      bgColor: 'var(--color-primary)'
+      bgColor: '#ffffff',
+      textColor: '#333333',
+      iconColor: '#3b82f6'
     },
     {
-      title: 'Approved',
-      value: data.approvedApplications.toString(),
+      title: 'Disbursed',
+      value: '$4.5M',
       icon: cashOutline,
       color: 'success',
-      bgColor: 'var(--color-success)'
+      bgColor: '#1e40af',
+      textColor: '#ffffff',
+      iconColor: '#ffffff'
     },
     {
-      title: 'Pending',
-      value: data.pendingApplications.toString(),
+      title: 'EMIS',
+      value: '321',
       icon: calendarOutline,
       color: 'warning',
-      bgColor: 'var(--color-warning)'
+      bgColor: '#ffffff',
+      textColor: '#333333',
+      iconColor: '#3b82f6'
     },
     {
-      title: 'Rejected',
-      value: data.rejectedApplications.toString(),
+      title: 'Overdues',
+      value: '14',
       icon: warningOutline,
       color: 'danger',
-      bgColor: 'var(--color-error)'
+      bgColor: '#dc2626',
+      textColor: '#ffffff',
+      iconColor: '#ffffff'
     }
   ] : [
     {
-      title: 'Total Applications',
+      title: 'Total Requests',
       value: '0',
       icon: briefcaseOutline,
       color: 'primary',
-      bgColor: 'var(--color-primary)'
+      bgColor: '#ffffff',
+      textColor: '#333333',
+      iconColor: '#3b82f6'
     },
     {
-      title: 'Approved',
-      value: '0',
+      title: 'Disbursed',
+      value: '$0',
       icon: cashOutline,
       color: 'success',
-      bgColor: 'var(--color-success)'
+      bgColor: '#1e40af',
+      textColor: '#ffffff',
+      iconColor: '#ffffff'
     },
     {
-      title: 'Pending',
+      title: 'EMIS',
       value: '0',
       icon: calendarOutline,
       color: 'warning',
-      bgColor: 'var(--color-warning)'
+      bgColor: '#ffffff',
+      textColor: '#333333',
+      iconColor: '#3b82f6'
     },
     {
-      title: 'Rejected',
+      title: 'Overdues',
       value: '0',
       icon: warningOutline,
       color: 'danger',
-      bgColor: 'var(--color-error)'
+      bgColor: '#dc2626',
+      textColor: '#ffffff',
+      iconColor: '#ffffff'
     }
   ];
 
@@ -87,12 +103,16 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({ data }) => {
         <IonRow>
           {summaryData.map((card, index) => (
             <IonCol size="12" size-md="6" size-lg="3" key={index}>
-              <IonCard className="summary-card">
+              <IonCard 
+                className="summary-card"
+                style={{ 
+                  backgroundColor: card.bgColor,
+                  color: card.textColor
+                }}
+              >
                 <IonCardContent className="summary-card-content">
-                  <div className="card-header">
-                    <div className="card-icon" style={{ backgroundColor: card.bgColor }}>
-                      <IonIcon icon={card.icon} className="icon" />
-                    </div>
+                  <div className="card-icon" style={{ color: card.iconColor }}>
+                    <IonIcon icon={card.icon} className="icon" />
                   </div>
                   <div className="card-body">
                     <div className="card-title">{card.title}</div>

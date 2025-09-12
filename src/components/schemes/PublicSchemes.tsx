@@ -2,8 +2,6 @@ import React, { useState, useMemo } from 'react';
 import {
   IonContent,
   IonSearchbar,
-  IonSelect,
-  IonSelectOption,
   IonGrid,
   IonRow,
   IonCol,
@@ -133,7 +131,7 @@ const PublicSchemes: React.FC = () => {
       return `₹0 - ${formatCurrency(max).replace('₹', '₹')}`;
     }
     return `${formatCurrency(min)} - ${formatCurrency(max)}`;
-  };
+  }; 
 
   const formatSubsidy = (percentage: number, maxAmount: number) => {
     return `${percentage}% (Max ${formatCurrency(maxAmount)})`;
@@ -220,35 +218,33 @@ const PublicSchemes: React.FC = () => {
           </div>
           
           <div className="filter-controls">
-            <IonSelect
+            <select
               value={typeFilter}
-              onIonChange={(e) => setTypeFilter(e.detail.value)}
-              placeholder="Filter by type"
+              onChange={(e) => setTypeFilter(e.target.value)}
               className="type-filter"
             >
-              <IonSelectOption value="all">All Types</IonSelectOption>
+              <option value="all">All Types</option>
               {schemeTypes.map(type => (
-                <IonSelectOption key={type} value={type}>{type}</IonSelectOption>
+                <option key={type} value={type}>{type}</option>
               ))}
-            </IonSelect>
+            </select>
 
-            <IonSelect
+            <select
               value={`${sortBy}-${sortOrder}`}
-              onIonChange={(e) => {
-                const [sort, order] = e.detail.value.split('-');
+              onChange={(e) => {
+                const [sort, order] = e.target.value.split('-');
                 setSortBy(sort);
                 setSortOrder(order as 'asc' | 'desc');
               }}
-              placeholder="Sort by"
               className="sort-filter"
             >
-              <IonSelectOption value="name-asc">Name (A-Z)</IonSelectOption>
-              <IonSelectOption value="name-desc">Name (Z-A)</IonSelectOption>
-              <IonSelectOption value="maxLoan-desc">Highest Loan Amount</IonSelectOption>
-              <IonSelectOption value="maxLoan-asc">Lowest Loan Amount</IonSelectOption>
-              <IonSelectOption value="subsidy-desc">Highest Subsidy</IonSelectOption>
-              <IonSelectOption value="subsidy-asc">Lowest Subsidy</IonSelectOption>
-            </IonSelect>
+              <option value="name-asc">Name (A-Z)</option>
+              <option value="name-desc">Name (Z-A)</option>
+              <option value="maxLoan-desc">Highest Loan Amount</option>
+              <option value="maxLoan-asc">Lowest Loan Amount</option>
+              <option value="subsidy-desc">Highest Subsidy</option>
+              <option value="subsidy-asc">Lowest Subsidy</option>
+            </select>
           </div>
         </div>
       </div>
