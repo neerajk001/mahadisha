@@ -12,7 +12,7 @@ import {
   chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
   downloadOutline, refreshOutline, eyeOutline, settingsOutline,
   arrowUpOutline, arrowDownOutline, appsOutline, gridOutline, listOutline,
-  cloudDownloadOutline, shareOutline, filterOutline
+  cloudDownloadOutline, shareOutline, filterOutline, businessOutline, timeOutline
 } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
@@ -385,10 +385,74 @@ const BranchMaster: React.FC = () => {
                 </IonCard>
               )}
 
-              {/* Branches Table */}
-              <IonCard className="branches-table-card">
-                <IonCardContent className="table-container">
-                  <table className="branches-table">
+              {/* Branch View - Grid or Table */}
+              {viewMode === 'grid' ? (
+                <div className="branches-grid">
+                  {currentBranches.map((branch) => (
+                    <div key={branch.id} className="branch-card">
+                      <div className="branch-card-header">
+                        <div className="branch-card-icon">
+                          <IonIcon icon={businessOutline} />
+                        </div>
+                        <div className="branch-card-title">
+                          <h3 className="branch-card-name">{branch.officeName}</h3>
+                          <div className="branch-card-type">{branch.officeType}</div>
+                        </div>
+                      </div>
+                      
+                      <div className="branch-card-content">
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={businessOutline} className="branch-card-meta-icon" />
+                            <span>Type: {branch.officeType}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={timeOutline} className="branch-card-meta-icon" />
+                            <span>Created: {new Date(branch.createdAt).toLocaleDateString()}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="branch-card-actions">
+                        <IonButton 
+                          fill="clear" 
+                          size="small" 
+                          className="branch-card-button view"
+                          onClick={() => handleView(branch.id)}
+                        >
+                          <IonIcon icon={eyeOutline} />
+                          View
+                        </IonButton>
+                        <IonButton 
+                          fill="clear" 
+                          size="small" 
+                          className="branch-card-button edit"
+                          onClick={() => handleEdit(branch.id)}
+                        >
+                          <IonIcon icon={createOutline} />
+                          Edit
+                        </IonButton>
+                        <IonButton 
+                          fill="clear" 
+                          size="small" 
+                          className="branch-card-button delete"
+                          onClick={() => handleDelete(branch.id)}
+                        >
+                          <IonIcon icon={trashOutline} />
+                          Delete
+                        </IonButton>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                /* Table View */
+                <IonCard className="branches-table-card">
+                  <IonCardContent className="table-container">
+                    <table className="branches-table">
                     <thead>
                       <tr>
                         <th className="checkbox-column">
@@ -463,9 +527,10 @@ const BranchMaster: React.FC = () => {
                         </tr>
                       ))}
                     </tbody>
-                  </table>
-                </IonCardContent>
-              </IonCard>
+                    </table>
+                  </IonCardContent>
+                </IonCard>
+              )}
 
               {/* Pagination */}
               <div className="pagination-container">

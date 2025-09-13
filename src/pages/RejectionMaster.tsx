@@ -3,11 +3,17 @@ import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
-  IonModal, IonItem, IonLabel, IonInput
+  IonModal, IonButtons, IonInput, IonTextarea, IonSelect, IonSelectOption,
+  IonBadge, IonChip, IonFab, IonFabButton
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
-  chevronBackOutline, chevronForwardOutline, closeOutline
+  chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
+  eyeOutline, settingsOutline, copyOutline, linkOutline, timeOutline,
+  peopleOutline, documentTextOutline, globeOutline, locationOutline,
+  mapOutline, businessOutline, barChartOutline, fileTrayOutline, accessibilityOutline,
+  keyOutline, homeOutline, gitBranchOutline, shieldOutline, shuffleOutline,
+  closeCircleOutline
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -27,28 +33,81 @@ const RejectionMaster: React.FC = () => {
   const [editForm, setEditForm] = useState({
     name: ''
   });
+  
+  // Enhanced state for new functionality
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [sortBy, setSortBy] = useState<'name'>('name');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const itemsPerPage = 5;
 
   // Get rejection master data from mock service
   const allRejections = mockDataService.getRejectionMasterData();
   
-  // Filter rejections based on search query
-  const filteredRejections = useMemo(() => {
-    return allRejections.filter(rejection =>
+  // Filter and sort rejections
+  const filteredAndSortedRejections = useMemo(() => {
+    let filtered = allRejections.filter(rejection =>
       rejection.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [allRejections, searchQuery]);
+
+    // Sort rejections
+    filtered.sort((a, b) => {
+      const aValue = (a as any)[sortBy];
+      const bValue = (b as any)[sortBy];
+      
+      if (typeof aValue === 'string') {
+        return sortOrder === 'asc' 
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+      
+      return sortOrder === 'asc' 
+        ? aValue - bValue 
+        : bValue - aValue;
+    });
+
+    return filtered;
+  }, [allRejections, searchQuery, sortBy, sortOrder]);
 
   // Calculate pagination
-  const totalPages = Math.ceil(filteredRejections.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredAndSortedRejections.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentRejections = filteredRejections.slice(startIndex, endIndex);
+  const currentRejections = filteredAndSortedRejections.slice(startIndex, endIndex);
+
+  const getIconComponent = (iconName: string) => {
+    switch (iconName) {
+      case 'closeCircleOutline': return closeCircleOutline;
+      case 'trashOutline': return trashOutline;
+      case 'documentTextOutline': return documentTextOutline;
+      case 'settingsOutline': return settingsOutline;
+      case 'shieldOutline': return shieldOutline;
+      default: return closeCircleOutline;
+    }
+  };
 
   const handleAddRejection = () => {
-    setToastMessage('Add new rejection functionality will be implemented');
+    setShowAddModal(true);
+  };
+
+  const handleView = (rejection: RejectionMasterData) => {
+    setToastMessage(`Viewing rejection: ${rejection.name}`);
     setShowToast(true);
+  };
+
+  const handleCopyName = (rejectionName: string) => {
+    navigator.clipboard.writeText(rejectionName);
+    setToastMessage('Rejection name copied to clipboard');
+    setShowToast(true);
+  };
+
+  const handleSaveRejection = () => {
+    setToastMessage('Rejection saved successfully');
+    setShowToast(true);
+    setShowAddModal(false);
+    setShowEditModal(false);
+    setEditingRejection(null);
   };
 
   const handleEdit = (rejectionId: string) => {
@@ -116,89 +175,182 @@ const RejectionMaster: React.FC = () => {
         <div className="main-content" id="dashboard-content">
           <DashboardHeader />
           
-          <IonContent className="rejection-master-content">
-            <div className="rejections-container">
+          <IonContent className="manage-pages-content">
+            <div className="pages-container">
               {/* Header Section */}
-              <div className="rejections-header">
+              <div className="pages-header">
                 <h1>Rejection Master</h1>
                 <p>Manage rejection reasons and their details</p>
               </div>
 
-              {/* Search and Actions */}
-              <div className="rejections-actions">
+              {/* Enhanced Search and Actions */}
+              <div className="pages-actions">
                 <IonSearchbar
                   value={searchQuery}
                   onIonChange={(e) => setSearchQuery(e.detail.value!)}
                   placeholder="Search rejections by name..."
-                  className="rejections-search"
+                  className="pages-search"
                 />
                 <IonButton 
+                  fill="outline" 
+                  size="small"
+                  onClick={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
+                >
+                  <IonIcon icon={viewMode === 'grid' ? barChartOutline : eyeOutline} />
+                  {viewMode === 'grid' ? 'Table View' : 'Grid View'}
+                </IonButton>
+                <IonButton 
                   fill="solid" 
-                  className="add-rejection-button"
+                  className="add-page-button"
                   onClick={handleAddRejection}
                 >
                   <IonIcon icon={addOutline} />
-                  Add Rejection
+                  Add New Rejection
                 </IonButton>
               </div>
 
-              {/* Rejections Table */}
-              <IonCard className="rejections-table-card">
-                <IonCardContent className="table-container">
-                  <table className="rejections-table">
-                    <thead>
-                      <tr>
-                        <th>
-                          <div className="table-header">
-                            <span>Name</span>
-                            <IonIcon icon={searchOutline} className="filter-icon" />
+              {/* Modern Rejections Grid */}
+              {viewMode === 'grid' ? (
+                <div className="pages-grid">
+                  {currentRejections.map((rejection) => (
+                    <div key={rejection.id} className="page-card">
+                      <div className="page-card-header">
+                        <div className="page-card-icon">
+                          <IonIcon icon={closeCircleOutline} />
+                        </div>
+                        <div className="page-card-title">
+                          <h3 className="page-card-name">{rejection.name}</h3>
+                          <div className="page-card-url">Rejection Reason</div>
+                        </div>
+                      </div>
+                      
+                      <div className="page-card-content">
+                        <div className="page-card-meta">
+                          <div className="page-card-meta-item">
+                            <IonIcon icon={documentTextOutline} className="page-card-meta-icon" />
+                            <span>Rejection ID: {rejection.id.slice(-6)}</span>
                           </div>
-                        </th>
-                        <th>
-                          <div className="table-header">
-                            <span>Actions</span>
+                          <div className="page-card-meta-item">
+                            <IonIcon icon={timeOutline} className="page-card-meta-icon" />
+                            <span>Type: Standard</span>
                           </div>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {currentRejections.map((rejection, index) => (
-                        <tr key={rejection.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
-                          <td className="rejection-name-cell">
-                            <span className="rejection-name">{rejection.name}</span>
-                          </td>
-                          <td className="actions-cell">
-                            <div className="action-buttons">
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="edit-button"
-                                onClick={() => handleEdit(rejection.id)}
-                              >
-                                <IonIcon icon={createOutline} />
-                              </IonButton>
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="delete-button"
-                                onClick={() => handleDelete(rejection.id)}
-                              >
-                                <IonIcon icon={trashOutline} />
-                              </IonButton>
+                        </div>
+                      </div>
+                      
+                      <div className="page-card-actions">
+                        <IonButton 
+                          fill="clear" 
+                          size="small" 
+                          className="page-card-button edit"
+                          onClick={() => handleView(rejection)}
+                        >
+                          <IonIcon icon={eyeOutline} />
+                          View
+                        </IonButton>
+                        <IonButton 
+                          fill="clear" 
+                          size="small" 
+                          className="page-card-button edit"
+                          onClick={() => handleEdit(rejection.id)}
+                        >
+                          <IonIcon icon={createOutline} />
+                          Edit
+                        </IonButton>
+                        <IonButton 
+                          fill="clear" 
+                          size="small" 
+                          className="page-card-button delete"
+                          onClick={() => handleDelete(rejection.id)}
+                        >
+                          <IonIcon icon={trashOutline} />
+                          Delete
+                        </IonButton>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <IonCard className="pages-table-card">
+                  <IonCardContent className="table-container">
+                    <table className="pages-table">
+                      <thead>
+                        <tr>
+                          <th>
+                            <div className="table-header">
+                              <span>Name</span>
+                              <IonIcon icon={searchOutline} className="filter-icon" />
                             </div>
-                          </td>
+                          </th>
+                          <th>
+                            <div className="table-header">
+                              <span>Rejection Code</span>
+                              <IonIcon icon={searchOutline} className="filter-icon" />
+                            </div>
+                          </th>
+                          <th>
+                            <div className="table-header">
+                              <span>Icon</span>
+                              <IonIcon icon={searchOutline} className="filter-icon" />
+                            </div>
+                          </th>
+                          <th>
+                            <div className="table-header">
+                              <span>Actions</span>
+                            </div>
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </IonCardContent>
-              </IonCard>
+                      </thead>
+                      <tbody>
+                        {currentRejections.map((rejection, index) => (
+                          <tr key={rejection.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
+                            <td className="name-cell">
+                              <div className="page-name">
+                                <IonIcon icon={closeCircleOutline} className="page-icon" />
+                                <span>{rejection.name}</span>
+                              </div>
+                            </td>
+                            <td className="url-cell">
+                              <code className="url-code">REJ-{rejection.id.slice(-3)}</code>
+                            </td>
+                            <td className="icon-cell">
+                              <div className="icon-display">
+                                <IonIcon icon={closeCircleOutline} className="display-icon" />
+                                <span className="icon-name">closeCircleOutline</span>
+                              </div>
+                            </td>
+                            <td className="actions-cell">
+                              <div className="action-buttons">
+                                <IonButton 
+                                  fill="clear" 
+                                  size="small" 
+                                  className="edit-button"
+                                  onClick={() => handleEdit(rejection.id)}
+                                >
+                                  <IonIcon icon={createOutline} />
+                                </IonButton>
+                                <IonButton 
+                                  fill="clear" 
+                                  size="small" 
+                                  className="delete-button"
+                                  onClick={() => handleDelete(rejection.id)}
+                                >
+                                  <IonIcon icon={trashOutline} />
+                                </IonButton>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </IonCardContent>
+                </IonCard>
+              )}
 
               {/* Pagination */}
               <div className="pagination-container">
                 <div className="pagination-info">
                   <p>
-                    Showing {startIndex + 1} to {Math.min(endIndex, filteredRejections.length)} of {filteredRejections.length} rejections
+                    Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedRejections.length)} of {filteredAndSortedRejections.length} rejections
                   </p>
                 </div>
                 <div className="pagination-controls">
@@ -230,42 +382,99 @@ const RejectionMaster: React.FC = () => {
         </div>
       </IonSplitPane>
 
-      {/* Edit Modal */}
-      <IonModal 
-        isOpen={showEditModal} 
-        onDidDismiss={handleCloseEdit}
-        backdropDismiss={true}
-        showBackdrop={true}
-      >
-        <div className="edit-modal">
-          <div className="modal-header">
-            <h2>Edit Rejection</h2>
-            <IonButton fill="clear" onClick={handleCloseEdit} className="close-button">
-              <IonIcon icon={closeOutline} />
-            </IonButton>
-          </div>
-          
-          <div className="modal-content">
-            <IonItem className="form-item">
-              <IonLabel position="stacked">Rejection Name</IonLabel>
+      {/* Add Rejection Modal */}
+      <IonModal isOpen={showAddModal} onDidDismiss={() => setShowAddModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Add New Rejection</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowAddModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Create New Rejection</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <IonInput
+                label="Rejection Name"
+                labelPlacement="stacked"
+                placeholder="Enter rejection reason name"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonTextarea
+                label="Description (Optional)"
+                labelPlacement="stacked"
+                placeholder="Enter description"
+                rows={3}
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonButton 
+                expand="block" 
+                style={{ 
+                  '--background': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  '--color': 'white',
+                  '--border-radius': '12px',
+                  marginTop: '1rem'
+                }}
+                onClick={handleSaveRejection}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                Create Rejection
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* Edit Rejection Modal */}
+      <IonModal isOpen={showEditModal} onDidDismiss={() => setShowEditModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Edit Rejection</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowEditModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Edit Rejection: {editingRejection?.name}</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <IonInput
+                label="Rejection Name"
+                labelPlacement="stacked"
                 value={editForm.name}
                 onIonChange={(e) => setEditForm({...editForm, name: e.detail.value!})}
-                placeholder="Enter rejection name"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
-            </IonItem>
+              <IonTextarea
+                label="Description (Optional)"
+                labelPlacement="stacked"
+                placeholder="Enter description"
+                rows={3}
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonButton 
+                expand="block" 
+                style={{ 
+                  '--background': 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
+                  '--color': 'white',
+                  '--border-radius': '12px',
+                  marginTop: '1rem'
+                }}
+                onClick={handleSaveEdit}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                Update Rejection
+              </IonButton>
+            </div>
           </div>
-
-          <div className="modal-footer">
-            <IonButton 
-              fill="solid" 
-              className="save-button"
-              onClick={handleSaveEdit}
-            >
-              Save Changes
-            </IonButton>
-          </div>
-        </div>
+        </IonContent>
       </IonModal>
 
       {/* Delete Confirmation Alert */}
@@ -279,6 +488,13 @@ const RejectionMaster: React.FC = () => {
           { text: 'Delete', role: 'destructive', handler: confirmDelete }
         ]}
       />
+
+      {/* Floating Action Button */}
+      <IonFab vertical="bottom" horizontal="end" slot="fixed">
+        <IonFabButton className="fab-add-page" onClick={handleAddRejection}>
+          <IonIcon icon={addOutline} />
+        </IonFabButton>
+      </IonFab>
 
       {/* Toast for notifications */}
       <IonToast

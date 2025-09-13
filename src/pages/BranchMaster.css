@@ -1,4 +1,4 @@
-/* Manage Pages Page Styles */
+/* Branch Master Page Styles */
 .manage-pages-content {
   --background: linear-gradient(135deg, #F9F6F2 0%, #FFF7F0 100%);
   --padding-start: 1.5rem;
@@ -842,6 +842,23 @@
 }
 
 .fab-add-page:hover {
+  --background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+}
+
+.fab-add-branch {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --color: white;
+  --border-radius: 50%;
+  --padding: 1rem;
+  width: 64px;
+  height: 64px;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fab-add-branch:hover {
   --background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
   transform: scale(1.1) rotate(5deg);
   box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);

@@ -2,11 +2,18 @@ import React, { useState, useMemo } from 'react';
 import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
-  IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar
+  IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
+  IonModal, IonButtons, IonInput, IonTextarea, IonSelect, IonSelectOption,
+  IonBadge, IonChip, IonFab, IonFabButton
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
-  chevronBackOutline, chevronForwardOutline
+  keyOutline, homeOutline, gitBranchOutline, shieldOutline,
+  shuffleOutline, barChartOutline, fileTrayOutline, accessibilityOutline,
+  chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
+  eyeOutline, settingsOutline, copyOutline, linkOutline, timeOutline,
+  peopleOutline, documentTextOutline, globeOutline, locationOutline,
+  mapOutline, businessOutline
 } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
@@ -21,32 +28,68 @@ const TalukaMaster: React.FC = () => {
   const [selectedTalukaId, setSelectedTalukaId] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  
+  // Enhanced state for new functionality
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingTaluka, setEditingTaluka] = useState<TalukaData | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [sortBy, setSortBy] = useState<'name' | 'createdAt'>('name');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 6;
 
   // Get taluka data from mock service
   const allTalukas = mockDataService.getTalukaData();
   
-  // Filter talukas based on search query
-  const filteredTalukas = useMemo(() => {
-    return allTalukas.filter(taluka =>
+  // Filter and sort talukas
+  const filteredAndSortedTalukas = useMemo(() => {
+    let filtered = allTalukas.filter(taluka =>
       taluka.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [allTalukas, searchQuery]);
+
+    // Sort talukas
+    filtered.sort((a, b) => {
+      const aValue = (a as any)[sortBy];
+      const bValue = (b as any)[sortBy];
+      
+      if (typeof aValue === 'string') {
+        return sortOrder === 'asc' 
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+      
+      return sortOrder === 'asc' 
+        ? aValue - bValue 
+        : bValue - aValue;
+    });
+
+    return filtered;
+  }, [allTalukas, searchQuery, sortBy, sortOrder]);
 
   // Calculate pagination
-  const totalPages = Math.ceil(filteredTalukas.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredAndSortedTalukas.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentTalukas = filteredTalukas.slice(startIndex, endIndex);
+  const currentTalukas = filteredAndSortedTalukas.slice(startIndex, endIndex);
 
   const handleAddTaluka = () => {
-    setToastMessage('Add new taluka functionality will be implemented');
+    setShowAddModal(true);
+  };
+
+  const handleEdit = (taluka: TalukaData) => {
+    setEditingTaluka(taluka);
+    setShowEditModal(true);
+  };
+
+  const handleView = (taluka: TalukaData) => {
+    setToastMessage(`Viewing taluka: ${taluka.name}`);
     setShowToast(true);
   };
 
-  const handleEdit = (talukaId: string) => {
-    setToastMessage(`Edit taluka ${talukaId} functionality will be implemented`);
+  const handleCopyName = (talukaName: string) => {
+    navigator.clipboard.writeText(talukaName);
+    setToastMessage('Taluka name copied to clipboard');
     setShowToast(true);
   };
 
@@ -81,6 +124,14 @@ const TalukaMaster: React.FC = () => {
     }
   };
 
+  const handleSaveTaluka = () => {
+    setToastMessage('Taluka saved successfully');
+    setShowToast(true);
+    setShowAddModal(false);
+    setShowEditModal(false);
+    setEditingTaluka(null);
+  };
+
   return (
     <IonPage>
       <IonSplitPane contentId="dashboard-content" when="md">
@@ -88,90 +139,190 @@ const TalukaMaster: React.FC = () => {
         <div className="main-content" id="dashboard-content">
           <DashboardHeader />
           
-          <IonContent className="taluka-master-content">
-            <div className="talukas-container">
+          <IonContent className="manage-pages-content">
+            <div className="pages-container">
               {/* Header Section */}
-              <div className="talukas-header">
+              <div className="pages-header">
                 <h1>Taluka Master</h1>
                 <p>Manage taluka categories and their names</p>
               </div>
 
-              {/* Search and Actions */}
-              <div className="talukas-actions">
+              {/* Enhanced Search and Actions */}
+              <div className="pages-actions">
                 <IonSearchbar
                   value={searchQuery}
                   onIonChange={(e) => setSearchQuery(e.detail.value!)}
                   placeholder="Search talukas by name..."
-                  className="talukas-search"
+                  className="pages-search"
                 />
                 <IonButton 
+                  fill="outline" 
+                  size="small"
+                  onClick={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
+                >
+                  <IonIcon icon={viewMode === 'grid' ? barChartOutline : eyeOutline} />
+                  {viewMode === 'grid' ? 'Table View' : 'Grid View'}
+                </IonButton>
+                <IonButton 
                   fill="solid" 
-                  className="add-taluka-button"
+                  className="add-page-button"
                   onClick={handleAddTaluka}
                 >
                   <IonIcon icon={addOutline} />
-                  Add Taluka
+                  Add New Taluka
                 </IonButton>
               </div>
 
-              {/* Talukas Table */}
-              <IonCard className="talukas-table-card">
-                <IonCardContent className="table-container">
-                  <table className="talukas-table">
-                    <thead>
-                      <tr>
-                        <th>
-                          <div className="table-header">
-                            <span>Name</span>
-                            <IonIcon icon={searchOutline} className="filter-icon" />
+              {/* Modern Talukas Grid */}
+              {viewMode === 'grid' ? (
+                <div className="pages-grid">
+                  {currentTalukas.map((taluka) => (
+                    <div key={taluka.id} className="page-card">
+                      <div className="page-card-header">
+                        <div className="page-card-icon">
+                          <IonIcon icon={locationOutline} />
+                        </div>
+                        <div className="page-card-title">
+                          <h3 className="page-card-name">{taluka.name}</h3>
+                          <div className="page-card-url">Taluka Region</div>
+                        </div>
+                      </div>
+                      
+                      <div className="page-card-content">
+                        <div className="page-card-meta">
+                          <div className="page-card-meta-item">
+                            <IonIcon icon={documentTextOutline} className="page-card-meta-icon" />
+                            <span>ID: {taluka.id}</span>
                           </div>
-                        </th>
-                        <th>
-                          <div className="table-header">
-                            <span>Actions</span>
-                            <IonIcon icon={searchOutline} className="filter-icon" />
+                          <div className="page-card-meta-item">
+                            <IonIcon icon={timeOutline} className="page-card-meta-icon" />
+                            <span>Active</span>
                           </div>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {currentTalukas.map((taluka, index) => (
-                        <tr key={taluka.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
-                          <td className="taluka-name-cell">
-                            <span className="taluka-name">{taluka.name}</span>
-                          </td>
-                          <td className="actions-cell">
-                            <div className="action-buttons">
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="edit-button"
-                                onClick={() => handleEdit(taluka.id)}
-                              >
-                                <IonIcon icon={createOutline} />
-                              </IonButton>
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="delete-button"
-                                onClick={() => handleDelete(taluka.id)}
-                              >
-                                <IonIcon icon={trashOutline} />
-                              </IonButton>
+                        </div>
+                        
+                        <div className="page-card-meta">
+                          <div className="page-card-meta-item">
+                            <IonIcon icon={mapOutline} className="page-card-meta-icon" />
+                            <span>Region Code: TLK-{taluka.id.slice(-3)}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="page-card-actions">
+                        <IonButton 
+                          fill="clear" 
+                          size="small" 
+                          className="page-card-button edit"
+                          onClick={() => handleView(taluka)}
+                        >
+                          <IonIcon icon={eyeOutline} />
+                          View
+                        </IonButton>
+                        <IonButton 
+                          fill="clear" 
+                          size="small" 
+                          className="page-card-button edit"
+                          onClick={() => handleEdit(taluka)}
+                        >
+                          <IonIcon icon={createOutline} />
+                          Edit
+                        </IonButton>
+                        <IonButton 
+                          fill="clear" 
+                          size="small" 
+                          className="page-card-button delete"
+                          onClick={() => handleDelete(taluka.id)}
+                        >
+                          <IonIcon icon={trashOutline} />
+                          Delete
+                        </IonButton>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <IonCard className="pages-table-card">
+                  <IonCardContent className="table-container">
+                    <table className="pages-table">
+                      <thead>
+                        <tr>
+                          <th>
+                            <div className="table-header">
+                              <span>Name</span>
+                              <IonIcon icon={searchOutline} className="filter-icon" />
                             </div>
-                          </td>
+                          </th>
+                          <th>
+                            <div className="table-header">
+                              <span>Region Code</span>
+                              <IonIcon icon={searchOutline} className="filter-icon" />
+                            </div>
+                          </th>
+                          <th>
+                            <div className="table-header">
+                              <span>Icon</span>
+                              <IonIcon icon={searchOutline} className="filter-icon" />
+                            </div>
+                          </th>
+                          <th>
+                            <div className="table-header">
+                              <span>Actions</span>
+                              <IonIcon icon={searchOutline} className="filter-icon" />
+                            </div>
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </IonCardContent>
-              </IonCard>
+                      </thead>
+                      <tbody>
+                        {currentTalukas.map((taluka, index) => (
+                          <tr key={taluka.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
+                            <td className="name-cell">
+                              <div className="page-name">
+                                <IonIcon icon={locationOutline} className="page-icon" />
+                                <span>{taluka.name}</span>
+                              </div>
+                            </td>
+                            <td className="url-cell">
+                              <code className="url-code">TLK-{taluka.id.slice(-3)}</code>
+                            </td>
+                            <td className="icon-cell">
+                              <div className="icon-display">
+                                <IonIcon icon={locationOutline} className="display-icon" />
+                                <span className="icon-name">locationOutline</span>
+                              </div>
+                            </td>
+                            <td className="actions-cell">
+                              <div className="action-buttons">
+                                <IonButton 
+                                  fill="clear" 
+                                  size="small" 
+                                  className="edit-button"
+                                  onClick={() => handleEdit(taluka)}
+                                >
+                                  <IonIcon icon={createOutline} />
+                                </IonButton>
+                                <IonButton 
+                                  fill="clear" 
+                                  size="small" 
+                                  className="delete-button"
+                                  onClick={() => handleDelete(taluka.id)}
+                                >
+                                  <IonIcon icon={trashOutline} />
+                                </IonButton>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </IonCardContent>
+                </IonCard>
+              )}
 
               {/* Pagination */}
               <div className="pagination-container">
                 <div className="pagination-info">
                   <p>
-                    Showing {startIndex + 1} to {Math.min(endIndex, filteredTalukas.length)} of {filteredTalukas.length} talukas
+                    Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedTalukas.length)} of {filteredAndSortedTalukas.length} talukas
                   </p>
                 </div>
                 <div className="pagination-controls">
@@ -214,6 +365,119 @@ const TalukaMaster: React.FC = () => {
           { text: 'Delete', role: 'destructive', handler: confirmDelete }
         ]}
       />
+
+      {/* Add Taluka Modal */}
+      <IonModal isOpen={showAddModal} onDidDismiss={() => setShowAddModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Add New Taluka</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowAddModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Create New Taluka</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <IonInput
+                label="Taluka Name"
+                labelPlacement="stacked"
+                placeholder="Enter taluka name"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonInput
+                label="District"
+                labelPlacement="stacked"
+                placeholder="Enter district name"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonTextarea
+                label="Description (Optional)"
+                labelPlacement="stacked"
+                placeholder="Enter description"
+                rows={3}
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonButton 
+                expand="block" 
+                style={{ 
+                  '--background': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  '--color': 'white',
+                  '--border-radius': '12px',
+                  marginTop: '1rem'
+                }}
+                onClick={handleSaveTaluka}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                Create Taluka
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* Edit Taluka Modal */}
+      <IonModal isOpen={showEditModal} onDidDismiss={() => setShowEditModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Edit Taluka</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowEditModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Edit Taluka: {editingTaluka?.name}</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <IonInput
+                label="Taluka Name"
+                labelPlacement="stacked"
+                value={editingTaluka?.name}
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonInput
+                label="District"
+                labelPlacement="stacked"
+                placeholder="Enter district name"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonTextarea
+                label="Description (Optional)"
+                labelPlacement="stacked"
+                placeholder="Enter description"
+                rows={3}
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonButton 
+                expand="block" 
+                style={{ 
+                  '--background': 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
+                  '--color': 'white',
+                  '--border-radius': '12px',
+                  marginTop: '1rem'
+                }}
+                onClick={handleSaveTaluka}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                Update Taluka
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* Floating Action Button */}
+      <IonFab vertical="bottom" horizontal="end" slot="fixed">
+        <IonFabButton className="fab-add-page" onClick={handleAddTaluka}>
+          <IonIcon icon={addOutline} />
+        </IonFabButton>
+      </IonFab>
 
       {/* Toast for notifications */}
       <IonToast

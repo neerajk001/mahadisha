@@ -78,12 +78,20 @@ const BranchMaster: React.FC = () => {
     setShowAddModal(true);
   };
 
-  const handleEdit = (branchId: string) => {
-    const branch = allBranches.find(b => b.id === branchId);
-    if (branch) {
-      setEditingBranch(branch);
-      setShowEditModal(true);
-    }
+  const handleEdit = (branch: BranchData) => {
+    setEditingBranch(branch);
+    setShowEditModal(true);
+  };
+
+  const handleView = (branch: BranchData) => {
+    setToastMessage(`Viewing branch: ${branch.officeName}`);
+    setShowToast(true);
+  };
+
+  const handleCopyInfo = (branchInfo: string) => {
+    navigator.clipboard.writeText(branchInfo);
+    setToastMessage('Branch info copied to clipboard');
+    setShowToast(true);
   };
 
   const handleDelete = (branchId: string) => {
@@ -225,15 +233,26 @@ const BranchMaster: React.FC = () => {
                       
                       <div className="page-card-actions">
                         <IonButton 
-                          fill="solid" 
+                          fill="clear" 
+                          size="small" 
                           className="page-card-button edit"
-                          onClick={() => handleEdit(branch.id)}
+                          onClick={() => handleView(branch)}
+                        >
+                          <IonIcon icon={eyeOutline} />
+                          View
+                        </IonButton>
+                        <IonButton 
+                          fill="clear" 
+                          size="small" 
+                          className="page-card-button edit"
+                          onClick={() => handleEdit(branch)}
                         >
                           <IonIcon icon={createOutline} />
                           Edit
                         </IonButton>
                         <IonButton 
-                          fill="solid" 
+                          fill="clear" 
+                          size="small" 
                           className="page-card-button delete"
                           onClick={() => handleDelete(branch.id)}
                         >
@@ -313,7 +332,7 @@ const BranchMaster: React.FC = () => {
                                   fill="clear" 
                                   size="small"
                                   className="edit-button"
-                                  onClick={() => handleEdit(branch.id)}
+                                  onClick={() => handleEdit(branch)}
                                 >
                                   <IonIcon icon={createOutline} />
                                 </IonButton>
@@ -384,27 +403,44 @@ const BranchMaster: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent className="page-modal-content">
-          <div style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto' }}>
-            <IonInput
-              placeholder="Office Name"
-              style={{ marginBottom: '1rem' }}
-            />
-            <IonSelect placeholder="Office Type" style={{ marginBottom: '1rem' }}>
-              <IonSelectOption value="head-office">Head Office</IonSelectOption>
-              <IonSelectOption value="branch-office">Branch Office</IonSelectOption>
-              <IonSelectOption value="sub-office">Sub Office</IonSelectOption>
-              <IonSelectOption value="service-center">Service Center</IonSelectOption>
-            </IonSelect>
-            <IonInput
-              placeholder="Branch ID"
-              style={{ marginBottom: '1rem' }}
-            />
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', marginTop: '2rem' }}>
-              <IonButton fill="outline" onClick={() => setShowAddModal(false)}>
-                Cancel
-              </IonButton>
-              <IonButton fill="solid" onClick={handleSaveBranch}>
-                Save Branch
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Create New Branch</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <IonInput
+                label="Office Name"
+                labelPlacement="stacked"
+                placeholder="Enter office name"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonSelect
+                label="Office Type"
+                labelPlacement="stacked"
+                placeholder="Select office type"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              >
+                <IonSelectOption value="head-office">Head Office</IonSelectOption>
+                <IonSelectOption value="branch-office">Branch Office</IonSelectOption>
+                <IonSelectOption value="sub-office">Sub Office</IonSelectOption>
+                <IonSelectOption value="service-center">Service Center</IonSelectOption>
+              </IonSelect>
+              <IonInput
+                label="Branch ID"
+                labelPlacement="stacked"
+                placeholder="Enter branch ID"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonButton 
+                expand="block" 
+                style={{ 
+                  '--background': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  '--color': 'white',
+                  '--border-radius': '12px',
+                  marginTop: '1rem'
+                }}
+                onClick={handleSaveBranch}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                Create Branch
               </IonButton>
             </div>
           </div>
@@ -424,28 +460,43 @@ const BranchMaster: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent className="page-modal-content">
-          <div style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto' }}>
-            <IonInput
-              placeholder="Office Name"
-              value={editingBranch?.officeName}
-              style={{ marginBottom: '1rem' }}
-            />
-            <IonSelect placeholder="Office Type" value={editingBranch?.officeType} style={{ marginBottom: '1rem' }}>
-              <IonSelectOption value="head-office">Head Office</IonSelectOption>
-              <IonSelectOption value="branch-office">Branch Office</IonSelectOption>
-              <IonSelectOption value="sub-office">Sub Office</IonSelectOption>
-              <IonSelectOption value="service-center">Service Center</IonSelectOption>
-            </IonSelect>
-            <IonInput
-              placeholder="Branch ID"
-              value={editingBranch?.id}
-              style={{ marginBottom: '1rem' }}
-            />
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', marginTop: '2rem' }}>
-              <IonButton fill="outline" onClick={() => setShowEditModal(false)}>
-                Cancel
-              </IonButton>
-              <IonButton fill="solid" onClick={handleSaveBranch}>
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Edit Branch: {editingBranch?.officeName}</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <IonInput
+                label="Office Name"
+                labelPlacement="stacked"
+                value={editingBranch?.officeName}
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonSelect
+                label="Office Type"
+                labelPlacement="stacked"
+                value={editingBranch?.officeType}
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              >
+                <IonSelectOption value="head-office">Head Office</IonSelectOption>
+                <IonSelectOption value="branch-office">Branch Office</IonSelectOption>
+                <IonSelectOption value="sub-office">Sub Office</IonSelectOption>
+                <IonSelectOption value="service-center">Service Center</IonSelectOption>
+              </IonSelect>
+              <IonInput
+                label="Branch ID"
+                labelPlacement="stacked"
+                value={editingBranch?.id}
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonButton 
+                expand="block" 
+                style={{ 
+                  '--background': 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
+                  '--color': 'white',
+                  '--border-radius': '12px',
+                  marginTop: '1rem'
+                }}
+                onClick={handleSaveBranch}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
                 Update Branch
               </IonButton>
             </div>
@@ -464,6 +515,13 @@ const BranchMaster: React.FC = () => {
           { text: 'Delete', role: 'destructive', handler: confirmDelete }
         ]}
       />
+
+      {/* Floating Action Button */}
+      <IonFab vertical="bottom" horizontal="end" slot="fixed">
+        <IonFabButton className="fab-add-branch" onClick={handleAddBranch}>
+          <IonIcon icon={addOutline} />
+        </IonFabButton>
+      </IonFab>
 
       {/* Toast for notifications */}
       <IonToast
