@@ -180,7 +180,7 @@
 
 /* Sidebar Content */
 .sidebar-content {
-  --background: var(--color-bg-primary);
+  --background: transparent;
   --padding-start: 0;
   --padding-end: 0;
   --padding-top: 0;
@@ -199,6 +199,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  padding: 0 1rem 0 1.5rem;
 }
 
 .sidebar-list {
@@ -217,7 +218,7 @@
 .sidebar-item {
   --background: transparent;
   --color: var(--color-text-primary);
-  --padding-start: 1rem;
+  --padding-start: 0.5rem;
   --padding-end: 0.5rem;
   --padding-top: 0.5rem;
   --padding-bottom: 0.5rem;
@@ -269,7 +270,7 @@
 
 /* Menu Headers */
 .menu-header {
-  --background: var(--color-bg-secondary);
+  --background: transparent;
   --color: var(--color-text-primary);
   --border-width: 0;
   --border-style: none;
@@ -293,7 +294,7 @@
 
 /* Submenu */
 .submenu {
-  background: var(--color-bg-secondary);
+  background: transparent;
   border-left: 3px solid var(--color-primary);
   --border: none;
   --border-width: 0;
@@ -302,7 +303,7 @@
 }
 
 .submenu-item {
-  --padding-start: 1.5rem;
+  --padding-start: 1rem;
   --background: transparent;
   --color: var(--color-text-secondary);
   --border-width: 0;
@@ -335,8 +336,8 @@
 
 /* Sidebar Footer */
 .sidebar-footer {
-  padding: 1rem;
-  background: var(--color-bg-primary);
+  padding: 1rem 1rem 1rem 1.5rem;
+  background: transparent;
   border-top: 1px solid var(--color-border-light);
   margin-top: auto;
   flex-shrink: 0;
@@ -376,12 +377,12 @@
   }
   
   .sidebar-item {
-    --padding-start: 1rem;
-    --padding-end: 0.75rem;
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
   }
   
   .submenu-item {
-    --padding-start: 1.5rem;
+    --padding-start: 1rem;
   }
 }
 
