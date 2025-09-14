@@ -28,7 +28,17 @@ const SchemeCategories: React.FC = () => {
       description: 'Empowering rural entrepreneurs through direct credit.',
       icon: cashOutline,
       color: 'primary',
-      hasModal: false
+      hasModal: true,
+      modalTitle: 'Direct Finance Scheme (State)',
+      details: [
+        { label: 'Loan Range', value: '₹50,001 - ₹5,00,000' },
+        { label: 'Subsidy', value: '100% (Max ₹50,000)' },
+        { label: 'Own Contribution', value: '5%' },
+        { label: 'MPBCDC Interest', value: '4%' },
+        { label: 'Partner Share', value: '75%' },
+        { label: 'Tenure', value: '3 - 5 years' },
+        { label: 'Interest', value: 'Simple Interest' }
+      ]
     },
     {
       title: 'Margin Money Scheme',
@@ -119,26 +129,29 @@ const SchemeCategories: React.FC = () => {
         <IonRow>
           {schemes.map((scheme, index) => (
             <IonCol size="12" sizeMd="4" key={index}>
-              <IonCard className="scheme-categories__card">
-                <IonCardHeader>
-                  <div className="scheme-categories__icon-container">
-                    <IonIcon 
-                      icon={scheme.icon} 
-                      className="scheme-categories__icon"
+              <IonCard className="scheme-card">
+                <IonCardHeader className="scheme-card__header">
+                  <div className="scheme-card__icon-container">
+                    <IonIcon
+                      icon={scheme.icon}
+                      className="scheme-card__icon"
                       style={{ color: `var(--ion-color-${scheme.color})` }}
                     />
                   </div>
-                  <IonCardTitle>{scheme.title}</IonCardTitle>
+                  <IonCardTitle className="scheme-card__title">
+                    {scheme.title}
+                  </IonCardTitle>
                 </IonCardHeader>
-                
-                <IonCardContent>
-                  <p className="scheme-categories__description">
+
+                <IonCardContent className="scheme-card__content">
+                  <p className="scheme-card__description">
                     {scheme.description}
                   </p>
-                  
-                  <IonButton 
-                    fill="clear" 
+
+                  <IonButton
+                    fill="clear"
                     color={scheme.color}
+                    className="scheme-card__button"
                     onClick={() => scheme.hasModal ? openModal(scheme.title) : null}
                   >
                     {scheme.hasModal ? 'Read More' : 'View Details'}
@@ -146,8 +159,11 @@ const SchemeCategories: React.FC = () => {
                   </IonButton>
                 </IonCardContent>
               </IonCard>
+
+
             </IonCol>
           ))}
+
         </IonRow>
       </IonGrid>
 

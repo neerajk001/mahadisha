@@ -1,8 +1,43 @@
 /* Summary Cards Container */
 .summary-cards-container {
-  padding: 1.5rem;
+  /* padding: 1.5rem; */
   background: var(--color-bg-secondary);
 }
+
+.summary-card-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.card-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.card-icon {
+  font-size: 42px; /* big & colorful */
+  /* flex-shrink: 0; */
+}
+
+.card-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+}
+
+.card-value {
+  font-size: 20px;
+  font-weight: bold;
+  color: #222;
+}
+
 
 /* Summary Card */
 .summary-card {
@@ -41,7 +76,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px var(--color-shadow-light);
+  /* box-shadow: 0 4px 12px var(--color-shadow-light); */
   transition: all 0.3s ease;
 }
 
@@ -181,9 +216,9 @@
 }
 
 /* Hover effects for different card types */
-.summary-card:nth-child(1) .card-icon {
-  background: var(--color-primary) !important;
-}
+/* .summary-card:nth-child(1) .card-icon { */
+  /* background: var(--color-primary) !important; */
+/* } */
 
 .summary-card:nth-child(2) .card-icon,
 .summary-card:nth-child(3) .card-icon,

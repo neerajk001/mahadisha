@@ -1,6 +1,6 @@
 /* Charts Section Container */
 .charts-section-container {
-  padding: 1.5rem;
+  /* padding: 1.5rem; */
   background: var(--color-bg-secondary);
 }
 
@@ -206,13 +206,13 @@
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-  .charts-section-container {
-    padding: 1.25rem;
-  }
+  /* .charts-section-container { */
+    /* padding: 1.25rem; */
+  /* } */
   
-  .chart-content {
+  /* .chart-content {
     padding: 1.25rem;
-  }
+  } */
   
   .bar-chart,
   .line-chart {

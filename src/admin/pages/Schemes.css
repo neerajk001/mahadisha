@@ -407,9 +407,9 @@ ion-searchbar::part(searchbar-input) {
 }
 
 /* Grid spacing */
-ion-grid {
+/* ion-grid {
   --ion-grid-padding: 1rem;
-}
+} */
 
 ion-row {
   --ion-grid-column-padding: 1rem;

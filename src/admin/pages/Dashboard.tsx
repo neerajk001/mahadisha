@@ -24,14 +24,14 @@ const Dashboard: React.FC = () => {
     dateRange: 'all'
   });
 
-  const { 
-    summary, 
-    monthlyChart, 
-    districtChart, 
-    filterOptions, 
-    isLoading, 
-    error, 
-    refreshData 
+  const {
+    summary,
+    monthlyChart,
+    districtChart,
+    filterOptions,
+    isLoading,
+    error,
+    refreshData
   } = useDashboard(filters);
 
   const handleFilterChange = (newFilters: Partial<ActiveFilters>) => {
@@ -41,15 +41,11 @@ const Dashboard: React.FC = () => {
   return (
     <IonPage>
       <IonSplitPane contentId="dashboard-content" when="md">
-        {/* Sidebar */}
         <Sidebar />
-        
-        {/* Main Content */}
+
         <div className="main-content" id="dashboard-content">
-          {/* Header */}
           <DashboardHeader />
-          
-          {/* Dashboard Content */}
+
           <IonContent className="dashboard-content">
             {isLoading ? (
               <div className="dashboard-loading">
@@ -59,23 +55,19 @@ const Dashboard: React.FC = () => {
             ) : error ? (
               <div className="dashboard-error">
                 <p>Error: {error}</p>
-                <button onClick={() => refreshData()}>Retry</button>
+                <button onClick={refreshData}>Retry</button>
               </div>
             ) : (
               <>
-                {/* Summary Cards */}
                 <SummaryCards data={summary} />
-                
-                {/* Charts Section */}
-                <ChartsSection 
-                  monthlyData={monthlyChart} 
+                <ChartsSection
+                  monthlyData={monthlyChart}
                   districtData={districtChart}
                 />
               </>
             )}
           </IonContent>
-          
-          {/* Floating Action Button */}
+
           <IonFab vertical="bottom" horizontal="end" slot="fixed">
             <IonFabButton className="fab-button">
               <IonIcon icon={addOutline} />
