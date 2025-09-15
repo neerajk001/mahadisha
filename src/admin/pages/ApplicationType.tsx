@@ -143,8 +143,11 @@ const ApplicationType: React.FC = () => {
 
   // Filter and search logic
   const filteredApplicationTypes = applicationTypes?.filter(type => {
-    const matchesSearch = type.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (type.description && type.description.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesSearch = searchTerm === '' || 
+                         type.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (type.description && type.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                         (type.isActive && 'active'.includes(searchTerm.toLowerCase())) ||
+                         (!type.isActive && 'inactive'.includes(searchTerm.toLowerCase()));
     
     const matchesStatus = statusFilter === 'all' || 
                          (statusFilter === 'active' && type.isActive) ||
@@ -183,7 +186,7 @@ const ApplicationType: React.FC = () => {
                 <IonSearchbar
                   value={searchTerm}
                   onIonInput={(e) => setSearchTerm(e.detail.value!)}
-                  placeholder="Search application types..."
+                  placeholder="Search by name, description, or status..."
                   className="admin-search"
                 />
                 <IonSelect
@@ -198,6 +201,18 @@ const ApplicationType: React.FC = () => {
                 </IonSelect>
               </div>
 
+              {/* Results Counter */}
+              {filteredApplicationTypes.length !== applicationTypes?.length && (
+                <div className="results-info">
+                  <span className="results-count">
+                    Showing {filteredApplicationTypes.length} of {applicationTypes?.length || 0} application types
+                  </span>
+                  {searchTerm && (
+                    <span className="search-term">for "{searchTerm}"</span>
+                  )}
+                </div>
+              )}
+
               {/* Application Types List */}
               <div className="list-container">
                 <div className="list-header">
@@ -210,9 +225,6 @@ const ApplicationType: React.FC = () => {
                     </div>
                     <div className="header-column status-column">
                       <span>Status</span>
-                    </div>
-                    <div className="header-column usage-column">
-                      <span>Usage</span>
                     </div>
                     <div className="header-column actions-column">
                       <span>Actions</span>
@@ -236,6 +248,15 @@ const ApplicationType: React.FC = () => {
                     }}>
                       Retry
                     </IonButton>
+                  </div>
+                ) : filteredApplicationTypes.length === 0 ? (
+                  <div className="no-results-container">
+                    <p>No application types found</p>
+                    {searchTerm || statusFilter !== 'all' ? (
+                      <p className="no-results-suggestion">
+                        Try adjusting your search terms or filters
+                      </p>
+                    ) : null}
                   </div>
                 ) : (
                   <IonList className="application-types-list">
@@ -262,12 +283,6 @@ const ApplicationType: React.FC = () => {
                               onIonChange={() => handleToggleStatus(type)}
                               className="status-toggle"
                             />
-                          </div>
-                          <div className="item-column usage-column">
-                            <span className="usage-count">
-                              {/* TODO: Get actual usage count from API */}
-                              {Math.floor(Math.random() * 50)} apps
-                            </span>
                           </div>
                           <div className="item-column actions-column">
                             <div className="action-buttons">

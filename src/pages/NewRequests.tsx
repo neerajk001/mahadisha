@@ -24,8 +24,10 @@ import DashboardHeader from '../admin/components/header/DashboardHeader';
 // Import RequestCard component
 import RequestCard from '../components/requests/RequestCardNew';
 import RequestList from '../components/requests/RequestList';
+import RepaymentModal from '../components/requests/RepaymentModal';
 import { useLoanRequests } from '../hooks/useLoanRequests';
-import { RequestSearchParams, RequestFilters } from '../types';
+import { RequestSearchParams, RequestFilters, LoanRequest, EMISchedule } from '../types';
+import { generateMockEmiSchedule } from '../utils/mockEmiGenerator';
 import './NewRequests.css';
 
 const NewRequests: React.FC = () => {
@@ -42,6 +44,9 @@ const NewRequests: React.FC = () => {
   const [selectedRequest, setSelectedRequest] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [showRepaymentModal, setShowRepaymentModal] = useState(false);
+  const [selectedRequestForRepayment, setSelectedRequestForRepayment] = useState<LoanRequest | null>(null);
+  const [emiSchedule, setEmiSchedule] = useState<EMISchedule[]>([]);
 
   const searchParams: RequestSearchParams = useMemo(() => ({
     query: searchQuery,
@@ -117,14 +122,29 @@ const NewRequests: React.FC = () => {
 
   const handleRepayment = async (requestId: string) => {
     try {
-      const schedule = await getRepaymentSchedule(requestId);
-      console.log('Repayment schedule:', schedule);
-      // TODO: Show repayment modal or navigate to repayment page
+      const request = requests?.find(req => req.id === requestId);
+      if (!request) {
+        setToastMessage('Request not found');
+        setShowToast(true);
+        return;
+      }
+      
+      setSelectedRequestForRepayment(request);
+      
+      // Generate mock EMI schedule for demonstration
+      const mockEmiSchedule: EMISchedule[] = generateMockEmiSchedule(request);
+      setEmiSchedule(mockEmiSchedule);
+      setShowRepaymentModal(true);
+      
+      // TODO: Replace with actual API call
+      // const schedule = await getRepaymentSchedule(requestId);
+      // setEmiSchedule(schedule);
     } catch (error) {
       setToastMessage('Failed to load repayment schedule');
       setShowToast(true);
     }
   };
+  
 
   const statusOptions = [
     { value: 'all', label: 'All Status' },
@@ -305,6 +325,18 @@ const NewRequests: React.FC = () => {
         message={toastMessage}
         duration={3000}
         position="top"
+      />
+
+      {/* Repayment Modal */}
+      <RepaymentModal
+        isOpen={showRepaymentModal}
+        onClose={() => {
+          setShowRepaymentModal(false);
+          setSelectedRequestForRepayment(null);
+          setEmiSchedule([]);
+        }}
+        request={selectedRequestForRepayment}
+        emiSchedule={emiSchedule}
       />
     </IonPage>
   );

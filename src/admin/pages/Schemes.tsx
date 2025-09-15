@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
   IonSearchbar, IonButton, IonButtons, IonIcon, IonSelect, IonSelectOption, IonGrid, IonRow, IonCol,
@@ -8,11 +9,10 @@ import {
 } from '@ionic/react';
 import { 
   chevronBackOutline, chevronForwardOutline, searchOutline, 
-  createOutline, trashOutline, arrowUpOutline, arrowDownOutline,
+  createOutline, trashOutline,
   filterOutline, closeOutline, checkmarkOutline, eyeOutline,
-  documentOutline, informationCircleOutline, starOutline, timeOutline,
-  peopleOutline, cashOutline, calendarOutline, refreshOutline,
-  gridOutline, appsOutline
+  informationCircleOutline, starOutline, timeOutline,
+  peopleOutline, cashOutline, calendarOutline, refreshOutline
 } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
@@ -21,10 +21,11 @@ import type { Scheme, SchemeFilters } from '../../types';
 import './Schemes.css';
 
 const Schemes: React.FC = () => {
+  const history = useHistory();
   const [searchQuery, setSearchQuery] = useState('');
-  const [typeFilter, setTypeFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('name');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  // Set default values since UI controls are removed  
+  const [sortBy] = useState('name'); // Always sort by name
+  const [sortOrder] = useState<'asc' | 'desc'>('asc'); // Always ascending
   const [currentPage, setCurrentPage] = useState(1);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [selectedSchemeId, setSelectedSchemeId] = useState<string | null>(null);
@@ -38,7 +39,6 @@ const Schemes: React.FC = () => {
   const [showBulkActions, setShowBulkActions] = useState(false);
   const [showSchemeDetails, setShowSchemeDetails] = useState(false);
   const [selectedSchemeForDetails, setSelectedSchemeForDetails] = useState<Scheme | null>(null);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const cardsPerPage = 6;
 
@@ -59,9 +59,9 @@ const Schemes: React.FC = () => {
       );
     }
 
-    // Apply type filter
-    if (typeFilter !== 'all') {
-      filtered = filtered.filter(scheme => scheme.type === typeFilter);
+    // Apply type filter from advanced filters
+    if (advancedFilters.type && advancedFilters.type.length > 0) {
+      filtered = filtered.filter(scheme => advancedFilters.type!.includes(scheme.type));
     }
 
     // Apply advanced filters
@@ -141,7 +141,7 @@ const Schemes: React.FC = () => {
     });
 
     return filtered;
-  }, [allSchemes, searchQuery, typeFilter, sortBy, sortOrder]);
+  }, [allSchemes, searchQuery, advancedFilters, sortBy, sortOrder]);
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredAndSortedSchemes.length / cardsPerPage);
@@ -149,15 +149,10 @@ const Schemes: React.FC = () => {
   const endIndex = startIndex + cardsPerPage;
   const currentSchemes = filteredAndSortedSchemes.slice(startIndex, endIndex);
 
-  // Get unique types for filter dropdown
-  const schemeTypes = useMemo(() => {
-    const types = Array.from(new Set(allSchemes.map(scheme => scheme.type)));
-    return types;
-  }, [allSchemes]);
 
   const handleApply = (schemeId: string) => {
-    setToastMessage('Apply functionality will be implemented');
-    setShowToast(true);
+    // Navigate to Loan Application page and pass the schemeId
+    history.push(`/loan-application?schemeId=${schemeId}`);
   };
 
   const handleEdit = (schemeId: string) => {
@@ -196,14 +191,6 @@ const Schemes: React.FC = () => {
     }
   };
 
-  const handleSortChange = (newSortBy: string) => {
-    if (sortBy === newSortBy) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortBy(newSortBy);
-      setSortOrder('asc');
-    }
-  };
 
   // Advanced filtering handlers
   const handleAdvancedFilterChange = (filterType: keyof SchemeFilters, value: any) => {
@@ -300,6 +287,10 @@ const Schemes: React.FC = () => {
     return Array.from(new Set(allTags));
   }, [allSchemes]);
 
+  const uniqueTypes = useMemo(() => {
+    return Array.from(new Set(allSchemes.map(scheme => scheme.type)));
+  }, [allSchemes]);
+
   return (
     <IonPage>
       <IonSplitPane contentId="dashboard-content" when="md">
@@ -343,15 +334,6 @@ const Schemes: React.FC = () => {
                 </IonButton>
 
                 <IonButton 
-                  fill="outline"
-                  onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-                  className="view-toggle-button"
-                >
-                  <IonIcon icon={viewMode === 'grid' ? documentOutline : appsOutline} />
-                  {viewMode === 'grid' ? 'List' : 'Grid'}
-                </IonButton>
-
-                <IonButton 
                   fill="solid" 
                   disabled={currentPage === totalPages}
                   onClick={handleNextPage}
@@ -362,52 +344,6 @@ const Schemes: React.FC = () => {
                 </IonButton>
               </div>
 
-              {/* Filters and Sort */}
-              <div className="schemes-filters">
-                <div className="filter-group">
-                  <label className="filter-label">Type</label>
-                  <IonSelect
-                    value={typeFilter}
-                    onIonChange={(e) => setTypeFilter(e.detail.value)}
-                    placeholder="All"
-                    className="filter-select"
-                    interface="popover"
-                  >
-                    <IonSelectOption value="all">All</IonSelectOption>
-                    {schemeTypes.map(type => (
-                      <IonSelectOption key={type} value={type}>{type}</IonSelectOption>
-                    ))}
-                  </IonSelect>
-                </div>
-
-                <div className="filter-group">
-                  <label className="filter-label">Sort By</label>
-                  <IonSelect
-                    value={sortBy}
-                    onIonChange={(e) => handleSortChange(e.detail.value)}
-                    placeholder="Name"
-                    className="filter-select"
-                    interface="popover"
-                  >
-                    <IonSelectOption value="name">Name</IonSelectOption>
-                    <IonSelectOption value="minLoan">Min Loan</IonSelectOption>
-                    <IonSelectOption value="maxLoan">Max Loan</IonSelectOption>
-                    <IonSelectOption value="subsidy">Subsidy</IonSelectOption>
-                  </IonSelect>
-                </div>
-
-                <div className="filter-group">
-                  <IonButton
-                    fill="outline"
-                    size="small"
-                    onClick={() => handleSortChange(sortBy)}
-                    className="sort-order-button"
-                  >
-                    <IonIcon icon={sortOrder === 'asc' ? arrowUpOutline : arrowDownOutline} />
-                    {sortOrder === 'asc' ? 'Asc' : 'Desc'}
-                  </IonButton>
-                </div>
-              </div>
 
               {/* Bulk Actions */}
               {selectedSchemes.length > 0 && (
@@ -469,7 +405,7 @@ const Schemes: React.FC = () => {
                 <IonGrid>
                   <IonRow>
                     {currentSchemes.map((scheme) => (
-                      <IonCol size="12" size-md="6" size-lg="4" key={scheme.id}>
+                      <IonCol size="12" size-md="6" size-lg="6" key={scheme.id}>
                         <IonCard className="scheme-card">
                           <IonCardHeader className="scheme-header">
                             <div className="scheme-header-content">
@@ -535,23 +471,6 @@ const Schemes: React.FC = () => {
                                 <div className="detail-row">
                                   <span className="detail-label">Usage Count:</span>
                                   <span className="detail-value">{scheme.usageCount} applications</span>
-                                </div>
-                              )}
-                              {scheme.tags && scheme.tags.length > 0 && (
-                                <div className="detail-row">
-                                  <span className="detail-label">Tags:</span>
-                                  <div className="scheme-tags">
-                                    {scheme.tags.slice(0, 3).map((tag, index) => (
-                                      <IonChip key={index} className="scheme-tag">
-                                        <IonLabel>{tag}</IonLabel>
-                                      </IonChip>
-                                    ))}
-                                    {scheme.tags.length > 3 && (
-                                      <IonChip className="scheme-tag-more">
-                                        <IonLabel>+{scheme.tags.length - 3}</IonLabel>
-                                      </IonChip>
-                                    )}
-                                  </div>
                                 </div>
                               )}
                             </div>
@@ -640,6 +559,30 @@ const Schemes: React.FC = () => {
         </IonHeader>
         <IonContent className="advanced-filters-content">
           <div className="filters-container">
+            {/* Type Filter */}
+            <div className="filter-section">
+              <IonText color="primary">
+                <h3>Type</h3>
+              </IonText>
+              <div className="filter-options">
+                {uniqueTypes.map(type => (
+                  <IonItem key={type}>
+                    <IonCheckbox
+                      checked={advancedFilters.type?.includes(type) || false}
+                      onIonChange={(e) => {
+                        const currentTypes = advancedFilters.type || [];
+                        const newTypes = e.detail.checked
+                          ? [...currentTypes, type]
+                          : currentTypes.filter(t => t !== type);
+                        handleAdvancedFilterChange('type', newTypes);
+                      }}
+                    />
+                    <IonLabel>{type}</IonLabel>
+                  </IonItem>
+                ))}
+              </div>
+            </div>
+
             {/* Status Filter */}
             <div className="filter-section">
               <IonText color="primary">

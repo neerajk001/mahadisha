@@ -14,25 +14,20 @@ import {
   IonToast
 } from '@ionic/react';
 import { 
-  eyeOutline, 
-  mailOutline, 
-  documentOutline,
-  cardOutline,
-  listOutline,
   refreshOutline
 } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 // Import RequestCard component
 import RequestCardNew from '../../components/requests/RequestCardNew';
-import RequestList from '../../components/requests/RequestList';
+import RepaymentModal from '../../components/requests/RepaymentModal';
 import { useLoanRequests } from '../hooks/useLoanRequests';
-import { RequestSearchParams, RequestFilters } from '../../types';
+import { RequestSearchParams, RequestFilters, LoanRequest, EMISchedule } from '../../types';
+import { generateMockEmiSchedule } from '../../utils/mockEmiGenerator';
 import './NewRequests.css';
 
 const NewRequests: React.FC = () => {
   const history = useHistory();
-  const [viewMode, setViewMode] = useState<'card' | 'list'>('card');
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<RequestFilters>({
     status: 'all',
@@ -44,6 +39,9 @@ const NewRequests: React.FC = () => {
   const [selectedRequest, setSelectedRequest] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [showRepaymentModal, setShowRepaymentModal] = useState(false);
+  const [selectedRequestForRepayment, setSelectedRequestForRepayment] = useState<LoanRequest | null>(null);
+  const [emiSchedule, setEmiSchedule] = useState<EMISchedule[]>([]);
 
   const searchParams: RequestSearchParams = useMemo(() => ({
     query: searchQuery,
@@ -119,9 +117,23 @@ const NewRequests: React.FC = () => {
 
   const handleRepayment = async (requestId: string) => {
     try {
-      const schedule = await getRepaymentSchedule(requestId);
-      console.log('Repayment schedule:', schedule);
-      // TODO: Show repayment modal or navigate to repayment page
+      const request = requests?.find(req => req.id === requestId) || null;
+      if (!request) {
+        setToastMessage('Request not found');
+        setShowToast(true);
+        return;
+      }
+
+      setSelectedRequestForRepayment(request);
+
+      // For now, generate a mock EMI schedule to populate the modal UI
+      const mockSchedule = generateMockEmiSchedule(request);
+      setEmiSchedule(mockSchedule);
+      setShowRepaymentModal(true);
+
+      // TODO: Replace with actual API data when available
+      // const schedule = await getRepaymentSchedule(requestId);
+      // setEmiSchedule(schedule);
     } catch (error) {
       setToastMessage('Failed to load repayment schedule');
       setShowToast(true);
@@ -207,28 +219,7 @@ const NewRequests: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="view-controls">
-                  <div className="view-toggle">
-                    <IonButton
-                      fill={viewMode === 'card' ? 'solid' : 'outline'}
-                      size="small"
-                      onClick={() => setViewMode('card')}
-                      className="view-button"
-                    >
-                      <IonIcon icon={cardOutline} slot="start" />
-                      Card View
-                    </IonButton>
-                    <IonButton
-                      fill={viewMode === 'list' ? 'solid' : 'outline'}
-                      size="small"
-                      onClick={() => setViewMode('list')}
-                      className="view-button"
-                    >
-                      <IonIcon icon={listOutline} slot="start" />
-                      List View
-                    </IonButton>
-                  </div>
-                  
+                <div className="refresh-controls">
                   <IonButton
                     fill="clear"
                     size="small"
@@ -236,6 +227,7 @@ const NewRequests: React.FC = () => {
                     className="refresh-button"
                   >
                     <IonIcon icon={refreshOutline} />
+                    Refresh
                   </IonButton>
                 </div>
               </div>
@@ -261,25 +253,14 @@ const NewRequests: React.FC = () => {
                       <p>Showing {requests?.length || 0} of {pagination.total} requests</p>
                     </div>
                     
-                        {viewMode === 'card' ? (
-                          <RequestCardNew
-                            requests={requests || []}
-                            onStatusChange={handleStatusChange}
-                            onViewDetails={handleViewDetails}
-                            onSendEmail={handleSendEmail}
-                            onDownloadPDF={handleDownloadPDF}
-                            onRepayment={handleRepayment}
-                          />
-                        ) : (
-                      <RequestList
-                        requests={requests || []}
-                        onStatusChange={handleStatusChange}
-                        onViewDetails={handleViewDetails}
-                        onSendEmail={handleSendEmail}
-                        onDownloadPDF={handleDownloadPDF}
-                        onRepayment={handleRepayment}
-                      />
-                    )}
+                    <RequestCardNew
+                      requests={requests || []}
+                      onStatusChange={handleStatusChange}
+                      onViewDetails={handleViewDetails}
+                      onSendEmail={handleSendEmail}
+                      onDownloadPDF={handleDownloadPDF}
+                      onRepayment={handleRepayment}
+                    />
                   </>
                 )}
               </div>
@@ -313,6 +294,17 @@ const NewRequests: React.FC = () => {
         message={toastMessage}
         duration={3000}
         position="top"
+      />
+
+      <RepaymentModal
+        isOpen={showRepaymentModal}
+        onClose={() => {
+          setShowRepaymentModal(false);
+          setSelectedRequestForRepayment(null);
+          setEmiSchedule([]);
+        }}
+        request={selectedRequestForRepayment}
+        emiSchedule={emiSchedule}
       />
     </IonPage>
   );

@@ -8,7 +8,8 @@ import {
 import { 
   clipboardOutline, folderOutline, personOutline, homeOutline, 
   documentTextOutline, shieldCheckmarkOutline, businessOutline,
-  arrowBackOutline, downloadOutline, mailOutline, refreshOutline
+  arrowBackOutline, downloadOutline, mailOutline, refreshOutline,
+  checkmarkCircleOutline, closeCircleOutline, warningOutline
 } from 'ionicons/icons';
 import { useParams, useHistory } from 'react-router-dom';
 import Sidebar from '../admin/components/sidebar/Sidebar';
@@ -28,6 +29,8 @@ const ViewDetails: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [showActionAlert, setShowActionAlert] = useState(false);
+  const [selectedAction, setSelectedAction] = useState<string>('');
 
   useEffect(() => {
     fetchRequestDetails();
@@ -62,6 +65,63 @@ const ViewDetails: React.FC = () => {
   const handleSendEmail = () => {
     setAlertMessage('Email functionality will be implemented');
     setShowAlert(true);
+  };
+
+  const handleAction = (action: string) => {
+    setSelectedAction(action);
+    setShowActionAlert(true);
+  };
+
+  const confirmAction = async () => {
+    try {
+      // Here you would make the API call to update the request status
+      let newStatus = '';
+      let message = '';
+      
+      switch (selectedAction) {
+        case 'next_action':
+          newStatus = 'under_review';
+          message = 'Request moved to next action successfully';
+          break;
+        case 'reject':
+          newStatus = 'rejected';
+          message = 'Request has been rejected';
+          break;
+        case 'incomplete':
+          newStatus = 'incomplete';
+          message = 'Request marked as incomplete';
+          break;
+      }
+      
+      // TODO: Replace with actual API call
+      // await updateRequestStatus(id, newStatus);
+      
+      setToastMessage(message);
+      setShowToast(true);
+      
+      // Refresh the data after action
+      await fetchRequestDetails();
+      
+    } catch (error) {
+      setToastMessage('Failed to perform action. Please try again.');
+      setShowToast(true);
+    } finally {
+      setShowActionAlert(false);
+      setSelectedAction('');
+    }
+  };
+
+  const getActionAlertMessage = () => {
+    switch (selectedAction) {
+      case 'next_action':
+        return 'Are you sure you want to move this request to the next action?';
+      case 'reject':
+        return 'Are you sure you want to reject this request?';
+      case 'incomplete':
+        return 'Are you sure you want to mark this request as incomplete?';
+      default:
+        return '';
+    }
   };
 
   const formatCurrency = (amount: number) => {
@@ -554,20 +614,56 @@ const ViewDetails: React.FC = () => {
             </IonCardTitle>
           </IonCardHeader>
           <IonCardContent>
-            <div className="collaterals-list">
-              {collaterals.map((collateral) => (
-                <div key={collateral.id} className="collateral-item">
-                  <div className="collateral-info">
-                    <IonIcon icon={businessOutline} className="collateral-icon" />
-                    <div className="collateral-details">
-                      <span className="collateral-type">{collateral.type}</span>
-                      <span className="collateral-description">{collateral.description}</span>
-                      <span className="collateral-value">{formatCurrency(collateral.value)}</span>
-                      <span className="collateral-location">{collateral.location}</span>
+            {collaterals && collaterals.length > 0 ? (
+              <div className="collaterals-list">
+                {collaterals.map((collateral) => (
+                  <div key={collateral.id} className="collateral-item">
+                    <div className="collateral-info">
+                      <IonIcon icon={businessOutline} className="collateral-icon" />
+                      <div className="collateral-details">
+                        <span className="collateral-type">{collateral.type}</span>
+                        <span className="collateral-description">{collateral.description}</span>
+                        <span className="collateral-value">{formatCurrency(collateral.value)}</span>
+                        <span className="collateral-location">{collateral.location}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+            ) : (
+              <div className="no-collaterals">
+                <p>No Collaterals provided.</p>
+              </div>
+            )}
+            
+            {/* Action Buttons in Collaterals Section */}
+            <div className="collateral-action-buttons">
+              <IonButton 
+                className="action-button next-action-button"
+                onClick={() => handleAction('next_action')}
+                disabled={requestDetails.status === 'approved' || requestDetails.status === 'rejected'}
+              >
+                <IonIcon icon={checkmarkCircleOutline} slot="start" />
+                Next Action
+              </IonButton>
+              
+              <IonButton 
+                className="action-button reject-button"
+                onClick={() => handleAction('reject')}
+                disabled={requestDetails.status === 'approved' || requestDetails.status === 'rejected'}
+              >
+                <IonIcon icon={closeCircleOutline} slot="start" />
+                Reject
+              </IonButton>
+              
+              <IonButton 
+                className="action-button incomplete-button"
+                onClick={() => handleAction('incomplete')}
+                disabled={requestDetails.status === 'approved' || requestDetails.status === 'rejected'}
+              >
+                <IonIcon icon={warningOutline} slot="start" />
+                Incomplete Application
+              </IonButton>
             </div>
           </IonCardContent>
         </IonCard>
@@ -710,6 +806,23 @@ const ViewDetails: React.FC = () => {
         header="Information"
         message={alertMessage}
         buttons={['OK']}
+      />
+
+      <IonAlert
+        isOpen={showActionAlert}
+        onDidDismiss={() => setShowActionAlert(false)}
+        header="Confirm Action"
+        message={getActionAlertMessage()}
+        buttons={[
+          {
+            text: 'Cancel',
+            role: 'cancel'
+          },
+          {
+            text: 'Confirm',
+            handler: confirmAction
+          }
+        ]}
       />
 
       <IonToast
