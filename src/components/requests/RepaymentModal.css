@@ -1,0 +1,337 @@
+.repayment-modal {
+  --width: 95%;
+  --max-width: 1200px;
+  --height: 90%;
+  --border-radius: 16px;
+  --backdrop-opacity: 0.3;
+}
+
+/* Toolbar */
+.repayment-toolbar {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --color: white;
+  --border-radius: 16px 16px 0 0;
+  font-weight: 600;
+}
+
+/* Content */
+.repayment-content {
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --background: #f8fafc;
+}
+
+/* Loan Information Card */
+.loan-info-card {
+  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+}
+
+.loan-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 12px;
+}
+
+.info-icon {
+  font-size: 24px;
+  color: #667eea;
+  margin-top: 4px;
+}
+
+
+.info-label {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #1e293b;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.info-loan-id {
+  font-size: 12px;
+  color: #667eea;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.info-applicant {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Loan Details Row */
+.loan-details-row {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.detail-item {
+  margin-bottom: 12px;
+}
+
+.detail-label {
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.detail-value {
+  font-size: 13px;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.status-badge {
+  font-size: 11px;
+  padding: 4px 8px;
+}
+
+/* EMI Status Section */
+.emi-status-section {
+  margin-bottom: 24px;
+}
+
+.emi-status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.emi-count {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-section ion-text {
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.status-filter {
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.status-filter:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Restructure Button */
+.restructure-button {
+  --background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --color: white;
+  font-weight: 600;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  text-transform: none;
+}
+
+/* EMI Table */
+.emi-table-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 40px 120px 100px 100px 100px 100px 80px 80px 1fr;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 40px 120px 100px 100px 100px 100px 80px 80px 1fr;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  transition: background-color 0.2s ease;
+  align-items: center;
+}
+
+.table-row:hover {
+  background-color: #f8fafc;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-cell {
+  font-size: 13px;
+  color: #374151;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table-header .table-cell {
+  color: white;
+  font-weight: 600;
+}
+
+
+/* Pagination */
+.pagination-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pagination-info ion-text {
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.pagination-button {
+  --color: #667eea;
+  font-weight: 600;
+  text-transform: none;
+}
+
+.pagination-button:disabled {
+  --color: #9ca3af;
+}
+
+/* Submit Button */
+.submit-changes-button {
+  --background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --color: white;
+  font-weight: 600;
+  margin-top: 20px;
+  border-radius: 8px;
+  text-transform: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .repayment-modal {
+    --width: 98%;
+    --height: 95%;
+  }
+  
+  .emi-status-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .pagination-section {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .table-header,
+  .table-row {
+    grid-template-columns: 30px 100px 80px 80px 80px 80px 60px 70px 1fr;
+    gap: 8px;
+    font-size: 11px;
+  }
+  
+  .table-cell {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .repayment-content {
+    --padding-start: 8px;
+    --padding-end: 8px;
+  }
+  
+  .loan-info-item {
+    padding: 12px;
+  }
+  
+  .table-header,
+  .table-row {
+    grid-template-columns: 25px 80px 70px 70px 70px 70px 50px 60px 1fr;
+    gap: 6px;
+    padding: 10px 8px;
+  }
+  
+  .table-cell {
+    font-size: 10px;
+  }
+  
+  .emi-count {
+    font-size: 18px;
+  }
+}
+
+/* Custom scrollbar for modal content */
+.repayment-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.repayment-content::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.repayment-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.repayment-content::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

@@ -51,6 +51,8 @@ export interface LoanRequest {
   documents: Document[];
   contactInfo: ContactInfo;
   repaymentSchedule?: RepaymentSchedule[];
+  scheme?: string;
+  secondaryLoanId?: string;
 }
 
 export interface Document {
@@ -74,6 +76,18 @@ export interface RepaymentSchedule {
   amount: number;
   status: 'pending' | 'paid' | 'overdue';
   paidDate?: string;
+}
+
+export interface EMISchedule {
+  id: string;
+  dueDate: string;
+  emiAmount: number;
+  interest: number;
+  principal: number;
+  balance: number;
+  penalty: number;
+  status: 'Paid' | 'Unpaid' | 'Overdue';
+  remarks?: string;
 }
 
 export interface RequestFilters {

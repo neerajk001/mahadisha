@@ -95,107 +95,100 @@ const RequestCardNew: React.FC<RequestCardProps> = ({
       <IonGrid>
         <IonRow>
           {requests.map((request) => (
-            <IonCol size="12" size-md="6" size-lg="4" key={request.id}>
-              <IonCard className="request-card">
-                <IonCardHeader>
-                  <div className="card-header">
-                    <div className="request-info">
-                      <IonCardTitle className="loan-id">{request.loanId}</IonCardTitle>
-                      <div className="request-meta">
-                        <IonChip color={getStatusColor(request.status)} className="status-chip">
-                          {formatStatus(request.status)}
-                        </IonChip>
-                        <IonChip color={getPriorityColor(request.priority)} className="priority-chip">
-                          {request.priority.toUpperCase()}
-                        </IonChip>
-                      </div>
-                    </div>
+            <IonCol size="12" size-md="6" size-lg="6" key={request.id}>
+              <IonCard className="request-card-new">
+                <IonCardHeader className="card-header-new">
+                  <IonCardTitle className="loan-id">{request.loanId}</IonCardTitle>
+                  <div className="status-row">
+                    <IonChip 
+                      color={getStatusColor(request.status)} 
+                      className="status-chip-new"
+                    >
+                      {formatStatus(request.status)}
+                    </IonChip>
+                    <IonChip 
+                      color={getPriorityColor(request.priority)} 
+                      className="priority-chip-new"
+                    >
+                      {request.priority.toUpperCase()}
+                    </IonChip>
                   </div>
                 </IonCardHeader>
 
-                <IonCardContent className="request-card-content">
-                  <div className="request-details">
-                    <div className="detail-row">
-                      <span className="detail-label">Activity:</span>
-                      <span className="detail-value">{request.activity}</span>
+                <IonCardContent className="card-content-new">
+                  <div className="info-section">
+                    <div className="info-item">
+                      <span className="info-label">ACTIVITY:</span>
+                      <span className="info-value">{request.activity}</span>
                     </div>
                     
-                    <div className="detail-row">
-                      <IonIcon icon={locationOutline} className="detail-icon" />
-                      <span className="detail-label">District:</span>
-                      <span className="detail-value">{request.district}</span>
+                    <div className="info-item">
+                      <span className="info-label">DISTRICT:</span>
+                      <span className="info-value">{request.district}</span>
                     </div>
                     
-                    <div className="detail-row">
-                      <IonIcon icon={cashOutline} className="detail-icon" />
-                      <span className="detail-label">Loan Amount:</span>
-                      <span className="detail-value amount">{formatCurrency(request.loanAmount)}</span>
+                    <div className="info-item">
+                      <span className="info-label">LOAN AMOUNT:</span>
+                      <span className="info-value amount">{formatCurrency(request.loanAmount)}</span>
                     </div>
                     
-                    <div className="detail-row">
-                      <span className="detail-label">Loan Term:</span>
-                      <span className="detail-value">{request.loanTerm} years</span>
+                    <div className="info-item">
+                      <span className="info-label">LOAN TERM:</span>
+                      <span className="info-value">{request.loanTerm} years</span>
                     </div>
                     
-                    <div className="detail-row">
-                      <span className="detail-label">Interest Rate:</span>
-                      <span className="detail-value">{request.interestRate}%</span>
+                    <div className="info-item">
+                      <span className="info-label">INTEREST RATE:</span>
+                      <span className="info-value">{request.interestRate}%</span>
                     </div>
                     
-                    <div className="detail-row">
-                      <span className="detail-label">Subsidy:</span>
-                      <span className="detail-value">Up to {formatCurrency(request.subsidy)}</span>
+                    <div className="info-item">
+                      <span className="info-label">SUBSIDY:</span>
+                      <span className="info-value">Up to {formatCurrency(request.subsidy)}</span>
                     </div>
                     
-                    <div className="detail-row">
-                      <IonIcon icon={calendarOutline} className="detail-icon" />
-                      <span className="detail-label">Applied:</span>
-                      <span className="detail-value">{formatDate(request.applicationDate)}</span>
+                    <div className="info-item">
+                      <span className="info-label">APPLIED:</span>
+                      <span className="info-value">{formatDate(request.applicationDate)}</span>
                     </div>
                   </div>
 
-                  <div className="action-buttons">
+                  <div className="action-buttons-horizontal">
                     <IonButton
-                      fill="clear"
-                      size="small"
-                      className="action-button view-button"
+                      fill="solid"
+                      className="action-btn repayment-btn"
+                      onClick={() => onRepayment(request.id)}
+                    >
+                      <IonIcon slot="start" icon={refreshOutline} />
+                      Repayments
+                    </IonButton>
+                    
+                    <IonButton
+                      fill="solid"
+                      className="action-btn view-btn"
                       onClick={() => onViewDetails(request.id)}
                     >
-                      <IonIcon icon={eyeOutline} />
-                      <span>View Details</span>
+                      <IonIcon slot="start" icon={eyeOutline} />
+                      View Details
                     </IonButton>
                     
                     <IonButton
-                      fill="clear"
-                      size="small"
-                      className="action-button email-button"
+                      fill="solid"
+                      className="action-btn email-btn"
                       onClick={() => onSendEmail(request.id)}
                     >
-                      <IonIcon icon={mailOutline} />
-                      <span>Send Email</span>
+                      <IonIcon slot="start" icon={mailOutline} />
+                      Send Email
                     </IonButton>
                     
                     <IonButton
-                      fill="clear"
-                      size="small"
-                      className="action-button pdf-button"
+                      fill="solid"
+                      className="action-btn pdf-btn"
                       onClick={() => onDownloadPDF(request.id)}
                     >
-                      <IonIcon icon={documentOutline} />
-                      <span>View PDF</span>
+                      <IonIcon slot="start" icon={documentOutline} />
+                      View PDF
                     </IonButton>
-                    
-                    {request.status === 'disbursed' && (
-                      <IonButton
-                        fill="clear"
-                        size="small"
-                        className="action-button repayment-button"
-                        onClick={() => onRepayment(request.id)}
-                      >
-                        <IonIcon icon={refreshOutline} />
-                        <span>Repayment</span>
-                      </IonButton>
-                    )}
                   </div>
                 </IonCardContent>
               </IonCard>
@@ -208,3 +201,4 @@ const RequestCardNew: React.FC<RequestCardProps> = ({
 };
 
 export default RequestCardNew;
+

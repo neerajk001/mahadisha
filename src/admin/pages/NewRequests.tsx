@@ -11,28 +11,28 @@ import {
   IonSelectOption,
   IonButton,
   IonAlert,
-  IonToast
+  IonToast,
+  IonPopover,
+  IonList,
+  IonItem,
+  IonLabel
 } from '@ionic/react';
 import { 
-  eyeOutline, 
-  mailOutline, 
-  documentOutline,
-  cardOutline,
-  listOutline,
-  refreshOutline
+  refreshOutline,
+  chevronDownOutline
 } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 // Import RequestCard component
 import RequestCardNew from '../../components/requests/RequestCardNew';
-import RequestList from '../../components/requests/RequestList';
+import RepaymentModal from '../../components/requests/RepaymentModal';
 import { useLoanRequests } from '../hooks/useLoanRequests';
-import { RequestSearchParams, RequestFilters } from '../../types';
+import { RequestSearchParams, RequestFilters, LoanRequest, EMISchedule } from '../../types';
+import { generateMockEmiSchedule } from '../../utils/mockEmiGenerator';
 import './NewRequests.css';
 
 const NewRequests: React.FC = () => {
   const history = useHistory();
-  const [viewMode, setViewMode] = useState<'card' | 'list'>('card');
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<RequestFilters>({
     status: 'all',
@@ -44,6 +44,14 @@ const NewRequests: React.FC = () => {
   const [selectedRequest, setSelectedRequest] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [showRepaymentModal, setShowRepaymentModal] = useState(false);
+  const [selectedRequestForRepayment, setSelectedRequestForRepayment] = useState<LoanRequest | null>(null);
+  const [emiSchedule, setEmiSchedule] = useState<EMISchedule[]>([]);
+
+  // District popover state for searchable dropdown
+  const [districtPopoverOpen, setDistrictPopoverOpen] = useState(false);
+  const [districtPopoverEvent, setDistrictPopoverEvent] = useState<Event | undefined>(undefined);
+  const [districtSearch, setDistrictSearch] = useState('');
 
   const searchParams: RequestSearchParams = useMemo(() => ({
     query: searchQuery,
@@ -119,9 +127,23 @@ const NewRequests: React.FC = () => {
 
   const handleRepayment = async (requestId: string) => {
     try {
-      const schedule = await getRepaymentSchedule(requestId);
-      console.log('Repayment schedule:', schedule);
-      // TODO: Show repayment modal or navigate to repayment page
+      const request = requests?.find(req => req.id === requestId) || null;
+      if (!request) {
+        setToastMessage('Request not found');
+        setShowToast(true);
+        return;
+      }
+
+      setSelectedRequestForRepayment(request);
+
+      // For now, generate a mock EMI schedule to populate the modal UI
+      const mockSchedule = generateMockEmiSchedule(request);
+      setEmiSchedule(mockSchedule);
+      setShowRepaymentModal(true);
+
+      // TODO: Replace with actual API data when available
+      // const schedule = await getRepaymentSchedule(requestId);
+      // setEmiSchedule(schedule);
     } catch (error) {
       setToastMessage('Failed to load repayment schedule');
       setShowToast(true);
@@ -163,81 +185,77 @@ const NewRequests: React.FC = () => {
           <IonContent className="new-requests-content">
             <div className="new-requests-container">
               {/* Search and Filter Section */}
-              <div className="search-filter-section">
-                <div className="search-section">
-                  <IonSearchbar
-                    value={searchQuery}
-                    onIonInput={(e) => setSearchQuery(e.detail.value!)}
-                    placeholder="Search by Loan ID, Name or District"
-                    className="request-searchbar"
-                  />
-                </div>
+              <div className="search-filter-bar">
+                <IonSearchbar
+                  value={searchQuery}
+                  onIonInput={(e) => setSearchQuery(e.detail.value!)}
+                  placeholder="Search by Loan ID, Name or District"
+                  className="request-searchbar"
+                />
                 
-                <div className="filter-section">
-                  <div className="filter-group">
-                    <label className="filter-label">Status</label>
-                    <IonSelect
-                      value={filters.status}
-                      onIonChange={(e) => setFilters((prev: RequestFilters) => ({ ...prev, status: e.detail.value }))}
-                      placeholder="Select Status"
-                      className="filter-select"
-                    >
-                      {statusOptions.map(option => (
-                        <IonSelectOption key={option.value} value={option.value}>
-                          {option.label}
-                        </IonSelectOption>
-                      ))}
-                    </IonSelect>
-                  </div>
-                  
-                  <div className="filter-group">
-                    <label className="filter-label">District</label>
-                    <IonSelect
-                      value={filters.district}
-                      onIonChange={(e) => setFilters((prev: RequestFilters) => ({ ...prev, district: e.detail.value }))}
-                      placeholder="Select District"
-                      className="filter-select"
-                    >
-                      {districtOptions.map(option => (
-                        <IonSelectOption key={option.value} value={option.value}>
-                          {option.label}
-                        </IonSelectOption>
-                      ))}
-                    </IonSelect>
-                  </div>
-                </div>
+                <IonSelect
+                  value={filters.status}
+                  onIonChange={(e) => setFilters((prev: RequestFilters) => ({ ...prev, status: e.detail.value }))}
+                  placeholder="All Status"
+                  className="filter-select-dropdown"
+                  interface="popover"
+                  interfaceOptions={{ cssClass: 'newreq-select-popover' }}
+                >
+                  {statusOptions.map(option => (
+                    <IonSelectOption key={option.value} value={option.value}>
+                      {option.label}
+                    </IonSelectOption>
+                  ))}
+                </IonSelect>
                 
-                <div className="view-controls">
-                  <div className="view-toggle">
-                    <IonButton
-                      fill={viewMode === 'card' ? 'solid' : 'outline'}
-                      size="small"
-                      onClick={() => setViewMode('card')}
-                      className="view-button"
-                    >
-                      <IonIcon icon={cardOutline} slot="start" />
-                      Card View
-                    </IonButton>
-                    <IonButton
-                      fill={viewMode === 'list' ? 'solid' : 'outline'}
-                      size="small"
-                      onClick={() => setViewMode('list')}
-                      className="view-button"
-                    >
-                      <IonIcon icon={listOutline} slot="start" />
-                      List View
-                    </IonButton>
-                  </div>
-                  
-                  <IonButton
-                    fill="clear"
-                    size="small"
-                    onClick={() => refetch()}
-                    className="refresh-button"
-                  >
-                    <IonIcon icon={refreshOutline} />
-                  </IonButton>
-                </div>
+                {/* Searchable District Dropdown (Popover) */}
+                <button
+                  type="button"
+                  className="filter-select-trigger"
+                  onClick={(e) => {
+                    setDistrictPopoverEvent(e.nativeEvent);
+                    setDistrictPopoverOpen(true);
+                  }}
+                >
+                  <span>{districtOptions.find(o => o.value === filters.district)?.label || 'All Districts'}</span>
+                  <IonIcon icon={chevronDownOutline} />
+                </button>
+                <IonPopover
+                  isOpen={districtPopoverOpen}
+                  event={districtPopoverEvent}
+                  onDidDismiss={() => setDistrictPopoverOpen(false)}
+                  cssClass="newreq-select-popover"
+                >
+                  <IonContent>
+                    <IonSearchbar
+                      value={districtSearch}
+                      onIonInput={(e) => setDistrictSearch(e.detail.value!)}
+                      placeholder="Search districts"
+                      className="popover-searchbar"
+                    />
+                    <IonList>
+                      {districtOptions
+                        .filter(o => o.label.toLowerCase().includes(districtSearch.toLowerCase()))
+                        .map(option => (
+                          <IonItem button key={option.value} onClick={() => {
+                            setFilters((prev: RequestFilters) => ({ ...prev, district: option.value }));
+                            setDistrictPopoverOpen(false);
+                          }}>
+                            <IonLabel>{option.label}</IonLabel>
+                          </IonItem>
+                        ))}
+                    </IonList>
+                  </IonContent>
+                </IonPopover>
+                
+                <IonButton
+                  fill="clear"
+                  onClick={() => refetch()}
+                  className="refresh-btn"
+                >
+                  <IonIcon slot="icon-only" icon={refreshOutline} />
+                  <span className="refresh-text">REFRESH</span>
+                </IonButton>
               </div>
 
               {/* Results Section */}
@@ -261,25 +279,14 @@ const NewRequests: React.FC = () => {
                       <p>Showing {requests?.length || 0} of {pagination.total} requests</p>
                     </div>
                     
-                        {viewMode === 'card' ? (
-                          <RequestCardNew
-                            requests={requests || []}
-                            onStatusChange={handleStatusChange}
-                            onViewDetails={handleViewDetails}
-                            onSendEmail={handleSendEmail}
-                            onDownloadPDF={handleDownloadPDF}
-                            onRepayment={handleRepayment}
-                          />
-                        ) : (
-                      <RequestList
-                        requests={requests || []}
-                        onStatusChange={handleStatusChange}
-                        onViewDetails={handleViewDetails}
-                        onSendEmail={handleSendEmail}
-                        onDownloadPDF={handleDownloadPDF}
-                        onRepayment={handleRepayment}
-                      />
-                    )}
+                    <RequestCardNew
+                      requests={requests || []}
+                      onStatusChange={handleStatusChange}
+                      onViewDetails={handleViewDetails}
+                      onSendEmail={handleSendEmail}
+                      onDownloadPDF={handleDownloadPDF}
+                      onRepayment={handleRepayment}
+                    />
                   </>
                 )}
               </div>
@@ -313,6 +320,17 @@ const NewRequests: React.FC = () => {
         message={toastMessage}
         duration={3000}
         position="top"
+      />
+
+      <RepaymentModal
+        isOpen={showRepaymentModal}
+        onClose={() => {
+          setShowRepaymentModal(false);
+          setSelectedRequestForRepayment(null);
+          setEmiSchedule([]);
+        }}
+        request={selectedRequestForRepayment}
+        emiSchedule={emiSchedule}
       />
     </IonPage>
   );

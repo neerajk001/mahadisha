@@ -339,11 +339,109 @@
     gap: 1rem;
   }
 
-  .summary-amount {
-    text-align: left;
+    .summary-amount {
+      text-align: left;
+      margin-top: 1rem;
+    }
   }
+}
 
-  .tabs-container {
+/* Collateral Action Buttons */
+.collateral-action-buttons {
+  display: flex;
+  gap: 1.5rem;
+  padding: 2.5rem 0 1rem 0;
+  margin-top: 2.5rem;
+  border-top: 1px solid var(--color-border-light);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* No Collaterals Message */
+.no-collaterals {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-secondary);
+}
+
+.no-collaterals p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.action-button {
+  --border-radius: 8px;
+  --padding-start: 1.5rem;
+  --padding-end: 1.5rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  font-weight: 600;
+  text-transform: none;
+  min-width: 160px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.next-action-button {
+  --background: #10b981;
+  --background-hover: #059669;
+  --color: #ffffff;
+  --box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.next-action-button:hover {
+  transform: translateY(-1px);
+  --box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.reject-button {
+  --background: #ef4444;
+  --background-hover: #dc2626;
+  --color: #ffffff;
+  --box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.reject-button:hover {
+  transform: translateY(-1px);
+  --box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.incomplete-button {
+  --background: #f59e0b;
+  --background-hover: #d97706;
+  --color: #ffffff;
+  --box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.incomplete-button:hover {
+  transform: translateY(-1px);
+  --box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.action-button:disabled {
+  --background: #9ca3af;
+  --color: #d1d5db;
+  --box-shadow: none;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.action-button:disabled:hover {
+  transform: none;
+  --box-shadow: none;
+}
+
+/* Mobile responsive for collateral action buttons */
+@media (max-width: 768px) {
+  .collateral-action-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .collateral-action-buttons .action-button {
+    width: 100%;
+    min-width: auto;
+  }
     padding: 0 1rem;
   }
 

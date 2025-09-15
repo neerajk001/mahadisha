@@ -2,29 +2,33 @@ import React, { useState } from 'react';
 import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton } from '@ionic/react';
 import { 
   IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonText, IonInput, 
-  IonSelect, IonSelectOption, IonButton, IonItem, IonLabel, IonIcon, IonModal, IonCheckbox 
+  IonSelect, IonSelectOption, IonButton, IonItem, IonLabel, IonIcon, IonModal, IonCheckbox, IonChip, IonToast, IonLoading 
 } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
-import { chevronBackOutline, chevronForwardOutline } from 'ionicons/icons';
+import { chevronBackOutline, chevronForwardOutline, checkmarkCircle } from 'ionicons/icons';
 import Header from '../components/header/Header';
 import './LoanApplication.css';
 
 const LoanApplication: React.FC = () => {
   const history = useHistory();
   const [currentStep, setCurrentStep] = useState(1);
-  const [loanAmount, setLoanAmount] = useState('50000');
-  const [applicationType, setApplicationType] = useState('Computer Training');
+  const [loanAmount, setLoanAmount] = useState('');
+  const [applicationType, setApplicationType] = useState('');
   const [loanTenure, setLoanTenure] = useState('3');
-  const [loanAmountError, setLoanAmountError] = useState('Requested Loan amount should be between ₹0 and ₹50,000');
+  const [loanAmountError, setLoanAmountError] = useState('');
   
   // KYC Details state
   const [aadharDigits, setAadharDigits] = useState(['', '', '', '', '', '', '', '', '', '', '', '']);
+  const [aadhaarError, setAadhaarError] = useState('');
   const [showOTPPopup, setShowOTPPopup] = useState(false);
   const [otp, setOtp] = useState('');
+  const [aadhaarVerified, setAadhaarVerified] = useState(false);
+  const [showValidating, setShowValidating] = useState(false);
+  const [toast, setToast] = useState<{open: boolean; message: string}>({open: false, message: ''});
   const [personalDetails, setPersonalDetails] = useState({
-    name: 'Neeraj Umesh Kushwaha',
-    dob: '25th January 2003',
-    gender: 'Male',
+    name: '',
+    dob: '',
+    gender: '',
     profilePicture: 'https://via.placeholder.com/80x80/4F46E5/FFFFFF?text=N'
   });
   const [kycData, setKycData] = useState({
@@ -38,128 +42,121 @@ const LoanApplication: React.FC = () => {
 
   // Basic Details state
   const [basicDetails, setBasicDetails] = useState({
-    firstName: 'Neeraj',
-    lastName: 'Kushwaha',
-    middleName: 'Umesh',
-    gender: 'Male',
-    age: '22',
-    fatherHusbandName: 'S/O: Umesh Kushwaha',
-    motherFullName: 'Maina',
-    basicEducation: '12th pass',
+    firstName: '',
+    lastName: '',
+    middleName: '',
+    gender: '',
+    age: '',
+    fatherHusbandName: '',
+    motherFullName: '',
+    basicEducation: '',
     mobile: '',
-    dob: '25-01-2003',
-    rationCardType: 'Orange',
-    email: 'neeraj@gmail.com',
-    subcaste: 'Chalvadi, Channayya',
-    undercaste: 'Hindu Undivided Family',
-    safaiKarmachariId: '32y3h2uihd2ge8'
+    dob: '',
+    rationCardType: '',
+    email: '',
+    subcaste: '',
+    undercaste: '',
+    safaiKarmachariId: ''
   });
 
   // Address Details state
   const [addressDetails, setAddressDetails] = useState({
     currentAddress: {
-      address: '123 Main Street, Apartment 4B',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      pincode: '400001',
-      district: 'Mumbai',
-      taluka: 'Mumbai City',
-      village: 'Mumbai',
-      landmark: 'Near Central Station'
+      address: '',
+      city: '',
+      state: '',
+      pincode: '',
+      district: '',
+      taluka: '',
+      village: '',
+      landmark: ''
     },
     permanentAddress: {
-      address: '456 Village Road, House No. 12',
-      city: 'Pune',
-      state: 'Maharashtra',
-      pincode: '411001',
-      district: 'Pune',
-      taluka: 'Pune City',
-      village: 'Pune',
-      landmark: 'Near Railway Station'
+      address: '',
+      city: '',
+      state: '',
+      pincode: '',
+      district: '',
+      taluka: '',
+      village: '',
+      landmark: ''
     },
     sameAsCurrent: false
   });
 
   // Collaterals state
   const [collateralDetails, setCollateralDetails] = useState({
-    collateralType: 'Gold',
+    collateralType: '',
     goldDetails: {
-      weight: '50',
-      purity: '22',
-      description: 'Gold necklace and earrings'
+      weight: '',
+      purity: '',
+      description: ''
     },
     landDetails: {
-      area: '1000',
-      location: 'Mumbai Suburbs',
-      surveyNumber: '12345',
-      description: 'Residential plot'
+      area: '',
+      location: '',
+      surveyNumber: '',
+      description: ''
     },
     carDetails: {
-      make: 'Maruti',
-      model: 'Swift',
-      year: '2020',
-      registrationNumber: 'MH01AB1234',
-      description: 'White Maruti Swift'
+      make: '',
+      model: '',
+      year: '',
+      registrationNumber: '',
+      description: ''
     },
     otherDetails: {
-      description: 'Other collateral items',
-      value: '50000'
+      description: '',
+      value: ''
     }
   });
 
   // Guarantors state
   const [guarantorDetails, setGuarantorDetails] = useState({
     guarantorType: 'Individual',
-    aadharDigits: ['9', '8', '9', '6', '4', '8', '5', '0', '1', '1', '6', '8'],
-    firstName: 'Pooja',
-    lastName: 'Kushwaha',
-    relationship: 'sister',
-    mobile: '6209694689',
-    email: 'pooja@gmail.com',
-    address: 'Room No b-04, Makar Apartment, Central Park, Near Shiv Sena Office,, Vasai, Nallosapara E, Va',
-    guaranteeAmount: '100000'
+    aadharDigits: ['', '', '', '', '', '', '', '', '', '', '', ''],
+    firstName: '',
+    lastName: '',
+    relationship: '',
+    mobile: '',
+    email: '',
+    address: '',
+    guaranteeAmount: ''
   });
+  
+  // Guarantor Aadhaar verification state
+  const [guarantorAadhaarError, setGuarantorAadhaarError] = useState('');
+  const [showGuarantorOTPPopup, setShowGuarantorOTPPopup] = useState(false);
+  const [guarantorOtp, setGuarantorOtp] = useState('');
+  const [guarantorAadhaarVerified, setGuarantorAadhaarVerified] = useState(false);
+  const [showGuarantorValidating, setShowGuarantorValidating] = useState(false);
 
   // Witnesses state
   const [witnesses, setWitnesses] = useState([
     {
       id: 1,
-      name: 'dgsdbhdui',
-      relation: 'Wife',
-      contact: '8888888888',
-      email: 'witness@gmail.com'
+      name: '',
+      relation: '',
+      contact: '',
+      email: ''
     }
   ]);
 
   // Documents state
   const [documents, setDocuments] = useState([
-    { id: 1, type: 'Aadhaar', file: null, fileName: '' },
-    { id: 2, type: 'PAN', file: null, fileName: '' },
-    { id: 3, type: 'Income Certificate', file: null, fileName: '' },
-    { id: 4, type: 'Bank Passbook', file: null, fileName: '' },
-    { id: 5, type: 'Passport Photo', file: null, fileName: '' },
-    { id: 6, type: 'Residential Proof', file: null, fileName: '' },
-    { id: 7, type: 'Bonafide Certificates', file: null, fileName: '' },
-    { id: 8, type: 'Ration Card', file: null, fileName: '' },
-    { id: 9, type: 'Project Report', file: null, fileName: '' },
-    { id: 10, type: 'Caste Certificate', file: null, fileName: '' },
-    { id: 11, type: 'Witness 1 Photo ID', file: null, fileName: '' },
-    { id: 12, type: 'Witness 1 Address Proof', file: null, fileName: '' },
-    { id: 13, type: 'Witness 2 Photo ID', file: null, fileName: '' },
-    { id: 14, type: 'Witness 2 Address Proof', file: null, fileName: '' },
-    { id: 15, type: 'Other Documents', file: null, fileName: '' }
+    { id: 1, type: '', file: null, fileName: '' }
   ]);
 
   // Family Details state
   const [familyMembers, setFamilyMembers] = useState([
     {
       id: 1,
-      personName: 'neeraj',
-      relation: 'Brother',
-      email: 'neeraj@gmail.com',
-      age: '23',
-      memberContact: '9867633445',
-      occupation: 'student'
+      personName: '',
+      relation: '',
+      email: '',
+      age: '',
+      memberContact: '',
+      occupation: ''
     }
   ]);
 
@@ -251,26 +248,57 @@ const LoanApplication: React.FC = () => {
 
   // Aadhar input handling
   const handleAadharDigitChange = (index: number, value: string) => {
-    // Only allow single digit numbers
-    if (value.length <= 1 && /^\d*$/.test(value)) {
+    // Validate: only single numeric digit allowed
+    if (value === '' || (/^\d$/.test(value) && value.length <= 1)) {
       const newDigits = [...aadharDigits];
       newDigits[index] = value;
       setAadharDigits(newDigits);
-      
-      // Auto-focus next input
+      setAadhaarError('');
+
+      // Auto-focus next input when valid digit is entered
       if (value && index < 11) {
         setTimeout(() => {
-          const nextInput = document.getElementById(`aadhar-${index + 1}`);
-          nextInput?.focus();
-        }, 50);
+          const nextInput = document.querySelector(`#aadhar-${index + 1} input`) as HTMLInputElement;
+          if (nextInput) {
+            nextInput.focus();
+          }
+        }, 100);
       }
       
-      // Check if all digits are filled
+      // Open validating overlay when all 12 digits are filled, then OTP modal
       if (newDigits.every(digit => digit !== '') && newDigits.length === 12) {
+        setShowValidating(true);
         setTimeout(() => {
+          setShowValidating(false);
           setShowOTPPopup(true);
-        }, 500);
+        }, 1000);
       }
+    } else {
+      setAadhaarError('Only digits (0-9) are allowed for Aadhaar.');
+    }
+  };
+
+  const handleAadharKeyDown = (index: number, e: any) => {
+    if (e.key === 'Backspace') {
+      const newDigits = [...aadharDigits];
+      
+      if (newDigits[index] !== '') {
+        // Clear current digit
+        newDigits[index] = '';
+        setAadharDigits(newDigits);
+        setAadhaarError('');
+      } else if (index > 0) {
+        // Move to previous input and clear it
+        newDigits[index - 1] = '';
+        setAadharDigits(newDigits);
+        setTimeout(() => {
+          const prevInput = document.querySelector(`#aadhar-${index - 1} input`) as HTMLInputElement;
+          if (prevInput) {
+            prevInput.focus();
+          }
+        }, 100);
+      }
+      e.preventDefault();
     }
   };
 
@@ -473,21 +501,57 @@ const LoanApplication: React.FC = () => {
 
   // Guarantor Aadhar input handling
   const handleGuarantorAadharDigitChange = (index: number, value: string) => {
-    // Only allow single digit
-    const cleanValue = value.replace(/[^0-9]/g, '').slice(0, 1);
-    setGuarantorDetails(prev => ({
-      ...prev,
-      aadharDigits: prev.aadharDigits.map((digit, i) => i === index ? cleanValue : digit)
-    }));
+    // Validate: only single numeric digit allowed
+    if (value === '' || (/^\d$/.test(value) && value.length <= 1)) {
+      const newDigits = [...guarantorDetails.aadharDigits];
+      newDigits[index] = value;
+      setGuarantorDetails(prev => ({ ...prev, aadharDigits: newDigits }));
+      setGuarantorAadhaarError('');
 
-    // Auto-focus to next input
-    if (cleanValue && index < 11) {
-      setTimeout(() => {
-        const nextInput = document.getElementById(`guarantor-aadhar-${index + 1}`);
-        if (nextInput) {
-          nextInput.focus();
-        }
-      }, 100);
+      // Auto-focus next input when valid digit is entered
+      if (value && index < 11) {
+        setTimeout(() => {
+          const nextInput = document.querySelector(`#guarantor-aadhar-${index + 1} input`) as HTMLInputElement;
+          if (nextInput) {
+            nextInput.focus();
+          }
+        }, 100);
+      }
+      
+      // Open validating overlay when all 12 digits are filled, then OTP modal
+      if (newDigits.every(digit => digit !== '') && newDigits.length === 12) {
+        setShowGuarantorValidating(true);
+        setTimeout(() => {
+          setShowGuarantorValidating(false);
+          setShowGuarantorOTPPopup(true);
+        }, 1000);
+      }
+    } else {
+      setGuarantorAadhaarError('Only digits (0-9) are allowed for Aadhaar.');
+    }
+  };
+  
+  const handleGuarantorAadharKeyDown = (index: number, e: any) => {
+    if (e.key === 'Backspace') {
+      const newDigits = [...guarantorDetails.aadharDigits];
+      
+      if (newDigits[index] !== '') {
+        // Clear current digit
+        newDigits[index] = '';
+        setGuarantorDetails(prev => ({ ...prev, aadharDigits: newDigits }));
+        setGuarantorAadhaarError('');
+      } else if (index > 0) {
+        // Move to previous input and clear it
+        newDigits[index - 1] = '';
+        setGuarantorDetails(prev => ({ ...prev, aadharDigits: newDigits }));
+        setTimeout(() => {
+          const prevInput = document.querySelector(`#guarantor-aadhar-${index - 1} input`) as HTMLInputElement;
+          if (prevInput) {
+            prevInput.focus();
+          }
+        }, 100);
+      }
+      e.preventDefault();
     }
   };
 
@@ -685,17 +749,106 @@ const LoanApplication: React.FC = () => {
   };
 
   // OTP handling
+  // Helper to compute age from YYYY-MM-DD
+  const getAgeFromDOB = (dobISO: string) => {
+    const dobDate = new Date(dobISO);
+    const diff = Date.now() - dobDate.getTime();
+    const ageDate = new Date(diff);
+    return Math.abs(ageDate.getUTCFullYear() - 1970).toString();
+  };
+
   const handleOTPSubmit = () => {
     if (otp.length === 6) {
+      // Simulated Aadhaar payload
+      const simulated = {
+        name: 'Aarav Ramesh Sharma',
+        dobISO: '1997-08-21',
+        gender: 'Male',
+        photo: 'https://i.pravatar.cc/120?img=12',
+        address: {
+          address: 'B-402, Lotus Residency, Andheri East',
+          city: 'Mumbai',
+          state: 'Maharashtra',
+          pincode: '400069',
+          district: 'Mumbai',
+          taluka: 'Andheri',
+          village: 'Andheri',
+          landmark: 'Near Metro Station'
+        }
+      };
+
+      // Update personal details card
+      const [first, middle = '', last = ''] = simulated.name.split(' ');
+      setPersonalDetails({
+        name: simulated.name,
+        dob: new Date(simulated.dobISO).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }),
+        gender: simulated.gender,
+        profilePicture: simulated.photo
+      });
+
+      // Prefill basic details and addresses
+      setBasicDetails(prev => ({
+        ...prev,
+        firstName: first,
+        middleName: middle,
+        lastName: last,
+        gender: simulated.gender,
+        dob: new Date(simulated.dobISO).toLocaleDateString('en-IN'),
+        age: getAgeFromDOB(simulated.dobISO)
+      }));
+
+      setAddressDetails(prev => ({
+        ...prev,
+        currentAddress: { ...simulated.address },
+        permanentAddress: { ...simulated.address },
+        sameAsCurrent: true
+      }));
+
+      setAadhaarVerified(true);
       setShowOTPPopup(false);
       setOtp('');
-      // In real app, verify OTP and fetch personal details
+      setToast({open: true, message: 'Aadhaar verified. Details fetched successfully.'});
     }
   };
 
   const handleOTPCancel = () => {
     setShowOTPPopup(false);
     setOtp('');
+  };
+
+  // Guarantor OTP handling
+  const handleGuarantorOTPSubmit = () => {
+    if (guarantorOtp.length === 6) {
+      // Simulated Guarantor Aadhaar payload
+      const simulatedGuarantor = {
+        firstName: 'Pooja',
+        lastName: 'Kushwaha',
+        mobile: '6209694689',
+        email: 'pooja@gmail.com',
+        address: 'Room No B-04, Makar Apartment, Central Park, Near Shiv Sena Office, Vasai, Nallosapara E, Va'
+      };
+
+      // Prefill guarantor details
+      setGuarantorDetails(prev => ({
+        ...prev,
+        firstName: simulatedGuarantor.firstName,
+        lastName: simulatedGuarantor.lastName,
+        mobile: simulatedGuarantor.mobile,
+        email: simulatedGuarantor.email,
+        address: simulatedGuarantor.address,
+        relationship: 'Sister'
+      }));
+
+      setGuarantorAadhaarVerified(true);
+      setShowGuarantorOTPPopup(false);
+      setGuarantorOtp('');
+      setToast({open: true, message: 'Guarantor Aadhaar verified. Details fetched successfully.'});
+    }
+  };
+
+  const handleGuarantorOTPCancel = () => {
+    setShowGuarantorOTPPopup(false);
+    setGuarantorOtp('');
   };
 
   // KYC data handling
@@ -805,11 +958,15 @@ const LoanApplication: React.FC = () => {
                   <div className="step-content">
                     <div className="section-title">KYC Details</div>
                     
-                    {/* Personal Details Section */}
+                    {/* Personal Details Section: visible only after Aadhaar verification */}
+                    {aadhaarVerified && (
                     <div className="personal-details-card">
                       <div className="personal-info">
                         <div className="profile-picture">
                           <img src={personalDetails.profilePicture} alt="Profile" />
+                          {aadhaarVerified && (
+                            <IonChip color="success" className="aadhaar-chip">Verified</IonChip>
+                          )}
                         </div>
                         <div className="personal-info-text">
                           <div className="info-row">
@@ -831,13 +988,14 @@ const LoanApplication: React.FC = () => {
                         </div>
                       </div>
                     </div>
+                    )}
 
                     {/* Aadhar Input */}
                     <div className="form-grid">
                       <div className="form-column">
                         <IonItem className="form-item">
                           <IonLabel position="stacked">Aadhar</IonLabel>
-                          <div className="aadhar-input-container">
+                          <div className={`aadhar-input-container ${aadhaarError ? 'invalid' : ''}`}>
                             {aadharDigits.map((digit, index) => (
                               <IonInput
                                 key={index}
@@ -846,11 +1004,16 @@ const LoanApplication: React.FC = () => {
                                 inputMode="numeric"
                                 maxlength={1}
                                 value={digit}
+                                disabled={index > 0 && aadharDigits.slice(0, index).some(d => d === '')}
                                 onIonInput={(e) => handleAadharDigitChange(index, e.detail.value!)}
+                                onKeyDown={(e) => handleAadharKeyDown(index, e)}
                                 className="aadhar-digit-input"
                               />
                             ))}
                           </div>
+                          {aadhaarError && (
+                            <div className="aadhaar-error">{aadhaarError}</div>
+                          )}
                         </IonItem>
                       </div>
                       <div className="form-column">
@@ -1893,21 +2056,37 @@ const LoanApplication: React.FC = () => {
                     <div className="form-grid">
                       <div className="form-column">
                         <IonItem className="form-item">
-                          <IonLabel position="stacked">Aadhar</IonLabel>
-                          <div className="guarantor-aadhar-input-container">
-                            {guarantorDetails.aadharDigits.map((digit, index) => (
-                              <IonInput
-                                key={index}
-                                id={`guarantor-aadhar-${index}`}
-                                type="text"
-                                inputMode="numeric"
-                                maxlength={1}
-                                value={digit}
-                                onIonInput={(e) => handleGuarantorAadharDigitChange(index, e.detail.value!)}
-                                className="guarantor-aadhar-digit-input"
-                              />
-                            ))}
+                          <IonLabel position="stacked">
+                            Guarantor Aadhar
+                            {guarantorAadhaarVerified && (
+                              <IonChip color="success" className="verified-chip">
+                                <IonIcon icon={checkmarkCircle} />
+                                Verified
+                              </IonChip>
+                            )}
+                          </IonLabel>
+                          <div className={`aadhar-input-container ${guarantorAadhaarError ? 'invalid' : ''}`}>
+                            {guarantorDetails.aadharDigits.map((digit, index) => {
+                              const isDisabled = !guarantorAadhaarVerified && index > 0 && !guarantorDetails.aadharDigits[index - 1];
+                              return (
+                                <IonInput
+                                  key={index}
+                                  id={`guarantor-aadhar-${index}`}
+                                  type="text"
+                                  inputMode="numeric"
+                                  maxlength={1}
+                                  value={digit}
+                                  onIonInput={(e) => handleGuarantorAadharDigitChange(index, e.detail.value!)}
+                                  onKeyDown={(e) => handleGuarantorAadharKeyDown(index, e)}
+                                  className="aadhar-digit-input"
+                                  disabled={isDisabled || guarantorAadhaarVerified}
+                                />
+                              );
+                            })}
                           </div>
+                          {guarantorAadhaarError && (
+                            <div className="aadhaar-error">{guarantorAadhaarError}</div>
+                          )}
                         </IonItem>
                       </div>
                       <div className="form-column">
@@ -1915,7 +2094,9 @@ const LoanApplication: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Guarantor Details */}
+                    {/* Guarantor Details - Only show after Aadhaar verification */}
+                    {guarantorAadhaarVerified && (
+                    <>
                     <div className="form-grid">
                       <div className="form-column">
                         <IonItem className="form-item">
@@ -2024,6 +2205,8 @@ const LoanApplication: React.FC = () => {
                         </IonItem>
                       </div>
                     </div>
+                    </>
+                    )}
                   </div>
                 )}
 
@@ -2374,8 +2557,8 @@ const LoanApplication: React.FC = () => {
           <IonContent className="otp-modal-content">
             <div className="otp-content">
               <div className="otp-header">
-                <h3>OTP Verification</h3>
-                <p>Please enter the 6-digit OTP sent to your registered mobile number</p>
+                <h3>Verify Aadhaar</h3>
+                <p>Enter the 6-digit OTP sent to your mobile linked with Aadhaar to fetch your details.</p>
               </div>
               
               <div className="otp-input-container">
@@ -2409,6 +2592,70 @@ const LoanApplication: React.FC = () => {
             </div>
           </IonContent>
         </IonModal>
+
+        {/* Guarantor OTP Popup Modal */}
+        <IonModal isOpen={showGuarantorOTPPopup} onDidDismiss={handleGuarantorOTPCancel}>
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>Enter Guarantor OTP</IonTitle>
+              <IonButtons slot="end">
+                <IonButton onClick={handleGuarantorOTPCancel}>
+                  <IonIcon icon="close" />
+                </IonButton>
+              </IonButtons>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent className="otp-modal-content">
+            <div className="otp-content">
+              <div className="otp-header">
+                <h3>Verify Guarantor Aadhaar</h3>
+                <p>Enter the 6-digit OTP sent to the mobile linked with guarantor's Aadhaar to fetch their details.</p>
+              </div>
+              
+              <div className="otp-input-container">
+                <IonInput
+                  type="text"
+                  inputMode="numeric"
+                  maxlength={6}
+                  value={guarantorOtp}
+                  onIonInput={(e) => setGuarantorOtp(e.detail.value!)}
+                  placeholder="Enter OTP"
+                  className="otp-input"
+                />
+              </div>
+
+              <div className="otp-actions">
+                <IonButton
+                  fill="outline"
+                  className="otp-cancel-btn"
+                  onClick={handleGuarantorOTPCancel}
+                >
+                  Cancel
+                </IonButton>
+                <IonButton
+                  className="otp-submit-btn"
+                  onClick={handleGuarantorOTPSubmit}
+                  disabled={guarantorOtp.length !== 6}
+                >
+                  Verify OTP
+                </IonButton>
+              </div>
+            </div>
+          </IonContent>
+        </IonModal>
+
+      {/* Validating overlays */}
+      <IonLoading isOpen={showValidating} message="Validating Aadhaar..." spinner="circles" duration={0} />
+      <IonLoading isOpen={showGuarantorValidating} message="Validating Guarantor Aadhaar..." spinner="circles" duration={0} />
+
+      {/* Success Toast */}
+      <IonToast
+        isOpen={toast.open}
+        message={toast.message}
+        duration={2500}
+        position="bottom"
+        onDidDismiss={() => setToast({open: false, message: ''})}
+      />
       </IonContent>
     </IonPage>
   );
