@@ -285,7 +285,7 @@ const ApplicationType: React.FC = () => {
                             />
                           </div>
                           <div className="item-column actions-column">
-                            <div className="action-buttons">
+                            <div className="app-type-actions">
                               <IonButton 
                                 fill="clear" 
                                 size="small" 
