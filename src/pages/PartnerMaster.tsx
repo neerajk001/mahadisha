@@ -3,11 +3,16 @@ import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
-  IonModal, IonItem, IonLabel, IonInput
+  IonModal, IonButtons, IonInput, IonTextarea, IonSelect, IonSelectOption,
+  IonBadge, IonChip, IonFab, IonFabButton
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
-  chevronBackOutline, chevronForwardOutline, closeOutline
+  chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
+  eyeOutline, settingsOutline, copyOutline, linkOutline, timeOutline,
+  peopleOutline, documentTextOutline, globeOutline, locationOutline,
+  mapOutline, businessOutline, barChartOutline, fileTrayOutline, accessibilityOutline,
+  keyOutline, homeOutline, gitBranchOutline, shieldOutline, shuffleOutline
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -29,30 +34,83 @@ const PartnerMaster: React.FC = () => {
     address: '',
     contact: ''
   });
+  
+  // Enhanced state for new functionality
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [sortBy, setSortBy] = useState<'name' | 'address' | 'contact'>('name');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const itemsPerPage = 5;
 
   // Get partner master data from mock service
   const allPartners = mockDataService.getPartnerMasterData();
   
-  // Filter partners based on search query
-  const filteredPartners = useMemo(() => {
-    return allPartners.filter(partner =>
+  // Filter and sort partners
+  const filteredAndSortedPartners = useMemo(() => {
+    let filtered = allPartners.filter(partner =>
       partner.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       partner.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
       partner.contact.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [allPartners, searchQuery]);
+
+    // Sort partners
+    filtered.sort((a, b) => {
+      const aValue = (a as any)[sortBy];
+      const bValue = (b as any)[sortBy];
+      
+      if (typeof aValue === 'string') {
+        return sortOrder === 'asc' 
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+      
+      return sortOrder === 'asc' 
+        ? aValue - bValue 
+        : bValue - aValue;
+    });
+
+    return filtered;
+  }, [allPartners, searchQuery, sortBy, sortOrder]);
 
   // Calculate pagination
-  const totalPages = Math.ceil(filteredPartners.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredAndSortedPartners.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentPartners = filteredPartners.slice(startIndex, endIndex);
+  const currentPartners = filteredAndSortedPartners.slice(startIndex, endIndex);
+
+  const getIconComponent = (iconName: string) => {
+    switch (iconName) {
+      case 'peopleOutline': return peopleOutline;
+      case 'businessOutline': return businessOutline;
+      case 'locationOutline': return locationOutline;
+      case 'globeOutline': return globeOutline;
+      case 'homeOutline': return homeOutline;
+      default: return peopleOutline;
+    }
+  };
 
   const handleAddPartner = () => {
-    setToastMessage('Add new partner functionality will be implemented');
+    setShowAddModal(true);
+  };
+
+  const handleView = (partner: PartnerMasterData) => {
+    setToastMessage(`Viewing partner: ${partner.name}`);
     setShowToast(true);
+  };
+
+  const handleCopyName = (partnerName: string) => {
+    navigator.clipboard.writeText(partnerName);
+    setToastMessage('Partner name copied to clipboard');
+    setShowToast(true);
+  };
+
+  const handleSavePartner = () => {
+    setToastMessage('Partner saved successfully');
+    setShowToast(true);
+    setShowAddModal(false);
+    setShowEditModal(false);
+    setEditingPartner(null);
   };
 
   const handleEdit = (partnerId: string) => {
@@ -122,108 +180,201 @@ const PartnerMaster: React.FC = () => {
         <div className="main-content" id="dashboard-content">
           <DashboardHeader />
           
-          <IonContent className="partner-master-content">
-            <div className="partners-container">
+          <IonContent className="manage-pages-content">
+            <div className="pages-container">
               {/* Header Section */}
-              <div className="partners-header">
+              <div className="pages-header">
                 <h1>Partner Master</h1>
                 <p>Manage partner organizations and their details</p>
               </div>
 
-              {/* Search and Actions */}
-              <div className="partners-actions">
+              {/* Enhanced Search and Actions */}
+              <div className="pages-actions">
                 <IonSearchbar
                   value={searchQuery}
                   onIonChange={(e) => setSearchQuery(e.detail.value!)}
                   placeholder="Search partners by name, address, or contact..."
-                  className="partners-search"
+                  className="pages-search"
                 />
                 <IonButton 
+                  fill="outline" 
+                  size="small"
+                  onClick={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
+                >
+                  <IonIcon icon={viewMode === 'grid' ? barChartOutline : eyeOutline} />
+                  {viewMode === 'grid' ? 'Table View' : 'Grid View'}
+                </IonButton>
+                <IonButton 
                   fill="solid" 
-                  className="add-partner-button"
+                  className="add-page-button"
                   onClick={handleAddPartner}
                 >
                   <IonIcon icon={addOutline} />
-                  Add Partner
+                  Add New Partner
                 </IonButton>
               </div>
 
-              {/* Partners Table */}
-              <IonCard className="partners-table-card">
-                <IonCardContent className="table-container">
-                  <table className="partners-table">
-                    <thead>
-                      <tr>
-                        <th>
-                          <div className="table-header">
-                            <span>Name</span>
-                            <IonIcon icon={searchOutline} className="filter-icon" />
+              {/* Modern Partners Grid */}
+              {viewMode === 'grid' ? (
+                <div className="pages-grid">
+                  {currentPartners.map((partner) => (
+                    <div key={partner.id} className="page-card">
+                      <div className="page-card-header">
+                        <div className="page-card-icon">
+                          <IonIcon icon={peopleOutline} />
+                        </div>
+                        <div className="page-card-title">
+                          <h3 className="page-card-name">{partner.name}</h3>
+                          <div className="page-card-url">Partner</div>
+                        </div>
+                      </div>
+                      
+                      <div className="page-card-content">
+                        <div className="page-card-meta">
+                          <div className="page-card-meta-item">
+                            <IonIcon icon={locationOutline} className="page-card-meta-icon" />
+                            <span>{partner.address}</span>
                           </div>
-                        </th>
-                        <th>
-                          <div className="table-header">
-                            <span>Address</span>
-                            <IonIcon icon={searchOutline} className="filter-icon" />
+                          <div className="page-card-meta-item">
+                            <IonIcon icon={documentTextOutline} className="page-card-meta-icon" />
+                            <span>{partner.contact}</span>
                           </div>
-                        </th>
-                        <th>
-                          <div className="table-header">
-                            <span>Contact</span>
-                            <IonIcon icon={searchOutline} className="filter-icon" />
-                          </div>
-                        </th>
-                        <th>
-                          <div className="table-header">
-                            <span>Actions</span>
-                            <IonIcon icon={searchOutline} className="filter-icon" />
-                          </div>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {currentPartners.map((partner, index) => (
-                        <tr key={partner.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
-                          <td className="partner-name-cell">
-                            <span className="partner-name">{partner.name}</span>
-                          </td>
-                          <td className="partner-address-cell">
-                            <span className="partner-address">{partner.address}</span>
-                          </td>
-                          <td className="partner-contact-cell">
-                            <span className="partner-contact">{partner.contact}</span>
-                          </td>
-                          <td className="actions-cell">
-                            <div className="action-buttons">
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="edit-button"
-                                onClick={() => handleEdit(partner.id)}
-                              >
-                                <IonIcon icon={createOutline} />
-                              </IonButton>
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="delete-button"
-                                onClick={() => handleDelete(partner.id)}
-                              >
-                                <IonIcon icon={trashOutline} />
-                              </IonButton>
+                        </div>
+                      </div>
+                      
+                      <div className="page-card-actions">
+                        <IonButton 
+                          fill="clear" 
+                          size="small" 
+                          className="page-card-button edit"
+                          onClick={() => handleView(partner)}
+                        >
+                          <IonIcon icon={eyeOutline} />
+                          View
+                        </IonButton>
+                        <IonButton 
+                          fill="clear" 
+                          size="small" 
+                          className="page-card-button edit"
+                          onClick={() => handleEdit(partner.id)}
+                        >
+                          <IonIcon icon={createOutline} />
+                          Edit
+                        </IonButton>
+                        <IonButton 
+                          fill="clear" 
+                          size="small" 
+                          className="page-card-button delete"
+                          onClick={() => handleDelete(partner.id)}
+                        >
+                          <IonIcon icon={trashOutline} />
+                          Delete
+                        </IonButton>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <IonCard className="pages-table-card">
+                  <IonCardContent className="table-container">
+                    <table className="pages-table">
+                      <thead>
+                        <tr>
+                          <th>
+                            <div className="table-header">
+                              <span>Name</span>
+                              <IonIcon icon={searchOutline} className="filter-icon" />
                             </div>
-                          </td>
+                          </th>
+                          <th>
+                            <div className="table-header">
+                              <span>Address</span>
+                              <IonIcon icon={searchOutline} className="filter-icon" />
+                            </div>
+                          </th>
+                          <th>
+                            <div className="table-header">
+                              <span>Contact</span>
+                              <IonIcon icon={searchOutline} className="filter-icon" />
+                            </div>
+                          </th>
+                          <th>
+                            <div className="table-header">
+                              <span>Partner Code</span>
+                              <IonIcon icon={searchOutline} className="filter-icon" />
+                            </div>
+                          </th>
+                          <th>
+                            <div className="table-header">
+                              <span>Icon</span>
+                              <IonIcon icon={searchOutline} className="filter-icon" />
+                            </div>
+                          </th>
+                          <th>
+                            <div className="table-header">
+                              <span>Actions</span>
+                              <IonIcon icon={searchOutline} className="filter-icon" />
+                            </div>
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </IonCardContent>
-              </IonCard>
+                      </thead>
+                      <tbody>
+                        {currentPartners.map((partner, index) => (
+                          <tr key={partner.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
+                            <td className="name-cell">
+                              <div className="page-name">
+                                <IonIcon icon={peopleOutline} className="page-icon" />
+                                <span>{partner.name}</span>
+                              </div>
+                            </td>
+                            <td className="url-cell">
+                              <span className="partner-address">{partner.address}</span>
+                            </td>
+                            <td className="url-cell">
+                              <span className="partner-contact">{partner.contact}</span>
+                            </td>
+                            <td className="url-cell">
+                              <code className="url-code">PART-{partner.id.slice(-3)}</code>
+                            </td>
+                            <td className="icon-cell">
+                              <div className="icon-display">
+                                <IonIcon icon={peopleOutline} className="display-icon" />
+                                <span className="icon-name">peopleOutline</span>
+                              </div>
+                            </td>
+                            <td className="actions-cell">
+                              <div className="action-buttons">
+                                <IonButton 
+                                  fill="clear" 
+                                  size="small" 
+                                  className="edit-button"
+                                  onClick={() => handleEdit(partner.id)}
+                                >
+                                  <IonIcon icon={createOutline} />
+                                </IonButton>
+                                <IonButton 
+                                  fill="clear" 
+                                  size="small" 
+                                  className="delete-button"
+                                  onClick={() => handleDelete(partner.id)}
+                                >
+                                  <IonIcon icon={trashOutline} />
+                                </IonButton>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </IonCardContent>
+                </IonCard>
+              )}
 
               {/* Pagination */}
               <div className="pagination-container">
                 <div className="pagination-info">
                   <p>
-                    Showing {startIndex + 1} to {Math.min(endIndex, filteredPartners.length)} of {filteredPartners.length} partners
+                    Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedPartners.length)} of {filteredAndSortedPartners.length} partners
                   </p>
                 </div>
                 <div className="pagination-controls">
@@ -255,60 +406,125 @@ const PartnerMaster: React.FC = () => {
         </div>
       </IonSplitPane>
 
-      {/* Edit Modal */}
-      <IonModal 
-        isOpen={showEditModal} 
-        onDidDismiss={handleCloseEdit}
-        backdropDismiss={true}
-        showBackdrop={true}
-      >
-        <div className="edit-modal">
-          <div className="modal-header">
-            <h2>Edit Partner</h2>
-            <IonButton fill="clear" onClick={handleCloseEdit} className="close-button">
-              <IonIcon icon={closeOutline} />
-            </IonButton>
-          </div>
-          
-          <div className="modal-content">
-            <IonItem className="form-item">
-              <IonLabel position="stacked">Partner Name</IonLabel>
+      {/* Add Partner Modal */}
+      <IonModal isOpen={showAddModal} onDidDismiss={() => setShowAddModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Add New Partner</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowAddModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Create New Partner</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <IonInput
+                label="Partner Name"
+                labelPlacement="stacked"
+                placeholder="Enter partner name"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonInput
+                label="Address"
+                labelPlacement="stacked"
+                placeholder="Enter address"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonInput
+                label="Contact Number"
+                labelPlacement="stacked"
+                placeholder="Enter contact number"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonTextarea
+                label="Description (Optional)"
+                labelPlacement="stacked"
+                placeholder="Enter description"
+                rows={3}
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonButton 
+                expand="block" 
+                style={{ 
+                  '--background': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  '--color': 'white',
+                  '--border-radius': '12px',
+                  marginTop: '1rem'
+                }}
+                onClick={handleSavePartner}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                Create Partner
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* Edit Partner Modal */}
+      <IonModal isOpen={showEditModal} onDidDismiss={() => setShowEditModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Edit Partner</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowEditModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Edit Partner: {editingPartner?.name}</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <IonInput
+                label="Partner Name"
+                labelPlacement="stacked"
                 value={editForm.name}
                 onIonChange={(e) => setEditForm({...editForm, name: e.detail.value!})}
-                placeholder="Enter partner name"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
-            </IonItem>
-
-            <IonItem className="form-item">
-              <IonLabel position="stacked">Address</IonLabel>
               <IonInput
+                label="Address"
+                labelPlacement="stacked"
                 value={editForm.address}
                 onIonChange={(e) => setEditForm({...editForm, address: e.detail.value!})}
-                placeholder="Enter address"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
-            </IonItem>
-
-            <IonItem className="form-item">
-              <IonLabel position="stacked">Contact</IonLabel>
               <IonInput
+                label="Contact Number"
+                labelPlacement="stacked"
                 value={editForm.contact}
                 onIonChange={(e) => setEditForm({...editForm, contact: e.detail.value!})}
-                placeholder="Enter contact number"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
-            </IonItem>
+              <IonTextarea
+                label="Description (Optional)"
+                labelPlacement="stacked"
+                placeholder="Enter description"
+                rows={3}
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonButton 
+                expand="block" 
+                style={{ 
+                  '--background': 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
+                  '--color': 'white',
+                  '--border-radius': '12px',
+                  marginTop: '1rem'
+                }}
+                onClick={handleSaveEdit}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                Update Partner
+              </IonButton>
+            </div>
           </div>
-
-          <div className="modal-footer">
-            <IonButton 
-              fill="solid" 
-              className="save-button"
-              onClick={handleSaveEdit}
-            >
-              Save Changes
-            </IonButton>
-          </div>
-        </div>
+        </IonContent>
       </IonModal>
 
       {/* Delete Confirmation Alert */}
@@ -322,6 +538,13 @@ const PartnerMaster: React.FC = () => {
           { text: 'Delete', role: 'destructive', handler: confirmDelete }
         ]}
       />
+
+      {/* Floating Action Button */}
+      <IonFab vertical="bottom" horizontal="end" slot="fixed">
+        <IonFabButton className="fab-add-page" onClick={handleAddPartner}>
+          <IonIcon icon={addOutline} />
+        </IonFabButton>
+      </IonFab>
 
       {/* Toast for notifications */}
       <IonToast

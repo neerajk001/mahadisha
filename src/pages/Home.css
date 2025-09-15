@@ -1,10 +1,62 @@
-/* Home component - comprehensive responsive styling */
+/* Home component - comprehensive responsive styling with premium animations */
 
 /* Base styles for the home page */
 .home-page {
   width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(180deg, #f1f3f4 0%, #e8eaed 100%);
+}
+
+.home-page.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Smooth scrolling */
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+
+/* Section wrapper animations */
+.section-wrapper {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section-wrapper.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered animation delays for sections */
+#hero-section.visible {
+  transition-delay: 0.1s;
+}
+
+#about-section.visible {
+  transition-delay: 0.2s;
+}
+
+#schemes-section.visible {
+  transition-delay: 0.3s;
+}
+
+#contact-section.visible {
+  transition-delay: 0.4s;
+}
+
+#statistics-section.visible {
+  transition-delay: 0.5s;
+}
+
+#cta-section.visible {
+  transition-delay: 0.6s;
 }
 
 /* Ensure all sections stack properly on mobile */

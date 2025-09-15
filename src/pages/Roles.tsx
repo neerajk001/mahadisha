@@ -2,11 +2,14 @@ import React, { useState, useMemo } from 'react';
 import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
-  IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar
+  IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
+  IonModal, IonItem, IonLabel, IonInput, IonTextarea, IonSelect, IonSelectOption,
+  IonButtons
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
-  chevronBackOutline, chevronForwardOutline
+  chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
+  eyeOutline
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -21,11 +24,28 @@ const Roles: React.FC = () => {
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  
+  // Modal states
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [viewingRole, setViewingRole] = useState<RolesData | null>(null);
+  const [editingRole, setEditingRole] = useState<RolesData | null>(null);
+  const [addForm, setAddForm] = useState({
+    name: ''
+  });
+  const [editForm, setEditForm] = useState({
+    name: ''
+  });
+  
+  // State for managing new roles
+  const [rolesItems, setRolesItems] = useState<RolesData[]>([]);
 
   const itemsPerPage = 5;
 
-  // Get roles data from mock service
-  const allRoles = mockDataService.getRolesData();
+  // Get roles data from mock service and combine with new items
+  const mockRoles = mockDataService.getRolesData();
+  const allRoles = [...mockRoles, ...rolesItems];
   
   // Filter roles based on search query
   const filteredRoles = useMemo(() => {
@@ -41,13 +61,107 @@ const Roles: React.FC = () => {
   const currentRoles = filteredRoles.slice(startIndex, endIndex);
 
   const handleAddRole = () => {
-    setToastMessage('Add new role functionality will be implemented');
+    setAddForm({ name: '' });
+    setShowAddModal(true);
+  };
+
+  const handleSaveAdd = () => {
+    if (!addForm.name.trim()) {
+      setToastMessage('Please enter a role name');
+      setShowToast(true);
+      return;
+    }
+
+    // Check if role name already exists
+    if (allRoles.some(role => role.name.toLowerCase() === addForm.name.toLowerCase())) {
+      setToastMessage('Role name already exists. Please choose a different name.');
+      setShowToast(true);
+      return;
+    }
+    
+    // Create new role
+    const newRole: RolesData = {
+      id: `role_${Date.now()}`,
+      name: addForm.name.trim(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    // Add to state
+    setRolesItems(prev => [...prev, newRole]);
+    
+    setToastMessage(`Role "${addForm.name}" added successfully`);
     setShowToast(true);
+    setShowAddModal(false);
+    setAddForm({ name: '' });
+  };
+
+  const handleCloseAdd = () => {
+    setShowAddModal(false);
+    setAddForm({ name: '' });
   };
 
   const handleEdit = (roleId: string) => {
-    setToastMessage('Edit functionality will be implemented');
+    const role = allRoles.find(r => r.id === roleId);
+    if (role) {
+      setEditingRole(role);
+      setEditForm({ name: role.name });
+      setShowEditModal(true);
+    }
+  };
+
+  const handleSaveEdit = () => {
+    if (!editForm.name.trim()) {
+      setToastMessage('Please enter a role name');
+      setShowToast(true);
+      return;
+    }
+
+    if (!editingRole) return;
+
+    // Check if role name already exists (excluding current item)
+    if (allRoles.some(role => 
+      role.id !== editingRole.id && 
+      role.name.toLowerCase() === editForm.name.toLowerCase()
+    )) {
+      setToastMessage('Role name already exists. Please choose a different name.');
+      setShowToast(true);
+      return;
+    }
+    
+    // Update the item in state
+    setRolesItems(prev => 
+      prev.map(item => 
+        item.id === editingRole.id 
+          ? { ...item, name: editForm.name.trim(), updatedAt: new Date().toISOString() }
+          : item
+      )
+    );
+    
+    setToastMessage(`Role "${editForm.name}" updated successfully`);
     setShowToast(true);
+    setShowEditModal(false);
+    setEditingRole(null);
+    setEditForm({ name: '' });
+  };
+
+  const handleCloseEdit = () => {
+    setShowEditModal(false);
+    setEditingRole(null);
+    setEditForm({ name: '' });
+  };
+
+  const handleView = (roleId: string) => {
+    const role = allRoles.find(r => r.id === roleId);
+    if (role) {
+      setViewingRole(role);
+      setShowViewModal(true);
+    }
+  };
+
+  const handleCloseView = () => {
+    setShowViewModal(false);
+    setViewingRole(null);
   };
 
   const handleDelete = (roleId: string) => {
@@ -57,7 +171,11 @@ const Roles: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedRoleId) {
-      setToastMessage(`Delete role ${selectedRoleId} functionality will be implemented`);
+      // Remove from state
+      setRolesItems(prev => prev.filter(item => item.id !== selectedRoleId));
+      
+      const roleToDelete = allRoles.find(role => role.id === selectedRoleId);
+      setToastMessage(`Role "${roleToDelete?.name || selectedRoleId}" deleted successfully`);
       setShowToast(true);
       setSelectedRoleId(null);
     }
@@ -110,7 +228,7 @@ const Roles: React.FC = () => {
                   onClick={handleAddRole}
                 >
                   <IonIcon icon={addOutline} />
-                  Add Role
+                  + ADD ROLE
                 </IonButton>
               </div>
 
@@ -141,6 +259,14 @@ const Roles: React.FC = () => {
                           </td>
                           <td className="actions-cell">
                             <div className="action-buttons">
+                              <IonButton 
+                                fill="clear" 
+                                size="small" 
+                                className="view-button"
+                                onClick={() => handleView(role.id)}
+                              >
+                                <IonIcon icon={eyeOutline} />
+                              </IonButton>
                               <IonButton 
                                 fill="clear" 
                                 size="small" 
@@ -213,6 +339,128 @@ const Roles: React.FC = () => {
           { text: 'Delete', role: 'destructive', handler: confirmDelete }
         ]}
       />
+
+      {/* Add Role Modal */}
+      <IonModal isOpen={showAddModal} onDidDismiss={handleCloseAdd}>
+        <IonContent className="add-role-modal">
+          <div className="modal-header">
+            <h2>Add New Role</h2>
+            <IonButton fill="clear" onClick={handleCloseAdd}>
+              <IonIcon icon={closeOutline} />
+            </IonButton>
+          </div>
+          
+          <div className="modal-content">
+            <div className="form-group">
+              <IonLabel className="form-label">Role Name *</IonLabel>
+              <IonInput
+                value={addForm.name}
+                onIonChange={(e) => setAddForm(prev => ({ ...prev, name: e.detail.value! }))}
+                placeholder="Enter role name"
+                className="form-input"
+              />
+            </div>
+          </div>
+          
+          <div className="modal-actions">
+            <IonButton 
+              fill="solid"
+              onClick={handleSaveAdd}
+              className="add-button"
+            >
+              <IonIcon icon={checkmarkOutline} slot="start" />
+              ADD ROLE
+            </IonButton>
+            <IonButton 
+              fill="outline"
+              onClick={handleCloseAdd}
+              className="cancel-button"
+            >
+              CANCEL
+            </IonButton>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* Edit Role Modal */}
+      <IonModal isOpen={showEditModal} onDidDismiss={handleCloseEdit}>
+        <IonContent className="add-role-modal">
+          <div className="modal-header">
+            <h2>Edit Role</h2>
+            <IonButton fill="clear" onClick={handleCloseEdit}>
+              <IonIcon icon={closeOutline} />
+            </IonButton>
+          </div>
+          
+          <div className="modal-content">
+            <div className="form-group">
+              <IonLabel className="form-label">Role Name *</IonLabel>
+              <IonInput
+                value={editForm.name}
+                onIonChange={(e) => setEditForm(prev => ({ ...prev, name: e.detail.value! }))}
+                placeholder="Enter role name"
+                className="form-input"
+              />
+            </div>
+          </div>
+          
+          <div className="modal-actions">
+            <IonButton 
+              fill="solid"
+              onClick={handleSaveEdit}
+              className="add-button"
+            >
+              <IonIcon icon={checkmarkOutline} slot="start" />
+              UPDATE ROLE
+            </IonButton>
+            <IonButton 
+              fill="outline"
+              onClick={handleCloseEdit}
+              className="cancel-button"
+            >
+              CANCEL
+            </IonButton>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* View Role Modal */}
+      <IonModal isOpen={showViewModal} onDidDismiss={handleCloseView}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Role Details</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={handleCloseView}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="view-modal-content">
+          {viewingRole && (
+            <div>
+              <IonItem>
+                <IonLabel>
+                  <h2>Role Name</h2>
+                  <p>{viewingRole.name}</p>
+                </IonLabel>
+              </IonItem>
+              <IonItem>
+                <IonLabel>
+                  <h2>Created At</h2>
+                  <p>{new Date(viewingRole.createdAt).toLocaleDateString()}</p>
+                </IonLabel>
+              </IonItem>
+              <IonItem>
+                <IonLabel>
+                  <h2>Updated At</h2>
+                  <p>{new Date(viewingRole.updatedAt).toLocaleDateString()}</p>
+                </IonLabel>
+              </IonItem>
+            </div>
+          )}
+        </IonContent>
+      </IonModal>
 
       {/* Toast for notifications */}
       <IonToast

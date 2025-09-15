@@ -34,17 +34,27 @@ const ChartsSection: React.FC<ChartsSectionProps> = ({ monthlyData, districtData
                   </div>
                   <div className="bar-chart">
                     <div className="chart-y-axis">
-                      <div className="y-label">30</div>
-                      <div className="y-label">25</div>
+                      <div className="y-label">100</div>
+                      <div className="y-label">80</div>
+                      <div className="y-label">60</div>
+                      <div className="y-label">40</div>
                       <div className="y-label">20</div>
-                      <div className="y-label">15</div>
-                      <div className="y-label">10</div>
-                      <div className="y-label">5</div>
                       <div className="y-label">0</div>
                     </div>
                     <div className="chart-area">
-                      <div className="bar" style={{ height: '96.7%' }}>
-                        <div className="bar-value">29</div>
+                      <div className="bar-group">
+                        <div className="bar approved" style={{ height: '95%' }}>
+                          <div className="bar-value">95</div>
+                          <div className="bar-label">Approved</div>
+                        </div>
+                        <div className="bar pending" style={{ height: '18%' }}>
+                          <div className="bar-value">18</div>
+                          <div className="bar-label">Pending</div>
+                        </div>
+                        <div className="bar rejected" style={{ height: '12%' }}>
+                          <div className="bar-value">12</div>
+                          <div className="bar-label">Rejected</div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -93,7 +103,7 @@ const ChartsSection: React.FC<ChartsSectionProps> = ({ monthlyData, districtData
                 <div className="chart-container">
                   <div className="doughnut-chart">
                     <div className="chart-center">
-                      <div className="center-value">29</div>
+                      <div className="center-value">125</div>
                       <div className="center-label">Total</div>
                     </div>
                     <svg className="doughnut-svg" viewBox="0 0 120 120">
@@ -102,9 +112,9 @@ const ChartsSection: React.FC<ChartsSectionProps> = ({ monthlyData, districtData
                         cy="60"
                         r="50"
                         fill="none"
-                        stroke="var(--color-secondary)"
+                        stroke="#5CA8A3"
                         strokeWidth="20"
-                        strokeDasharray="314 6"
+                        strokeDasharray="251.2 62.8"
                         strokeDashoffset="0"
                         transform="rotate(-90 60 60)"
                       />
@@ -113,18 +123,37 @@ const ChartsSection: React.FC<ChartsSectionProps> = ({ monthlyData, districtData
                         cy="60"
                         r="50"
                         fill="none"
-                        stroke="var(--color-primary)"
+                        stroke="#E6C17C"
                         strokeWidth="20"
-                        strokeDasharray="6 314"
-                        strokeDashoffset="0"
+                        strokeDasharray="45.2 268.8"
+                        strokeDashoffset="-251.2"
+                        transform="rotate(-90 60 60)"
+                      />
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="50"
+                        fill="none"
+                        stroke="#E08E79"
+                        strokeWidth="20"
+                        strokeDasharray="30.1 283.9"
+                        strokeDashoffset="-296.4"
                         transform="rotate(-90 60 60)"
                       />
                     </svg>
                   </div>
                   <div className="chart-legend">
                     <div className="legend-item">
-                      <div className="legend-color" style={{ backgroundColor: 'var(--color-secondary)' }}></div>
-                      <span className="legend-label">Pending</span>
+                      <div className="legend-color" style={{ backgroundColor: '#5CA8A3' }}></div>
+                      <span className="legend-label">Approved (76%)</span>
+                    </div>
+                    <div className="legend-item">
+                      <div className="legend-color" style={{ backgroundColor: '#E6C17C' }}></div>
+                      <span className="legend-label">Pending (14%)</span>
+                    </div>
+                    <div className="legend-item">
+                      <div className="legend-color" style={{ backgroundColor: '#E08E79' }}></div>
+                      <span className="legend-label">Rejected (10%)</span>
                     </div>
                   </div>
                 </div>

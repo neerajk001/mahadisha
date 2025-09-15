@@ -216,29 +216,24 @@ const Sidebar: React.FC = () => {
       >
       <IonHeader>
         <IonToolbar className="sidebar-toolbar">
-          <IonTitle className="sidebar-title">
+          <div className="sidebar-header-content">
             <div className="sidebar-logo">
-              <div className="logo-icon">
-                <div className="logo-circle">
-                  <div className="logo-y">Y</div>
-                  <div className="logo-accent"></div>
-                </div>
-              </div>
-              <div className="logo-text">
-                <div className="logo-main">MAHA-DISHA</div>
-                <div className="logo-subtitle">Digital Integrated System for Holistic Administration</div>
-              </div>
+              <img 
+                src="/mahadisha.png" 
+                alt="MAHA-DISHA Logo" 
+                className="logo-image"
+              />
             </div>
-          </IonTitle>
-          {/* Toggle Button */}
-          <IonButton
-            fill="clear"
-            size="small"
-            className="sidebar-toggle-btn"
-            onClick={toggleSidebar}
-          >
-            <IonIcon icon={closeOutline} />
-          </IonButton>
+            {/* Toggle Button */}
+            <IonButton
+              fill="clear"
+              size="small"
+              className="sidebar-toggle-btn"
+              onClick={toggleSidebar}
+            >
+              <IonIcon icon={closeOutline} />
+            </IonButton>
+          </div>
         </IonToolbar>
       </IonHeader>
 

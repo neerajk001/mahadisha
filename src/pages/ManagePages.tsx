@@ -2,13 +2,17 @@ import React, { useState, useMemo } from 'react';
 import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
-  IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar
+  IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
+  IonModal, IonButtons, IonInput, IonTextarea, IonSelect, IonSelectOption,
+  IonBadge, IonChip, IonFab, IonFabButton
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
   keyOutline, homeOutline, gitBranchOutline, shieldOutline,
   shuffleOutline, barChartOutline, fileTrayOutline, accessibilityOutline,
-  chevronBackOutline, chevronForwardOutline
+  chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
+  eyeOutline, settingsOutline, copyOutline, linkOutline, timeOutline,
+  peopleOutline, documentTextOutline, globeOutline
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -23,25 +27,51 @@ const ManagePages: React.FC = () => {
   const [selectedPageId, setSelectedPageId] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  
+  // Enhanced state for new functionality
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingPage, setEditingPage] = useState<PageData | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [sortBy, setSortBy] = useState<'name' | 'url' | 'icon'>('name');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 6;
 
   // Get page data from mock service
   const allPages = mockDataService.getPageData();
   
-  // Filter pages based on search query
-  const filteredPages = useMemo(() => {
-    return allPages.filter(page =>
+  // Filter and sort pages
+  const filteredAndSortedPages = useMemo(() => {
+    let filtered = allPages.filter(page =>
       page.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       page.url.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [allPages, searchQuery]);
+
+    // Sort pages
+    filtered.sort((a, b) => {
+      const aValue = (a as any)[sortBy];
+      const bValue = (b as any)[sortBy];
+      
+      if (typeof aValue === 'string') {
+        return sortOrder === 'asc' 
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+      
+      return sortOrder === 'asc' 
+        ? aValue - bValue 
+        : bValue - aValue;
+    });
+
+    return filtered;
+  }, [allPages, searchQuery, sortBy, sortOrder]);
 
   // Calculate pagination
-  const totalPages = Math.ceil(filteredPages.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredAndSortedPages.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentPages = filteredPages.slice(startIndex, endIndex);
+  const currentPages = filteredAndSortedPages.slice(startIndex, endIndex);
 
   const getIconComponent = (iconName: string) => {
     switch (iconName) {
@@ -58,12 +88,22 @@ const ManagePages: React.FC = () => {
   };
 
   const handleAddPage = () => {
-    setToastMessage('Add new page functionality will be implemented');
+    setShowAddModal(true);
+  };
+
+  const handleEdit = (page: PageData) => {
+    setEditingPage(page);
+    setShowEditModal(true);
+  };
+
+  const handleView = (page: PageData) => {
+    setToastMessage(`Viewing page: ${page.name}`);
     setShowToast(true);
   };
 
-  const handleEdit = (pageId: string) => {
-    setToastMessage(`Edit page ${pageId} functionality will be implemented`);
+  const handleCopyUrl = (url: string) => {
+    navigator.clipboard.writeText(url);
+    setToastMessage('URL copied to clipboard');
     setShowToast(true);
   };
 
@@ -113,7 +153,7 @@ const ManagePages: React.FC = () => {
                 <p>Configure and manage system pages, routes, and navigation</p>
               </div>
 
-              {/* Search and Actions */}
+              {/* Enhanced Search and Actions */}
               <div className="pages-actions">
                 <IonSearchbar
                   value={searchQuery}
@@ -121,6 +161,14 @@ const ManagePages: React.FC = () => {
                   placeholder="Search pages by name or URL..."
                   className="pages-search"
                 />
+                <IonButton 
+                  fill="outline" 
+                  size="small"
+                  onClick={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
+                >
+                  <IonIcon icon={viewMode === 'grid' ? barChartOutline : eyeOutline} />
+                  {viewMode === 'grid' ? 'Table View' : 'Grid View'}
+                </IonButton>
                 <IonButton 
                   fill="solid" 
                   className="add-page-button"
@@ -131,88 +179,149 @@ const ManagePages: React.FC = () => {
                 </IonButton>
               </div>
 
-              {/* Pages Table */}
-              <IonCard className="pages-table-card">
-                <IonCardContent className="table-container">
-                  <table className="pages-table">
-                    <thead>
-                      <tr>
-                        <th>
-                          <div className="table-header">
-                            <span>Name</span>
-                            <IonIcon icon={searchOutline} className="filter-icon" />
+              {/* Modern Pages Grid */}
+              {viewMode === 'grid' ? (
+                <div className="pages-grid">
+                  {currentPages.map((page) => (
+                    <div key={page.id} className="page-card">
+                      <div className="page-card-header">
+                        <div className="page-card-icon">
+                          <IonIcon icon={getIconComponent(page.icon)} />
+                        </div>
+                        <div className="page-card-title">
+                          <h3 className="page-card-name">{page.name}</h3>
+                          <div className="page-card-url">{page.url}</div>
+                        </div>
+                      </div>
+                      
+                      <div className="page-card-content">
+                        <div className="page-card-meta">
+                          <div className="page-card-meta-item">
+                            <IonIcon icon={documentTextOutline} className="page-card-meta-icon" />
+                            <span>{page.icon}</span>
                           </div>
-                        </th>
-                        <th>
-                          <div className="table-header">
-                            <span>URL</span>
-                            <IonIcon icon={searchOutline} className="filter-icon" />
+                          <div className="page-card-meta-item">
+                            <IonIcon icon={timeOutline} className="page-card-meta-icon" />
+                            <span>Active</span>
                           </div>
-                        </th>
-                        <th>
-                          <div className="table-header">
-                            <span>Icon</span>
-                            <IonIcon icon={searchOutline} className="filter-icon" />
-                          </div>
-                        </th>
-                        <th>
-                          <div className="table-header">
-                            <span>Actions</span>
-                            <IonIcon icon={searchOutline} className="filter-icon" />
-                          </div>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {currentPages.map((page, index) => (
-                        <tr key={page.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
-                          <td className="name-cell">
-                            <div className="page-name">
-                              <IonIcon icon={getIconComponent(page.icon)} className="page-icon" />
-                              <span>{page.name}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="page-card-actions">
+                        <IonButton 
+                          fill="clear" 
+                          size="small" 
+                          className="page-card-button edit"
+                          onClick={() => handleView(page)}
+                        >
+                          <IonIcon icon={eyeOutline} />
+                          View
+                        </IonButton>
+                        <IonButton 
+                          fill="clear" 
+                          size="small" 
+                          className="page-card-button edit"
+                          onClick={() => handleEdit(page)}
+                        >
+                          <IonIcon icon={createOutline} />
+                          Edit
+                        </IonButton>
+                        <IonButton 
+                          fill="clear" 
+                          size="small" 
+                          className="page-card-button delete"
+                          onClick={() => handleDelete(page.id)}
+                        >
+                          <IonIcon icon={trashOutline} />
+                          Delete
+                        </IonButton>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <IonCard className="pages-table-card">
+                  <IonCardContent className="table-container">
+                    <table className="pages-table">
+                      <thead>
+                        <tr>
+                          <th>
+                            <div className="table-header">
+                              <span>Name</span>
+                              <IonIcon icon={searchOutline} className="filter-icon" />
                             </div>
-                          </td>
-                          <td className="url-cell">
-                            <code className="url-code">{page.url}</code>
-                          </td>
-                          <td className="icon-cell">
-                            <div className="icon-display">
-                              <IonIcon icon={getIconComponent(page.icon)} className="display-icon" />
-                              <span className="icon-name">{page.icon}</span>
+                          </th>
+                          <th>
+                            <div className="table-header">
+                              <span>URL</span>
+                              <IonIcon icon={searchOutline} className="filter-icon" />
                             </div>
-                          </td>
-                          <td className="actions-cell">
-                            <div className="action-buttons">
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="edit-button"
-                                onClick={() => handleEdit(page.id)}
-                              >
-                                <IonIcon icon={createOutline} />
-                              </IonButton>
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="delete-button"
-                                onClick={() => handleDelete(page.id)}
-                              >
-                                <IonIcon icon={trashOutline} />
-                              </IonButton>
+                          </th>
+                          <th>
+                            <div className="table-header">
+                              <span>Icon</span>
+                              <IonIcon icon={searchOutline} className="filter-icon" />
                             </div>
-                          </td>
+                          </th>
+                          <th>
+                            <div className="table-header">
+                              <span>Actions</span>
+                              <IonIcon icon={searchOutline} className="filter-icon" />
+                            </div>
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </IonCardContent>
-              </IonCard>
+                      </thead>
+                      <tbody>
+                        {currentPages.map((page, index) => (
+                          <tr key={page.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
+                            <td className="name-cell">
+                              <div className="page-name">
+                                <IonIcon icon={getIconComponent(page.icon)} className="page-icon" />
+                                <span>{page.name}</span>
+                              </div>
+                            </td>
+                            <td className="url-cell">
+                              <code className="url-code">{page.url}</code>
+                            </td>
+                            <td className="icon-cell">
+                              <div className="icon-display">
+                                <IonIcon icon={getIconComponent(page.icon)} className="display-icon" />
+                                <span className="icon-name">{page.icon}</span>
+                              </div>
+                            </td>
+                            <td className="actions-cell">
+                              <div className="action-buttons">
+                                <IonButton 
+                                  fill="clear" 
+                                  size="small" 
+                                  className="edit-button"
+                                  onClick={() => handleEdit(page)}
+                                >
+                                  <IonIcon icon={createOutline} />
+                                </IonButton>
+                                <IonButton 
+                                  fill="clear" 
+                                  size="small" 
+                                  className="delete-button"
+                                  onClick={() => handleDelete(page.id)}
+                                >
+                                  <IonIcon icon={trashOutline} />
+                                </IonButton>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </IonCardContent>
+                </IonCard>
+              )}
 
               {/* Pagination */}
               <div className="pagination-container">
                 <div className="pagination-info">
                   <p>
-                    Showing {startIndex + 1} to {Math.min(endIndex, filteredPages.length)} of {filteredPages.length} pages
+                    Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedPages.length)} of {filteredAndSortedPages.length} pages
                   </p>
                 </div>
                 <div className="pagination-controls">
@@ -255,6 +364,124 @@ const ManagePages: React.FC = () => {
           { text: 'Delete', role: 'destructive', handler: confirmDelete }
         ]}
       />
+
+      {/* Add Page Modal */}
+      <IonModal isOpen={showAddModal} onDidDismiss={() => setShowAddModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Add New Page</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowAddModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Create New Page</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <IonInput
+                label="Page Name"
+                labelPlacement="stacked"
+                placeholder="Enter page name"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonInput
+                label="Page URL"
+                labelPlacement="stacked"
+                placeholder="/page-url"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonSelect
+                label="Icon"
+                labelPlacement="stacked"
+                placeholder="Select icon"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              >
+                <IonSelectOption value="homeOutline">Home</IonSelectOption>
+                <IonSelectOption value="documentTextOutline">Document</IonSelectOption>
+                <IonSelectOption value="settingsOutline">Settings</IonSelectOption>
+                <IonSelectOption value="peopleOutline">People</IonSelectOption>
+              </IonSelect>
+              <IonButton 
+                expand="block" 
+                style={{ 
+                  '--background': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  '--color': 'white',
+                  '--border-radius': '12px',
+                  marginTop: '1rem'
+                }}
+                onClick={() => {
+                  setToastMessage('New page created successfully');
+                  setShowToast(true);
+                  setShowAddModal(false);
+                }}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                Create Page
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* Edit Page Modal */}
+      <IonModal isOpen={showEditModal} onDidDismiss={() => setShowEditModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Edit Page</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowEditModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Edit Page: {editingPage?.name}</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <IonInput
+                label="Page Name"
+                labelPlacement="stacked"
+                value={editingPage?.name}
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonInput
+                label="Page URL"
+                labelPlacement="stacked"
+                value={editingPage?.url}
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonButton 
+                expand="block" 
+                style={{ 
+                  '--background': 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
+                  '--color': 'white',
+                  '--border-radius': '12px',
+                  marginTop: '1rem'
+                }}
+                onClick={() => {
+                  setToastMessage('Page updated successfully');
+                  setShowToast(true);
+                  setShowEditModal(false);
+                }}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                Update Page
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* Floating Action Button */}
+      <IonFab vertical="bottom" horizontal="end" slot="fixed">
+        <IonFabButton className="fab-add-page">
+          <IonIcon icon={addOutline} />
+        </IonFabButton>
+      </IonFab>
 
       {/* Toast for notifications */}
       <IonToast

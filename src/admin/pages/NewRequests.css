@@ -1,15 +1,9 @@
+
 /* New Requests Page Styles */
 .new-requests-content {
   --background: var(--color-bg-secondary);
   flex: 1;
   overflow-y: auto;
-}
-
-/* Split Pane Configuration */
-ion-split-pane {
-  --side-width: 250px;
-  --side-min-width: 250px;
-  --side-max-width: 250px;
 }
 
 .new-requests-container {

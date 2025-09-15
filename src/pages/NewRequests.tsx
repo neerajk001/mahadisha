@@ -7,8 +7,6 @@ import {
   IonIcon,
   IonSpinner,
   IonSearchbar,
-  IonSelect,
-  IonSelectOption,
   IonButton,
   IonAlert,
   IonToast
@@ -21,8 +19,8 @@ import {
   listOutline,
   refreshOutline
 } from 'ionicons/icons';
-import Sidebar from '../components/sidebar/Sidebar';
-import DashboardHeader from '../components/header/DashboardHeader';
+import Sidebar from '../admin/components/sidebar/Sidebar';
+import DashboardHeader from '../admin/components/header/DashboardHeader';
 // Import RequestCard component
 import RequestCard from '../components/requests/RequestCardNew';
 import RequestList from '../components/requests/RequestList';
@@ -176,57 +174,51 @@ const NewRequests: React.FC = () => {
                 <div className="filter-section">
                   <div className="filter-group">
                     <label className="filter-label">Status</label>
-                    <IonSelect
+                    <select
                       value={filters.status}
-                      onIonChange={(e) => setFilters(prev => ({ ...prev, status: e.detail.value }))}
-                      placeholder="Select Status"
+                      onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
                       className="filter-select"
                     >
                       {statusOptions.map(option => (
-                        <IonSelectOption key={option.value} value={option.value}>
+                        <option key={option.value} value={option.value}>
                           {option.label}
-                        </IonSelectOption>
+                        </option>
                       ))}
-                    </IonSelect>
+                    </select>
                   </div>
                   
                   <div className="filter-group">
                     <label className="filter-label">District</label>
-                    <IonSelect
+                    <select
                       value={filters.district}
-                      onIonChange={(e) => setFilters(prev => ({ ...prev, district: e.detail.value }))}
-                      placeholder="Select District"
+                      onChange={(e) => setFilters(prev => ({ ...prev, district: e.target.value }))}
                       className="filter-select"
                     >
                       {districtOptions.map(option => (
-                        <IonSelectOption key={option.value} value={option.value}>
+                        <option key={option.value} value={option.value}>
                           {option.label}
-                        </IonSelectOption>
+                        </option>
                       ))}
-                    </IonSelect>
+                    </select>
                   </div>
                 </div>
                 
                 <div className="view-controls">
                   <div className="view-toggle">
-                    <IonButton
-                      fill={viewMode === 'card' ? 'solid' : 'outline'}
-                      size="small"
+                    <button
+                      className={`view-button ${viewMode === 'card' ? 'active' : 'inactive'}`}
                       onClick={() => setViewMode('card')}
-                      className="view-button"
                     >
-                      <IonIcon icon={cardOutline} slot="start" />
-                      Card View
-                    </IonButton>
-                    <IonButton
-                      fill={viewMode === 'list' ? 'solid' : 'outline'}
-                      size="small"
+                      <IonIcon icon={cardOutline} />
+                      <span>Card View</span>
+                    </button>
+                    <button
+                      className={`view-button ${viewMode === 'list' ? 'active' : 'inactive'}`}
                       onClick={() => setViewMode('list')}
-                      className="view-button"
                     >
-                      <IonIcon icon={listOutline} slot="start" />
-                      List View
-                    </IonButton>
+                      <IonIcon icon={listOutline} />
+                      <span>List View</span>
+                    </button>
                   </div>
                   
                   <IonButton
@@ -261,16 +253,16 @@ const NewRequests: React.FC = () => {
                       <p>Showing {requests?.length || 0} of {pagination.total} requests</p>
                     </div>
                     
-                        {viewMode === 'card' ? (
-                          <RequestCard
-                            requests={requests || []}
-                            onStatusChange={handleStatusChange}
-                            onViewDetails={handleViewDetails}
-                            onSendEmail={handleSendEmail}
-                            onDownloadPDF={handleDownloadPDF}
-                            onRepayment={handleRepayment}
-                          />
-                        ) : (
+                    {viewMode === 'card' ? (
+                      <RequestCard
+                        requests={requests || []}
+                        onStatusChange={handleStatusChange}
+                        onViewDetails={handleViewDetails}
+                        onSendEmail={handleSendEmail}
+                        onDownloadPDF={handleDownloadPDF}
+                        onRepayment={handleRepayment}
+                      />
+                    ) : (
                       <RequestList
                         requests={requests || []}
                         onStatusChange={handleStatusChange}

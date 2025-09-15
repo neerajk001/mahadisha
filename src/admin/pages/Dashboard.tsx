@@ -11,6 +11,7 @@ import {
 import { addOutline } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
+import FilterRow from '../components/dashboard/FilterRow';
 import SummaryCards from '../components/dashboard/SummaryCards';
 import ChartsSection from '../components/dashboard/ChartsSection';
 import { useDashboard } from '../hooks/useDashboard';
@@ -59,6 +60,10 @@ const Dashboard: React.FC = () => {
               </div>
             ) : (
               <>
+                {/* Filter Row */}
+                <FilterRow onFilterChange={handleFilterChange} />
+                
+                {/* Summary Cards */}
                 <SummaryCards data={summary} />
                 <ChartsSection
                   monthlyData={monthlyChart}

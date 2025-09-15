@@ -1,38 +1,38 @@
 /* Access Mapping Page Styles */
 .access-mapping-content {
-  --background: var(--color-bg-secondary);
+  --background: linear-gradient(135deg, #F9F6F2 0%, #FFF7F0 100%);
   --padding-start: 1.5rem;
   --padding-end: 1.5rem;
   --padding-top: 1.5rem;
   --padding-bottom: 1.5rem;
 }
 
-.mappings-container {
+.mapping-container {
   max-width: 1200px;
   margin: 0 auto;
 }
 
 /* Header Section */
-.mappings-header {
+.mapping-header {
   margin-bottom: 2rem;
   text-align: center;
 }
 
-.mappings-header h1 {
+.mapping-header h1 {
   font-size: 2rem;
   font-weight: 700;
   color: var(--color-text-primary);
   margin: 0 0 0.5rem 0;
 }
 
-.mappings-header p {
+.mapping-header p {
   font-size: 1rem;
   color: var(--color-text-secondary);
   margin: 0;
 }
 
 /* Actions Section */
-.mappings-actions {
+.mapping-actions {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -40,7 +40,7 @@
   flex-wrap: wrap;
 }
 
-.mappings-search {
+.mapping-search {
   flex: 1;
   min-width: 300px;
   --background: var(--color-bg-primary);
@@ -138,7 +138,7 @@
 
 /* Cell Styles */
 .role-cell {
-  min-width: 250px;
+  min-width: 150px;
 }
 
 .role-name {
@@ -147,16 +147,16 @@
 }
 
 .page-access-cell {
-  min-width: 150px;
+  min-width: 200px;
 }
 
 .page-access-text {
   font-weight: 500;
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary);
 }
 
 .navbar-access-cell {
-  min-width: 200px;
+  min-width: 300px;
 }
 
 .navbar-access {
@@ -165,10 +165,27 @@
   gap: 0.25rem;
 }
 
-.navbar-access-item {
-  font-size: 0.85rem;
-  color: var(--color-text-primary);
-  font-weight: 500;
+.navbar-access-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.access-chip-small {
+  --background: var(--color-primary);
+  --color: white;
+  font-size: 0.75rem;
+  height: 24px;
+}
+
+.more-chip {
+  --background: var(--color-text-secondary);
+  --color: white;
+}
+
+.no-access {
+  color: var(--color-text-disabled);
+  font-style: italic;
 }
 
 .actions-cell {
@@ -263,6 +280,202 @@
   border: 1px solid var(--color-border-light);
 }
 
+/* Add Access Modal Styles */
+.add-access-modal {
+  --background: var(--color-bg-primary, #ffffff);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--color-border, #e2e8f0);
+  background: var(--color-bg-primary, #ffffff);
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary, #2d3748);
+  margin: 0;
+}
+
+.modal-content {
+  padding: 1.5rem;
+}
+
+.modal-content ion-list {
+  background: transparent;
+}
+
+.modal-content ion-item {
+  --background: transparent;
+  --border-color: var(--color-border, #e2e8f0);
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 1rem;
+}
+
+.modal-content ion-label {
+  font-weight: 600;
+  color: var(--color-text-primary, #2d3748);
+  margin-bottom: 0.5rem;
+}
+
+.role-input,
+.page-access-input {
+  --background: var(--color-bg-secondary, #f8fafc);
+  --border-radius: 8px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  border: 1px solid var(--color-border, #e2e8f0);
+  font-size: 1rem;
+}
+
+.navbar-access-section {
+  width: 100%;
+}
+
+.navbar-access-input {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.navbar-access-input ion-input {
+  flex: 1;
+  --background: var(--color-bg-secondary, #f8fafc);
+  --border-radius: 8px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  border: 1px solid var(--color-border, #e2e8f0);
+  font-size: 1rem;
+}
+
+.navbar-access-input ion-button {
+  --border-radius: 8px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  min-width: 50px;
+  height: 48px;
+}
+
+.navbar-access-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.access-chip {
+  --background: var(--color-primary, #3182ce);
+  --color: white;
+  font-size: 0.8rem;
+  height: 32px;
+}
+
+.access-chip ion-button {
+  --color: white;
+  --background: transparent;
+  --padding: 0.25rem;
+  width: 24px;
+  height: 24px;
+  font-size: 0.8rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid var(--color-border, #e2e8f0);
+  background: var(--color-bg-primary, #ffffff);
+}
+
+.modal-actions ion-button {
+  --border-radius: 8px;
+  --padding-start: 1.5rem;
+  --padding-end: 1.5rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  font-weight: 600;
+  min-width: 140px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.modal-actions ion-button[fill="solid"] {
+  --background: var(--color-primary, #3182ce);
+  --color: white;
+}
+
+.modal-actions ion-button[fill="solid"]:hover {
+  --background: var(--color-primary-dark, #2c5aa0);
+}
+
+.modal-actions ion-button[fill="outline"] {
+  --background: transparent;
+  --color: var(--color-text-primary, #2d3748);
+  --border-color: var(--color-border, #e2e8f0);
+}
+
+.modal-actions ion-button[fill="outline"]:hover {
+  --background: var(--color-bg-secondary, #f8fafc);
+  --border-color: var(--color-text-secondary, #718096);
+}
+
+/* Popover Styles */
+ion-popover {
+  --width: 300px;
+  --max-height: 400px;
+}
+
+ion-popover ion-content {
+  --background: var(--color-bg-primary, #ffffff);
+}
+
+ion-popover ion-list {
+  --background: transparent;
+}
+
+ion-popover ion-item {
+  --background: transparent;
+  --border-color: var(--color-border, #e2e8f0);
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+ion-popover ion-item:hover {
+  --background: var(--color-bg-secondary, #f8fafc);
+}
+
+ion-popover ion-item[disabled] {
+  --color: var(--color-text-disabled, #a0aec0);
+  opacity: 0.6;
+}
+
+ion-popover ion-label h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #2d3748);
+  margin: 0 0 0.25rem 0;
+}
+
+ion-popover ion-label p {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary, #718096);
+  margin: 0;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .access-mapping-content {
@@ -270,17 +483,17 @@
     --padding-end: 1rem;
   }
 
-  .mappings-header h1 {
+  .mapping-header h1 {
     font-size: 1.5rem;
   }
 
-  .mappings-actions {
+  .mapping-actions {
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
   }
 
-  .mappings-search {
+  .mapping-search {
     min-width: auto;
   }
 
@@ -288,11 +501,6 @@
   .mappings-table td {
     padding: 0.75rem 0.5rem;
     font-size: 0.8rem;
-  }
-
-  .navbar-access {
-    flex-direction: column;
-    gap: 0.5rem;
   }
 
   .action-buttons {
@@ -323,14 +531,46 @@
     min-width: auto;
     width: 100%;
   }
-}
 
-@media (max-width: 480px) {
-  .mappings-header h1 {
+  .modal-header {
+    padding: 1rem;
+  }
+
+  .modal-header h2 {
     font-size: 1.25rem;
   }
 
-  .mappings-header p {
+  .modal-content {
+    padding: 1rem;
+  }
+
+  .navbar-access-input {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .navbar-access-input ion-button {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .modal-actions ion-button {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .mapping-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .mapping-header p {
     font-size: 0.9rem;
   }
 
@@ -375,4 +615,30 @@
 
 .table-container::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-secondary);
+}
+
+/* Animation for cards */
+.mappings-table-card {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hover effects */
+.mappings-table-card {
+  transition: all 0.3s ease;
+}
+
+.mappings-table-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }

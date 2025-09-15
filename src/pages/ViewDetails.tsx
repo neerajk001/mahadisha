@@ -646,7 +646,7 @@ const ViewDetails: React.FC = () => {
                 <IonBackButton defaultHref="/new-requests" />
               </IonButtons>
               <IonTitle className="page-title">
-                {requestDetails?.loanId} - Request Details
+                {requestDetails?.loanId ? `${requestDetails.loanId} Details` : 'Request Details'}
               </IonTitle>
               <IonButtons slot="end">
                 <IonButton fill="clear" onClick={handleSendEmail}>

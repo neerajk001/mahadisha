@@ -21,59 +21,81 @@ interface SummaryCardsProps {
 }
 
 const SummaryCards: React.FC<SummaryCardsProps> = ({ data }) => {
-  const summaryData = data
-    ? [
-        {
-          title: 'Total Applications',
-          value: data.totalApplications.toString(),
-          icon: briefcaseOutline,
-          color: 'var(--color-primary)'
-        },
-        {
-          title: 'Approved',
-          value: data.approvedApplications.toString(),
-          icon: cashOutline,
-          color: 'var(--color-success)'
-        },
-        {
-          title: 'Pending',
-          value: data.pendingApplications.toString(),
-          icon: calendarOutline,
-          color: 'var(--color-warning)'
-        },
-        {
-          title: 'Rejected',
-          value: data.rejectedApplications.toString(),
-          icon: warningOutline,
-          color: 'var(--color-error)'
-        }
-      ]
-    : [
-        {
-          title: 'Total Applications',
-          value: '0',
-          icon: briefcaseOutline,
-          color: 'var(--color-primary)'
-        },
-        {
-          title: 'Approved',
-          value: '0',
-          icon: cashOutline,
-          color: 'var(--color-success)'
-        },
-        {
-          title: 'Pending',
-          value: '0',
-          icon: calendarOutline,
-          color: 'var(--color-warning)'
-        },
-        {
-          title: 'Rejected',
-          value: '0',
-          icon: warningOutline,
-          color: 'var(--color-error)'
-        }
-      ];
+  const summaryData = data ? [
+    {
+      title: 'Total Requests',
+      value: data.totalApplications.toString(),
+      icon: briefcaseOutline,
+      color: 'primary',
+      bgColor: '#ffffff',
+      textColor: '#333333',
+      iconColor: '#3b82f6'
+    },
+    {
+      title: 'Disbursed',
+      value: '$4.5M',
+      icon: cashOutline,
+      color: 'success',
+      bgColor: '#1e40af',
+      textColor: '#ffffff',
+      iconColor: '#ffffff'
+    },
+    {
+      title: 'EMIS',
+      value: '321',
+      icon: calendarOutline,
+      color: 'warning',
+      bgColor: '#ffffff',
+      textColor: '#333333',
+      iconColor: '#3b82f6'
+    },
+    {
+      title: 'Overdues',
+      value: '14',
+      icon: warningOutline,
+      color: 'danger',
+      bgColor: '#dc2626',
+      textColor: '#ffffff',
+      iconColor: '#ffffff'
+    }
+  ] : [
+    {
+      title: 'Total Requests',
+      value: '0',
+      icon: briefcaseOutline,
+      color: 'primary',
+      bgColor: '#ffffff',
+      textColor: '#333333',
+      iconColor: '#3b82f6'
+    },
+    {
+      title: 'Disbursed',
+      value: '$0',
+      icon: cashOutline,
+      color: 'success',
+      bgColor: '#1e40af',
+      textColor: '#ffffff',
+      iconColor: '#ffffff'
+    },
+    {
+      title: 'EMIS',
+      value: '0',
+      icon: calendarOutline,
+      color: 'warning',
+      bgColor: '#ffffff',
+      textColor: '#333333',
+      iconColor: '#3b82f6'
+    },
+    {
+      title: 'Overdues',
+      value: '0',
+      icon: warningOutline,
+      color: 'danger',
+      bgColor: '#dc2626',
+      textColor: '#ffffff',
+      iconColor: '#ffffff'
+    }
+  ];
 
   return (
     <div className="summary-cards-container">
@@ -81,21 +103,16 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({ data }) => {
         <IonRow>
           {summaryData.map((card, index) => (
             <IonCol size="12" size-md="6" size-lg="3" key={index}>
-              <IonCard className="summary-card">
+              <IonCard 
+                className="summary-card"
+                style={{ 
+                  backgroundColor: card.bgColor,
+                  color: card.textColor
+                }}
+              >
                 <IonCardContent className="summary-card-content">
-                  <div className="card-row">
-                    {/* Left Icon */}
-                    <IonIcon
-                      icon={card.icon}
-                      className="card-icon"
-                      style={{ color: card.color }}
-                    />
-
-                    {/* Right Text */}
-                    <div className="card-text">
-                      <div className="card-title">{card.title}</div>
-                      <div className="card-value">{card.value}</div>
-                    </div>
+                  <div className="card-icon" style={{ color: card.iconColor }}>
+                    <IonIcon icon={card.icon} className="icon" />
                   </div>
                 </IonCardContent>
               </IonCard>

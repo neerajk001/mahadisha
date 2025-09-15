@@ -59,52 +59,111 @@
   background: transparent;
   color: var(--color-text-primary);
   border: none;
-  padding: 6px 8px !important;
-  font-weight: 400;
+  padding: 8px 16px !important;
+  font-weight: 500;
   font-size: 14px;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
+  position: relative;
+  overflow: hidden;
   /* Override Ionic CSS custom properties */
-  --padding-start: 8px !important;
-  --padding-end: 8px !important;
-  --padding-top: 6px !important;
-  --padding-bottom: 6px !important;
+  --padding-start: 16px !important;
+  --padding-end: 16px !important;
+  --padding-top: 8px !important;
+  --padding-bottom: 8px !important;
   min-width: auto !important;
+}
+
+.nav-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.nav-button::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
 }
 
 .nav-button:hover {
-  background: var(--color-bg-light) !important;
-  color: var(--color-text-primary) !important;
+  background: rgba(102, 126, 234, 0.08) !important;
+  color: #667eea !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.nav-button:hover::before {
+  left: 100%;
+}
+
+.nav-button:hover::after {
+  width: 80%;
 }
 
 .login-button {
-  background-color: var(--color-secondary);
-  color: var(--color-text-white);
-  border: 1px solid var(--color-border-dark);
-  border-radius: 4px;
-  padding: 6px 8px !important;
-  font-weight: 400;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px !important;
+  font-weight: 500;
   font-size: 14px;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
   /* Override Ionic CSS custom properties */
-  --padding-start: 8px !important;
-  --padding-end: 8px !important;
-  --padding-top: 6px !important;
-  --padding-bottom: 6px !important;
+  --padding-start: 16px !important;
+  --padding-end: 16px !important;
+  --padding-top: 8px !important;
+  --padding-bottom: 8px !important;
   min-width: auto !important;
 }
 
+.login-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
 .login-button:hover {
-  background: var(--color-secondary-dark) !important;
-  border-color: var(--color-secondary-dark) !important;
+  background: linear-gradient(135deg, #5a67d8, #6b46c1) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+}
+
+.login-button:hover::before {
+  left: 100%;
+}
+
+.login-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
 }
 
 /* Mobile Navigation */
@@ -119,14 +178,51 @@
   color: var(--color-text-primary) !important;
   border: none !important;
   padding: 8px;
+  border-radius: 6px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-menu-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+  transition: left 0.4s ease;
+}
+
+.mobile-menu-button:hover {
+  background: rgba(102, 126, 234, 0.08) !important;
+  color: #667eea !important;
+  transform: scale(1.05);
+}
+
+.mobile-menu-button:hover::before {
+  left: 100%;
 }
 
 /* Mobile dropdown menu */
 .mobile-dropdown {
   background: var(--color-bg-light);
   border-top: 1px solid var(--color-border-medium);
-  box-shadow: 0 2px 4px var(--color-shadow-light);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   display: none;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .mobile-menu-list {
@@ -146,16 +242,34 @@
   color: var(--color-text-primary) !important;
   border-bottom: 1px solid var(--color-border-medium) !important;
   padding: 12px 16px !important;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer !important;
   pointer-events: auto !important;
   z-index: 10 !important;
   position: relative !important;
+  overflow: hidden;
+}
+
+.mobile-menu-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+  transition: left 0.4s ease;
 }
 
 .mobile-menu-item:hover {
-  background: var(--color-bg-light) !important;
+  background: rgba(102, 126, 234, 0.08) !important;
+  color: #667eea !important;
+  transform: translateX(4px);
+}
+
+.mobile-menu-item:hover::before {
+  left: 100%;
 }
 
 .mobile-menu-item:last-child {

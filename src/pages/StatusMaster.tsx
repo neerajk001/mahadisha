@@ -9,8 +9,8 @@ import {
   addOutline, createOutline, trashOutline, searchOutline,
   chevronBackOutline, chevronForwardOutline, closeOutline
 } from 'ionicons/icons';
-import Sidebar from '../components/sidebar/Sidebar';
-import DashboardHeader from '../components/header/DashboardHeader';
+import Sidebar from '../admin/components/sidebar/Sidebar';
+import DashboardHeader from '../admin/components/header/DashboardHeader';
 import { mockDataService } from '../services/api';
 import type { StatusMasterData } from '../types';
 import './StatusMaster.css';

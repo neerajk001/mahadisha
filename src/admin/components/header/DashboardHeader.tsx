@@ -124,70 +124,7 @@ const DashboardHeader: React.FC = () => {
     </div>
   </IonToolbar>
 
-  
-  {/* Filter Row - Only show on dashboard */}
-    {location.pathname === '/dashboard' && (
-      <div className="filter-row">
-        <div className="filter-container">
-          {/* District Filter */}
-          <div className="filter-item">
-            <IonIcon icon={locationOutline} className="filter-icon" />
-            <div className="filter-content">
-              <div className="filter-label">Select District</div>
-              <IonSelect
-                placeholder="All Districts"
-                interface="popover"
-                className="filter-select"
-              >
-                <IonSelectOption value="all">All Districts</IonSelectOption>
-                <IonSelectOption value="mumbai">Mumbai</IonSelectOption>
-                <IonSelectOption value="pune">Pune</IonSelectOption>
-                <IonSelectOption value="nagpur">Nagpur</IonSelectOption>
-              </IonSelect>
-            </div>
-          </div>
-
-          {/* Month Filter */}
-          <div className="filter-item">
-            <IonIcon icon={calendarOutline} className="filter-icon" />
-            <div className="filter-content">
-              <div className="filter-label">Select Month</div>
-              <IonSelect
-                placeholder="All Months"
-                interface="popover"
-                className="filter-select"
-              >
-                <IonSelectOption value="all">All Months</IonSelectOption>
-                <IonSelectOption value="january">January</IonSelectOption>
-                <IonSelectOption value="february">February</IonSelectOption>
-                <IonSelectOption value="march">March</IonSelectOption>
-              </IonSelect>
-            </div>
-          </div>
-
-          {/* Date Range Filter */}
-          <div className="filter-item">
-            <IonIcon icon={calendarOutline} className="filter-icon" />
-            <div className="filter-content">
-              <div className="filter-label">Date Range</div>
-              <IonSelect
-                placeholder="Select Range"
-                interface="popover"
-                className="filter-select"
-              >
-                <IonSelectOption value="today">Today</IonSelectOption>
-                <IonSelectOption value="week">This Week</IonSelectOption>
-                <IonSelectOption value="month">This Month</IonSelectOption>
-                <IonSelectOption value="custom">Custom Range</IonSelectOption>
-              </IonSelect>
-            </div>
-          </div>
-        </div>
-      </div>
-    )}
-
-</IonHeader>
-
+    </IonHeader>
   );
 };
 

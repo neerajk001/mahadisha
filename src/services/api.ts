@@ -628,126 +628,234 @@ export const mockDataService = {
       minimumLoanLimit: 0, maximumLoanLimit: 3000000, subsidyLimit: 100, maximumSubsidyAmount: 50000,
       downPaymentPercent: 10, loanPercentByVendor: 20, loanPercentByPartner: 90, vendorInterestYearly: 6,
       minimumTenure: 10, maximumTenure: 12, guaranteeAmount: 0.5, interestType: 'Written Down Value',
-      partnerInvolvement: true, recoveryByPartner: true, createdAt: '2024-01-01', updatedAt: '2024-01-01'
+      partnerInvolvement: true, recoveryByPartner: true, 
+      status: 'active', priority: 'high', usageCount: 45, lastUsed: '2024-01-15',
+      description: 'Comprehensive education loan scheme for higher studies with flexible repayment options.',
+      eligibilityCriteria: ['Must be 18+ years old', 'Valid educational institution admission', 'Family income below ₹3 lakhs'],
+      requiredDocuments: ['Admission letter', 'Income certificate', 'Identity proof', 'Academic records'],
+      tags: ['education', 'higher-studies', 'flexible-repayment'],
+      createdAt: '2024-01-01', updatedAt: '2024-01-01'
     },
     {
       id: '2', name: 'Green Business Scheme (NSKFDC)', type: 'Business', marathiName: 'हरित व्यवसाय योजना (NSKFDC)',
       minimumLoanLimit: 0, maximumLoanLimit: 750000, subsidyLimit: 100, maximumSubsidyAmount: 50000,
       downPaymentPercent: 10, loanPercentByVendor: 20, loanPercentByPartner: 90, vendorInterestYearly: 6,
       minimumTenure: 0, maximumTenure: 10, guaranteeAmount: 0.5, interestType: 'Written Down Value',
-      partnerInvolvement: true, recoveryByPartner: true, createdAt: '2024-01-02', updatedAt: '2024-01-02'
+      partnerInvolvement: true, recoveryByPartner: true, 
+      status: 'active', priority: 'medium', usageCount: 32, lastUsed: '2024-01-12',
+      description: 'Environmentally friendly business loan scheme for sustainable ventures.',
+      eligibilityCriteria: ['Green business proposal', 'Environmental clearance', 'Business plan'],
+      requiredDocuments: ['Business plan', 'Environmental clearance', 'Project report'],
+      tags: ['green-business', 'sustainable', 'environment'],
+      createdAt: '2024-01-02', updatedAt: '2024-01-02'
     },
     {
       id: '3', name: 'Education Loan Scheme (NSFDC A)', type: 'Education', marathiName: 'शिक्षण कर्ज योजना (NSFDC A)',
       minimumLoanLimit: 0, maximumLoanLimit: 4000000, subsidyLimit: 100, maximumSubsidyAmount: 50000,
       downPaymentPercent: 10, loanPercentByVendor: 20, loanPercentByPartner: 90, vendorInterestYearly: 6.5,
       minimumTenure: 10, maximumTenure: 12, guaranteeAmount: 0.5, interestType: 'Written Down Value',
-      partnerInvolvement: true, recoveryByPartner: true, createdAt: '2024-01-03', updatedAt: '2024-01-03'
+      partnerInvolvement: true, recoveryByPartner: true, 
+      status: 'active', priority: 'high', usageCount: 28, lastUsed: '2024-01-10',
+      description: 'Advanced education loan scheme for professional courses and higher education.',
+      eligibilityCriteria: ['Professional course admission', 'Valid institution', 'Academic merit'],
+      requiredDocuments: ['Admission letter', 'Academic transcripts', 'Income certificate'],
+      tags: ['education', 'professional-courses', 'higher-education'],
+      createdAt: '2024-01-03', updatedAt: '2024-01-03'
     },
     {
       id: '4', name: 'Margin Money Scheme (State)', type: 'State', marathiName: 'बीज भांडवल योजना (राज्य)',
       minimumLoanLimit: 50001, maximumLoanLimit: 500000, subsidyLimit: 100, maximumSubsidyAmount: 50000,
       downPaymentPercent: 5, loanPercentByVendor: 20, loanPercentByPartner: 75, vendorInterestYearly: 4,
       minimumTenure: 3, maximumTenure: 5, guaranteeAmount: 0.5, interestType: 'Simple Interest',
-      partnerInvolvement: true, recoveryByPartner: true, createdAt: '2024-01-04', updatedAt: '2024-01-04'
+      partnerInvolvement: true, recoveryByPartner: true, 
+      status: 'active', priority: 'high', usageCount: 67, lastUsed: '2024-01-18',
+      description: 'State government margin money scheme for small business startups.',
+      eligibilityCriteria: ['New business venture', 'State resident', 'Business plan'],
+      requiredDocuments: ['Business plan', 'Residence proof', 'Bank statements'],
+      tags: ['startup', 'margin-money', 'state-scheme'],
+      createdAt: '2024-01-04', updatedAt: '2024-01-04'
     },
     {
       id: '5', name: 'Computer Training Scheme', type: 'Training', marathiName: 'संगणक प्रशिक्षण योजना',
       minimumLoanLimit: 25000, maximumLoanLimit: 100000, subsidyLimit: 100, maximumSubsidyAmount: 25000,
       downPaymentPercent: 15, loanPercentByVendor: 25, loanPercentByPartner: 85, vendorInterestYearly: 5,
       minimumTenure: 2, maximumTenure: 3, guaranteeAmount: 0.3, interestType: 'Simple Interest',
-      partnerInvolvement: true, recoveryByPartner: false, createdAt: '2024-01-05', updatedAt: '2024-01-05'
+      partnerInvolvement: true, recoveryByPartner: false, 
+      status: 'active', priority: 'medium', usageCount: 89, lastUsed: '2024-01-20',
+      description: 'Computer training and skill development loan scheme for IT courses.',
+      eligibilityCriteria: ['IT course enrollment', 'Basic computer knowledge', 'Age 18-35'],
+      requiredDocuments: ['Course enrollment', 'Identity proof', 'Educational certificates'],
+      tags: ['computer-training', 'IT-skills', 'skill-development'],
+      createdAt: '2024-01-05', updatedAt: '2024-01-05'
     },
     {
       id: '6', name: 'Fashion Designing Scheme', type: 'Training', marathiName: 'फॅशन डिझायनिंग योजना',
       minimumLoanLimit: 30000, maximumLoanLimit: 150000, subsidyLimit: 100, maximumSubsidyAmount: 30000,
       downPaymentPercent: 12, loanPercentByVendor: 22, loanPercentByPartner: 88, vendorInterestYearly: 5.5,
       minimumTenure: 2, maximumTenure: 4, guaranteeAmount: 0.4, interestType: 'Simple Interest',
-      partnerInvolvement: true, recoveryByPartner: true, createdAt: '2024-01-06', updatedAt: '2024-01-06'
+      partnerInvolvement: true, recoveryByPartner: true, 
+      status: 'active', priority: 'medium', usageCount: 54, lastUsed: '2024-01-16',
+      description: 'Fashion designing and textile training loan scheme for creative entrepreneurs.',
+      eligibilityCriteria: ['Design course enrollment', 'Creative portfolio', 'Age 18-40'],
+      requiredDocuments: ['Course enrollment', 'Portfolio samples', 'Identity proof'],
+      tags: ['fashion', 'design', 'textile', 'creative'],
+      createdAt: '2024-01-06', updatedAt: '2024-01-06'
     },
     {
       id: '7', name: 'Motor Winding Scheme', type: 'Technical', marathiName: 'मोटर वाइंडिंग योजना',
       minimumLoanLimit: 20000, maximumLoanLimit: 80000, subsidyLimit: 100, maximumSubsidyAmount: 20000,
       downPaymentPercent: 20, loanPercentByVendor: 30, loanPercentByPartner: 80, vendorInterestYearly: 6,
       minimumTenure: 1, maximumTenure: 2, guaranteeAmount: 0.2, interestType: 'Simple Interest',
-      partnerInvolvement: false, recoveryByPartner: false, createdAt: '2024-01-07', updatedAt: '2024-01-07'
+      partnerInvolvement: false, recoveryByPartner: false, 
+      status: 'inactive', priority: 'low', usageCount: 12, lastUsed: '2024-01-05',
+      description: 'Technical training loan for motor winding and electrical repair skills.',
+      eligibilityCriteria: ['Technical course enrollment', 'Basic electrical knowledge'],
+      requiredDocuments: ['Course enrollment', 'Technical certificates'],
+      tags: ['technical', 'motor-winding', 'electrical'],
+      createdAt: '2024-01-07', updatedAt: '2024-01-07'
     },
     {
       id: '8', name: 'Utensils Shop Scheme', type: 'Business', marathiName: 'भांडी दुकान योजना',
       minimumLoanLimit: 40000, maximumLoanLimit: 200000, subsidyLimit: 100, maximumSubsidyAmount: 40000,
       downPaymentPercent: 8, loanPercentByVendor: 18, loanPercentByPartner: 82, vendorInterestYearly: 4.5,
       minimumTenure: 3, maximumTenure: 5, guaranteeAmount: 0.6, interestType: 'Simple Interest',
-      partnerInvolvement: true, recoveryByPartner: true, createdAt: '2024-01-08', updatedAt: '2024-01-08'
+      partnerInvolvement: true, recoveryByPartner: true, 
+      status: 'active', priority: 'medium', usageCount: 76, lastUsed: '2024-01-19',
+      description: 'Business loan scheme for setting up utensils and kitchenware shops.',
+      eligibilityCriteria: ['Shop location', 'Business plan', 'Market analysis'],
+      requiredDocuments: ['Shop lease agreement', 'Business plan', 'Market survey'],
+      tags: ['utensils', 'kitchenware', 'retail', 'business'],
+      createdAt: '2024-01-08', updatedAt: '2024-01-08'
     },
     {
       id: '9', name: 'Automobile Repair Scheme', type: 'Technical', marathiName: 'ऑटोमोबाईल दुरुस्ती योजना',
       minimumLoanLimit: 50000, maximumLoanLimit: 300000, subsidyLimit: 100, maximumSubsidyAmount: 50000,
       downPaymentPercent: 10, loanPercentByVendor: 20, loanPercentByPartner: 90, vendorInterestYearly: 6,
       minimumTenure: 3, maximumTenure: 7, guaranteeAmount: 0.7, interestType: 'Written Down Value',
-      partnerInvolvement: true, recoveryByPartner: true, createdAt: '2024-01-09', updatedAt: '2024-01-09'
+      partnerInvolvement: true, recoveryByPartner: true, 
+      status: 'active', priority: 'high', usageCount: 43, lastUsed: '2024-01-17',
+      description: 'Automobile repair and service center loan scheme for vehicle maintenance business.',
+      eligibilityCriteria: ['Technical certification', 'Workshop location', 'Equipment list'],
+      requiredDocuments: ['Technical certificates', 'Workshop lease', 'Equipment quotations'],
+      tags: ['automobile', 'repair', 'service-center', 'technical'],
+      createdAt: '2024-01-09', updatedAt: '2024-01-09'
     },
     {
       id: '10', name: 'Agriculture Equipment Scheme', type: 'Agriculture', marathiName: 'कृषी उपकरण योजना',
       minimumLoanLimit: 100000, maximumLoanLimit: 500000, subsidyLimit: 100, maximumSubsidyAmount: 100000,
       downPaymentPercent: 5, loanPercentByVendor: 15, loanPercentByPartner: 85, vendorInterestYearly: 3,
       minimumTenure: 5, maximumTenure: 10, guaranteeAmount: 1.0, interestType: 'Simple Interest',
-      partnerInvolvement: true, recoveryByPartner: true, createdAt: '2024-01-10', updatedAt: '2024-01-10'
+      partnerInvolvement: true, recoveryByPartner: true, 
+      status: 'active', priority: 'high', usageCount: 38, lastUsed: '2024-01-14',
+      description: 'Agricultural equipment and machinery loan scheme for farming operations.',
+      eligibilityCriteria: ['Land ownership', 'Farming experience', 'Equipment requirement'],
+      requiredDocuments: ['Land documents', 'Farming certificates', 'Equipment quotations'],
+      tags: ['agriculture', 'equipment', 'farming', 'machinery'],
+      createdAt: '2024-01-10', updatedAt: '2024-01-10'
     },
     {
       id: '11', name: 'Dairy Farming Scheme', type: 'Agriculture', marathiName: 'दुग्ध व्यवसाय योजना',
       minimumLoanLimit: 75000, maximumLoanLimit: 400000, subsidyLimit: 100, maximumSubsidyAmount: 75000,
       downPaymentPercent: 7, loanPercentByVendor: 17, loanPercentByPartner: 83, vendorInterestYearly: 3.5,
       minimumTenure: 4, maximumTenure: 8, guaranteeAmount: 0.8, interestType: 'Simple Interest',
-      partnerInvolvement: true, recoveryByPartner: true, createdAt: '2024-01-11', updatedAt: '2024-01-11'
+      partnerInvolvement: true, recoveryByPartner: true, 
+      status: 'active', priority: 'medium', usageCount: 29, lastUsed: '2024-01-13',
+      description: 'Dairy farming and milk production loan scheme for livestock business.',
+      eligibilityCriteria: ['Land for dairy farm', 'Livestock experience', 'Milk collection center'],
+      requiredDocuments: ['Land documents', 'Livestock certificates', 'Milk collection agreement'],
+      tags: ['dairy', 'livestock', 'milk-production', 'agriculture'],
+      createdAt: '2024-01-11', updatedAt: '2024-01-11'
     },
     {
       id: '12', name: 'Poultry Farming Scheme', type: 'Agriculture', marathiName: 'पोल्ट्री फार्मिंग योजना',
       minimumLoanLimit: 60000, maximumLoanLimit: 350000, subsidyLimit: 100, maximumSubsidyAmount: 60000,
       downPaymentPercent: 8, loanPercentByVendor: 18, loanPercentByPartner: 82, vendorInterestYearly: 4,
       minimumTenure: 3, maximumTenure: 6, guaranteeAmount: 0.6, interestType: 'Simple Interest',
-      partnerInvolvement: true, recoveryByPartner: true, createdAt: '2024-01-12', updatedAt: '2024-01-12'
+      partnerInvolvement: true, recoveryByPartner: true, 
+      status: 'active', priority: 'medium', usageCount: 41, lastUsed: '2024-01-11',
+      description: 'Poultry farming and chicken production loan scheme for livestock business.',
+      eligibilityCriteria: ['Poultry farm location', 'Livestock experience', 'Market access'],
+      requiredDocuments: ['Farm location documents', 'Poultry certificates', 'Market agreements'],
+      tags: ['poultry', 'chicken-farming', 'livestock', 'agriculture'],
+      createdAt: '2024-01-12', updatedAt: '2024-01-12'
     },
     {
       id: '13', name: 'Beauty Parlor Scheme', type: 'Service', marathiName: 'ब्युटी पार्लर योजना',
       minimumLoanLimit: 35000, maximumLoanLimit: 180000, subsidyLimit: 100, maximumSubsidyAmount: 35000,
       downPaymentPercent: 12, loanPercentByVendor: 22, loanPercentByPartner: 88, vendorInterestYearly: 5.5,
       minimumTenure: 2, maximumTenure: 4, guaranteeAmount: 0.4, interestType: 'Simple Interest',
-      partnerInvolvement: true, recoveryByPartner: false, createdAt: '2024-01-13', updatedAt: '2024-01-13'
+      partnerInvolvement: true, recoveryByPartner: false, 
+      status: 'under_review', priority: 'low', usageCount: 23, lastUsed: '2024-01-08',
+      description: 'Beauty parlor and salon setup loan scheme for beauty services business.',
+      eligibilityCriteria: ['Beauty course certification', 'Salon location', 'Equipment list'],
+      requiredDocuments: ['Beauty certificates', 'Salon lease agreement', 'Equipment quotations'],
+      tags: ['beauty', 'salon', 'cosmetics', 'service'],
+      createdAt: '2024-01-13', updatedAt: '2024-01-13'
     },
     {
       id: '14', name: 'Tailoring Shop Scheme', type: 'Service', marathiName: 'शिवणकाम दुकान योजना',
       minimumLoanLimit: 25000, maximumLoanLimit: 120000, subsidyLimit: 100, maximumSubsidyAmount: 25000,
       downPaymentPercent: 15, loanPercentByVendor: 25, loanPercentByPartner: 85, vendorInterestYearly: 5,
       minimumTenure: 2, maximumTenure: 3, guaranteeAmount: 0.3, interestType: 'Simple Interest',
-      partnerInvolvement: false, recoveryByPartner: false, createdAt: '2024-01-14', updatedAt: '2024-01-14'
+      partnerInvolvement: false, recoveryByPartner: false, 
+      status: 'archived', priority: 'low', usageCount: 8, lastUsed: '2023-12-15',
+      description: 'Tailoring and garment making loan scheme for clothing business.',
+      eligibilityCriteria: ['Tailoring skills', 'Shop location', 'Equipment requirement'],
+      requiredDocuments: ['Tailoring certificates', 'Shop lease agreement', 'Equipment list'],
+      tags: ['tailoring', 'garments', 'clothing', 'service'],
+      createdAt: '2024-01-14', updatedAt: '2024-01-14'
     },
     {
       id: '15', name: 'Mobile Repair Scheme', type: 'Technical', marathiName: 'मोबाइल दुरुस्ती योजना',
       minimumLoanLimit: 30000, maximumLoanLimit: 100000, subsidyLimit: 100, maximumSubsidyAmount: 30000,
       downPaymentPercent: 18, loanPercentByVendor: 28, loanPercentByPartner: 82, vendorInterestYearly: 6.5,
       minimumTenure: 1, maximumTenure: 2, guaranteeAmount: 0.2, interestType: 'Simple Interest',
-      partnerInvolvement: false, recoveryByPartner: false, createdAt: '2024-01-15', updatedAt: '2024-01-15'
+      partnerInvolvement: false, recoveryByPartner: false, 
+      status: 'active', priority: 'medium', usageCount: 35, lastUsed: '2024-01-09',
+      description: 'Mobile phone repair and service loan scheme for electronics business.',
+      eligibilityCriteria: ['Electronics certification', 'Repair shop location', 'Tool requirements'],
+      requiredDocuments: ['Electronics certificates', 'Shop lease agreement', 'Tool quotations'],
+      tags: ['mobile-repair', 'electronics', 'technical', 'service'],
+      createdAt: '2024-01-15', updatedAt: '2024-01-15'
     },
     {
       id: '16', name: 'Photography Studio Scheme', type: 'Service', marathiName: 'फोटोग्राफी स्टुडिओ योजना',
       minimumLoanLimit: 80000, maximumLoanLimit: 250000, subsidyLimit: 100, maximumSubsidyAmount: 80000,
       downPaymentPercent: 10, loanPercentByVendor: 20, loanPercentByPartner: 90, vendorInterestYearly: 6,
       minimumTenure: 3, maximumTenure: 5, guaranteeAmount: 0.5, interestType: 'Simple Interest',
-      partnerInvolvement: true, recoveryByPartner: true, createdAt: '2024-01-16', updatedAt: '2024-01-16'
+      partnerInvolvement: true, recoveryByPartner: true, 
+      status: 'active', priority: 'medium', usageCount: 19, lastUsed: '2024-01-07',
+      description: 'Photography studio and camera equipment loan scheme for photography business.',
+      eligibilityCriteria: ['Photography skills', 'Studio location', 'Equipment requirements'],
+      requiredDocuments: ['Photography portfolio', 'Studio lease agreement', 'Equipment quotations'],
+      tags: ['photography', 'studio', 'camera', 'creative'],
+      createdAt: '2024-01-16', updatedAt: '2024-01-16'
     },
     {
       id: '17', name: 'Grocery Store Scheme', type: 'Business', marathiName: 'किराणा दुकान योजना',
       minimumLoanLimit: 50000, maximumLoanLimit: 300000, subsidyLimit: 100, maximumSubsidyAmount: 50000,
       downPaymentPercent: 8, loanPercentByVendor: 18, loanPercentByPartner: 82, vendorInterestYearly: 4.5,
       minimumTenure: 3, maximumTenure: 6, guaranteeAmount: 0.6, interestType: 'Simple Interest',
-      partnerInvolvement: true, recoveryByPartner: true, createdAt: '2024-01-17', updatedAt: '2024-01-17'
+      partnerInvolvement: true, recoveryByPartner: true, 
+      status: 'active', priority: 'high', usageCount: 92, lastUsed: '2024-01-21',
+      description: 'Grocery store and retail business loan scheme for daily essentials business.',
+      eligibilityCriteria: ['Shop location', 'Business plan', 'Market analysis'],
+      requiredDocuments: ['Shop lease agreement', 'Business plan', 'Market survey'],
+      tags: ['grocery', 'retail', 'daily-essentials', 'business'],
+      createdAt: '2024-01-17', updatedAt: '2024-01-17'
     },
     {
       id: '18', name: 'Restaurant Scheme', type: 'Business', marathiName: 'रेस्टॉरंट योजना',
       minimumLoanLimit: 100000, maximumLoanLimit: 500000, subsidyLimit: 100, maximumSubsidyAmount: 100000,
       downPaymentPercent: 5, loanPercentByVendor: 15, loanPercentByPartner: 85, vendorInterestYearly: 4,
       minimumTenure: 5, maximumTenure: 8, guaranteeAmount: 0.8, interestType: 'Simple Interest',
-      partnerInvolvement: true, recoveryByPartner: true, createdAt: '2024-01-18', updatedAt: '2024-01-18'
+      partnerInvolvement: true, recoveryByPartner: true, 
+      status: 'active', priority: 'high', usageCount: 56, lastUsed: '2024-01-22',
+      description: 'Restaurant and food service loan scheme for hospitality business.',
+      eligibilityCriteria: ['Restaurant location', 'Food service experience', 'Business plan'],
+      requiredDocuments: ['Restaurant lease agreement', 'Food license', 'Business plan'],
+      tags: ['restaurant', 'food-service', 'hospitality', 'business'],
+      createdAt: '2024-01-18', updatedAt: '2024-01-18'
     }
   ],
 
@@ -1537,6 +1645,9 @@ export const mockDataService = {
       id: '1',
       district: 'Latur',
       pincodes: ['413515', '413522', '413520', '413511', '413513', '413519', '413532', '413607', '413516', '413523', '413524', '413521', '413530', '431522', '413527', '413544', '413514', '413531', '413517', '413518', '413512', '413529', '413510', '413581'],
+      state: 'Maharashtra',
+      region: 'Marathwada',
+      description: 'Latur district pincode mapping for loan disbursement',
       createdAt: '2024-01-01',
       updatedAt: '2024-01-01'
     },
@@ -1544,6 +1655,9 @@ export const mockDataService = {
       id: '2',
       district: 'Akola',
       pincodes: ['444126', '444101', '444511', '444302', '444401', '444102', '444111', '444004', '444103', '444005', '444405', '444106', '444107', '444501', '444407', '444006', '444108', '444502', '444109', '444002', '444311', '444001', '444104', '444117', '444003', '444007'],
+      state: 'Maharashtra',
+      region: 'Vidarbha',
+      description: 'Akola district pincode mapping for agricultural loans',
       createdAt: '2024-01-02',
       updatedAt: '2024-01-02'
     },
@@ -1551,8 +1665,31 @@ export const mockDataService = {
       id: '3',
       district: 'Raigad',
       pincodes: ['410206', '400707', '410201', '410221', '410220', '410208', '402302', '402403', '402102', '402103', '402401', '402209', '402104', '402105', '402309', '402305', '410205', '402107', '402303', '402108', '402208', '402202', '402109', '402122', '402110', '402112', '402306', '402113', '402201', '410216', '410222', '410203', '402404', '402106', '402125', '402301', '402111', '402207', '402115', '410101', '410207', '400702', '402101', '402308', '402203', '402304', '402204', '402120', '402126', '402307', '410218', '410210', '410204', '402402', '410202', '400704', '402114', '402116', '410102', '415213', '402117', '410209'],
+      state: 'Maharashtra',
+      region: 'Konkan',
+      description: 'Raigad district pincode mapping for coastal area loans',
       createdAt: '2024-01-03',
       updatedAt: '2024-01-03'
+    },
+    {
+      id: '4',
+      district: 'Pune',
+      pincodes: ['411001', '411002', '411003', '411004', '411005', '411006', '411007', '411008', '411009', '411010', '411011', '411012', '411013', '411014', '411015', '411016', '411017', '411018', '411019', '411020', '411021', '411022', '411023', '411024', '411025', '411026', '411027', '411028', '411029', '411030', '411031', '411032', '411033', '411034', '411035', '411036', '411037', '411038', '411039', '411040', '411041', '411042', '411043', '411044', '411045', '411046', '411047', '411048', '411049', '411050'],
+      state: 'Maharashtra',
+      region: 'Western Maharashtra',
+      description: 'Pune district pincode mapping for urban development loans',
+      createdAt: '2024-01-04',
+      updatedAt: '2024-01-04'
+    },
+    {
+      id: '5',
+      district: 'Nashik',
+      pincodes: ['422001', '422002', '422003', '422004', '422005', '422006', '422007', '422008', '422009', '422010', '422011', '422012', '422013', '422014', '422015', '422016', '422017', '422018', '422019', '422020', '422021', '422022', '422023', '422024', '422025', '422026', '422027', '422028', '422029', '422030'],
+      state: 'Maharashtra',
+      region: 'North Maharashtra',
+      description: 'Nashik district pincode mapping for industrial loans',
+      createdAt: '2024-01-05',
+      updatedAt: '2024-01-05'
     }
   ],
 
@@ -1565,7 +1702,7 @@ export const mockDataService = {
       phone: '0987654322',
       district: 'Sindhudurga',
       role: 'Sindhudurga_DM',
-      status: 'Deleted',
+      status: 'Suspended',
       roleHistoryCount: 0,
       createdAt: '2024-01-01',
       updatedAt: '2024-01-01'
@@ -1577,7 +1714,7 @@ export const mockDataService = {
       phone: '9022741235',
       district: 'Sindhudurga',
       role: 'Sindhudurga_Scrutiny Clerk',
-      status: 'Active',
+      status: 'Inactive',
       roleHistoryCount: 0,
       createdAt: '2024-01-02',
       updatedAt: '2024-01-02'

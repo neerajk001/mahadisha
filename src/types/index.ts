@@ -84,6 +84,38 @@ export interface RequestFilters {
   priority?: string;
 }
 
+// Advanced Scheme Filters
+export interface SchemeFilters {
+  status?: string[];
+  type?: string[];
+  priority?: string[];
+  loanAmountRange?: {
+    min: number;
+    max: number;
+  };
+  interestRateRange?: {
+    min: number;
+    max: number;
+  };
+  tenureRange?: {
+    min: number;
+    max: number;
+  };
+  subsidyRange?: {
+    min: number;
+    max: number;
+  };
+  tags?: string[];
+  dateRange?: {
+    start: string;
+    end: string;
+  };
+  usageCount?: {
+    min: number;
+    max: number;
+  };
+}
+
 export interface RequestSearchParams {
   query?: string;
   filters?: RequestFilters;
@@ -158,6 +190,16 @@ export interface Scheme {
   interestType: string;
   partnerInvolvement: boolean;
   recoveryByPartner: boolean;
+  status: 'active' | 'inactive' | 'under_review' | 'archived';
+  description?: string;
+  eligibilityCriteria?: string[];
+  requiredDocuments?: string[];
+  faq?: { question: string; answer: string }[];
+  documents?: DocumentInfo[];
+  priority: 'low' | 'medium' | 'high';
+  tags?: string[];
+  usageCount: number;
+  lastUsed?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -352,8 +394,47 @@ export interface PincodeMappingData {
   id: string;
   district: string;
   pincodes: string[];
+  state?: string;
+  region?: string;
+  description?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+// Enhanced Pincode Mapping Types
+export interface PincodeMappingFormData {
+  district: string;
+  pincodes: string[];
+  state: string;
+  region: string;
+  description: string;
+}
+
+export interface PincodeValidation {
+  isValid: boolean;
+  errors: string[];
+  suggestions?: string[];
+}
+
+export interface PincodeFilters {
+  state: string;
+  region: string;
+  pincodeRange: {
+    start: string;
+    end: string;
+  };
+  districtType: 'urban' | 'rural' | 'mixed' | '';
+  pincodeCount: {
+    min: number;
+    max: number;
+  };
+}
+
+export interface BulkImportResult {
+  success: number;
+  failed: number;
+  errors: string[];
+  warnings: string[];
 }
 
 // Members Types
@@ -364,7 +445,7 @@ export interface MembersData {
   phone: string;
   district: string;
   role: string;
-  status: 'Active' | 'Deleted';
+  status: 'Active' | 'Suspended' | 'Inactive' | 'Deleted';
   roleHistoryCount: number;
   createdAt: string;
   updatedAt: string;

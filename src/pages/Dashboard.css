@@ -1,6 +1,7 @@
 /* Main Content Layout */
 .main-content {
   display: flex;
+  width: 100%;
   flex-direction: column;
   height: 100vh;
   background: var(--color-bg-secondary);

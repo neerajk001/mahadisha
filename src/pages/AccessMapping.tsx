@@ -2,11 +2,14 @@ import React, { useState, useMemo } from 'react';
 import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
-  IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar
+  IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
+  IonModal, IonInput, IonTextarea, IonChip, IonLabel, IonItem, IonList,
+  IonSelect, IonSelectOption, IonPopover
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
-  chevronBackOutline, chevronForwardOutline
+  chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
+  chevronDownOutline
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -21,11 +24,23 @@ const AccessMapping: React.FC = () => {
   const [selectedMappingId, setSelectedMappingId] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  
+  // Add Access Modal States
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newAccess, setNewAccess] = useState({
+    role: '',
+    pageAccess: '',
+    navbarAccess: [] as string[]
+  });
+  const [navbarAccessInput, setNavbarAccessInput] = useState('');
+  const [accessMappings, setAccessMappings] = useState<AccessMappingData[]>([]);
+  const [showNavbarPopover, setShowNavbarPopover] = useState(false);
 
   const itemsPerPage = 5;
 
-  // Get access mapping data from mock service
-  const allMappings = mockDataService.getAccessMappingData();
+  // Get access mapping data from mock service and combine with new mappings
+  const mockMappings = mockDataService.getAccessMappingData();
+  const allMappings = [...mockMappings, ...accessMappings];
   
   // Filter mappings based on search query
   const filteredMappings = useMemo(() => {
@@ -41,9 +56,115 @@ const AccessMapping: React.FC = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentMappings = filteredMappings.slice(startIndex, endIndex);
 
+  // All sidebar options for navbar access
+  const sidebarOptions = [
+    'Dashboard',
+    'Application Type',
+    'New Requests', 
+    'Schemes',
+    'Custom Reports',
+    'Manage Pages',
+    'Branch Master',
+    'Caste Master',
+    'Taluka Master',
+    'Action Masters',
+    'Organization Masters',
+    'Status Master',
+    'Partner Master',
+    'Status Mapping',
+    'Rejection Masters',
+    'Database Access',
+    'Roles',
+    'Workflow',
+    'Access Mapping',
+    'Branch Mapping',
+    'Pincode Mapping',
+    'Members',
+    'Config',
+    'Reports',
+    'Others'
+  ];
+
   const handleAddMapping = () => {
-    setToastMessage('Add new access mapping functionality will be implemented');
+    setNewAccess({
+      role: '',
+      pageAccess: '',
+      navbarAccess: []
+    });
+    setNavbarAccessInput('');
+    setShowAddModal(true);
+  };
+
+  const handleCloseAddModal = () => {
+    setShowAddModal(false);
+    setNewAccess({
+      role: '',
+      pageAccess: '',
+      navbarAccess: []
+    });
+    setNavbarAccessInput('');
+  };
+
+  const handleAddNavbarAccess = () => {
+    if (navbarAccessInput.trim() && !newAccess.navbarAccess.includes(navbarAccessInput.trim())) {
+      setNewAccess(prev => ({
+        ...prev,
+        navbarAccess: [...prev.navbarAccess, navbarAccessInput.trim()]
+      }));
+      setNavbarAccessInput('');
+    }
+  };
+
+  const handleRemoveNavbarAccess = (accessToRemove: string) => {
+    setNewAccess(prev => ({
+      ...prev,
+      navbarAccess: prev.navbarAccess.filter(access => access !== accessToRemove)
+    }));
+  };
+
+  const handleSelectNavbarOption = (option: string) => {
+    if (!newAccess.navbarAccess.includes(option)) {
+      setNewAccess(prev => ({
+        ...prev,
+        navbarAccess: [...prev.navbarAccess, option]
+      }));
+    }
+    setShowNavbarPopover(false);
+  };
+
+  const handleSaveNewAccess = () => {
+    if (!newAccess.role.trim()) {
+      setToastMessage('Please enter a role name');
+      setShowToast(true);
+      return;
+    }
+
+    if (newAccess.navbarAccess.length === 0) {
+      setToastMessage('Please add at least one navbar access item');
+      setShowToast(true);
+      return;
+    }
+
+    // Check if role already exists
+    if (allMappings.some(mapping => mapping.role.toLowerCase() === newAccess.role.toLowerCase())) {
+      setToastMessage('Role already exists. Please choose a different role name.');
+      setShowToast(true);
+      return;
+    }
+
+    const newMapping: AccessMappingData = {
+      id: `mapping_${Date.now()}`,
+      role: newAccess.role.trim(),
+      pageAccess: newAccess.pageAccess.trim(),
+      navbarAccess: newAccess.navbarAccess,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    setAccessMappings(prev => [...prev, newMapping]);
+    setToastMessage(`Access mapping for "${newAccess.role}" added successfully`);
     setShowToast(true);
+    handleCloseAddModal();
   };
 
   const handleEdit = (mappingId: string) => {
@@ -58,7 +179,8 @@ const AccessMapping: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedMappingId) {
-      setToastMessage(`Delete access mapping ${selectedMappingId} functionality will be implemented`);
+      setAccessMappings(prev => prev.filter(mapping => mapping.id !== selectedMappingId));
+      setToastMessage('Access mapping deleted successfully');
       setShowToast(true);
       setSelectedMappingId(null);
     }
@@ -82,13 +204,23 @@ const AccessMapping: React.FC = () => {
     }
   };
 
-  const renderNavbarAccess = (accessList: string[]) => {
-    return accessList.map((access, index) => (
-      <span key={index} className="navbar-access-item">
-        {access}
-        {index < accessList.length - 1 && ', '}
-      </span>
-    ));
+  const renderNavbarAccess = (navbarAccess: string[]) => {
+    if (navbarAccess.length === 0) return <span className="no-access">No access</span>;
+    
+    return (
+      <div className="navbar-access-chips">
+        {navbarAccess.slice(0, 2).map((access, index) => (
+          <IonChip key={index} className="access-chip-small">
+            <IonLabel>{access}</IonLabel>
+          </IonChip>
+        ))}
+        {navbarAccess.length > 2 && (
+          <IonChip className="access-chip-small more-chip">
+            <IonLabel>+{navbarAccess.length - 2} more</IonLabel>
+          </IonChip>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -99,20 +231,20 @@ const AccessMapping: React.FC = () => {
           <DashboardHeader />
           
           <IonContent className="access-mapping-content">
-            <div className="mappings-container">
+            <div className="mapping-container">
               {/* Header Section */}
-              <div className="mappings-header">
+              <div className="mapping-header">
                 <h1>Access Mapping</h1>
-                <p>Manage role-based access to navigation and pages</p>
+                <p>Manage role-based access control and permissions</p>
               </div>
 
               {/* Search and Actions */}
-              <div className="mappings-actions">
+              <div className="mapping-actions">
                 <IonSearchbar
                   value={searchQuery}
                   onIonChange={(e) => setSearchQuery(e.detail.value!)}
-                  placeholder="Search by role or navbar access..."
-                  className="mappings-search"
+                  placeholder="Search by role or access..."
+                  className="mapping-search"
                 />
                 <IonButton 
                   fill="solid" 
@@ -120,7 +252,7 @@ const AccessMapping: React.FC = () => {
                   onClick={handleAddMapping}
                 >
                   <IonIcon icon={addOutline} />
-                  Add Mapping
+                  + ADD MAPPING
                 </IonButton>
               </div>
 
@@ -241,6 +373,125 @@ const AccessMapping: React.FC = () => {
           { text: 'Delete', role: 'destructive', handler: confirmDelete }
         ]}
       />
+
+      {/* Add Access Modal */}
+      <IonModal isOpen={showAddModal} onDidDismiss={handleCloseAddModal}>
+        <IonContent className="add-access-modal">
+          <div className="modal-header">
+            <h2>Add New Access Mapping</h2>
+            <IonButton fill="clear" onClick={handleCloseAddModal}>
+              <IonIcon icon={closeOutline} />
+            </IonButton>
+          </div>
+          
+          <div className="modal-content">
+            <IonList>
+              <IonItem>
+                <IonLabel position="stacked">Role Name *</IonLabel>
+                <IonInput
+                  value={newAccess.role}
+                  onIonInput={(e) => setNewAccess(prev => ({ ...prev, role: e.detail.value! }))}
+                  placeholder="Enter role name (e.g., Admin, User, Manager)"
+                  className="role-input"
+                />
+              </IonItem>
+              
+              <IonItem>
+                <IonLabel position="stacked">Page Access</IonLabel>
+                <IonTextarea
+                  value={newAccess.pageAccess}
+                  onIonInput={(e) => setNewAccess(prev => ({ ...prev, pageAccess: e.detail.value! }))}
+                  placeholder="Enter page access permissions (optional)"
+                  rows={3}
+                  className="page-access-input"
+                />
+              </IonItem>
+              
+              <IonItem>
+                <IonLabel position="stacked">Navbar Access *</IonLabel>
+                <div className="navbar-access-section">
+                  <div className="navbar-access-input">
+                    <IonInput
+                      value={navbarAccessInput}
+                      onIonInput={(e) => setNavbarAccessInput(e.detail.value!)}
+                      placeholder="Enter navbar access item"
+                      onKeyPress={(e) => e.key === 'Enter' && handleAddNavbarAccess()}
+                    />
+                    <IonButton fill="outline" onClick={handleAddNavbarAccess}>
+                      <IonIcon icon={addOutline} />
+                    </IonButton>
+                    <IonButton 
+                      fill="outline" 
+                      id="navbar-options-trigger"
+                      onClick={() => setShowNavbarPopover(true)}
+                    >
+                      <IonIcon icon={chevronDownOutline} />
+                    </IonButton>
+                  </div>
+                  
+                  <div className="navbar-access-chips">
+                    {newAccess.navbarAccess.map((access, index) => (
+                      <IonChip key={index} className="access-chip">
+                        <IonLabel>{access}</IonLabel>
+                        <IonButton
+                          fill="clear"
+                          size="small"
+                          onClick={() => handleRemoveNavbarAccess(access)}
+                        >
+                          <IonIcon icon={closeOutline} />
+                        </IonButton>
+                      </IonChip>
+                    ))}
+                  </div>
+                </div>
+              </IonItem>
+            </IonList>
+          </div>
+          
+          <div className="modal-actions">
+            <IonButton fill="outline" onClick={handleCloseAddModal}>
+              CANCEL
+            </IonButton>
+            <IonButton fill="solid" onClick={handleSaveNewAccess}>
+              <IonIcon icon={checkmarkOutline} slot="start" />
+              SAVE ACCESS MAPPING
+            </IonButton>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* Navbar Options Popover */}
+      <IonPopover
+        isOpen={showNavbarPopover}
+        onDidDismiss={() => setShowNavbarPopover(false)}
+        trigger="navbar-options-trigger"
+        side="bottom"
+        alignment="start"
+      >
+        <IonContent>
+          <IonList>
+            <IonItem>
+              <IonLabel>
+                <h3>Select Navbar Access Options</h3>
+                <p>Choose from available sidebar options</p>
+              </IonLabel>
+            </IonItem>
+            {sidebarOptions.map((option, index) => (
+              <IonItem 
+                key={index} 
+                button 
+                onClick={() => handleSelectNavbarOption(option)}
+                disabled={newAccess.navbarAccess.includes(option)}
+              >
+                <IonLabel>{option}</IonLabel>
+                {newAccess.navbarAccess.includes(option) && (
+                  <IonIcon icon={checkmarkOutline} slot="end" color="success" />
+                )}
+              </IonItem>
+            ))}
+          </IonList>
+        </IonContent>
+      </IonPopover>
 
       {/* Toast for notifications */}
       <IonToast

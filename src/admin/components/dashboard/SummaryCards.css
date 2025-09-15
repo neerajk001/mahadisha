@@ -1,7 +1,9 @@
 /* Summary Cards Container */
 .summary-cards-container {
-  /* padding: 1.5rem; */
-  background: var(--color-bg-secondary);
+  padding: 1rem;
+  background: transparent;
+  position: relative;
+  z-index: 2;
 }
 
 .summary-card-content {
@@ -42,152 +44,85 @@
 /* Summary Card */
 .summary-card {
   margin: 0;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px var(--color-shadow-light);
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   overflow: hidden;
-  border: 1px solid var(--color-border-light);
+  position: relative;
+  min-height: 120px;
 }
 
 .summary-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 32px var(--color-shadow-medium);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .summary-card-content {
-  padding: 1.5rem;
+  padding: 1.5rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  height: 100%;
-}
-
-/* Card Header */
-.card-header {
-  display: flex;
-  justify-content: flex-start;
   align-items: center;
+  text-align: center;
+  height: 100%;
+  gap: 0.5rem;
 }
 
+/* Card Icon */
 .card-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 16px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* box-shadow: 0 4px 12px var(--color-shadow-light); */
-  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
 }
 
 .card-icon .icon {
-  font-size: 1.8rem;
-  color: var(--color-text-white);
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-.summary-card:hover .card-icon {
-  transform: scale(1.1);
-  box-shadow: 0 6px 20px var(--color-shadow-medium);
+  font-size: 1.5rem;
 }
 
 /* Card Body */
 .card-body {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.25rem;
   flex: 1;
 }
 
 .card-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.2;
   margin: 0;
+  opacity: 0.9;
 }
 
 .card-value {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: var(--color-text-primary);
-  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
   line-height: 1;
-  text-shadow: 0 2px 4px var(--color-shadow-light);
+  margin: 0;
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
-  .summary-cards-container {
-    padding: 1.25rem;
-  }
-  
-  .summary-card-content {
-    padding: 1.25rem;
-  }
-  
-  .card-icon {
-    width: 50px;
-    height: 50px;
-  }
-  
-  .card-icon .icon {
-    font-size: 1.5rem;
-  }
-  
-  .card-value {
-    font-size: 2rem;
-  }
-}
-
 @media (max-width: 768px) {
   .summary-cards-container {
-    padding: 1rem;
-  }
-  
-  .summary-card-content {
-    padding: 1rem;
-    gap: 0.75rem;
-  }
-  
-  .card-icon {
-    width: 45px;
-    height: 45px;
-    border-radius: 12px;
-  }
-  
-  .card-icon .icon {
-    font-size: 1.3rem;
-  }
-  
-  .card-title {
-    font-size: 0.85rem;
-  }
-  
-  .card-value {
-    font-size: 1.8rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .summary-cards-container {
     padding: 0.75rem;
   }
   
   .summary-card-content {
-    padding: 0.75rem;
-    gap: 0.5rem;
+    padding: 1rem 0.75rem;
   }
   
   .card-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+    width: 35px;
+    height: 35px;
   }
   
   .card-icon .icon {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
   }
   
   .card-title {
@@ -199,29 +134,29 @@
   }
 }
 
-/* Animation for card values */
-.card-value {
-  animation: countUp 1s ease-out;
-}
-
-@keyframes countUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+@media (max-width: 480px) {
+  .summary-cards-container {
+    padding: 0.5rem;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  .summary-card-content {
+    padding: 0.75rem 0.5rem;
   }
-}
-
-/* Hover effects for different card types */
-/* .summary-card:nth-child(1) .card-icon { */
-  /* background: var(--color-primary) !important; */
-/* } */
-
-.summary-card:nth-child(2) .card-icon,
-.summary-card:nth-child(3) .card-icon,
-.summary-card:nth-child(4) .card-icon {
-  background: var(--color-secondary) !important;
+  
+  .card-icon {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .card-icon .icon {
+    font-size: 1rem;
+  }
+  
+  .card-title {
+    font-size: 0.75rem;
+  }
+  
+  .card-value {
+    font-size: 1.25rem;
+  }
 }
