@@ -175,61 +175,50 @@ const NewRequests: React.FC = () => {
           <IonContent className="new-requests-content">
             <div className="new-requests-container">
               {/* Search and Filter Section */}
-              <div className="search-filter-section">
-                <div className="search-section">
-                  <IonSearchbar
-                    value={searchQuery}
-                    onIonInput={(e) => setSearchQuery(e.detail.value!)}
-                    placeholder="Search by Loan ID, Name or District"
-                    className="request-searchbar"
-                  />
-                </div>
+              <div className="search-filter-bar">
+                <IonSearchbar
+                  value={searchQuery}
+                  onIonInput={(e) => setSearchQuery(e.detail.value!)}
+                  placeholder="Search by Loan ID, Name or District"
+                  className="request-searchbar"
+                />
                 
-                <div className="filter-section">
-                  <div className="filter-group">
-                    <label className="filter-label">Status</label>
-                    <IonSelect
-                      value={filters.status}
-                      onIonChange={(e) => setFilters((prev: RequestFilters) => ({ ...prev, status: e.detail.value }))}
-                      placeholder="Select Status"
-                      className="filter-select"
-                    >
-                      {statusOptions.map(option => (
-                        <IonSelectOption key={option.value} value={option.value}>
-                          {option.label}
-                        </IonSelectOption>
-                      ))}
-                    </IonSelect>
-                  </div>
-                  
-                  <div className="filter-group">
-                    <label className="filter-label">District</label>
-                    <IonSelect
-                      value={filters.district}
-                      onIonChange={(e) => setFilters((prev: RequestFilters) => ({ ...prev, district: e.detail.value }))}
-                      placeholder="Select District"
-                      className="filter-select"
-                    >
-                      {districtOptions.map(option => (
-                        <IonSelectOption key={option.value} value={option.value}>
-                          {option.label}
-                        </IonSelectOption>
-                      ))}
-                    </IonSelect>
-                  </div>
-                </div>
+                <IonSelect
+                  value={filters.status}
+                  onIonChange={(e) => setFilters((prev: RequestFilters) => ({ ...prev, status: e.detail.value }))}
+                  placeholder="All Status"
+                  className="filter-select-dropdown"
+                  interface="popover"
+                >
+                  {statusOptions.map(option => (
+                    <IonSelectOption key={option.value} value={option.value}>
+                      {option.label}
+                    </IonSelectOption>
+                  ))}
+                </IonSelect>
                 
-                <div className="refresh-controls">
-                  <IonButton
-                    fill="clear"
-                    size="small"
-                    onClick={() => refetch()}
-                    className="refresh-button"
-                  >
-                    <IonIcon icon={refreshOutline} />
-                    Refresh
-                  </IonButton>
-                </div>
+                <IonSelect
+                  value={filters.district}
+                  onIonChange={(e) => setFilters((prev: RequestFilters) => ({ ...prev, district: e.detail.value }))}
+                  placeholder="All Districts"
+                  className="filter-select-dropdown"
+                  interface="popover"
+                >
+                  {districtOptions.map(option => (
+                    <IonSelectOption key={option.value} value={option.value}>
+                      {option.label}
+                    </IonSelectOption>
+                  ))}
+                </IonSelect>
+                
+                <IonButton
+                  fill="clear"
+                  onClick={() => refetch()}
+                  className="refresh-btn"
+                >
+                  <IonIcon slot="icon-only" icon={refreshOutline} />
+                  <span className="refresh-text">REFRESH</span>
+                </IonButton>
               </div>
 
               {/* Results Section */}
