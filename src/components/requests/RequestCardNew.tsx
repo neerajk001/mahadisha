@@ -95,7 +95,7 @@ const RequestCardNew: React.FC<RequestCardProps> = ({
       <IonGrid>
         <IonRow>
           {requests.map((request) => (
-            <IonCol size="12" key={request.id}>
+            <IonCol size="12" size-md="6" size-lg="6" key={request.id}>
               <IonCard className="request-card-new">
                 <IonCardHeader className="card-header-new">
                   <IonCardTitle className="loan-id">{request.loanId}</IonCardTitle>

@@ -1,8 +1,20 @@
 /* Request Card Styles */
 .request-cards-container {
-  padding: 0;
-  max-width: 800px;
+  padding: 1rem;
+  max-width: 1400px;
   margin: 0 auto;
+}
+
+.request-cards-container ion-grid {
+  padding: 0;
+}
+
+.request-cards-container ion-row {
+  margin: -0.5rem;
+}
+
+.request-cards-container ion-col {
+  padding: 0.5rem;
 }
 
 /* New Clean Card Design */
@@ -10,12 +22,12 @@
   --background: #ffffff;
   --border-radius: 12px;
   --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  margin: 0 0 1rem 0;
-  height: auto;
+  margin: 0;
+  height: 100%;
   transition: all 0.2s ease;
   border: 1px solid #e2e8f0;
   width: 100%;
-  max-width: 100%;
+  min-height: 420px;
 }
 
 .request-card-new:hover {
@@ -49,12 +61,13 @@
 
 /* New Card Header */
 .card-header-new {
-  padding: 1rem;
+  padding: 1.25rem 1.5rem;
   border-bottom: 1px solid #f0f0f0;
+  background: #fafafa;
 }
 
 .card-header-new .loan-id {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 600;
   color: #1a202c;
   margin-bottom: 0.75rem;
@@ -126,18 +139,18 @@
 
 /* New Card Content */
 .card-content-new {
-  padding: 1rem;
+  padding: 1.5rem;
 }
 
 .info-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
 }
 
 .info-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 0;
+  padding: 0.625rem 0;
   border-bottom: 1px solid #f7f7f7;
 }
 
@@ -146,7 +159,7 @@
 }
 
 .info-label {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: #718096;
   text-transform: uppercase;
@@ -154,7 +167,7 @@
 }
 
 .info-value {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 500;
   color: #2d3748;
   text-align: right;
@@ -204,23 +217,23 @@
 
 .action-btn {
   --border-radius: 8px;
-  --padding-start: 0.75rem;
-  --padding-end: 0.75rem;
-  --padding-top: 0.5rem;
-  --padding-bottom: 0.5rem;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 0.625rem;
+  --padding-bottom: 0.625rem;
   flex: 0 0 auto;
-  min-width: 130px;
-  font-size: 0.85rem;
+  min-width: 140px;
+  font-size: 0.9rem;
   font-weight: 500;
   text-transform: none;
   margin: 0;
-  min-height: 36px;
+  min-height: 40px;
   white-space: nowrap;
 }
 
 .action-btn ion-icon {
-  font-size: 1rem;
-  margin-right: 0.25rem;
+  font-size: 1.1rem;
+  margin-right: 0.35rem;
 }
 
 .repayment-btn {
