@@ -11,10 +11,15 @@ import {
   IonSelectOption,
   IonButton,
   IonAlert,
-  IonToast
+  IonToast,
+  IonPopover,
+  IonList,
+  IonItem,
+  IonLabel
 } from '@ionic/react';
 import { 
-  refreshOutline
+  refreshOutline,
+  chevronDownOutline
 } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
@@ -42,6 +47,11 @@ const NewRequests: React.FC = () => {
   const [showRepaymentModal, setShowRepaymentModal] = useState(false);
   const [selectedRequestForRepayment, setSelectedRequestForRepayment] = useState<LoanRequest | null>(null);
   const [emiSchedule, setEmiSchedule] = useState<EMISchedule[]>([]);
+
+  // District popover state for searchable dropdown
+  const [districtPopoverOpen, setDistrictPopoverOpen] = useState(false);
+  const [districtPopoverEvent, setDistrictPopoverEvent] = useState<Event | undefined>(undefined);
+  const [districtSearch, setDistrictSearch] = useState('');
 
   const searchParams: RequestSearchParams = useMemo(() => ({
     query: searchQuery,
@@ -189,6 +199,7 @@ const NewRequests: React.FC = () => {
                   placeholder="All Status"
                   className="filter-select-dropdown"
                   interface="popover"
+                  interfaceOptions={{ cssClass: 'newreq-select-popover' }}
                 >
                   {statusOptions.map(option => (
                     <IonSelectOption key={option.value} value={option.value}>
@@ -197,19 +208,45 @@ const NewRequests: React.FC = () => {
                   ))}
                 </IonSelect>
                 
-                <IonSelect
-                  value={filters.district}
-                  onIonChange={(e) => setFilters((prev: RequestFilters) => ({ ...prev, district: e.detail.value }))}
-                  placeholder="All Districts"
-                  className="filter-select-dropdown"
-                  interface="popover"
+                {/* Searchable District Dropdown (Popover) */}
+                <button
+                  type="button"
+                  className="filter-select-trigger"
+                  onClick={(e) => {
+                    setDistrictPopoverEvent(e.nativeEvent);
+                    setDistrictPopoverOpen(true);
+                  }}
                 >
-                  {districtOptions.map(option => (
-                    <IonSelectOption key={option.value} value={option.value}>
-                      {option.label}
-                    </IonSelectOption>
-                  ))}
-                </IonSelect>
+                  <span>{districtOptions.find(o => o.value === filters.district)?.label || 'All Districts'}</span>
+                  <IonIcon icon={chevronDownOutline} />
+                </button>
+                <IonPopover
+                  isOpen={districtPopoverOpen}
+                  event={districtPopoverEvent}
+                  onDidDismiss={() => setDistrictPopoverOpen(false)}
+                  cssClass="newreq-select-popover"
+                >
+                  <IonContent>
+                    <IonSearchbar
+                      value={districtSearch}
+                      onIonInput={(e) => setDistrictSearch(e.detail.value!)}
+                      placeholder="Search districts"
+                      className="popover-searchbar"
+                    />
+                    <IonList>
+                      {districtOptions
+                        .filter(o => o.label.toLowerCase().includes(districtSearch.toLowerCase()))
+                        .map(option => (
+                          <IonItem button key={option.value} onClick={() => {
+                            setFilters((prev: RequestFilters) => ({ ...prev, district: option.value }));
+                            setDistrictPopoverOpen(false);
+                          }}>
+                            <IonLabel>{option.label}</IonLabel>
+                          </IonItem>
+                        ))}
+                    </IonList>
+                  </IonContent>
+                </IonPopover>
                 
                 <IonButton
                   fill="clear"

@@ -63,6 +63,27 @@
   transition: all 0.2s ease;
 }
 
+.filter-select-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 180px;
+  max-width: 220px;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  color: #2d3748;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.filter-select-trigger:hover {
+  border-color: #cbd5e0;
+}
+
 .filter-select-dropdown:hover {
   --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
   border-color: #cbd5e0;
@@ -75,6 +96,16 @@
 
 .filter-select-dropdown::part(text) {
   font-weight: 500;
+}
+
+.popover-searchbar {
+  --background: #f7fafc;
+  --border-radius: 0;
+  --box-shadow: none;
+  --placeholder-color: #718096;
+  --color: #2d3748;
+  --icon-color: #718096;
+  --clear-button-color: #718096;
 }
 
 /* Refresh Button */
@@ -94,6 +125,40 @@
   letter-spacing: 0.025em;
   border: 1px solid #e2e8f0;
   transition: all 0.2s ease;
+}
+
+/* Compact IonSelect Popover for New Requests */
+.newreq-select-popover::part(content) {
+  width: 220px;
+  max-height: 260px;
+}
+
+.newreq-select-popover ion-content {
+  --overflow: hidden;
+}
+
+.newreq-select-popover ion-list {
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.newreq-select-popover ion-list::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.newreq-select-popover::part(list) {
+  padding: 0;
+}
+
+.newreq-select-popover .select-interface-option {
+  --min-height: 40px;
+}
+
+.newreq-select-popover .select-interface-option .label-text {
+  font-size: 0.95rem;
 }
 
 .refresh-btn:hover {
@@ -320,6 +385,12 @@
   .refresh-text {
     display: inline;
   }
+  
+  .newreq-select-popover::part(content) {
+    width: 200px;
+    max-height: 220px;
+  }
+}
   
   .results-section {
     padding: 1rem;
