@@ -17,6 +17,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
+import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { mockDataService } from '../services/api';
 import type { RejectionMasterData } from '../types';
 import './RejectionMaster.css';
@@ -323,22 +324,13 @@ const RejectionMaster: React.FC = () => {
                             </td>
                             <td className="actions-cell">
                               <div className="action-buttons">
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="edit-button"
-                                  onClick={() => handleEdit(rejection.id)}
-                                >
-                                  <IonIcon icon={createOutline} />
-                                </IonButton>
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="delete-button"
-                                  onClick={() => handleDelete(rejection.id)}
-                                >
-                                  <IonIcon icon={trashOutline} />
-                                </IonButton>
+                                <ActionDropdown
+                                  itemId={rejection.id}
+                                  onView={() => handleView(rejection)}
+                                  onEdit={() => handleEdit(rejection.id)}
+                                  onDelete={() => handleDelete(rejection.id)}
+                                  size="small"
+                                />
                               </div>
                             </td>
                           </tr>

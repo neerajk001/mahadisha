@@ -1,0 +1,382 @@
+/* Rejection Reason Modal Styles */
+.rejection-modal {
+  --width: 720px;
+  --max-width: 90vw;
+  --height: 600px;
+  --max-height: 90vh;
+  --border-radius: 16px;
+}
+
+.rejection-modal ion-modal {
+  --border-radius: 16px;
+}
+
+/* Modal Header */
+.modal-header {
+  --background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.modal-header ion-toolbar {
+  --background: #f8f9fa;
+  --color: #495057;
+  --min-height: 60px;
+  padding: 0 8px;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #343a40;
+}
+
+.close-btn {
+  --color: #6c757d;
+  --background: transparent;
+  --border-radius: 8px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  font-weight: 500;
+}
+
+.close-btn:hover {
+  --background: #e9ecef;
+  --color: #495057;
+}
+
+.close-text {
+  font-size: 1rem;
+}
+
+/* Modal Content */
+.modal-content {
+  --background: #ffffff;
+  padding: 0;
+}
+
+.modal-body {
+  padding: 24px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Reason Section */
+.reason-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reason-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #343a40;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.searchbar-container {
+  position: relative;
+}
+
+.reason-searchbar {
+  --background: #f8f9fa;
+  --border-radius: 8px;
+  --border-color: #dee2e6;
+  --border-width: 1px;
+  --border-style: solid;
+  --color: #495057;
+  --placeholder-color: #6c757d;
+  --icon-color: #6c757d;
+  --clear-button-color: #6c757d;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  font-size: 1rem;
+  min-height: 48px;
+}
+
+.reason-searchbar:focus-within {
+  --border-color: #007bff;
+  --border-width: 2px;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* Selected Reason */
+.selected-reason {
+  margin: 12px 0;
+}
+
+.selected-chip {
+  --background: #e3f2fd;
+  --color: #1976d2;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid #bbdefb;
+  padding: 8px 12px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.selected-chip ion-icon {
+  font-size: 1rem;
+}
+
+.selected-chip .remove-icon {
+  cursor: pointer;
+  color: #666;
+  margin-left: 4px;
+}
+
+.selected-chip .remove-icon:hover {
+  color: #333;
+}
+
+/* Reasons List */
+.reasons-list {
+  flex: 1;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  overflow: hidden;
+}
+
+.reason-item {
+  --background: #ffffff;
+  --border-color: #dee2e6;
+  --border-width: 0 0 1px 0;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  --min-height: 48px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reason-item:hover {
+  --background: #f8f9fa;
+}
+
+.reason-item.selected {
+  --background: #e3f2fd;
+  --border-color: #1976d2;
+  font-weight: 500;
+}
+
+.reason-item:last-child {
+  --border-width: 0;
+}
+
+.reason-text {
+  font-size: 0.95rem;
+  color: #495057;
+  line-height: 1.4;
+}
+
+.reason-item.selected .reason-text {
+  color: #1976d2;
+}
+
+/* Pagination */
+.pagination-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #dee2e6;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  --border-radius: 6px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  min-width: 44px;
+  height: 36px;
+  --color: #495057;
+  --border-color: #dee2e6;
+  --background: #ffffff;
+}
+
+.pagination-btn:hover {
+  --background: #f8f9fa;
+  --border-color: #adb5bd;
+}
+
+.pagination-btn.active {
+  --background: #007bff;
+  --color: #ffffff;
+  --border-color: #007bff;
+}
+
+.pagination-btn:disabled {
+  --color: #6c757d;
+  --background: #f8f9fa;
+  --border-color: #dee2e6;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.items-per-page {
+  font-weight: 500;
+}
+
+.showing-text {
+  color: #495057;
+}
+
+/* Modal Footer */
+.modal-footer {
+  --background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+
+.modal-footer ion-toolbar {
+  --background: #f8f9fa;
+  --min-height: 70px;
+  padding: 0 24px;
+}
+
+.footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.cancel-btn {
+  --color: #6c757d;
+  --background: transparent;
+  --border-radius: 8px;
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+  font-weight: 500;
+  min-width: 80px;
+}
+
+.cancel-btn:hover {
+  --background: #e9ecef;
+  --color: #495057;
+}
+
+.submit-btn {
+  --background: #dc3545;
+  --color: #ffffff;
+  --border-radius: 8px;
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+  font-weight: 600;
+  min-width: 100px;
+  --box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}
+
+.submit-btn:hover {
+  --background: #c82333;
+  --box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+.submit-btn:disabled {
+  --background: #6c757d;
+  --color: #ffffff;
+  --box-shadow: none;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .rejection-modal {
+    --width: 95vw;
+    --height: 85vh;
+    --max-height: 85vh;
+  }
+
+  .modal-body {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .modal-footer ion-toolbar {
+    padding: 0 16px;
+  }
+
+  .pagination-controls {
+    gap: 4px;
+  }
+
+  .pagination-btn {
+    --padding-start: 8px;
+    --padding-end: 8px;
+    min-width: 36px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+
+  .pagination-info {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .footer-actions {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .cancel-btn,
+  .submit-btn {
+    flex: 1;
+    max-width: 120px;
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+  .rejection-modal {
+    --width: 100vw;
+    --height: 100vh;
+    --max-height: 100vh;
+    --border-radius: 0;
+  }
+
+  .pagination-controls {
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: 4px 0;
+  }
+}

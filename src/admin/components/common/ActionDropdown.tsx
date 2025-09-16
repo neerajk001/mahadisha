@@ -31,7 +31,7 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({
   onDelete,
   onView,
   itemId,
-  showView = false,
+  showView = true,
   disabled = false,
   size = 'small'
 }) => {

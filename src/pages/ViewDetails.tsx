@@ -13,6 +13,8 @@ import {
 } from 'ionicons/icons';
 import { useParams, useHistory } from 'react-router-dom';
 import Sidebar from '../admin/components/sidebar/Sidebar';
+import RejectionReasonModal from '../components/modals/RejectionReasonModal';
+import IncompleteReasonModal from '../components/modals/IncompleteReasonModal';
 import { loanRequestAPI, mockDataService } from '../services/api';
 import { shouldUseMockData } from '../config/environment';
 import type { LoanRequestDetails } from '../types';
@@ -31,6 +33,8 @@ const ViewDetails: React.FC = () => {
   const [toastMessage, setToastMessage] = useState('');
   const [showActionAlert, setShowActionAlert] = useState(false);
   const [selectedAction, setSelectedAction] = useState<string>('');
+  const [showRejectionModal, setShowRejectionModal] = useState(false);
+  const [showIncompleteModal, setShowIncompleteModal] = useState(false);
 
   useEffect(() => {
     fetchRequestDetails();
@@ -69,7 +73,13 @@ const ViewDetails: React.FC = () => {
 
   const handleAction = (action: string) => {
     setSelectedAction(action);
-    setShowActionAlert(true);
+    if (action === 'reject') {
+      setShowRejectionModal(true);
+    } else if (action === 'incomplete') {
+      setShowIncompleteModal(true);
+    } else {
+      setShowActionAlert(true);
+    }
   };
 
   const confirmAction = async () => {
@@ -82,14 +92,6 @@ const ViewDetails: React.FC = () => {
         case 'next_action':
           newStatus = 'under_review';
           message = 'Request moved to next action successfully';
-          break;
-        case 'reject':
-          newStatus = 'rejected';
-          message = 'Request has been rejected';
-          break;
-        case 'incomplete':
-          newStatus = 'incomplete';
-          message = 'Request marked as incomplete';
           break;
       }
       
@@ -111,14 +113,50 @@ const ViewDetails: React.FC = () => {
     }
   };
 
+  const handleRejectionSubmit = async (reason: string) => {
+    try {
+      // TODO: Replace with actual API call to reject the request with reason
+      // await rejectRequest(id, reason);
+      
+      console.log('Request rejected with reason:', reason);
+      setToastMessage(`Request has been rejected. Reason: ${reason}`);
+      setShowToast(true);
+      
+      // Refresh the data after rejection
+      await fetchRequestDetails();
+      
+    } catch (error) {
+      setToastMessage('Failed to reject request. Please try again.');
+      setShowToast(true);
+    } finally {
+      setShowRejectionModal(false);
+    }
+  };
+
+  const handleIncompleteSubmit = async (reason: string) => {
+    try {
+      // TODO: Replace with actual API call to mark request as incomplete with reason
+      // await markIncomplete(id, reason);
+      
+      console.log('Request marked as incomplete with reason:', reason);
+      setToastMessage(`Request marked as incomplete. Reason: ${reason}`);
+      setShowToast(true);
+      
+      // Refresh the data after marking incomplete
+      await fetchRequestDetails();
+      
+    } catch (error) {
+      setToastMessage('Failed to mark request as incomplete. Please try again.');
+      setShowToast(true);
+    } finally {
+      setShowIncompleteModal(false);
+    }
+  };
+
   const getActionAlertMessage = () => {
     switch (selectedAction) {
       case 'next_action':
         return 'Are you sure you want to move this request to the next action?';
-      case 'reject':
-        return 'Are you sure you want to reject this request?';
-      case 'incomplete':
-        return 'Are you sure you want to mark this request as incomplete?';
       default:
         return '';
     }
@@ -526,7 +564,40 @@ const ViewDetails: React.FC = () => {
   const renderDocuments = () => {
     if (!requestDetails) return null;
 
-    const { documents } = requestDetails;
+    // All required document types
+    const requiredDocuments = [
+      { id: 'bank-passbook', name: 'Bank Passbook', category: 'Financial' },
+      { id: 'caste-certificate', name: 'Caste Certificate', category: 'Identity' },
+      { id: 'witness1-address', name: 'Witness 1 Address Proof', category: 'Witness' },
+      { id: 'income-certificate', name: 'Income Certificate', category: 'Financial' },
+      { id: 'witness1-photo-id', name: 'Witness 1 Photo ID', category: 'Witness' },
+      { id: 'other-documents', name: 'Other Documents', category: 'Miscellaneous' },
+      { id: 'pan', name: 'PAN', category: 'Identity' },
+      { id: 'passport-photo', name: 'Passport Photo', category: 'Identity' },
+      { id: 'bonafide-certificates', name: 'Bonafide Certificates', category: 'Educational' },
+      { id: 'witness2-photo-id', name: 'Witness 2 Photo ID', category: 'Witness' },
+      { id: 'aadhaar', name: 'Aadhaar', category: 'Identity' },
+      { id: 'residential-proof', name: 'Residential Proof', category: 'Address' },
+      { id: 'witness2-address', name: 'Witness 2 Address Proof', category: 'Witness' }
+    ];
+
+    // Mock uploaded documents with some sample data
+    const uploadedDocuments = [
+      { id: 'pan', uploadDate: '9/8/2025', status: 'uploaded', verificationStatus: 'pending' },
+      { id: 'aadhaar', uploadDate: '9/8/2025', status: 'uploaded', verificationStatus: 'pending' }
+    ];
+
+    const getDocumentStatus = (docId: string) => {
+      const uploaded = uploadedDocuments.find(doc => doc.id === docId);
+      return uploaded || null;
+    };
+
+    const handleDocumentAction = (docId: string, action: 'verify' | 'reject') => {
+      console.log(`Document ${docId} ${action}ed`);
+      setToastMessage(`Document ${action}ed successfully`);
+      setShowToast(true);
+      // TODO: Implement actual API call
+    };
 
     return (
       <div className="details-content">
@@ -538,25 +609,76 @@ const ViewDetails: React.FC = () => {
             </IonCardTitle>
           </IonCardHeader>
           <IonCardContent>
-            <div className="documents-list">
-              {documents.map((doc) => (
-                <div key={doc.id} className="document-item">
-                  <div className="document-info">
-                    <IonIcon icon={documentTextOutline} className="document-icon" />
-                    <div className="document-details">
-                      <span className="document-name">{doc.name}</span>
-                      <span className="document-category">{doc.category}</span>
+            <div className="documents-grid">
+              {requiredDocuments.map((doc) => {
+                const documentStatus = getDocumentStatus(doc.id);
+                const isUploaded = documentStatus !== null;
+
+                return (
+                  <div key={doc.id} className="document-card">
+                    <div className="document-header">
+                      <h3 className="document-title">{doc.name}</h3>
+                      {isUploaded && (
+                        <div className="document-actions">
+                          <IonButton
+                            fill="solid"
+                            size="small"
+                            color="success"
+                            className="verify-btn"
+                            onClick={() => handleDocumentAction(doc.id, 'verify')}
+                          >
+                            Verify
+                          </IonButton>
+                          <IonButton
+                            fill="solid"
+                            size="small"
+                            color="danger"
+                            className="reject-btn"
+                            onClick={() => handleDocumentAction(doc.id, 'reject')}
+                          >
+                            Reject
+                          </IonButton>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="document-content">
+                      {isUploaded ? (
+                        <div className="document-uploaded">
+                          <div className="document-info-row">
+                            <span className="info-label">Document</span>
+                            <IonButton
+                              fill="clear"
+                              size="small"
+                              className="view-document-btn"
+                              onClick={() => handleDownloadDocument(doc.id, doc.name)}
+                            >
+                              <IonIcon icon={documentTextOutline} slot="start" />
+                              View
+                            </IonButton>
+                          </div>
+                          <div className="document-info-row">
+                            <span className="info-label">Date:</span>
+                            <span className="info-value">{documentStatus.uploadDate}</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="document-not-found">
+                          <span className="not-found-text">Document not found!</span>
+                          <IonButton
+                            fill="solid"
+                            size="small"
+                            color="warning"
+                            className="upload-btn"
+                          >
+                            Upload Document
+                          </IonButton>
+                        </div>
+                      )}
                     </div>
                   </div>
-                  <IonButton
-                    fill="clear"
-                    size="small"
-                    onClick={() => handleDownloadDocument(doc.id, doc.name)}
-                  >
-                    <IonIcon icon={downloadOutline} />
-                  </IonButton>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </IonCardContent>
         </IonCard>
@@ -831,6 +953,18 @@ const ViewDetails: React.FC = () => {
         message={toastMessage}
         duration={2000}
         position="bottom"
+      />
+
+      <RejectionReasonModal
+        isOpen={showRejectionModal}
+        onClose={() => setShowRejectionModal(false)}
+        onSubmit={handleRejectionSubmit}
+      />
+
+      <IncompleteReasonModal
+        isOpen={showIncompleteModal}
+        onClose={() => setShowIncompleteModal(false)}
+        onSubmit={handleIncompleteSubmit}
       />
     </IonPage>
   );

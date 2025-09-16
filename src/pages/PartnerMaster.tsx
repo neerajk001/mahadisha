@@ -16,6 +16,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
+import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { mockDataService } from '../services/api';
 import type { PartnerMasterData } from '../types';
 import './PartnerMaster.css';
@@ -347,22 +348,13 @@ const PartnerMaster: React.FC = () => {
                             </td>
                             <td className="actions-cell">
                               <div className="action-buttons">
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="edit-button"
-                                  onClick={() => handleEdit(partner.id)}
-                                >
-                                  <IonIcon icon={createOutline} />
-                                </IonButton>
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="delete-button"
-                                  onClick={() => handleDelete(partner.id)}
-                                >
-                                  <IonIcon icon={trashOutline} />
-                                </IonButton>
+                                <ActionDropdown
+                                  itemId={partner.id}
+                                  onView={() => handleView(partner)}
+                                  onEdit={() => handleEdit(partner.id)}
+                                  onDelete={() => handleDelete(partner.id)}
+                                  size="small"
+                                />
                               </div>
                             </td>
                           </tr>

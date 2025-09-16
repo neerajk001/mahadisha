@@ -248,21 +248,34 @@ const LoanApplication: React.FC = () => {
 
   // Aadhar input handling
   const handleAadharDigitChange = (index: number, value: string) => {
-    // Validate: only single numeric digit allowed
-    if (value === '' || (/^\d$/.test(value) && value.length <= 1)) {
+    // Clear error message when user starts typing
+    setAadhaarError('');
+    
+    // If empty value, allow it (for backspace/delete)
+    if (value === '') {
       const newDigits = [...aadharDigits];
-      newDigits[index] = value;
+      newDigits[index] = '';
       setAadharDigits(newDigits);
-      setAadhaarError('');
+      return;
+    }
+    
+    // If more than 1 character, take only the last character
+    const lastChar = value.slice(-1);
+    
+    // Validate: only single numeric digit allowed
+    if (/^[0-9]$/.test(lastChar)) {
+      const newDigits = [...aadharDigits];
+      newDigits[index] = lastChar;
+      setAadharDigits(newDigits);
 
       // Auto-focus next input when valid digit is entered
-      if (value && index < 11) {
+      if (index < 11) {
         setTimeout(() => {
           const nextInput = document.querySelector(`#aadhar-${index + 1} input`) as HTMLInputElement;
           if (nextInput) {
             nextInput.focus();
           }
-        }, 100);
+        }, 50);
       }
       
       // Open validating overlay when all 12 digits are filled, then OTP modal
@@ -274,19 +287,27 @@ const LoanApplication: React.FC = () => {
         }, 1000);
       }
     } else {
+      // Invalid character entered, show error but don't update state
       setAadhaarError('Only digits (0-9) are allowed for Aadhaar.');
+      // Clear the error after 2 seconds
+      setTimeout(() => {
+        setAadhaarError('');
+      }, 2000);
     }
   };
 
   const handleAadharKeyDown = (index: number, e: any) => {
+    // Clear error when user interacts with input
+    setAadhaarError('');
+    
     if (e.key === 'Backspace') {
+      e.preventDefault();
       const newDigits = [...aadharDigits];
       
       if (newDigits[index] !== '') {
         // Clear current digit
         newDigits[index] = '';
         setAadharDigits(newDigits);
-        setAadhaarError('');
       } else if (index > 0) {
         // Move to previous input and clear it
         newDigits[index - 1] = '';
@@ -295,10 +316,27 @@ const LoanApplication: React.FC = () => {
           const prevInput = document.querySelector(`#aadhar-${index - 1} input`) as HTMLInputElement;
           if (prevInput) {
             prevInput.focus();
+            prevInput.setSelectionRange(1, 1); // Position cursor at end
           }
-        }, 100);
+        }, 50);
       }
+    } else if (e.key === 'Delete') {
       e.preventDefault();
+      const newDigits = [...aadharDigits];
+      newDigits[index] = '';
+      setAadharDigits(newDigits);
+    } else if (e.key === 'ArrowLeft' && index > 0) {
+      e.preventDefault();
+      const prevInput = document.querySelector(`#aadhar-${index - 1} input`) as HTMLInputElement;
+      if (prevInput) {
+        prevInput.focus();
+      }
+    } else if (e.key === 'ArrowRight' && index < 11) {
+      e.preventDefault();
+      const nextInput = document.querySelector(`#aadhar-${index + 1} input`) as HTMLInputElement;
+      if (nextInput) {
+        nextInput.focus();
+      }
     }
   };
 

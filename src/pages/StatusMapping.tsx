@@ -17,6 +17,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
+import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { mockDataService } from '../services/api';
 import type { StatusMappingData } from '../types';
 import './StatusMapping.css';
@@ -389,22 +390,13 @@ const StatusMapping: React.FC = () => {
                             </td>
                             <td className="actions-cell">
                               <div className="action-buttons">
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="edit-button"
-                                  onClick={() => handleEdit(mapping.id)}
-                                >
-                                  <IonIcon icon={createOutline} />
-                                </IonButton>
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="delete-button"
-                                  onClick={() => handleDelete(mapping.id)}
-                                >
-                                  <IonIcon icon={trashOutline} />
-                                </IonButton>
+                                <ActionDropdown
+                                  itemId={mapping.id}
+                                  onView={() => handleView(mapping)}
+                                  onEdit={() => handleEdit(mapping.id)}
+                                  onDelete={() => handleDelete(mapping.id)}
+                                  size="small"
+                                />
                               </div>
                             </td>
                           </tr>

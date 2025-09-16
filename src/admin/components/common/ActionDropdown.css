@@ -5,40 +5,46 @@
 }
 
 .action-dropdown-trigger {
-  --background: #f8f9fa;
-  --background-hover: #e9ecef;
-  --background-activated: #dee2e6;
-  --color: #495057;
-  --color-hover: #343a40;
-  --border-radius: 8px;
-  --border-width: 1px;
-  --border-color: #dee2e6;
-  --border-style: solid;
-  --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --padding-start: 12px;
-  --padding-end: 12px;
-  --padding-top: 8px;
-  --padding-bottom: 8px;
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  --background-hover: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
+  --background-activated: linear-gradient(135deg, #4c63d2 0%, #553c9a 100%) !important;
+  --color: #ffffff !important;
+  --color-hover: #ffffff !important;
+  --border-radius: 6px;
+  --border-width: 0;
+  --border-color: transparent;
+  --border-style: none;
+  --box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  --padding-start: 10px;
+  --padding-end: 10px;
+  --padding-top: 6px;
+  --padding-bottom: 6px;
   
-  min-width: 90px;
-  height: 36px;
-  font-size: 12px;
-  font-weight: 500;
+  min-width: 80px;
+  height: 32px;
+  font-size: 11px;
+  font-weight: 600;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   transition: all 0.2s ease-in-out;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
 }
 
 .action-dropdown-trigger:hover {
-  --background: #e9ecef;
-  --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
+  --box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
   transform: translateY(-1px);
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
+  color: white !important;
 }
 
 .action-dropdown-trigger:active {
-  --background: #dee2e6;
-  --box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --background: linear-gradient(135deg, #4c63d2 0%, #553c9a 100%) !important;
+  --box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
   transform: translateY(0);
+  background: linear-gradient(135deg, #4c63d2 0%, #553c9a 100%) !important;
+  color: white !important;
 }
 
 .action-dropdown-trigger[disabled] {
@@ -191,37 +197,95 @@
 /* Dark theme support */
 @media (prefers-color-scheme: dark) {
   .action-dropdown-trigger {
-    --background: #343a40;
-    --background-hover: #495057;
-    --background-activated: #6c757d;
-    --color: #f8f9fa;
+    --background: linear-gradient(135deg, #4c63d2 0%, #553c9a 100%);
+    --background-hover: linear-gradient(135deg, #3b4fc7 0%, #4a328d 100%);
+    --background-activated: linear-gradient(135deg, #2a3bb7 0%, #3f2880 100%);
+    --color: #ffffff;
     --color-hover: #ffffff;
-    --border-color: #495057;
+    --box-shadow: 0 2px 8px rgba(76, 99, 210, 0.4);
   }
   
   .action-dropdown-popover::part(content) {
-    background: #343a40;
-    border-color: #495057;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    background: #1a202c;
+    border-color: #2d3748;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(76, 99, 210, 0.15);
   }
   
   .action-dropdown-item {
-    --color: #f8f9fa;
-    --background-hover: #495057;
-    --background-activated: #6c757d;
+    --color: #e2e8f0;
+    --background-hover: #2d3748;
+    --background-activated: #4a5568;
   }
   
   .action-dropdown-item.view-item:hover {
-    --background: #1e3a5f;
+    --background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%);
   }
   
   .action-dropdown-item.edit-item:hover {
-    --background: #1a5a2e;
+    --background: linear-gradient(135deg, #9a3412 0%, #c2410c 50%);
   }
   
   .action-dropdown-item.delete-item:hover {
-    --background: #5a1a1a;
+    --background: linear-gradient(135deg, #991b1b 0%, #dc2626 50%);
   }
+}
+
+
+/* High-specificity rules for consistent styling across all master pages */
+.manage-pages-content .action-dropdown-trigger,
+.branches-content .action-dropdown-trigger,
+.status-master-content .action-dropdown-trigger,
+.taluka-master-content .action-dropdown-trigger,
+.caste-master-content .action-dropdown-trigger,
+.organization-masters-content .action-dropdown-trigger,
+.action-masters-content .action-dropdown-trigger,
+.partner-master-content .action-dropdown-trigger,
+.rejection-master-content .action-dropdown-trigger,
+.status-mapping-content .action-dropdown-trigger,
+table .action-dropdown-trigger,
+.pages-table .action-dropdown-trigger,
+.branches-table .action-dropdown-trigger {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.manage-pages-content .action-dropdown-trigger:hover,
+.branches-content .action-dropdown-trigger:hover,
+.status-master-content .action-dropdown-trigger:hover,
+.taluka-master-content .action-dropdown-trigger:hover,
+.caste-master-content .action-dropdown-trigger:hover,
+.organization-masters-content .action-dropdown-trigger:hover,
+.action-masters-content .action-dropdown-trigger:hover,
+.partner-master-content .action-dropdown-trigger:hover,
+.rejection-master-content .action-dropdown-trigger:hover,
+.status-mapping-content .action-dropdown-trigger:hover,
+table .action-dropdown-trigger:hover,
+.pages-table .action-dropdown-trigger:hover,
+.branches-table .action-dropdown-trigger:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
+  color: white !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4) !important;
+}
+
+.manage-pages-content .action-dropdown-trigger:active,
+.branches-content .action-dropdown-trigger:active,
+.status-master-content .action-dropdown-trigger:active,
+.taluka-master-content .action-dropdown-trigger:active,
+.caste-master-content .action-dropdown-trigger:active,
+.organization-masters-content .action-dropdown-trigger:active,
+.action-masters-content .action-dropdown-trigger:active,
+.partner-master-content .action-dropdown-trigger:active,
+.rejection-master-content .action-dropdown-trigger:active,
+.status-mapping-content .action-dropdown-trigger:active,
+table .action-dropdown-trigger:active,
+.pages-table .action-dropdown-trigger:active,
+.branches-table .action-dropdown-trigger:active {
+  background: linear-gradient(135deg, #4c63d2 0%, #553c9a 100%) !important;
+  color: white !important;
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3) !important;
 }
 
 /* Animation for smooth transitions */
