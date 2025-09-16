@@ -73,8 +73,8 @@
 
 .tabs-container ion-segment-button {
   --color: var(--color-text-secondary);
-  --color-checked: var(--color-primary);
-  --background-checked: var(--color-primary-light);
+  --color-checked: #ffffff;
+  --background-checked: #007bff;
   --border-radius: 8px;
   --padding-start: 1rem;
   --padding-end: 1rem;
@@ -99,7 +99,9 @@
 }
 
 .info-card {
-  --background: var(--color-bg-primary);
+  --background: #ffffff;
+  background-color: #ffffff;
+  border: 1px solid rgba(108, 117, 125, 0.3) !important;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
@@ -170,9 +172,9 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background: var(--color-bg-secondary);
+  background: #ffffff !important;
   border-radius: 8px;
-  border: 1px solid var(--color-border-light);
+  border: 1px solid rgba(108, 117, 125, 0.3) !important;
 }
 
 .document-info {
@@ -213,9 +215,9 @@
 
 .guarantor-item {
   padding: 1rem;
-  background: var(--color-bg-secondary);
+  background: #ffffff !important;
   border-radius: 8px;
-  border: 1px solid var(--color-border-light);
+  border: 1px solid rgba(108, 117, 125, 0.3) !important;
 }
 
 .guarantor-info {
@@ -259,9 +261,9 @@
 
 .collateral-item {
   padding: 1rem;
-  background: var(--color-bg-secondary);
+  background: #ffffff !important;
   border-radius: 8px;
-  border: 1px solid var(--color-border-light);
+  border: 1px solid rgba(108, 117, 125, 0.3) !important;
 }
 
 .collateral-info {
@@ -515,10 +517,10 @@
 }
 
 .document-card {
-  background: #f8f9fa;
+  background: #ffffff !important;
   border-radius: 12px;
   padding: 1.25rem;
-  border: 1px solid #e9ecef;
+  border: 1px solid rgba(108, 117, 125, 0.3) !important;
   transition: all 0.2s ease;
 }
 
