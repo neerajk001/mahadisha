@@ -16,6 +16,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
+import ActionDropdown from '../components/common/ActionDropdown';
 import { mockDataService } from '../../services/api';
 import type { ActionMasterData } from '../../types';
 import './ActionMasters.css';
@@ -217,39 +218,42 @@ const ActionMasters: React.FC = () => {
                 </IonButton>
               </div>
 
-              {/* Modern Actions Grid */}
+              {/* Actions Grid */}
               {viewMode === 'grid' ? (
-                <div className="pages-grid">
+                <div className="branches-grid">
                   {currentActions.map((action) => (
-                    <div key={action.id} className="page-card">
-                      <div className="page-card-header">
-                        <div className="page-card-icon">
+                    <div key={action.id} className="branch-card">
+                      <div className="branch-card-header">
+                        <div className="branch-card-icon">
                           <IonIcon icon={settingsOutline} />
                         </div>
-                        <div className="page-card-title">
-                          <h3 className="page-card-name">{action.name}</h3>
-                          <div className="page-card-url">{action.functionName}</div>
+                        <div className="branch-card-title">
+                          <h3 className="branch-card-name">{action.name}</h3>
+                          <div className="branch-card-type">{action.functionName}</div>
                         </div>
                       </div>
                       
-                      <div className="page-card-content">
-                        <div className="page-card-meta">
-                          <div className="page-card-meta-item">
-                            <IonIcon icon={documentTextOutline} className="page-card-meta-icon" />
+                      <div className="branch-card-content">
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={documentTextOutline} className="branch-card-meta-icon" />
                             <span>Priority: {action.priority}</span>
                           </div>
-                          <div className="page-card-meta-item">
-                            <IonIcon icon={timeOutline} className="page-card-meta-icon" />
-                            <span>Active</span>
+                        </div>
+                        
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={timeOutline} className="branch-card-meta-icon" />
+                            <span>Status: Active</span>
                           </div>
                         </div>
                       </div>
                       
-                      <div className="page-card-actions">
+                      <div className="branch-card-actions">
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button edit"
+                          className="branch-card-button view"
                           onClick={() => handleView(action)}
                         >
                           <IonIcon icon={eyeOutline} />
@@ -258,7 +262,7 @@ const ActionMasters: React.FC = () => {
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button edit"
+                          className="branch-card-button edit"
                           onClick={() => handleEdit(action.id)}
                         >
                           <IonIcon icon={createOutline} />
@@ -267,7 +271,7 @@ const ActionMasters: React.FC = () => {
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button delete"
+                          className="branch-card-button delete"
                           onClick={() => handleDelete(action.id)}
                         >
                           <IonIcon icon={trashOutline} />
@@ -338,22 +342,12 @@ const ActionMasters: React.FC = () => {
                             </td>
                             <td className="actions-cell">
                               <div className="action-buttons">
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="edit-button"
-                                  onClick={() => handleEdit(action.id)}
-                                >
-                                  <IonIcon icon={createOutline} />
-                                </IonButton>
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="delete-button"
-                                  onClick={() => handleDelete(action.id)}
-                                >
-                                  <IonIcon icon={trashOutline} />
-                                </IonButton>
+                                <ActionDropdown
+                                  itemId={action.id}
+                                  onEdit={() => handleEdit(action.id)}
+                                  onDelete={() => handleDelete(action.id)}
+                                  size="small"
+                                />
                               </div>
                             </td>
                           </tr>

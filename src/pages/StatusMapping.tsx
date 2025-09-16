@@ -250,49 +250,42 @@ const StatusMapping: React.FC = () => {
                 </IonButton>
               </div>
 
-              {/* Modern Status Mappings Grid */}
+              {/* Status Mappings Grid */}
               {viewMode === 'grid' ? (
-                <div className="pages-grid">
+                <div className="branches-grid">
                   {currentMappings.map((mapping) => (
-                    <div key={mapping.id} className="page-card">
-                      <div className="page-card-header">
-                        <div className="page-card-icon">
+                    <div key={mapping.id} className="branch-card">
+                      <div className="branch-card-header">
+                        <div className="branch-card-icon">
                           <IonIcon icon={swapVerticalOutline} />
                         </div>
-                        <div className="page-card-title">
-                          <h3 className="page-card-name">{mapping.status}</h3>
-                          <div className="page-card-url">Status Mapping</div>
+                        <div className="branch-card-title">
+                          <h3 className="branch-card-name">{mapping.status}</h3>
+                          <div className="branch-card-type">Status Mapping</div>
                         </div>
                       </div>
                       
-                      <div className="page-card-content">
-                        <div className="page-card-meta">
-                          <div className="page-card-meta-item">
-                            <IonIcon icon={peopleOutline} className="page-card-meta-icon" />
+                      <div className="branch-card-content">
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={peopleOutline} className="branch-card-meta-icon" />
                             <span>Role: {mapping.role}</span>
                           </div>
-                          <div className="page-card-meta-item">
-                            <IonIcon icon={documentTextOutline} className="page-card-meta-icon" />
+                        </div>
+                        
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={documentTextOutline} className="branch-card-meta-icon" />
                             <span>Fields: {mapping.visibleFields.length}</span>
                           </div>
                         </div>
-                        <div className="visible-fields-preview">
-                          {mapping.visibleFields.slice(0, 3).map((field, index) => (
-                            <span key={index} className="field-chip">
-                              {field}
-                            </span>
-                          ))}
-                          {mapping.visibleFields.length > 3 && (
-                            <span className="field-chip more">+{mapping.visibleFields.length - 3} more</span>
-                          )}
-                        </div>
                       </div>
                       
-                      <div className="page-card-actions">
+                      <div className="branch-card-actions">
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button edit"
+                          className="branch-card-button view"
                           onClick={() => handleView(mapping)}
                         >
                           <IonIcon icon={eyeOutline} />
@@ -301,7 +294,7 @@ const StatusMapping: React.FC = () => {
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button edit"
+                          className="branch-card-button edit"
                           onClick={() => handleEdit(mapping.id)}
                         >
                           <IonIcon icon={createOutline} />
@@ -310,7 +303,7 @@ const StatusMapping: React.FC = () => {
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button delete"
+                          className="branch-card-button delete"
                           onClick={() => handleDelete(mapping.id)}
                         >
                           <IonIcon icon={trashOutline} />

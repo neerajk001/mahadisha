@@ -16,6 +16,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
+import ActionDropdown from '../components/common/ActionDropdown';
 import { mockDataService } from '../../services/api';
 import type { BranchData } from '../../types';
 import './BranchMaster.css';
@@ -251,30 +252,24 @@ const BranchMaster: React.FC = () => {
                   placeholder="Search branches by name or type..."
                   className="branches-search"
                 />
-                <div className="action-buttons">
+                <div className="action-buttons-group">
                   <IonButton 
                     fill="outline" 
-                    size="small"
-                    onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-                  >
-                    <IonIcon icon={filterOutline} />
-                    Filters
-                  </IonButton>
-                  <IonButton 
-                    fill="outline" 
-                    size="small"
+                    size="default"
+                    className="view-toggle-button"
                     onClick={() => setViewMode(viewMode === 'table' ? 'grid' : 'table')}
                   >
-                    <IonIcon icon={viewMode === 'table' ? gridOutline : listOutline} />
-                    {viewMode === 'table' ? 'Grid' : 'Table'}
+                    <IonIcon icon={viewMode === 'table' ? gridOutline : listOutline} slot="start" />
+                    {viewMode === 'table' ? 'Grid View' : 'Table View'}
                   </IonButton>
                   <IonButton 
                     fill="solid" 
-                    className="add-branch-button"
+                    size="default"
+                    className="add-branch-button primary"
                     onClick={handleAddBranch}
                   >
-                    <IonIcon icon={addOutline} />
-                    + ADD ACCESS
+                    <IonIcon icon={businessOutline} slot="start" />
+                    Add Branch
                   </IonButton>
                 </div>
               </div>
@@ -498,30 +493,14 @@ const BranchMaster: React.FC = () => {
                           </td>
                           <td className="actions-cell">
                             <div className="action-buttons">
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="view-button"
-                                onClick={() => handleView(branch.id)}
-                              >
-                                <IonIcon icon={eyeOutline} />
-                              </IonButton>
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="edit-button"
-                                onClick={() => handleEdit(branch.id)}
-                              >
-                                <IonIcon icon={createOutline} />
-                              </IonButton>
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="delete-button"
-                                onClick={() => handleDelete(branch.id)}
-                              >
-                                <IonIcon icon={trashOutline} />
-                              </IonButton>
+                              <ActionDropdown
+                                itemId={branch.id}
+                                onView={() => handleView(branch.id)}
+                                onEdit={() => handleEdit(branch.id)}
+                                onDelete={() => handleDelete(branch.id)}
+                                showView={true}
+                                size="small"
+                              />
                             </div>
                           </td>
                         </tr>

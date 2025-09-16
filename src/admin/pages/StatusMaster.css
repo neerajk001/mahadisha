@@ -476,7 +476,8 @@
 .page-card-actions {
   display: flex;
   gap: 0.75rem;
-  justify-content: flex-end;
+  justify-content: space-evenly;
+  padding: 0 0.5rem;
 }
 
 .page-card-button {

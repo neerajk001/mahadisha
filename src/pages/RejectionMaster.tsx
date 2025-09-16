@@ -209,39 +209,42 @@ const RejectionMaster: React.FC = () => {
                 </IonButton>
               </div>
 
-              {/* Modern Rejections Grid */}
+              {/* Rejections Grid */}
               {viewMode === 'grid' ? (
-                <div className="pages-grid">
+                <div className="branches-grid">
                   {currentRejections.map((rejection) => (
-                    <div key={rejection.id} className="page-card">
-                      <div className="page-card-header">
-                        <div className="page-card-icon">
+                    <div key={rejection.id} className="branch-card">
+                      <div className="branch-card-header">
+                        <div className="branch-card-icon">
                           <IonIcon icon={closeCircleOutline} />
                         </div>
-                        <div className="page-card-title">
-                          <h3 className="page-card-name">{rejection.name}</h3>
-                          <div className="page-card-url">Rejection Reason</div>
+                        <div className="branch-card-title">
+                          <h3 className="branch-card-name">{rejection.name}</h3>
+                          <div className="branch-card-type">Rejection Reason</div>
                         </div>
                       </div>
                       
-                      <div className="page-card-content">
-                        <div className="page-card-meta">
-                          <div className="page-card-meta-item">
-                            <IonIcon icon={documentTextOutline} className="page-card-meta-icon" />
-                            <span>Rejection ID: {rejection.id.slice(-6)}</span>
+                      <div className="branch-card-content">
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={documentTextOutline} className="branch-card-meta-icon" />
+                            <span>Code: REJ-{rejection.id.slice(-3)}</span>
                           </div>
-                          <div className="page-card-meta-item">
-                            <IonIcon icon={timeOutline} className="page-card-meta-icon" />
+                        </div>
+                        
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={timeOutline} className="branch-card-meta-icon" />
                             <span>Type: Standard</span>
                           </div>
                         </div>
                       </div>
                       
-                      <div className="page-card-actions">
+                      <div className="branch-card-actions">
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button edit"
+                          className="branch-card-button view"
                           onClick={() => handleView(rejection)}
                         >
                           <IonIcon icon={eyeOutline} />
@@ -250,7 +253,7 @@ const RejectionMaster: React.FC = () => {
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button edit"
+                          className="branch-card-button edit"
                           onClick={() => handleEdit(rejection.id)}
                         >
                           <IonIcon icon={createOutline} />
@@ -259,7 +262,7 @@ const RejectionMaster: React.FC = () => {
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button delete"
+                          className="branch-card-button delete"
                           onClick={() => handleDelete(rejection.id)}
                         >
                           <IonIcon icon={trashOutline} />
