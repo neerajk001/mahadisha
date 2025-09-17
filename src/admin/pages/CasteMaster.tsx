@@ -16,6 +16,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
+import ActionDropdown from '../components/common/ActionDropdown';
 import { mockDataService } from '../../services/api';
 import type { CasteData } from '../../types';
 import './CasteMaster.css';
@@ -172,39 +173,42 @@ const CasteMaster: React.FC = () => {
                 </IonButton>
               </div>
 
-              {/* Modern Castes Grid */}
+              {/* Castes Grid */}
               {viewMode === 'grid' ? (
-                <div className="pages-grid">
+                <div className="branches-grid">
                   {currentCastes.map((caste) => (
-                    <div key={caste.id} className="page-card">
-                      <div className="page-card-header">
-                        <div className="page-card-icon">
+                    <div key={caste.id} className="branch-card">
+                      <div className="branch-card-header">
+                        <div className="branch-card-icon">
                           <IonIcon icon={peopleOutline} />
                         </div>
-                        <div className="page-card-title">
-                          <h3 className="page-card-name">{caste.name}</h3>
-                          <div className="page-card-url">Caste Category</div>
+                        <div className="branch-card-title">
+                          <h3 className="branch-card-name">{caste.name}</h3>
+                          <div className="branch-card-type">Caste Category</div>
                         </div>
                       </div>
                       
-                      <div className="page-card-content">
-                        <div className="page-card-meta">
-                          <div className="page-card-meta-item">
-                            <IonIcon icon={documentTextOutline} className="page-card-meta-icon" />
+                      <div className="branch-card-content">
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={documentTextOutline} className="branch-card-meta-icon" />
                             <span>ID: {caste.id}</span>
                           </div>
-                          <div className="page-card-meta-item">
-                            <IonIcon icon={timeOutline} className="page-card-meta-icon" />
-                            <span>Active</span>
+                        </div>
+                        
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={timeOutline} className="branch-card-meta-icon" />
+                            <span>Status: Active</span>
                           </div>
                         </div>
                       </div>
                       
-                      <div className="page-card-actions">
+                      <div className="branch-card-actions">
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button edit"
+                          className="branch-card-button view"
                           onClick={() => handleView(caste)}
                         >
                           <IonIcon icon={eyeOutline} />
@@ -213,7 +217,7 @@ const CasteMaster: React.FC = () => {
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button edit"
+                          className="branch-card-button edit"
                           onClick={() => handleEdit(caste)}
                         >
                           <IonIcon icon={createOutline} />
@@ -222,7 +226,7 @@ const CasteMaster: React.FC = () => {
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button delete"
+                          className="branch-card-button delete"
                           onClick={() => handleDelete(caste.id)}
                         >
                           <IonIcon icon={trashOutline} />
@@ -272,22 +276,12 @@ const CasteMaster: React.FC = () => {
                             </td>
                             <td className="actions-cell">
                               <div className="action-buttons">
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="edit-button"
-                                  onClick={() => handleEdit(caste)}
-                                >
-                                  <IonIcon icon={createOutline} />
-                                </IonButton>
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="delete-button"
-                                  onClick={() => handleDelete(caste.id)}
-                                >
-                                  <IonIcon icon={trashOutline} />
-                                </IonButton>
+                                <ActionDropdown
+                                  itemId={caste.id}
+                                  onEdit={() => handleEdit(caste)}
+                                  onDelete={() => handleDelete(caste.id)}
+                                  size="small"
+                                />
                               </div>
                             </td>
                           </tr>

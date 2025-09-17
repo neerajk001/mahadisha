@@ -16,6 +16,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
+import ActionDropdown from '../components/common/ActionDropdown';
 import { mockDataService } from '../../services/api';
 import type { OrganizationMasterData } from '../../types';
 import './OrganizationMasters.css';
@@ -208,39 +209,42 @@ const OrganizationMasters: React.FC = () => {
                 </IonButton>
               </div>
 
-              {/* Modern Organizations Grid */}
+              {/* Organizations Grid */}
               {viewMode === 'grid' ? (
-                <div className="pages-grid">
+                <div className="branches-grid">
                   {currentOrganizations.map((org) => (
-                    <div key={org.id} className="page-card">
-                      <div className="page-card-header">
-                        <div className="page-card-icon">
+                    <div key={org.id} className="branch-card">
+                      <div className="branch-card-header">
+                        <div className="branch-card-icon">
                           <IonIcon icon={businessOutline} />
                         </div>
-                        <div className="page-card-title">
-                          <h3 className="page-card-name">{org.name}</h3>
-                          <div className="page-card-url">Organization</div>
+                        <div className="branch-card-title">
+                          <h3 className="branch-card-name">{org.name}</h3>
+                          <div className="branch-card-type">Organization</div>
                         </div>
                       </div>
                       
-                      <div className="page-card-content">
-                        <div className="page-card-meta">
-                          <div className="page-card-meta-item">
-                            <IonIcon icon={documentTextOutline} className="page-card-meta-icon" />
-                            <span>ID: {org.id}</span>
+                      <div className="branch-card-content">
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={documentTextOutline} className="branch-card-meta-icon" />
+                            <span>Code: ORG-{org.id.slice(-3)}</span>
                           </div>
-                          <div className="page-card-meta-item">
-                            <IonIcon icon={timeOutline} className="page-card-meta-icon" />
-                            <span>Active</span>
+                        </div>
+                        
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={timeOutline} className="branch-card-meta-icon" />
+                            <span>Status: Active</span>
                           </div>
                         </div>
                       </div>
                       
-                      <div className="page-card-actions">
+                      <div className="branch-card-actions">
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button edit"
+                          className="branch-card-button view"
                           onClick={() => handleView(org)}
                         >
                           <IonIcon icon={eyeOutline} />
@@ -249,7 +253,7 @@ const OrganizationMasters: React.FC = () => {
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button edit"
+                          className="branch-card-button edit"
                           onClick={() => handleEdit(org.id)}
                         >
                           <IonIcon icon={createOutline} />
@@ -258,7 +262,7 @@ const OrganizationMasters: React.FC = () => {
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button delete"
+                          className="branch-card-button delete"
                           onClick={() => handleDelete(org.id)}
                         >
                           <IonIcon icon={trashOutline} />
@@ -320,22 +324,12 @@ const OrganizationMasters: React.FC = () => {
                             </td>
                             <td className="actions-cell">
                               <div className="action-buttons">
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="edit-button"
-                                  onClick={() => handleEdit(org.id)}
-                                >
-                                  <IonIcon icon={createOutline} />
-                                </IonButton>
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="delete-button"
-                                  onClick={() => handleDelete(org.id)}
-                                >
-                                  <IonIcon icon={trashOutline} />
-                                </IonButton>
+                                <ActionDropdown
+                                  itemId={org.id}
+                                  onEdit={() => handleEdit(org.id)}
+                                  onDelete={() => handleDelete(org.id)}
+                                  size="small"
+                                />
                               </div>
                             </td>
                           </tr>

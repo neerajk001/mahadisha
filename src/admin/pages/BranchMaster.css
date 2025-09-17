@@ -37,29 +37,70 @@
   align-items: center;
   gap: 1rem;
   margin-bottom: 2rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  width: 100%;
 }
 
 .branches-search {
   flex: 1;
-  min-width: 300px;
+  min-width: 250px;
+  max-width: 500px;
   --background: var(--color-bg-primary);
   --border-radius: 8px;
   --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --placeholder-color: #999;
+  --color: var(--color-text-primary);
 }
 
-.add-branch-button {
-  --background: var(--color-primary);
-  --color: white;
+.action-buttons-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.view-toggle-button {
+  --background: transparent;
+  --color: var(--color-primary);
+  --border-color: var(--color-primary);
   --border-radius: 8px;
+  --border-width: 1.5px;
   --padding-start: 1rem;
   --padding-end: 1rem;
   font-weight: 600;
   white-space: nowrap;
+  min-width: 120px;
+  height: 42px;
+  transition: all 0.3s ease;
 }
 
-.add-branch-button:hover {
-  --background: var(--color-primary-dark);
+.view-toggle-button:hover {
+  --background: var(--color-primary);
+  --color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.add-branch-button {
+  --border-radius: 8px;
+  --padding-start: 1.2rem;
+  --padding-end: 1.2rem;
+  font-weight: 600;
+  white-space: nowrap;
+  height: 42px;
+  transition: all 0.3s ease;
+}
+
+.add-branch-button.primary {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --color: white;
+  --box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.add-branch-button.primary:hover {
+  --background: linear-gradient(135deg, #5a67d8 0%, #6b42a1 100%);
+  transform: translateY(-2px);
+  --box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 /* Table Card */
@@ -162,7 +203,7 @@
 }
 
 .actions-cell {
-  min-width: 140px;
+  min-width: 160px;
   text-align: center;
   padding: 1rem;
   white-space: nowrap;
@@ -172,10 +213,37 @@
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.view-button {
+  --color: white !important;
+  --background: #28a745;
+  --border-radius: 6px;
+  --padding: 0.5rem;
+  width: 40px;
+  height: 40px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.view-button ion-icon {
+  font-size: 1.2rem;
+  color: white !important;
+}
+
+.view-button:hover {
+  --background: #218838;
+  transform: scale(1.05);
 }
 
 .edit-button {
-  --color: white;
+  --color: white !important;
   --background: #17a2b8;
   --border-radius: 6px;
   --padding: 0.5rem;
@@ -184,6 +252,14 @@
   font-weight: 600;
   font-size: 1rem;
   transition: all 0.2s ease;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-button ion-icon {
+  font-size: 1.2rem;
+  color: white !important;
 }
 
 .edit-button:hover {
@@ -192,7 +268,7 @@
 }
 
 .delete-button {
-  --color: white;
+  --color: white !important;
   --background: var(--color-error);
   --border-radius: 6px;
   --padding: 0.5rem;
@@ -201,6 +277,14 @@
   font-weight: 600;
   font-size: 1rem;
   transition: all 0.2s ease;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-button ion-icon {
+  font-size: 1.2rem;
+  color: white !important;
 }
 
 .delete-button:hover {
@@ -280,6 +364,25 @@
 
   .branches-search {
     min-width: auto;
+    max-width: 100%;
+  }
+
+  .action-buttons-group {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .view-toggle-button,
+  .add-branch-button {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.9rem;
+    height: 40px;
+    --padding-start: 0.75rem;
+    --padding-end: 0.75rem;
   }
 
   .branches-table th,
@@ -293,6 +396,7 @@
     flex-direction: row;
   }
 
+  .view-button,
   .edit-button,
   .delete-button {
     width: 36px;
@@ -327,6 +431,19 @@
     font-size: 0.9rem;
   }
 
+  .action-buttons-group {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .view-toggle-button,
+  .add-branch-button {
+    width: 100%;
+    min-width: auto;
+    font-size: 0.85rem;
+    height: 38px;
+  }
+
   .branches-table th,
   .branches-table td {
     padding: 0.5rem 0.25rem;
@@ -338,6 +455,7 @@
     gap: 0.4rem;
   }
 
+  .view-button,
   .edit-button,
   .delete-button {
     width: 32px;
@@ -371,13 +489,6 @@
 }
 
 /* RBAC Functionalities Styles */
-.action-buttons {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  justify-content: center;
-  min-width: 120px;
-}
 
 .advanced-filters-card {
   margin-bottom: 1.5rem;
@@ -428,39 +539,135 @@
   gap: 1rem;
 }
 
-.view-button {
-  --color: #4ecdc4;
-  --background: rgba(78, 205, 196, 0.2);
+/* Grid View Card Styles */
+.branches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.branch-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.branch-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.branch-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.branch-card-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.branch-card-title {
+  flex: 1;
+}
+
+.branch-card-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 0.25rem 0;
+}
+
+.branch-card-type {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.branch-card-content {
+  margin-bottom: 1.5rem;
+}
+
+.branch-card-meta {
+  margin-bottom: 0.75rem;
+}
+
+.branch-card-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.branch-card-meta-icon {
+  font-size: 1rem;
+  color: var(--color-primary);
+}
+
+.branch-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.branch-card-button {
+  flex: 1;
   --border-radius: 8px;
   --padding: 0.5rem;
-  width: 40px;
-  height: 40px;
+  font-size: 0.9rem;
   font-weight: 600;
-  font-size: 1.2rem;
+  height: 36px;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
-  border: 1px solid rgba(78, 205, 196, 0.4);
-  min-width: 40px;
-  min-height: 40px;
 }
 
-.view-button ion-icon {
-  color: #4ecdc4 !important;
-  font-size: 1.2rem !important;
-  opacity: 1 !important;
-  visibility: visible !important;
+.branch-card-button.view {
+  --color: #28a745;
+  --background: transparent;
+  --border-color: #28a745;
+  --border-width: 1px;
 }
 
-.view-button:hover {
-  --background: rgba(78, 205, 196, 0.25);
-  --color: #2a9d8f;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
-  border: 1px solid rgba(78, 205, 196, 0.5);
+.branch-card-button.view:hover {
+  --background: #28a745;
+  --color: white;
 }
 
-.view-button:hover ion-icon {
-  color: #2a9d8f !important;
+.branch-card-button.edit {
+  --color: #17a2b8;
+  --background: transparent;
+  --border-color: #17a2b8;
+  --border-width: 1px;
+}
+
+.branch-card-button.edit:hover {
+  --background: #17a2b8;
+  --color: white;
+}
+
+.branch-card-button.delete {
+  --color: var(--color-error);
+  --background: transparent;
+  --border-color: var(--color-error);
+  --border-width: 1px;
+}
+
+.branch-card-button.delete:hover {
+  --background: var(--color-error);
+  --color: white;
 }
 
 .modal-content {
@@ -621,7 +828,8 @@
 .branch-card-actions {
   display: flex;
   gap: 0.75rem;
-  justify-content: flex-end;
+  justify-content: space-evenly;
+  padding: 0 0.5rem;
 }
 
 .branch-card-button {

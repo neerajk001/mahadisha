@@ -16,6 +16,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
+import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { mockDataService } from '../services/api';
 import type { PageData } from '../types';
 import './ManagePages.css';
@@ -179,39 +180,42 @@ const ManagePages: React.FC = () => {
                 </IonButton>
               </div>
 
-              {/* Modern Pages Grid */}
+              {/* Pages Grid */}
               {viewMode === 'grid' ? (
-                <div className="pages-grid">
+                <div className="branches-grid">
                   {currentPages.map((page) => (
-                    <div key={page.id} className="page-card">
-                      <div className="page-card-header">
-                        <div className="page-card-icon">
+                    <div key={page.id} className="branch-card">
+                      <div className="branch-card-header">
+                        <div className="branch-card-icon">
                           <IonIcon icon={getIconComponent(page.icon)} />
                         </div>
-                        <div className="page-card-title">
-                          <h3 className="page-card-name">{page.name}</h3>
-                          <div className="page-card-url">{page.url}</div>
+                        <div className="branch-card-title">
+                          <h3 className="branch-card-name">{page.name}</h3>
+                          <div className="branch-card-type">{page.url}</div>
                         </div>
                       </div>
                       
-                      <div className="page-card-content">
-                        <div className="page-card-meta">
-                          <div className="page-card-meta-item">
-                            <IonIcon icon={documentTextOutline} className="page-card-meta-icon" />
-                            <span>{page.icon}</span>
+                      <div className="branch-card-content">
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={documentTextOutline} className="branch-card-meta-icon" />
+                            <span>Icon: {page.icon}</span>
                           </div>
-                          <div className="page-card-meta-item">
-                            <IonIcon icon={timeOutline} className="page-card-meta-icon" />
-                            <span>Active</span>
+                        </div>
+                        
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={timeOutline} className="branch-card-meta-icon" />
+                            <span>Status: Active</span>
                           </div>
                         </div>
                       </div>
                       
-                      <div className="page-card-actions">
+                      <div className="branch-card-actions">
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button edit"
+                          className="branch-card-button view"
                           onClick={() => handleView(page)}
                         >
                           <IonIcon icon={eyeOutline} />
@@ -220,7 +224,7 @@ const ManagePages: React.FC = () => {
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button edit"
+                          className="branch-card-button edit"
                           onClick={() => handleEdit(page)}
                         >
                           <IonIcon icon={createOutline} />
@@ -229,7 +233,7 @@ const ManagePages: React.FC = () => {
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button delete"
+                          className="branch-card-button delete"
                           onClick={() => handleDelete(page.id)}
                         >
                           <IonIcon icon={trashOutline} />
@@ -291,22 +295,13 @@ const ManagePages: React.FC = () => {
                             </td>
                             <td className="actions-cell">
                               <div className="action-buttons">
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="edit-button"
-                                  onClick={() => handleEdit(page)}
-                                >
-                                  <IonIcon icon={createOutline} />
-                                </IonButton>
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="delete-button"
-                                  onClick={() => handleDelete(page.id)}
-                                >
-                                  <IonIcon icon={trashOutline} />
-                                </IonButton>
+                                <ActionDropdown
+                                  itemId={page.id}
+                                  onView={() => handleView(page)}
+                                  onEdit={() => handleEdit(page)}
+                                  onDelete={() => handleDelete(page.id)}
+                                  size="small"
+                                />
                               </div>
                             </td>
                           </tr>

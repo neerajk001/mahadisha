@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  width: 100%;
   background: linear-gradient(135deg, #F9F6F2 0%, #FFF7F0 100%);
   position: relative;
   overflow: hidden;

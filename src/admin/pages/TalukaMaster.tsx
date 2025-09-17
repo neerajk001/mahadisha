@@ -17,6 +17,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
+import ActionDropdown from '../components/common/ActionDropdown';
 import { mockDataService } from '../../services/api';
 import type { TalukaData } from '../../types';
 import './TalukaMaster.css';
@@ -173,46 +174,42 @@ const TalukaMaster: React.FC = () => {
                 </IonButton>
               </div>
 
-              {/* Modern Talukas Grid */}
+              {/* Talukas Grid */}
               {viewMode === 'grid' ? (
-                <div className="pages-grid">
+                <div className="branches-grid">
                   {currentTalukas.map((taluka) => (
-                    <div key={taluka.id} className="page-card">
-                      <div className="page-card-header">
-                        <div className="page-card-icon">
+                    <div key={taluka.id} className="branch-card">
+                      <div className="branch-card-header">
+                        <div className="branch-card-icon">
                           <IonIcon icon={locationOutline} />
                         </div>
-                        <div className="page-card-title">
-                          <h3 className="page-card-name">{taluka.name}</h3>
-                          <div className="page-card-url">Taluka Region</div>
+                        <div className="branch-card-title">
+                          <h3 className="branch-card-name">{taluka.name}</h3>
+                          <div className="branch-card-type">Taluka Region</div>
                         </div>
                       </div>
                       
-                      <div className="page-card-content">
-                        <div className="page-card-meta">
-                          <div className="page-card-meta-item">
-                            <IonIcon icon={documentTextOutline} className="page-card-meta-icon" />
-                            <span>ID: {taluka.id}</span>
-                          </div>
-                          <div className="page-card-meta-item">
-                            <IonIcon icon={timeOutline} className="page-card-meta-icon" />
-                            <span>Active</span>
+                      <div className="branch-card-content">
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={mapOutline} className="branch-card-meta-icon" />
+                            <span>Code: TLK-{taluka.id.slice(-3)}</span>
                           </div>
                         </div>
                         
-                        <div className="page-card-meta">
-                          <div className="page-card-meta-item">
-                            <IonIcon icon={mapOutline} className="page-card-meta-icon" />
-                            <span>Region Code: TLK-{taluka.id.slice(-3)}</span>
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={timeOutline} className="branch-card-meta-icon" />
+                            <span>Status: Active</span>
                           </div>
                         </div>
                       </div>
                       
-                      <div className="page-card-actions">
+                      <div className="branch-card-actions">
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button edit"
+                          className="branch-card-button view"
                           onClick={() => handleView(taluka)}
                         >
                           <IonIcon icon={eyeOutline} />
@@ -221,7 +218,7 @@ const TalukaMaster: React.FC = () => {
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button edit"
+                          className="branch-card-button edit"
                           onClick={() => handleEdit(taluka)}
                         >
                           <IonIcon icon={createOutline} />
@@ -230,7 +227,7 @@ const TalukaMaster: React.FC = () => {
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button delete"
+                          className="branch-card-button delete"
                           onClick={() => handleDelete(taluka.id)}
                         >
                           <IonIcon icon={trashOutline} />
@@ -292,22 +289,12 @@ const TalukaMaster: React.FC = () => {
                             </td>
                             <td className="actions-cell">
                               <div className="action-buttons">
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="edit-button"
-                                  onClick={() => handleEdit(taluka)}
-                                >
-                                  <IonIcon icon={createOutline} />
-                                </IonButton>
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="delete-button"
-                                  onClick={() => handleDelete(taluka.id)}
-                                >
-                                  <IonIcon icon={trashOutline} />
-                                </IonButton>
+                                <ActionDropdown
+                                  itemId={taluka.id}
+                                  onEdit={() => handleEdit(taluka)}
+                                  onDelete={() => handleDelete(taluka.id)}
+                                  size="small"
+                                />
                               </div>
                             </td>
                           </tr>

@@ -10,7 +10,8 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-  IonBadge
+  IonBadge,
+  IonAvatar
 } from '@ionic/react';
 import {
   eyeOutline,
@@ -20,7 +21,8 @@ import {
   locationOutline,
   calendarOutline,
   personOutline,
-  cashOutline
+  cashOutline,
+  idCardOutline
 } from 'ionicons/icons';
 import type { LoanRequest } from '../../types';
 import './RequestCard.css';
@@ -98,7 +100,28 @@ const RequestCardNew: React.FC<RequestCardProps> = ({
             <IonCol size="12" size-md="6" size-lg="6" key={request.id}>
               <IonCard className="request-card-new">
                 <IonCardHeader className="card-header-new">
-                  <IonCardTitle className="loan-id">{request.loanId}</IonCardTitle>
+                  {/* Applicant Profile Section */}
+                  <div className="applicant-profile">
+                    <IonAvatar className="applicant-avatar">
+                      <IonIcon icon={idCardOutline} className="avatar-icon" />
+                      <span className="avatar-label">Aadhar</span>
+                    </IonAvatar>
+                    <div className="applicant-info">
+                      <div className="scheme-info">
+                        <span className="scheme-label">Scheme:</span>
+                        <span className="scheme-name">{request.scheme || 'Margin Money Scheme (State)'}</span>
+                      </div>
+                      <div className="loan-id-line">
+                        <span className="loan-id-label">Loan ID :</span>
+                        <span className="loan-id-value">{request.loanId}</span>
+                      </div>
+                      <div className="applicant-name-line">
+                        <span className="applicant-label">Applicant:</span>
+                        <span className="applicant-name">{request.applicantName}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
                   <div className="status-row">
                     <IonChip 
                       color={getStatusColor(request.status)} 

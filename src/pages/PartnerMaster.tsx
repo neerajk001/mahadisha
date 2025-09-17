@@ -16,6 +16,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
+import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { mockDataService } from '../services/api';
 import type { PartnerMasterData } from '../types';
 import './PartnerMaster.css';
@@ -214,39 +215,42 @@ const PartnerMaster: React.FC = () => {
                 </IonButton>
               </div>
 
-              {/* Modern Partners Grid */}
+              {/* Partners Grid */}
               {viewMode === 'grid' ? (
-                <div className="pages-grid">
+                <div className="branches-grid">
                   {currentPartners.map((partner) => (
-                    <div key={partner.id} className="page-card">
-                      <div className="page-card-header">
-                        <div className="page-card-icon">
+                    <div key={partner.id} className="branch-card">
+                      <div className="branch-card-header">
+                        <div className="branch-card-icon">
                           <IonIcon icon={peopleOutline} />
                         </div>
-                        <div className="page-card-title">
-                          <h3 className="page-card-name">{partner.name}</h3>
-                          <div className="page-card-url">Partner</div>
+                        <div className="branch-card-title">
+                          <h3 className="branch-card-name">{partner.name}</h3>
+                          <div className="branch-card-type">Partner Organization</div>
                         </div>
                       </div>
                       
-                      <div className="page-card-content">
-                        <div className="page-card-meta">
-                          <div className="page-card-meta-item">
-                            <IonIcon icon={locationOutline} className="page-card-meta-icon" />
-                            <span>{partner.address}</span>
+                      <div className="branch-card-content">
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={locationOutline} className="branch-card-meta-icon" />
+                            <span>Address: {partner.address}</span>
                           </div>
-                          <div className="page-card-meta-item">
-                            <IonIcon icon={documentTextOutline} className="page-card-meta-icon" />
-                            <span>{partner.contact}</span>
+                        </div>
+                        
+                        <div className="branch-card-meta">
+                          <div className="branch-card-meta-item">
+                            <IonIcon icon={documentTextOutline} className="branch-card-meta-icon" />
+                            <span>Contact: {partner.contact}</span>
                           </div>
                         </div>
                       </div>
                       
-                      <div className="page-card-actions">
+                      <div className="branch-card-actions">
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button edit"
+                          className="branch-card-button view"
                           onClick={() => handleView(partner)}
                         >
                           <IonIcon icon={eyeOutline} />
@@ -255,7 +259,7 @@ const PartnerMaster: React.FC = () => {
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button edit"
+                          className="branch-card-button edit"
                           onClick={() => handleEdit(partner.id)}
                         >
                           <IonIcon icon={createOutline} />
@@ -264,7 +268,7 @@ const PartnerMaster: React.FC = () => {
                         <IonButton 
                           fill="clear" 
                           size="small" 
-                          className="page-card-button delete"
+                          className="branch-card-button delete"
                           onClick={() => handleDelete(partner.id)}
                         >
                           <IonIcon icon={trashOutline} />
@@ -344,22 +348,13 @@ const PartnerMaster: React.FC = () => {
                             </td>
                             <td className="actions-cell">
                               <div className="action-buttons">
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="edit-button"
-                                  onClick={() => handleEdit(partner.id)}
-                                >
-                                  <IonIcon icon={createOutline} />
-                                </IonButton>
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small" 
-                                  className="delete-button"
-                                  onClick={() => handleDelete(partner.id)}
-                                >
-                                  <IonIcon icon={trashOutline} />
-                                </IonButton>
+                                <ActionDropdown
+                                  itemId={partner.id}
+                                  onView={() => handleView(partner)}
+                                  onEdit={() => handleEdit(partner.id)}
+                                  onDelete={() => handleDelete(partner.id)}
+                                  size="small"
+                                />
                               </div>
                             </td>
                           </tr>

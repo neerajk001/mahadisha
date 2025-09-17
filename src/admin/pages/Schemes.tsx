@@ -300,18 +300,8 @@ const Schemes: React.FC = () => {
           
           <IonContent className="schemes-content">
             <div className="schemes-container">
-              {/* Navigation Bar */}
+              {/* Search and Filter Bar */}
               <div className="schemes-navigation">
-                <IonButton 
-                  fill="solid" 
-                  disabled={currentPage === 1}
-                  onClick={handlePreviousPage}
-                  className="nav-button prev-button"
-                >
-                  <IonIcon icon={chevronBackOutline} />
-                  Previous
-                </IonButton>
-
                 <IonSearchbar
                   value={searchQuery}
                   onIonChange={(e) => setSearchQuery(e.detail.value!)}
@@ -325,22 +315,12 @@ const Schemes: React.FC = () => {
                   className="filter-toggle-button"
                 >
                   <IonIcon icon={filterOutline} />
-                  Filters
+                  <span className="filter-text">Filters</span>
                   {Object.keys(advancedFilters).length > 0 && (
                     <IonBadge color="primary" className="filter-badge">
                       {Object.keys(advancedFilters).length}
                     </IonBadge>
                   )}
-                </IonButton>
-
-                <IonButton 
-                  fill="solid" 
-                  disabled={currentPage === totalPages}
-                  onClick={handleNextPage}
-                  className="nav-button next-button"
-                >
-                  Next
-                  <IonIcon icon={chevronForwardOutline} />
                 </IonButton>
               </div>
 
@@ -520,12 +500,70 @@ const Schemes: React.FC = () => {
                 </IonGrid>
               </div>
 
-              {/* Pagination Info */}
-              <div className="pagination-info">
-                <p>
-                  Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedSchemes.length)} of {filteredAndSortedSchemes.length} schemes
-                </p>
-                <p>Page {currentPage} of {totalPages}</p>
+              {/* Pagination Navigation */}
+              <div className="pagination-container">
+                <div className="pagination-info">
+                  <p>
+                    Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedSchemes.length)} of {filteredAndSortedSchemes.length} schemes
+                  </p>
+                </div>
+                
+                <div className="pagination-controls">
+                  <div className="page-numbers">
+                    {Array.from({ length: totalPages }, (_, index) => {
+                      const pageNumber = index + 1;
+                      const isCurrentPage = pageNumber === currentPage;
+                      const showPage = totalPages <= 5 || 
+                                      pageNumber === 1 || 
+                                      pageNumber === totalPages ||
+                                      Math.abs(pageNumber - currentPage) <= 1;
+                      
+                      if (!showPage && pageNumber !== 2 && pageNumber !== totalPages - 1) {
+                        return null;
+                      }
+                      
+                      if (!showPage) {
+                        return <span key={pageNumber} className="page-ellipsis">...</span>;
+                      }
+                      
+                      return (
+                        <IonButton
+                          key={pageNumber}
+                          fill={isCurrentPage ? "solid" : "clear"}
+                          size="small"
+                          className={`page-number ${isCurrentPage ? 'active' : ''}`}
+                          onClick={() => setCurrentPage(pageNumber)}
+                        >
+                          {pageNumber}
+                        </IonButton>
+                      );
+                    })}
+                  </div>
+                  
+                  <div className="pagination-nav-buttons">
+                    <IonButton 
+                      fill="outline" 
+                      disabled={currentPage === 1}
+                      onClick={handlePreviousPage}
+                      className="pagination-button"
+                      size="small"
+                      aria-label="Previous Page"
+                    >
+                      <IonIcon icon={chevronBackOutline} />
+                    </IonButton>
+                    
+                    <IonButton 
+                      fill="outline" 
+                      disabled={currentPage === totalPages}
+                      onClick={handleNextPage}
+                      className="pagination-button"
+                      size="small"
+                      aria-label="Next Page"
+                    >
+                      <IonIcon icon={chevronForwardOutline} />
+                    </IonButton>
+                  </div>
+                </div>
               </div>
             </div>
           </IonContent>
