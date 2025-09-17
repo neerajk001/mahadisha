@@ -467,6 +467,196 @@ ion-popover ion-content::-webkit-scrollbar-thumb:hover {
   font-style: italic;
 }
 
+/* Searchable Application Type Dropdown */
+.searchable-select-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Form Label */
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  text-transform: none;
+}
+
+/* Dropdown Trigger */
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+  width: 100%;
+  text-align: left;
+  font-size: 1rem;
+}
+
+.dropdown-trigger:hover {
+  border-color: #d1d5db;
+  background-color: #f9fafb;
+}
+
+.dropdown-trigger:focus,
+.dropdown-trigger:active {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+  outline: none;
+}
+
+.dropdown-value {
+  flex: 1;
+  font-size: 1rem;
+  color: #374151;
+  user-select: none;
+}
+
+.dropdown-value.placeholder {
+  color: #9ca3af;
+  font-style: normal;
+}
+
+.dropdown-arrow {
+  font-size: 1.2rem;
+  color: #6b7280;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Container */
+.search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  margin-top: 6px;
+  overflow: hidden;
+  animation: dropdownSlideIn 0.2s ease-out;
+  transform-origin: top;
+}
+
+@keyframes dropdownSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scaleY(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+/* Dropdown Header with Search */
+.search-dropdown-header {
+  padding: 6px;
+  border-bottom: 1px solid #f3f4f6;
+  background-color: #f8f9fa;
+}
+
+.search-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-search-input {
+  --background: white;
+  --border-radius: 4px;
+  --padding-start: 10px;
+  --padding-end: 10px;
+  --padding-top: 4px;
+  --padding-bottom: 4px;
+  --border-color: #d1d5db;
+  --color: #374151;
+  font-size: 0.8rem;
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  min-height: 24px;
+  height: 28px;
+}
+
+.dropdown-search-input:focus-within {
+  --border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+/* Dropdown List */
+.search-dropdown-list {
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.search-dropdown-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #f3f4f6;
+  transition: all 0.15s ease;
+  font-size: 0.9rem;
+  color: #374151;
+  line-height: 1.3;
+}
+
+.search-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.search-dropdown-item:hover,
+.search-dropdown-item.selected {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  transform: translateX(2px);
+}
+
+.search-dropdown-item.no-results {
+  color: #9ca3af;
+  font-style: italic;
+  cursor: default;
+  text-align: center;
+  padding: 12px 16px;
+}
+
+.search-dropdown-item.no-results:hover {
+  background-color: transparent;
+  color: #9ca3af;
+  transform: none;
+}
+
+/* Custom scrollbar for dropdown */
+.search-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-dropdown::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.search-dropdown::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.search-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
 /* Error Message */
 .error-message {
   color: #dc2626;
@@ -479,49 +669,159 @@ ion-popover ion-content::-webkit-scrollbar-thumb:hover {
 .navigation-buttons {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 1rem;
-  padding: 0.75rem 0.25rem;
+  padding: 1rem 0.5rem;
   position: sticky;
   bottom: 0;
   z-index: 25;
-  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, var(--la-surface) 20%);
-  backdrop-filter: blur(2px);
+  background: transparent;
 }
 
 .nav-button {
-  --border-radius: 10px;
-  --padding-start: 1.25rem;
-  --padding-end: 1.25rem;
-  --padding-top: 12px;
-  --padding-bottom: 12px;
-  font-weight: 700;
+  --border-radius: 8px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+  font-weight: 600;
   text-transform: none;
-  min-width: 120px;
+  min-width: 100px;
+  min-height: 40px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  border: none;
+}
+
+.nav-button ion-icon {
+  font-size: 1rem;
+  transition: transform 0.2s ease;
 }
 
 .previous-button {
-  --color: var(--la-muted);
-  --border-color: var(--la-border);
-  --background: var(--la-surface);
+  --color: #64748b;
+  --border-color: transparent;
+  --background: transparent;
 }
 
+.previous-button:hover:not(.disabled) {
+  --color: #475569;
+  --border-color: transparent;
+  --background: rgba(100, 116, 139, 0.1);
+}
+
+.previous-button:hover:not(.disabled) ion-icon {
+  transform: translateX(-1px);
+}
+
+.previous-button.disabled,
 .previous-button:disabled {
-  --color: #9ca3af;
-  --border-color: #e5e7eb;
-  --background: #f9fafb;
+  --color: #cbd5e1;
+  --border-color: transparent;
+  --background: transparent;
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .next-button {
-  --background: var(--la-primary);
-  --background-hover: var(--la-primary-dark);
+  --background: #3b82f6;
   --color: #ffffff;
-  --box-shadow: 0 2px 6px rgba(92, 168, 163, 0.3);
+  --box-shadow: 0 1px 4px rgba(59, 130, 246, 0.2);
+  position: relative;
+  border: none;
 }
 
+.next-button:hover:not(.disabled) {
+  --background: #2563eb;
+  --box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.next-button:hover:not(.disabled) ion-icon {
+  transform: translateX(1px);
+}
+
+.next-button.disabled,
 .next-button:disabled {
-  --background: #9ca3af;
-  --color: white;
-  --box-shadow: none;
+  --background: #9ca3af !important;
+  --color: white !important;
+  --box-shadow: none !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.submit-button {
+  --background: #059669;
+  --color: #ffffff;
+  --border-radius: 8px;
+  --padding-start: 1.25rem;
+  --padding-end: 1.25rem;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+  --box-shadow: 0 1px 4px rgba(5, 150, 105, 0.2);
+  font-size: 0.9rem;
+  font-weight: 600;
+  min-height: 40px;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.submit-button:hover:not(.disabled) {
+  --background: #047857;
+  --box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+}
+
+.submit-button:hover:not(.disabled) ion-icon {
+  transform: scale(1.05);
+}
+
+.submit-button.disabled,
+.submit-button:disabled {
+  --background: #9ca3af !important;
+  --color: white !important;
+  --box-shadow: none !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.submit-button ion-icon {
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+}
+
+/* Validation Message */
+.validation-message {
+  background: linear-gradient(135deg, #fef3cd 0%, #fde68a 100%);
+  border: 1px solid #f59e0b;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0.75rem 0.5rem;
+  text-align: center;
+  animation: slideIn 0.3s ease-out;
+}
+
+.validation-message p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #92400e;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Personal Details Card */
@@ -1975,10 +2275,23 @@ ion-popover ion-content::-webkit-scrollbar-thumb:hover {
 
   .navigation-buttons {
     flex-direction: column;
+    gap: 1rem;
+    padding: 1rem 0.5rem;
   }
 
   .nav-button {
     width: 100%;
+    min-width: unset;
+    justify-content: center;
+  }
+
+  .validation-message {
+    margin: 0.75rem 0.5rem 0.25rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .validation-message p {
+    font-size: 0.85rem;
   }
 
   /* Mobile form grid - single column */
