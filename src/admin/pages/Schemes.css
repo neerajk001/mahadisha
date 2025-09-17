@@ -1014,6 +1014,7 @@ ion-searchbar::part(searchbar-input) {
   font-weight: 600;
   border-bottom: 2px solid #5CA8A3;
   padding-bottom: 0.5rem;
+  text-align: center;
 }
 
 .scheme-details-section p {
@@ -1025,24 +1026,41 @@ ion-searchbar::part(searchbar-input) {
 .details-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 .detail-item {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  border: 1px solid rgba(92, 168, 163, 0.1);
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.detail-item:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(92, 168, 163, 0.15);
 }
 
 .detail-item .detail-label {
   font-weight: 600;
   color: #5CA8A3;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
 }
 
 .detail-item .detail-value {
   color: #2d3748;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 1.1rem;
 }
 
 .scheme-details-section ul {
@@ -1075,6 +1093,108 @@ ion-searchbar::part(searchbar-input) {
   margin: 0;
   color: #4a5568;
   line-height: 1.5;
+}
+
+/* Edit Modal Styles */
+.edit-scheme-content {
+  --background: linear-gradient(135deg, #F9F6F2 0%, #FFF7F0 100%);
+}
+
+.edit-form-container {
+  padding: 1.5rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.edit-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+  border-radius: 16px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.05),
+    0 4px 16px rgba(0, 0, 0, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.edit-section h3 {
+  margin: 0 0 1rem 0;
+  color: #2d3748;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+  border-bottom: 2px solid #5CA8A3;
+  padding-bottom: 0.5rem;
+}
+
+.edit-section ion-item {
+  --background: rgba(255, 255, 255, 0.7);
+  --border-color: rgba(92, 168, 163, 0.2);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.edit-section ion-item:last-child {
+  margin-bottom: 0;
+}
+
+.edit-section ion-label {
+  color: #5CA8A3;
+  font-weight: 600;
+}
+
+.edit-section ion-input,
+.edit-section ion-textarea,
+.edit-section ion-select {
+  --color: #2d3748;
+  --placeholder-color: #a0aec0;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.edit-actions ion-button {
+  --border-radius: 12px;
+  font-weight: 600;
+  min-width: 140px;
+}
+
+.edit-actions ion-button[fill="outline"] {
+  --border-color: #5CA8A3;
+  --color: #5CA8A3;
+}
+
+.edit-actions ion-button[fill="solid"] {
+  --background: #5CA8A3;
+  --color: white;
+}
+
+/* Mobile responsiveness for edit modal */
+@media (max-width: 768px) {
+  .edit-form-container {
+    padding: 1rem;
+  }
+  
+  .edit-section {
+    padding: 1rem;
+  }
+  
+  .edit-actions {
+    flex-direction: column;
+  }
+  
+  .edit-actions ion-button {
+    width: 100%;
+    min-width: auto;
+  }
 }
 
 /* Ensure consistent card backgrounds */
