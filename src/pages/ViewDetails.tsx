@@ -40,6 +40,24 @@ const ViewDetails: React.FC = () => {
     fetchRequestDetails();
   }, [id]);
 
+  // Handle scroll indicators
+  useEffect(() => {
+    const tabsContainer = document.querySelector('.tabs-container');
+    if (tabsContainer) {
+      const handleScroll = () => {
+        tabsContainer.classList.add('scrolled');
+      };
+      
+      tabsContainer.addEventListener('scroll', handleScroll, { passive: true });
+      tabsContainer.addEventListener('touchstart', handleScroll, { passive: true });
+      
+      return () => {
+        tabsContainer.removeEventListener('scroll', handleScroll);
+        tabsContainer.removeEventListener('touchstart', handleScroll);
+      };
+    }
+  }, [requestDetails]);
+
   const fetchRequestDetails = async () => {
     try {
       setIsLoading(true);
