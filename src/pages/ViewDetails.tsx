@@ -521,6 +521,13 @@ const ViewDetails: React.FC = () => {
     );
   };
 
+  const handleAddressAction = (action: 'verify' | 'reject') => {
+    console.log(`Address ${action}ed`);
+    setToastMessage(`Address ${action}ed successfully`);
+    setShowToast(true);
+    // TODO: Implement actual API call
+  };
+
   const renderAddressInfo = () => {
     if (!requestDetails) return null;
 
@@ -572,6 +579,27 @@ const ViewDetails: React.FC = () => {
                 <span className="info-label">Village:</span>
                 <span className="info-value">{addressInfo.village}</span>
               </div>
+            </div>
+            
+            {/* Address Action Buttons */}
+            <div className="address-action-buttons">
+              <IonButton 
+                className="action-button verify-address-button"
+                onClick={() => handleAddressAction('verify')}
+                disabled={requestDetails.status === 'approved' || requestDetails.status === 'rejected'}
+              >
+                <IonIcon icon={checkmarkCircleOutline} slot="start" />
+                Verify Address
+              </IonButton>
+              
+              <IonButton 
+                className="action-button reject-address-button"
+                onClick={() => handleAddressAction('reject')}
+                disabled={requestDetails.status === 'approved' || requestDetails.status === 'rejected'}
+              >
+                <IonIcon icon={closeCircleOutline} slot="start" />
+                Reject Address
+              </IonButton>
             </div>
           </IonCardContent>
         </IonCard>
