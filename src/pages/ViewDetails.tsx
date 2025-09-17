@@ -528,6 +528,13 @@ const ViewDetails: React.FC = () => {
     // TODO: Implement actual API call
   };
 
+  const handleGuarantorAction = (guarantorId: string, action: 'verify' | 'reject') => {
+    console.log(`Guarantor ${guarantorId} ${action}ed`);
+    setToastMessage(`Guarantor ${action}ed successfully`);
+    setShowToast(true);
+    // TODO: Implement actual API call
+  };
+
   const renderAddressInfo = () => {
     if (!requestDetails) return null;
 
@@ -757,6 +764,32 @@ const ViewDetails: React.FC = () => {
                       <span className="guarantor-relationship">{guarantor.relationship}</span>
                       <span className="guarantor-mobile">{guarantor.mobile}</span>
                     </div>
+                  </div>
+                  
+                  {/* Guarantor Action Buttons */}
+                  <div className="guarantor-actions">
+                    <IonButton 
+                      fill="solid"
+                      size="small"
+                      color="success"
+                      className="verify-btn"
+                      onClick={() => handleGuarantorAction(guarantor.id, 'verify')}
+                      disabled={requestDetails.status === 'approved' || requestDetails.status === 'rejected'}
+                    >
+                      <IonIcon icon={checkmarkCircleOutline} slot="start" />
+                      Verify
+                    </IonButton>
+                    <IonButton 
+                      fill="solid"
+                      size="small"
+                      color="danger"
+                      className="reject-btn"
+                      onClick={() => handleGuarantorAction(guarantor.id, 'reject')}
+                      disabled={requestDetails.status === 'approved' || requestDetails.status === 'rejected'}
+                    >
+                      <IonIcon icon={closeCircleOutline} slot="start" />
+                      Reject
+                    </IonButton>
                   </div>
                 </div>
               ))}

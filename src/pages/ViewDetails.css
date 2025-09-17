@@ -220,11 +220,15 @@
   background: #ffffff !important;
   border-radius: 8px;
   border: 1px solid rgba(108, 117, 125, 0.3) !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .guarantor-info {
   display: flex;
   align-items: center;
+  flex: 1;
 }
 
 .guarantor-icon {
@@ -252,6 +256,41 @@
 .guarantor-mobile {
   font-size: 0.8rem;
   color: var(--color-text-secondary);
+}
+
+/* Guarantor Action Buttons */
+.guarantor-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.guarantor-actions .verify-btn {
+  --background: #28a745;
+  --background-hover: #218838;
+  --color: #ffffff;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  --padding-top: 0.5rem;
+  --padding-bottom: 0.5rem;
+  --border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  min-width: 70px;
+}
+
+.guarantor-actions .reject-btn {
+  --background: #dc3545;
+  --background-hover: #c82333;
+  --color: #ffffff;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  --padding-top: 0.5rem;
+  --padding-bottom: 0.5rem;
+  --border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  min-width: 70px;
 }
 
 /* Collaterals List */
@@ -635,6 +674,22 @@
   .collateral-item {
     padding: 0.75rem;
   }
+  
+  /* Mobile styles for guarantor actions */
+  .guarantor-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .guarantor-info {
+    width: 100%;
+  }
+  
+  .guarantor-actions {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 480px) {
@@ -908,5 +963,20 @@
   
   .document-actions {
     gap: 0.25rem;
+  }
+  
+  /* Mobile styles for guarantor actions on small screens */
+  .guarantor-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .guarantor-actions .verify-btn,
+  .guarantor-actions .reject-btn {
+    width: 100%;
+    min-width: auto;
+    font-size: 0.75rem;
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
   }
 }
