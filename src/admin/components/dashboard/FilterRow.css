@@ -123,10 +123,10 @@ ompact */
 @media (max-width: 1024px) {
   .filter-container-compact {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
   .filter-button-compact {
-    padding: 0.5rem 0.7rem;
+    padding: 0.5rem 0.6rem;
     font-size: 0.9rem;
   }
 }
@@ -137,11 +137,13 @@ ompact */
     margin-top: 0.75rem;
   }
   .filter-container-compact {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.5rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.3rem;
   }
   .filter-button-compact {
     width: 100%;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.85rem;
   }
 }
 
@@ -151,11 +153,12 @@ ompact */
     margin-top: 0.5rem;
   }
   .filter-container-compact {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.25rem;
   }
   .filter-button-compact {
-    padding: 0.45rem 0.65rem;
-    font-size: 0.85rem;
+    padding: 0.35rem 0.4rem;
+    font-size: 0.8rem;
   }
 }
 
