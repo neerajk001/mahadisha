@@ -7,6 +7,8 @@
   --padding-bottom: 2rem;
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
 }
 
 /* Split Pane Configuration */
@@ -20,6 +22,9 @@ ion-split-pane {
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Page Header */
@@ -54,9 +59,11 @@ ion-split-pane {
 /* Search and Filter Container */
 .search-filter-container {
   display: flex;
+  flex-direction: row;
   gap: 1rem;
   margin-bottom: 1.5rem;
   padding: 0 0.5rem;
+  align-items: center;
 }
 
 .admin-search {
@@ -132,6 +139,8 @@ ion-split-pane {
   max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+  flex: 1;
+  min-height: 0;
 }
 
 
@@ -528,34 +537,40 @@ ion-split-pane {
   }
   
   .search-filter-container {
-    flex-direction: column;
-    gap: 0.75rem;
+    flex-direction: row;
+    gap: 0.5rem;
     width: 100%;
   }
   
   .admin-search {
-    flex: 1;
-    width: 100%;
+    flex: 2;
+    width: auto;
   }
   
   .status-filter {
     flex: 1;
-    width: 100%;
-    min-width: auto;
-    max-width: none;
+    width: auto;
+    min-width: 120px;
+    max-width: 180px;
   }
 }
 
 @media (max-width: 768px) {
   .page-header {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     gap: 1rem;
     padding: 1rem 1.5rem;
   }
   
   .page-title {
     font-size: 1.5rem;
+    flex: 1;
+  }
+  
+  .page-actions {
+    flex-shrink: 0;
   }
   
   .list-header {
@@ -588,18 +603,58 @@ ion-split-pane {
     --padding-end: 0.75rem;
     --padding-top: 0.75rem;
     --padding-bottom: 0.75rem;
+    overflow-y: auto;
+    height: 100vh;
+  }
+  
+  .application-type-container {
+    min-height: 100%;
+    overflow-x: hidden;
+  }
+  
+  .list-container {
+    overflow-x: hidden;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    min-width: 100%;
   }
   
   .page-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     padding: 0.75rem 1rem;
+    gap: 0.75rem;
   }
   
   .page-title {
     font-size: 1.3rem;
+    flex: 1;
+  }
+  
+  .page-actions {
+    flex-shrink: 0;
   }
   
   .list-header {
     padding: 0.75rem 1rem;
+  }
+  
+  .header-row,
+  .item-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr 80px 80px;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    width: 100%;
+    max-width: 100%;
+    min-width: auto;
+  }
+  
+  .header-column {
+    font-size: 0.85rem;
+    padding: 0.25rem;
   }
   
   .application-type-item {
@@ -610,13 +665,112 @@ ion-split-pane {
   }
   
   .application-type-name {
-    font-size: 1rem;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    font-weight: 600;
+  }
+  
+  .application-type-description {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    min-height: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    color: #666;
+  }
+  
+  .status-badge {
+    /* Mobile: Show only colored dot */
+    font-size: 0;
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    min-height: 12px;
+    border-radius: 50%;
+    padding: 0;
+    display: inline-block;
+  }
+  
+  .item-column {
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    flex-shrink: 1;
+    font-size: 0.75rem;
+  }
+  
+  .item-column:first-child {
+    min-width: 0;
+    flex-shrink: 1;
+  }
+  
+  .item-column:nth-child(2) {
+    min-width: 0;
+    flex-shrink: 1;
+  }
+  
+  .item-column:nth-child(3) {
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .item-column:nth-child(4) {
+    justify-content: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
+  }
+  
+  .item-column.actions-column {
+    justify-content: center;
+    gap: 0.25rem;
+  }
+  
+  /* Make action buttons smaller for mobile */
+  .item-column.actions-column ion-button {
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+    --padding-top: 0.25rem;
+    --padding-bottom: 0.25rem;
+    font-size: 0.7rem;
+    min-width: 30px;
+    height: 28px;
+  }
+  
+  .item-column.actions-column ion-icon {
+    font-size: 0.9rem;
   }
   
   .edit-button,
   .delete-button {
     width: 36px;
     height: 36px;
+  }
+  
+  .search-filter-container {
+    flex-direction: row;
+    gap: 0.4rem;
+    width: 100%;
+  }
+  
+  .admin-search {
+    flex: 2;
+    width: auto;
+    font-size: 0.9rem;
+  }
+  
+  .status-filter {
+    flex: 1;
+    width: auto;
+    min-width: 100px;
+    max-width: 140px;
+    font-size: 0.9rem;
   }
 }
 
