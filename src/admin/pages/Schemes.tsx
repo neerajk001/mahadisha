@@ -43,6 +43,12 @@ const Schemes: React.FC = () => {
   const [editingScheme, setEditingScheme] = useState<Scheme | null>(null);
   const [editFormData, setEditFormData] = useState<Partial<Scheme>>({});
 
+  // Search states for filter dropdowns
+  const [typeSearchQuery, setTypeSearchQuery] = useState('');
+  const [statusSearchQuery, setStatusSearchQuery] = useState('');
+  const [prioritySearchQuery, setPrioritySearchQuery] = useState('');
+  const [tagsSearchQuery, setTagsSearchQuery] = useState('');
+
   const cardsPerPage = 6;
 
   // Get all schemes from mock data
@@ -338,6 +344,35 @@ const Schemes: React.FC = () => {
   const uniqueTypes = useMemo(() => {
     return Array.from(new Set(allSchemes.map(scheme => scheme.type)));
   }, [allSchemes]);
+
+  // Filtered arrays for searchable dropdowns
+  const filteredTypes = useMemo(() => {
+    if (!typeSearchQuery) return uniqueTypes;
+    return uniqueTypes.filter(type => 
+      type.toLowerCase().includes(typeSearchQuery.toLowerCase())
+    );
+  }, [uniqueTypes, typeSearchQuery]);
+
+  const filteredStatuses = useMemo(() => {
+    if (!statusSearchQuery) return uniqueStatuses;
+    return uniqueStatuses.filter(status => 
+      status.toLowerCase().includes(statusSearchQuery.toLowerCase())
+    );
+  }, [uniqueStatuses, statusSearchQuery]);
+
+  const filteredPriorities = useMemo(() => {
+    if (!prioritySearchQuery) return uniquePriorities;
+    return uniquePriorities.filter(priority => 
+      priority.toLowerCase().includes(prioritySearchQuery.toLowerCase())
+    );
+  }, [uniquePriorities, prioritySearchQuery]);
+
+  const filteredTags = useMemo(() => {
+    if (!tagsSearchQuery) return uniqueTags;
+    return uniqueTags.filter(tag => 
+      tag.toLowerCase().includes(tagsSearchQuery.toLowerCase())
+    );
+  }, [uniqueTags, tagsSearchQuery]);
 
   return (
     <IonPage>
@@ -650,23 +685,23 @@ const Schemes: React.FC = () => {
               <IonText color="primary">
                 <h3>Type</h3>
               </IonText>
-              <div className="filter-options">
-                {uniqueTypes.map(type => (
-                  <IonItem key={type}>
-                    <IonCheckbox
-                      checked={advancedFilters.type?.includes(type) || false}
-                      onIonChange={(e) => {
-                        const currentTypes = advancedFilters.type || [];
-                        const newTypes = e.detail.checked
-                          ? [...currentTypes, type]
-                          : currentTypes.filter(t => t !== type);
-                        handleAdvancedFilterChange('type', newTypes);
-                      }}
-                    />
-                    <IonLabel>{type}</IonLabel>
-                  </IonItem>
-                ))}
-              </div>
+              <IonItem>
+                <IonSelect
+                  multiple={true}
+                  value={advancedFilters.type || []}
+                  placeholder="Select types..."
+                  interface="popover"
+                  onIonChange={(e) => {
+                    handleAdvancedFilterChange('type', e.detail.value);
+                  }}
+                >
+                  {uniqueTypes.map((type) => (
+                    <IonSelectOption key={type} value={type}>
+                      {type}
+                    </IonSelectOption>
+                  ))}
+                </IonSelect>
+              </IonItem>
             </div>
 
             {/* Status Filter */}
@@ -674,23 +709,23 @@ const Schemes: React.FC = () => {
               <IonText color="primary">
                 <h3>Status</h3>
               </IonText>
-              <div className="filter-options">
-                {uniqueStatuses.map(status => (
-                  <IonItem key={status}>
-                    <IonCheckbox
-                      checked={advancedFilters.status?.includes(status) || false}
-                      onIonChange={(e) => {
-                        const currentStatuses = advancedFilters.status || [];
-                        const newStatuses = e.detail.checked
-                          ? [...currentStatuses, status]
-                          : currentStatuses.filter(s => s !== status);
-                        handleAdvancedFilterChange('status', newStatuses);
-                      }}
-                    />
-                    <IonLabel>{status.replace('_', ' ')}</IonLabel>
-                  </IonItem>
-                ))}
-              </div>
+              <IonItem>
+                <IonSelect
+                  multiple={true}
+                  value={advancedFilters.status || []}
+                  placeholder="Select statuses..."
+                  interface="popover"
+                  onIonChange={(e) => {
+                    handleAdvancedFilterChange('status', e.detail.value);
+                  }}
+                >
+                  {uniqueStatuses.map((status) => (
+                    <IonSelectOption key={status} value={status}>
+                      {status.replace('_', ' ')}
+                    </IonSelectOption>
+                  ))}
+                </IonSelect>
+              </IonItem>
             </div>
 
             {/* Priority Filter */}
@@ -698,23 +733,23 @@ const Schemes: React.FC = () => {
               <IonText color="primary">
                 <h3>Priority</h3>
               </IonText>
-              <div className="filter-options">
-                {uniquePriorities.map(priority => (
-                  <IonItem key={priority}>
-                    <IonCheckbox
-                      checked={advancedFilters.priority?.includes(priority) || false}
-                      onIonChange={(e) => {
-                        const currentPriorities = advancedFilters.priority || [];
-                        const newPriorities = e.detail.checked
-                          ? [...currentPriorities, priority]
-                          : currentPriorities.filter(p => p !== priority);
-                        handleAdvancedFilterChange('priority', newPriorities);
-                      }}
-                    />
-                    <IonLabel>{priority}</IonLabel>
-                  </IonItem>
-                ))}
-              </div>
+              <IonItem>
+                <IonSelect
+                  multiple={true}
+                  value={advancedFilters.priority || []}
+                  placeholder="Select priorities..."
+                  interface="popover"
+                  onIonChange={(e) => {
+                    handleAdvancedFilterChange('priority', e.detail.value);
+                  }}
+                >
+                  {uniquePriorities.map((priority) => (
+                    <IonSelectOption key={priority} value={priority}>
+                      {priority}
+                    </IonSelectOption>
+                  ))}
+                </IonSelect>
+              </IonItem>
             </div>
 
             {/* Loan Amount Range */}
@@ -779,23 +814,23 @@ const Schemes: React.FC = () => {
                 <IonText color="primary">
                   <h3>Tags</h3>
                 </IonText>
-                <div className="filter-options">
-                  {uniqueTags.map(tag => (
-                    <IonItem key={tag}>
-                      <IonCheckbox
-                        checked={advancedFilters.tags?.includes(tag) || false}
-                        onIonChange={(e) => {
-                          const currentTags = advancedFilters.tags || [];
-                          const newTags = e.detail.checked
-                            ? [...currentTags, tag]
-                            : currentTags.filter(t => t !== tag);
-                          handleAdvancedFilterChange('tags', newTags);
-                        }}
-                      />
-                      <IonLabel>{tag}</IonLabel>
-                    </IonItem>
-                  ))}
-                </div>
+                <IonItem>
+                  <IonSelect
+                    multiple={true}
+                    value={advancedFilters.tags || []}
+                    placeholder="Select tags..."
+                    interface="popover"
+                    onIonChange={(e) => {
+                      handleAdvancedFilterChange('tags', e.detail.value);
+                    }}
+                  >
+                    {uniqueTags.map((tag) => (
+                      <IonSelectOption key={tag} value={tag}>
+                        {tag}
+                      </IonSelectOption>
+                    ))}
+                  </IonSelect>
+                </IonItem>
               </div>
             )}
 
