@@ -188,18 +188,6 @@ const Sidebar: React.FC = () => {
 
   return (
     <>
-      {/* Floating Toggle Button - Only show when sidebar is closed */}
-      {!isSidebarOpen && (
-        <IonButton
-          fill="solid"
-          size="small"
-          className="sidebar-floating-toggle"
-          onClick={toggleSidebar}
-        >
-          <IonIcon icon={homeOutline} />
-        </IonButton>
-      )}
-
       {/* Mobile Backdrop */}
       {isSidebarOpen && window.innerWidth <= 768 && (
         <div 

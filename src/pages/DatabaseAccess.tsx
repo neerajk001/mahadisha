@@ -13,6 +13,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
+import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { mockDataService } from '../services/api';
 import type { DatabaseAccessData } from '../types';
 import './DatabaseAccess.css';
@@ -40,14 +41,10 @@ const DatabaseAccess: React.FC = () => {
     permissions: ''
   });
   
-  // State for managing new database access items
-  const [databaseAccessItems, setDatabaseAccessItems] = useState<DatabaseAccessData[]>([]);
-
   const itemsPerPage = 5;
 
-  // Get database access data from mock service and combine with new items
-  const mockAccess = mockDataService.getDatabaseAccessData();
-  const allAccess = [...mockAccess, ...databaseAccessItems];
+  // State for managing database access data - EXACTLY LIKE MANAGEPAGES
+  const [allAccess, setAllAccess] = useState<DatabaseAccessData[]>(() => mockDataService.getDatabaseAccessData());
   
   // Filter access based on search query
   const filteredAccess = useMemo(() => {
@@ -92,8 +89,8 @@ const DatabaseAccess: React.FC = () => {
       updatedAt: new Date().toISOString()
     };
 
-    // Add to state
-    setDatabaseAccessItems(prev => [...prev, newAccess]);
+    // Add the new access to the state - EXACTLY LIKE MANAGEPAGES
+    setAllAccess(prevAccess => [...prevAccess, newAccess]);
     
     setToastMessage(`Database access "${addForm.name}" added successfully`);
     setShowToast(true);
@@ -134,12 +131,12 @@ const DatabaseAccess: React.FC = () => {
       return;
     }
     
-    // Update the item in state
-    setDatabaseAccessItems(prev => 
-      prev.map(item => 
-        item.id === editingAccess.id 
-          ? { ...item, name: editForm.name.trim(), permissions: editForm.permissions, updatedAt: new Date().toISOString() }
-          : item
+    // Update the access in the state - EXACTLY LIKE MANAGEPAGES
+    setAllAccess(prevAccess => 
+      prevAccess.map(access => 
+        access.id === editingAccess.id 
+          ? { ...access, name: editForm.name.trim(), permissions: editForm.permissions, updatedAt: new Date().toISOString() }
+          : access
       )
     );
     
@@ -176,8 +173,8 @@ const DatabaseAccess: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedAccessId) {
-      // Remove from state
-      setDatabaseAccessItems(prev => prev.filter(item => item.id !== selectedAccessId));
+      // Actually remove the access from the state - EXACTLY LIKE MANAGEPAGES
+      setAllAccess(prevAccess => prevAccess.filter(access => access.id !== selectedAccessId));
       
       const accessToDelete = allAccess.find(access => access.id === selectedAccessId);
       setToastMessage(`Database access "${accessToDelete?.name || selectedAccessId}" deleted successfully`);
@@ -272,32 +269,14 @@ const DatabaseAccess: React.FC = () => {
                             <span className="permissions-text">{access.permissions}</span>
                           </td>
                           <td className="actions-cell">
-                            <div className="action-buttons">
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="view-button"
-                                onClick={() => handleView(access.id)}
-                              >
-                                <IonIcon icon={eyeOutline} />
-                              </IonButton>
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="edit-button"
-                                onClick={() => handleEdit(access.id)}
-                              >
-                                <IonIcon icon={createOutline} />
-                              </IonButton>
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="delete-button"
-                                onClick={() => handleDelete(access.id)}
-                              >
-                                <IonIcon icon={trashOutline} />
-                              </IonButton>
-                            </div>
+                            <ActionDropdown
+                              itemId={access.id}
+                              onView={() => handleView(access.id)}
+                              onEdit={() => handleEdit(access.id)}
+                              onDelete={() => handleDelete(access.id)}
+                              showView={true}
+                              size="small"
+                            />
                           </td>
                         </tr>
                       ))}

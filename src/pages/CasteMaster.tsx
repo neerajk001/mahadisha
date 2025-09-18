@@ -2,17 +2,21 @@ import React, { useState, useMemo } from 'react';
 import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
-  IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar
+  IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
+  IonModal, IonButtons, IonInput, IonTextarea, IonSelect, IonSelectOption,
+  IonBadge, IonChip, IonFab, IonFabButton
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
-  chevronBackOutline, chevronForwardOutline
+  chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
+  eyeOutline, peopleOutline, documentTextOutline, timeOutline
 } from 'ionicons/icons';
-import Sidebar from '../components/sidebar/Sidebar';
-import DashboardHeader from '../components/header/DashboardHeader';
+import Sidebar from '../admin/components/sidebar/Sidebar';
+import DashboardHeader from '../admin/components/header/DashboardHeader';
 import { mockDataService } from '../services/api';
 import type { CasteData } from '../types';
 import './CasteMaster.css';
+import './shared/MasterMobile.css';
 
 const CasteMaster: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -21,11 +25,20 @@ const CasteMaster: React.FC = () => {
   const [selectedCasteId, setSelectedCasteId] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  
+  // Enhanced state for new functionality
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [editingCaste, setEditingCaste] = useState<CasteData | null>(null);
+  const [viewingCaste, setViewingCaste] = useState<CasteData | null>(null);
+  const [editFormData, setEditFormData] = useState({ name: '' });
+  const [addFormData, setAddFormData] = useState({ name: '' });
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 6;
 
-  // Get caste data from mock service
-  const allCastes = mockDataService.getCasteData();
+  // State for managing castes data - EXACTLY LIKE MANAGEPAGES AND BRANCHMASTER
+  const [allCastes, setAllCastes] = useState<CasteData[]>(() => mockDataService.getCasteData());
   
   // Filter castes based on search query
   const filteredCastes = useMemo(() => {
@@ -41,13 +54,63 @@ const CasteMaster: React.FC = () => {
   const currentCastes = filteredCastes.slice(startIndex, endIndex);
 
   const handleAddCaste = () => {
-    setToastMessage('Add new caste functionality will be implemented');
-    setShowToast(true);
+    setShowAddModal(true);
   };
 
-  const handleEdit = (casteId: string) => {
-    setToastMessage(`Edit caste ${casteId} functionality will be implemented`);
-    setShowToast(true);
+  const handleEdit = (caste: CasteData) => {
+    setEditingCaste(caste);
+    setEditFormData({ name: caste.name });
+    setShowEditModal(true);
+  };
+
+  const handleView = (caste: CasteData) => {
+    setViewingCaste(caste);
+    setShowViewModal(true);
+  };
+
+  const handleUpdateCaste = () => {
+    if (editingCaste) {
+      // Update the caste in the state - EXACTLY LIKE MANAGEPAGES
+      setAllCastes(prevCastes => 
+        prevCastes.map(caste => 
+          caste.id === editingCaste.id 
+            ? { ...caste, name: editFormData.name, updatedAt: new Date().toISOString() }
+            : caste
+        )
+      );
+      
+      setToastMessage(`Caste "${editFormData.name}" updated successfully`);
+      setShowToast(true);
+      setShowEditModal(false);
+      setEditingCaste(null);
+      setEditFormData({ name: '' });
+    }
+  };
+
+  const handleSaveNewCaste = () => {
+    if (addFormData.name) {
+      // Generate a new ID for the caste - EXACTLY LIKE MANAGEPAGES
+      const newId = `caste-${Date.now()}`;
+      
+      // Create the new caste object - EXACTLY LIKE MANAGEPAGES
+      const newCaste: CasteData = {
+        id: newId,
+        name: addFormData.name,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      // Add the new caste to the state - EXACTLY LIKE MANAGEPAGES
+      setAllCastes(prevCastes => [...prevCastes, newCaste]);
+      
+      setToastMessage(`Caste "${addFormData.name}" created successfully`);
+      setShowToast(true);
+      setShowAddModal(false);
+      setAddFormData({ name: '' });
+    } else {
+      setToastMessage('Please enter a caste name');
+      setShowToast(true);
+    }
   };
 
   const handleDelete = (casteId: string) => {
@@ -57,7 +120,13 @@ const CasteMaster: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedCasteId) {
-      setToastMessage(`Delete caste ${selectedCasteId} functionality will be implemented`);
+      // Get the caste name before deletion for the toast message - EXACTLY LIKE MANAGEPAGES
+      const casteToDelete = allCastes.find(caste => caste.id === selectedCasteId);
+      
+      // Actually remove the caste from the state - EXACTLY LIKE MANAGEPAGES
+      setAllCastes(prevCastes => prevCastes.filter(caste => caste.id !== selectedCasteId));
+      
+      setToastMessage(`Caste "${casteToDelete?.name || selectedCasteId}" deleted successfully`);
       setShowToast(true);
       setSelectedCasteId(null);
     }
@@ -100,7 +169,7 @@ const CasteMaster: React.FC = () => {
               <div className="castes-actions">
                 <IonSearchbar
                   value={searchQuery}
-                  onIonChange={(e) => setSearchQuery(e.detail.value!)}
+                  onIonInput={(e) => setSearchQuery(e.detail.value!)}
                   placeholder="Search castes by name..."
                   className="castes-search"
                 />
@@ -117,7 +186,8 @@ const CasteMaster: React.FC = () => {
               {/* Castes Table */}
               <IonCard className="castes-table-card">
                 <IonCardContent className="table-container">
-                  <table className="castes-table">
+                  <div className="mobile-table-wrapper">
+                    <table className="castes-table">
                     <thead>
                       <tr>
                         <th>
@@ -145,8 +215,16 @@ const CasteMaster: React.FC = () => {
                               <IonButton 
                                 fill="clear" 
                                 size="small" 
+                                className="view-button"
+                                onClick={() => handleView(caste)}
+                              >
+                                <IonIcon icon={eyeOutline} />
+                              </IonButton>
+                              <IonButton 
+                                fill="clear" 
+                                size="small" 
                                 className="edit-button"
-                                onClick={() => handleEdit(caste.id)}
+                                onClick={() => handleEdit(caste)}
                               >
                                 <IonIcon icon={createOutline} />
                               </IonButton>
@@ -163,12 +241,14 @@ const CasteMaster: React.FC = () => {
                         </tr>
                       ))}
                     </tbody>
-                  </table>
+                    </table>
+                  </div>
                 </IonCardContent>
               </IonCard>
 
-              {/* Pagination */}
-              <div className="pagination-container">
+              {/* Pagination - Show if there are castes */}
+              {filteredCastes.length > 0 && (
+                <div className="pagination-container">
                 <div className="pagination-info">
                   <p>
                     Showing {startIndex + 1} to {Math.min(endIndex, filteredCastes.length)} of {filteredCastes.length} castes
@@ -197,7 +277,8 @@ const CasteMaster: React.FC = () => {
                     <IonIcon icon={chevronForwardOutline} />
                   </IonButton>
                 </div>
-              </div>
+                </div>
+              )}
             </div>
           </IonContent>
         </div>
@@ -214,6 +295,156 @@ const CasteMaster: React.FC = () => {
           { text: 'Delete', role: 'destructive', handler: confirmDelete }
         ]}
       />
+
+      {/* Add Caste Modal */}
+      <IonModal isOpen={showAddModal} onDidDismiss={() => setShowAddModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Add New Caste</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowAddModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Create New Caste</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <IonInput
+                label="Caste Name"
+                labelPlacement="stacked"
+                placeholder="Enter caste name"
+                value={addFormData.name}
+                onIonInput={(e) => setAddFormData(prev => ({ ...prev, name: e.detail.value! }))}
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonButton 
+                expand="block" 
+                style={{ 
+                  '--background': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  '--color': 'white',
+                  '--border-radius': '12px',
+                  marginTop: '1rem'
+                }}
+                onClick={handleSaveNewCaste}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                Create Caste
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* Edit Caste Modal */}
+      <IonModal isOpen={showEditModal} onDidDismiss={() => setShowEditModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Edit Caste</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowEditModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Edit Caste: {editingCaste?.name}</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <IonInput
+                label="Caste Name"
+                labelPlacement="stacked"
+                value={editFormData.name}
+                onIonInput={(e) => setEditFormData(prev => ({ ...prev, name: e.detail.value! }))}
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonButton 
+                expand="block" 
+                style={{ 
+                  '--background': 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
+                  '--color': 'white',
+                  '--border-radius': '12px',
+                  marginTop: '1rem'
+                }}
+                onClick={handleUpdateCaste}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                Update Caste
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* View Caste Modal */}
+      <IonModal isOpen={showViewModal} onDidDismiss={() => setShowViewModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>View Caste Details</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowViewModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Caste Details: {viewingCaste?.name}</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div className="view-field">
+                <h3 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>Caste Name</h3>
+                <div style={{ 
+                  padding: '1rem', 
+                  background: 'rgba(255, 255, 255, 0.9)', 
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0'
+                }}>
+                  {viewingCaste?.name}
+                </div>
+              </div>
+              
+              <div className="view-field">
+                <h3 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>Caste ID</h3>
+                <div style={{ 
+                  padding: '1rem', 
+                  background: 'rgba(255, 255, 255, 0.9)', 
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0',
+                  fontFamily: 'monospace'
+                }}>
+                  {viewingCaste?.id}
+                </div>
+              </div>
+              
+              <IonButton 
+                expand="block" 
+                fill="outline"
+                style={{ 
+                  '--border-color': '#667eea',
+                  '--color': '#667eea',
+                  '--border-radius': '12px',
+                  marginTop: '1rem'
+                }}
+                onClick={() => setShowViewModal(false)}
+              >
+                <IonIcon icon={closeOutline} slot="start" />
+                Close
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* Floating Action Button */}
+      <IonFab vertical="bottom" horizontal="end" slot="fixed">
+        <IonFabButton className="fab-add-caste" onClick={handleAddCaste}>
+          <IonIcon icon={addOutline} />
+        </IonFabButton>
+      </IonFab>
 
       {/* Toast for notifications */}
       <IonToast

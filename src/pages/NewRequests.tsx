@@ -9,7 +9,15 @@ import {
   IonSearchbar,
   IonButton,
   IonAlert,
-  IonToast
+  IonToast,
+  IonModal,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonList,
+  IonItem,
+  IonLabel
 } from '@ionic/react';
 import { 
   eyeOutline, 
@@ -17,7 +25,8 @@ import {
   documentOutline,
   cardOutline,
   listOutline,
-  refreshOutline
+  refreshOutline,
+  closeOutline
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -47,6 +56,8 @@ const NewRequests: React.FC = () => {
   const [showRepaymentModal, setShowRepaymentModal] = useState(false);
   const [selectedRequestForRepayment, setSelectedRequestForRepayment] = useState<LoanRequest | null>(null);
   const [emiSchedule, setEmiSchedule] = useState<EMISchedule[]>([]);
+  const [showStatusLogsModal, setShowStatusLogsModal] = useState(false);
+  const [selectedRequestForStatusLogs, setSelectedRequestForStatusLogs] = useState<LoanRequest | null>(null);
 
   const searchParams: RequestSearchParams = useMemo(() => ({
     query: searchQuery,
@@ -144,7 +155,19 @@ const NewRequests: React.FC = () => {
       setShowToast(true);
     }
   };
-  
+
+  const handleViewStatusLogs = (requestId: string) => {
+    console.log('handleViewStatusLogs called with requestId:', requestId);
+    const request = requests?.find(req => req.id === requestId);
+    console.log('Found request:', request);
+    if (request) {
+      setSelectedRequestForStatusLogs(request);
+      setShowStatusLogsModal(true);
+      console.log('Modal should be opening now');
+    } else {
+      console.log('Request not found!');
+    }
+  };
 
   const statusOptions = [
     { value: 'all', label: 'All Status' },
@@ -281,6 +304,7 @@ const NewRequests: React.FC = () => {
                         onSendEmail={handleSendEmail}
                         onDownloadPDF={handleDownloadPDF}
                         onRepayment={handleRepayment}
+                        onViewStatusLogs={handleViewStatusLogs}
                       />
                     ) : (
                       <RequestList
@@ -338,6 +362,74 @@ const NewRequests: React.FC = () => {
         request={selectedRequestForRepayment}
         emiSchedule={emiSchedule}
       />
+
+      {/* Status Logs Modal */}
+      <IonModal isOpen={showStatusLogsModal} onDidDismiss={() => setShowStatusLogsModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Loan Application Status Logs</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowStatusLogsModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="status-logs-modal">
+          {selectedRequestForStatusLogs && (
+            <div className="status-logs-content">
+              {/* Generate status logs based on request status */}
+              {selectedRequestForStatusLogs.status === 'pending' ? (
+                // Show only pending status
+                <IonList>
+                  <IonItem>
+                    <IonLabel>
+                      <h3><strong>Status:</strong> pending</h3>
+                      <p><strong>User:</strong> N/A</p>
+                      <p><strong>Time:</strong> {new Date().toLocaleString()}</p>
+                      <br />
+                      <p>No Document</p>
+                    </IonLabel>
+                  </IonItem>
+                </IonList>
+              ) : (
+                // Show multiple status entries for other statuses
+                <IonList>
+                  <IonItem>
+                    <IonLabel>
+                      <h3><strong>Status:</strong> pending</h3>
+                      <p><strong>User:</strong> N/A</p>
+                      <p><strong>Time:</strong> 9/8/2025, 5:26:52 PM</p>
+                      <br />
+                      <p>No Document</p>
+                    </IonLabel>
+                  </IonItem>
+                  <IonItem>
+                    <IonLabel>
+                      <h3><strong>Status:</strong> Application Received</h3>
+                      <p><strong>User:</strong> Admin</p>
+                      <p><strong>Time:</strong> 9/18/2025, 2:00:14 PM</p>
+                      <br />
+                      <p>No Document</p>
+                    </IonLabel>
+                  </IonItem>
+                </IonList>
+              )}
+              
+              <div className="modal-footer">
+                <IonButton 
+                  expand="block" 
+                  fill="solid" 
+                  className="download-pdf-btn"
+                  onClick={() => handleDownloadPDF(selectedRequestForStatusLogs.id)}
+                >
+                  Download PDF
+                </IonButton>
+              </div>
+            </div>
+          )}
+        </IonContent>
+      </IonModal>
     </IonPage>
   );
 };

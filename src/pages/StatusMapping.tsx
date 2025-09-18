@@ -21,6 +21,7 @@ import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { mockDataService } from '../services/api';
 import type { StatusMappingData } from '../types';
 import './StatusMapping.css';
+import './shared/MasterMobile.css';
 
 const StatusMapping: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');

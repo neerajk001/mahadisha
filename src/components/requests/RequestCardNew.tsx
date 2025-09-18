@@ -22,7 +22,8 @@ import {
   calendarOutline,
   personOutline,
   cashOutline,
-  idCardOutline
+  idCardOutline,
+  chevronForwardOutline
 } from 'ionicons/icons';
 import type { LoanRequest } from '../../types';
 import './RequestCard.css';
@@ -34,6 +35,7 @@ interface RequestCardProps {
   onSendEmail: (requestId: string) => void;
   onDownloadPDF: (requestId: string) => void;
   onRepayment: (requestId: string) => void;
+  onViewStatusLogs: (requestId: string) => void;
 }
 
 const RequestCardNew: React.FC<RequestCardProps> = ({
@@ -42,7 +44,8 @@ const RequestCardNew: React.FC<RequestCardProps> = ({
   onViewDetails,
   onSendEmail,
   onDownloadPDF,
-  onRepayment
+  onRepayment,
+  onViewStatusLogs
 }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -168,6 +171,27 @@ const RequestCardNew: React.FC<RequestCardProps> = ({
                     <div className="info-item">
                       <span className="info-label">SUBSIDY:</span>
                       <span className="info-value">Up to {formatCurrency(request.subsidy)}</span>
+                    </div>
+                    
+                    <div className="info-item">
+                      <span className="info-label">STATUS:</span>
+                      <div className="info-value status-row status-clickable" 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          onViewStatusLogs(request.id);
+                        }}>
+                        <IonChip 
+                          color={getStatusColor(request.status)} 
+                          className="status-chip-inline"
+                        >
+                          {formatStatus(request.status)}
+                        </IonChip>
+                        <IonIcon 
+                          icon={chevronForwardOutline} 
+                          className="status-forward-icon"
+                        />
+                      </div>
                     </div>
                     
                     <div className="info-item">

@@ -797,3 +797,115 @@
 .request-card:nth-child(4) { animation-delay: 0.4s; }
 .request-card:nth-child(5) { animation-delay: 0.5s; }
 .request-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* Status Logs Styles */
+.status-clickable {
+  cursor: pointer !important;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.status-clickable:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.status-clickable:active {
+  transform: scale(0.98);
+}
+
+.status-chip-inline {
+  --border-radius: 6px;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --padding-top: 4px;
+  --padding-bottom: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Status Row with Forward Icon */
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-forward-icon {
+  font-size: 18px;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 4px;
+  border-radius: 50%;
+}
+
+.status-forward-icon:hover {
+  color: #333;
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: translateX(2px);
+}
+
+.status-forward-icon:active {
+  transform: translateX(1px) scale(0.95);
+}
+
+/* Status Logs Modal Styles */
+.status-logs-modal {
+  --background: #f8f9fa;
+}
+
+.status-logs-content {
+  padding: 1rem;
+}
+
+.status-logs-content ion-list {
+  background: transparent;
+  padding: 0;
+}
+
+.status-logs-content ion-item {
+  --background: #ffffff;
+  --border-radius: 8px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.status-logs-content ion-label h3 {
+  color: #2d3748;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.status-logs-content ion-label p {
+  color: #4a5568;
+  font-size: 14px;
+  margin: 4px 0;
+}
+
+.modal-footer {
+  padding: 16px;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 16px;
+}
+
+.download-pdf-btn {
+  --background: #3182ce;
+  --background-hover: #2c5aa0;
+  --color: #ffffff;
+  --border-radius: 8px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

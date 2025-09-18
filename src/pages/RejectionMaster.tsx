@@ -21,6 +21,7 @@ import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { mockDataService } from '../services/api';
 import type { RejectionMasterData } from '../types';
 import './RejectionMaster.css';
+import './shared/MasterMobile.css';
 
 const RejectionMaster: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');

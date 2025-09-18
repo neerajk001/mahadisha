@@ -60,6 +60,7 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({
     setIsOpen(false);
   };
 
+
   return (
     <div className="action-dropdown-container">
       <IonButton
@@ -83,6 +84,8 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({
         onDidDismiss={() => setIsOpen(false)}
         showBackdrop={true}
         dismissOnSelect={true}
+        side="bottom"
+        alignment="end"
         className="action-dropdown-popover"
       >
         <IonList className="action-dropdown-list">
@@ -96,6 +99,7 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({
               <IonLabel>View</IonLabel>
             </IonItem>
           )}
+          
           
           {onEdit && (
             <IonItem

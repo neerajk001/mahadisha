@@ -17,7 +17,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
-import { mockDataService, apiService } from '../services/api';
+import { mockDataService } from '../services/api';
 import type { BranchData } from '../types';
 import './BranchMaster.css';
 import './shared/MasterMobile.css';
@@ -45,7 +45,7 @@ const BranchMaster: React.FC = () => {
   const itemsPerPage = 6;
 
   // State for managing branches data - EXACTLY LIKE MANAGEPAGES
-  const [allBranches, setAllBranches] = useState<BranchData[]>([]);
+  const [allBranches, setAllBranches] = useState<BranchData[]>(() => mockDataService.getBranchData());
   
   // Filter and sort branches
   const filteredAndSortedBranches = useMemo(() => {
@@ -79,39 +79,31 @@ const BranchMaster: React.FC = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentBranches = filteredAndSortedBranches.slice(startIndex, endIndex);
 
-  const fetchBranches = async () => {
-    try {
-      const data = await apiService.getBranchData();
-      setAllBranches(data);
-    } catch (error) {
-      console.error('Error fetching branches:', error);
-      setToastMessage('Failed to fetch branches');
-      setShowToast(true);
-    }
-  };
-
-  useState(() => {
-    fetchBranches();
-  });
-
   const handleAddBranch = () => {
     setShowAddModal(true);
   };
 
-  const handleSaveNewBranch = async () => {
+  const handleSaveNewBranch = () => {
     if (addFormData.officeName && addFormData.officeType) {
-      try {
-        const newBranch = await apiService.addBranch(addFormData);
-        setAllBranches(prev => [...prev, newBranch]);
-        setToastMessage(`Branch "${newBranch.officeName}" created successfully`);
-        setShowToast(true);
-        setShowAddModal(false);
-        setAddFormData({ officeName: '', officeType: '' });
-      } catch (error) {
-        console.error('Error adding branch:', error);
-        setToastMessage('Failed to add branch');
-        setShowToast(true);
-      }
+      // Generate a new ID for the branch
+      const newId = `branch-${Date.now()}`;
+      
+      // Create the new branch object
+      const newBranch: BranchData = {
+        id: newId,
+        officeName: addFormData.officeName,
+        officeType: addFormData.officeType,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      // Add the new branch to the state - EXACTLY LIKE MANAGEPAGES
+      setAllBranches(prevBranches => [...prevBranches, newBranch]);
+      
+      setToastMessage(`Branch "${addFormData.officeName}" created successfully`);
+      setShowToast(true);
+      setShowAddModal(false);
+      setAddFormData({ officeName: '', officeType: '' });
     } else {
       setToastMessage('Please fill in all required fields');
       setShowToast(true);
@@ -133,20 +125,22 @@ const BranchMaster: React.FC = () => {
     setShowViewModal(true);
   };
 
-  const handleUpdateBranch = async () => {
+  const handleUpdateBranch = () => {
     if (editingBranch) {
-      try {
-        const updatedBranch = await apiService.updateBranch({ ...editingBranch, ...editFormData });
-        setAllBranches(prev => prev.map(b => b.id === updatedBranch.id ? updatedBranch : b));
-        setToastMessage(`Branch "${updatedBranch.officeName}" updated successfully`);
-        setShowToast(true);
-        setShowEditModal(false);
-        setEditingBranch(null);
-      } catch (error) {
-        console.error('Error updating branch:', error);
-        setToastMessage('Failed to update branch');
-        setShowToast(true);
-      }
+      // Update the branch in the state - EXACTLY LIKE MANAGEPAGES
+      setAllBranches(prevBranches => 
+        prevBranches.map(branch => 
+          branch.id === editingBranch.id 
+            ? { ...branch, officeName: editFormData.officeName, officeType: editFormData.officeType, updatedAt: new Date().toISOString() }
+            : branch
+        )
+      );
+      
+      setToastMessage(`Branch "${editFormData.officeName}" updated successfully`);
+      setShowToast(true);
+      setShowEditModal(false);
+      setEditingBranch(null);
+      setEditFormData({ officeName: '', officeType: '', id: '' });
     }
   };
 
@@ -161,21 +155,19 @@ const BranchMaster: React.FC = () => {
     setShowDeleteAlert(true);
   };
 
-  const confirmDelete = async () => {
+  const confirmDelete = () => {
     if (selectedBranchId) {
-      try {
-        await apiService.deleteBranch(selectedBranchId);
-        setAllBranches(prev => prev.filter(b => b.id !== selectedBranchId));
-        setToastMessage(`Branch deleted successfully`);
-        setShowToast(true);
-      } catch (error) {
-        console.error('Error deleting branch:', error);
-        setToastMessage('Failed to delete branch');
-        setShowToast(true);
-      }
+      // Get the branch name before deletion for the toast message
+      const branchToDelete = allBranches.find(branch => branch.id === selectedBranchId);
+      
+      // Actually remove the branch from the state - EXACTLY LIKE MANAGEPAGES
+      setAllBranches(prevBranches => prevBranches.filter(branch => branch.id !== selectedBranchId));
+      
+      setToastMessage(`Branch "${branchToDelete?.officeName || selectedBranchId}" deleted successfully`);
+      setShowToast(true);
+      setSelectedBranchId(null);
     }
     setShowDeleteAlert(false);
-    setSelectedBranchId(null);
   };
 
   const cancelDelete = () => {

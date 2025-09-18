@@ -12,7 +12,7 @@ import {
   shuffleOutline, barChartOutline, fileTrayOutline, accessibilityOutline,
   chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
   eyeOutline, settingsOutline, copyOutline, linkOutline, timeOutline,
-  peopleOutline, documentTextOutline, globeOutline
+  documentTextOutline, globeOutline
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -32,15 +32,19 @@ const ManagePages: React.FC = () => {
   // Enhanced state for new functionality
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [editingPage, setEditingPage] = useState<PageData | null>(null);
+  const [viewingPage, setViewingPage] = useState<PageData | null>(null);
+  const [editFormData, setEditFormData] = useState({ name: '', url: '', icon: '' });
+  const [addFormData, setAddFormData] = useState({ name: '', url: '', icon: '' });
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [sortBy, setSortBy] = useState<'name' | 'url' | 'icon'>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const itemsPerPage = 6;
 
-  // Get page data from mock service
-  const allPages = mockDataService.getPageData();
+  // State for managing pages data
+  const [allPages, setAllPages] = useState<PageData[]>(() => mockDataService.getPageData());
   
   // Filter and sort pages
   const filteredAndSortedPages = useMemo(() => {
@@ -92,15 +96,68 @@ const ManagePages: React.FC = () => {
     setShowAddModal(true);
   };
 
+  const handleSaveNewPage = () => {
+    if (addFormData.name && addFormData.url) {
+      // Generate a new ID for the page
+      const newId = `page-${Date.now()}`;
+      
+      // Create the new page object
+      const newPage: PageData = {
+        id: newId,
+        name: addFormData.name,
+        url: addFormData.url,
+        icon: addFormData.icon || 'documentTextOutline',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      // Add the new page to the state
+      setAllPages(prevPages => [...prevPages, newPage]);
+      
+      setToastMessage(`Page "${addFormData.name}" created successfully`);
+      setShowToast(true);
+      setShowAddModal(false);
+      setAddFormData({ name: '', url: '', icon: '' });
+    } else {
+      setToastMessage('Please fill in all required fields');
+      setShowToast(true);
+    }
+  };
+
   const handleEdit = (page: PageData) => {
     setEditingPage(page);
+    setEditFormData({
+      name: page.name,
+      url: page.url,
+      icon: page.icon
+    });
     setShowEditModal(true);
   };
 
   const handleView = (page: PageData) => {
-    setToastMessage(`Viewing page: ${page.name}`);
-    setShowToast(true);
+    setViewingPage(page);
+    setShowViewModal(true);
   };
+
+  const handleUpdatePage = () => {
+    if (editingPage) {
+      // Update the page in the state
+      setAllPages(prevPages => 
+        prevPages.map(page => 
+          page.id === editingPage.id 
+            ? { ...page, name: editFormData.name, url: editFormData.url, icon: editFormData.icon, updatedAt: new Date().toISOString() }
+            : page
+        )
+      );
+      
+      setToastMessage(`Page "${editFormData.name}" updated successfully`);
+      setShowToast(true);
+      setShowEditModal(false);
+      setEditingPage(null);
+      setEditFormData({ name: '', url: '', icon: '' });
+    }
+  };
+
 
   const handleCopyUrl = (url: string) => {
     navigator.clipboard.writeText(url);
@@ -115,7 +172,13 @@ const ManagePages: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedPageId) {
-      setToastMessage(`Delete page ${selectedPageId} functionality will be implemented`);
+      // Get the page name before deletion for the toast message
+      const pageToDelete = allPages.find(page => page.id === selectedPageId);
+      
+      // Actually remove the page from the state
+      setAllPages(prevPages => prevPages.filter(page => page.id !== selectedPageId));
+      
+      setToastMessage(`Page "${pageToDelete?.name || selectedPageId}" deleted successfully`);
       setShowToast(true);
       setSelectedPageId(null);
     }
@@ -312,37 +375,39 @@ const ManagePages: React.FC = () => {
                 </IonCard>
               )}
 
-              {/* Pagination */}
-              <div className="pagination-container">
-                <div className="pagination-info">
-                  <p>
-                    Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedPages.length)} of {filteredAndSortedPages.length} pages
-                  </p>
+              {/* Pagination - Show if there are pages */}
+              {filteredAndSortedPages.length > 0 && (
+                <div className="pagination-container">
+                  <div className="pagination-info">
+                    <p>
+                      Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedPages.length)} of {filteredAndSortedPages.length} pages
+                    </p>
+                  </div>
+                  <div className="pagination-controls">
+                    <IonButton 
+                      fill="clear" 
+                      disabled={currentPage === 1}
+                      onClick={handlePreviousPage}
+                      className="pagination-button"
+                    >
+                      <IonIcon icon={chevronBackOutline} />
+                      <span className="pagination-text">Previous</span>
+                    </IonButton>
+                    <span className="page-info">
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <IonButton 
+                      fill="clear" 
+                      disabled={currentPage === totalPages || totalPages === 0}
+                      onClick={handleNextPage}
+                      className="pagination-button"
+                    >
+                      <span className="pagination-text">Next</span>
+                      <IonIcon icon={chevronForwardOutline} />
+                    </IonButton>
+                  </div>
                 </div>
-                <div className="pagination-controls">
-                  <IonButton 
-                    fill="clear" 
-                    disabled={currentPage === 1}
-                    onClick={handlePreviousPage}
-                    className="pagination-button"
-                  >
-                    <IonIcon icon={chevronBackOutline} />
-                    Previous
-                  </IonButton>
-                  <span className="page-info">
-                    Page {currentPage} of {totalPages}
-                  </span>
-                  <IonButton 
-                    fill="clear" 
-                    disabled={currentPage === totalPages}
-                    onClick={handleNextPage}
-                    className="pagination-button"
-                  >
-                    Next
-                    <IonIcon icon={chevronForwardOutline} />
-                  </IonButton>
-                </div>
-              </div>
+              )}
             </div>
           </IonContent>
         </div>
@@ -397,7 +462,7 @@ const ManagePages: React.FC = () => {
                 <IonSelectOption value="homeOutline">Home</IonSelectOption>
                 <IonSelectOption value="documentTextOutline">Document</IonSelectOption>
                 <IonSelectOption value="settingsOutline">Settings</IonSelectOption>
-                <IonSelectOption value="peopleOutline">People</IonSelectOption>
+                <IonSelectOption value="personOutline">People</IonSelectOption>
               </IonSelect>
               <IonButton 
                 expand="block" 
@@ -440,15 +505,32 @@ const ManagePages: React.FC = () => {
               <IonInput
                 label="Page Name"
                 labelPlacement="stacked"
-                value={editingPage?.name}
+                value={editFormData.name}
+                onIonInput={(e) => setEditFormData({...editFormData, name: e.detail.value!})}
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
               <IonInput
                 label="Page URL"
                 labelPlacement="stacked"
-                value={editingPage?.url}
+                value={editFormData.url}
+                onIonInput={(e) => setEditFormData({...editFormData, url: e.detail.value!})}
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
+              <IonSelect
+                label="Icon"
+                labelPlacement="stacked"
+                value={editFormData.icon}
+                onSelectionChange={(e) => setEditFormData({...editFormData, icon: e.detail.value})}
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              >
+                <IonSelectOption value="homeOutline">Home</IonSelectOption>
+                <IonSelectOption value="keyOutline">Key</IonSelectOption>
+                <IonSelectOption value="gitBranchOutline">Git Branch</IonSelectOption>
+                <IonSelectOption value="shieldOutline">Shield</IonSelectOption>
+                <IonSelectOption value="barChartOutline">Bar Chart</IonSelectOption>
+                <IonSelectOption value="fileTrayOutline">File Tray</IonSelectOption>
+                <IonSelectOption value="accessibilityOutline">Accessibility</IonSelectOption>
+              </IonSelect>
               <IonButton 
                 expand="block" 
                 style={{ 
@@ -457,11 +539,239 @@ const ManagePages: React.FC = () => {
                   '--border-radius': '12px',
                   marginTop: '1rem'
                 }}
-                onClick={() => {
-                  setToastMessage('Page updated successfully');
-                  setShowToast(true);
-                  setShowEditModal(false);
+                onClick={handleUpdatePage}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                Update Page
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* View Page Modal */}
+      <IonModal isOpen={showViewModal} onDidDismiss={() => setShowViewModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>View Page Details</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowViewModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Page Details: {viewingPage?.name}</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div className="view-field">
+                <h3 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>Page Name</h3>
+                <div style={{ 
+                  padding: '1rem', 
+                  background: 'rgba(255, 255, 255, 0.9)', 
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0'
+                }}>
+                  {viewingPage?.name}
+                </div>
+              </div>
+              
+              <div className="view-field">
+                <h3 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>Page URL</h3>
+                <div style={{ 
+                  padding: '1rem', 
+                  background: 'rgba(255, 255, 255, 0.9)', 
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0',
+                  fontFamily: 'monospace'
+                }}>
+                  {viewingPage?.url}
+                </div>
+              </div>
+              
+              <div className="view-field">
+                <h3 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>Icon</h3>
+                <div style={{ 
+                  padding: '1rem', 
+                  background: 'rgba(255, 255, 255, 0.9)', 
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <IonIcon icon={getIconComponent(viewingPage?.icon || '')} style={{ fontSize: '1.5rem' }} />
+                  <span>{viewingPage?.icon}</span>
+                </div>
+              </div>
+              
+              <div className="view-field">
+                <h3 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>Status</h3>
+                <div style={{ 
+                  padding: '1rem', 
+                  background: 'rgba(255, 255, 255, 0.9)', 
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0'
+                }}>
+                  <span style={{ 
+                    color: '#4caf50', 
+                    fontWeight: 'bold',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}>
+                    <div style={{ 
+                      width: '8px', 
+                      height: '8px', 
+                      borderRadius: '50%', 
+                      background: '#4caf50' 
+                    }}></div>
+                    Active
+                  </span>
+                </div>
+              </div>
+              
+              <IonButton 
+                expand="block" 
+                fill="outline"
+                style={{ 
+                  '--border-color': '#667eea',
+                  '--color': '#667eea',
+                  '--border-radius': '12px',
+                  marginTop: '1rem'
                 }}
+                onClick={() => setShowViewModal(false)}
+              >
+                <IonIcon icon={closeOutline} slot="start" />
+                Close
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* Add Page Modal */}
+      <IonModal isOpen={showAddModal} onDidDismiss={() => setShowAddModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Add New Page</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowAddModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '1rem' }}>
+            <IonInput
+              label="Page Name"
+              labelPlacement="stacked"
+              fill="outline"
+              placeholder="Enter page name"
+              value={addFormData.name}
+              onIonInput={(e) => setAddFormData(prev => ({ ...prev, name: e.detail.value! }))}
+            />
+            <IonInput
+              label="Page URL"
+              labelPlacement="stacked"
+              fill="outline"
+              placeholder="Enter page URL"
+              value={addFormData.url}
+              onIonInput={(e) => setAddFormData(prev => ({ ...prev, url: e.detail.value! }))}
+            />
+            <IonSelect
+              label="Icon"
+              labelPlacement="stacked"
+              fill="outline"
+              placeholder="Select an icon"
+              value={addFormData.icon}
+              onIonChange={(e) => setAddFormData(prev => ({ ...prev, icon: e.detail.value }))}
+            >
+              <IonSelectOption value="homeOutline">Home</IonSelectOption>
+              <IonSelectOption value="documentTextOutline">Document</IonSelectOption>
+              <IonSelectOption value="settingsOutline">Settings</IonSelectOption>
+              <IonSelectOption value="keyOutline">Key</IonSelectOption>
+              <IonSelectOption value="shieldOutline">Shield</IonSelectOption>
+              <IonSelectOption value="globeOutline">Globe</IonSelectOption>
+            </IonSelect>
+            <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem' }}>
+              <IonButton 
+                expand="block" 
+                fill="clear" 
+                onClick={() => setShowAddModal(false)}
+              >
+                Cancel
+              </IonButton>
+              <IonButton 
+                expand="block" 
+                onClick={handleSaveNewPage}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                Save Page
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* Edit Page Modal */}
+      <IonModal isOpen={showEditModal} onDidDismiss={() => setShowEditModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Edit Page</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowEditModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '1rem' }}>
+            <IonInput
+              label="Page Name"
+              labelPlacement="stacked"
+              fill="outline"
+              placeholder="Enter page name"
+              value={editFormData.name}
+              onIonInput={(e) => setEditFormData(prev => ({ ...prev, name: e.detail.value! }))}
+            />
+            <IonInput
+              label="Page URL"
+              labelPlacement="stacked"
+              fill="outline"
+              placeholder="Enter page URL"
+              value={editFormData.url}
+              onIonInput={(e) => setEditFormData(prev => ({ ...prev, url: e.detail.value! }))}
+            />
+            <IonSelect
+              label="Icon"
+              labelPlacement="stacked"
+              fill="outline"
+              placeholder="Select an icon"
+              value={editFormData.icon}
+              onIonChange={(e) => setEditFormData(prev => ({ ...prev, icon: e.detail.value }))}
+            >
+              <IonSelectOption value="homeOutline">Home</IonSelectOption>
+              <IonSelectOption value="documentTextOutline">Document</IonSelectOption>
+              <IonSelectOption value="settingsOutline">Settings</IonSelectOption>
+              <IonSelectOption value="keyOutline">Key</IonSelectOption>
+              <IonSelectOption value="shieldOutline">Shield</IonSelectOption>
+              <IonSelectOption value="globeOutline">Globe</IonSelectOption>
+            </IonSelect>
+            <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem' }}>
+              <IonButton 
+                expand="block" 
+                fill="clear" 
+                onClick={() => setShowEditModal(false)}
+              >
+                Cancel
+              </IonButton>
+              <IonButton 
+                expand="block" 
+                onClick={handleUpdatePage}
               >
                 <IonIcon icon={checkmarkOutline} slot="start" />
                 Update Page
@@ -473,7 +783,7 @@ const ManagePages: React.FC = () => {
 
       {/* Floating Action Button */}
       <IonFab vertical="bottom" horizontal="end" slot="fixed">
-        <IonFabButton className="fab-add-page">
+        <IonFabButton className="fab-add-page" onClick={handleAddPage}>
           <IonIcon icon={addOutline} />
         </IonFabButton>
       </IonFab>

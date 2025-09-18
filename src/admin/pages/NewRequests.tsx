@@ -26,6 +26,7 @@ import DashboardHeader from '../components/header/DashboardHeader';
 // Import RequestCard component
 import RequestCardNew from '../../components/requests/RequestCardNew';
 import RepaymentModal from '../../components/requests/RepaymentModal';
+import StatusLogsModal from '../../components/modals/StatusLogsModal';
 import { useLoanRequests } from '../hooks/useLoanRequests';
 import { RequestSearchParams, RequestFilters, LoanRequest, EMISchedule } from '../../types';
 import { generateMockEmiSchedule } from '../../utils/mockEmiGenerator';
@@ -47,6 +48,11 @@ const NewRequests: React.FC = () => {
   const [showRepaymentModal, setShowRepaymentModal] = useState(false);
   const [selectedRequestForRepayment, setSelectedRequestForRepayment] = useState<LoanRequest | null>(null);
   const [emiSchedule, setEmiSchedule] = useState<EMISchedule[]>([]);
+  
+  // Status logs modal state
+  const [showStatusLogsModal, setShowStatusLogsModal] = useState(false);
+  const [selectedRequestForLogs, setSelectedRequestForLogs] = useState<string | null>(null);
+  const [statusLogs, setStatusLogs] = useState<Array<{status: string; user: string; time: string; document?: string}>>([]);
 
   // District popover state for searchable dropdown
   const [districtPopoverOpen, setDistrictPopoverOpen] = useState(false);
@@ -146,6 +152,51 @@ const NewRequests: React.FC = () => {
       // setEmiSchedule(schedule);
     } catch (error) {
       setToastMessage('Failed to load repayment schedule');
+      setShowToast(true);
+    }
+  };
+  
+  const handleViewStatusLogs = (requestId: string) => {
+    try {
+      const request = requests?.find(req => req.id === requestId);
+      if (!request) {
+        setToastMessage('Request not found');
+        setShowToast(true);
+        return;
+      }
+      
+      setSelectedRequestForLogs(requestId);
+      
+      // Mock status logs data - replace with API call in production
+      const mockStatusLogs = [
+        {
+          status: 'pending',
+          user: 'N/A',
+          time: '9/8/2025, 5:26:52 PM',
+          document: 'No Document',
+          fields: {
+            'Application ID': 'APP-2025-001',
+            'Submitted By': 'John Doe',
+            'Contact': '+91 98765 43210'
+          }
+        },
+        {
+          status: 'Application Received',
+          user: 'Admin',
+          time: '9/18/2025, 2:00:14 PM',
+          document: 'No Document',
+          fields: {
+            'Received By': 'District Office',
+            'Reference Number': 'REF-2025-001',
+            'Priority': 'Normal'
+          }
+        }
+      ];
+      
+      setStatusLogs(mockStatusLogs);
+      setShowStatusLogsModal(true);
+    } catch (error) {
+      setToastMessage('Failed to load status logs');
       setShowToast(true);
     }
   };
@@ -286,6 +337,7 @@ const NewRequests: React.FC = () => {
                       onSendEmail={handleSendEmail}
                       onDownloadPDF={handleDownloadPDF}
                       onRepayment={handleRepayment}
+                      onViewStatusLogs={handleViewStatusLogs}
                     />
                   </>
                 )}
@@ -331,6 +383,18 @@ const NewRequests: React.FC = () => {
         }}
         request={selectedRequestForRepayment}
         emiSchedule={emiSchedule}
+      />
+      
+      {/* Status Logs Modal */}
+      <StatusLogsModal
+        isOpen={showStatusLogsModal}
+        onClose={() => {
+          setShowStatusLogsModal(false);
+          setSelectedRequestForLogs(null);
+        }}
+        requestId={selectedRequestForLogs}
+        statusLogs={statusLogs}
+        onDownloadPDF={handleDownloadPDF}
       />
     </IonPage>
   );
