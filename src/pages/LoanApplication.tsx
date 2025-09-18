@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton } from '@ionic/react';
 import { 
   IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonText, IonInput, 
   IonSelect, IonSelectOption, IonButton, IonItem, IonLabel, IonIcon, IonModal, IonCheckbox, IonChip, IonToast, IonLoading 
 } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
-import { chevronBackOutline, chevronForwardOutline, checkmarkCircle } from 'ionicons/icons';
+import { chevronBackOutline, chevronForwardOutline, checkmarkCircle, searchOutline, chevronDownOutline } from 'ionicons/icons';
 import Header from '../components/header/Header';
 import './LoanApplication.css';
 
@@ -16,6 +16,18 @@ const LoanApplication: React.FC = () => {
   const [applicationType, setApplicationType] = useState('');
   const [loanTenure, setLoanTenure] = useState('3');
   const [loanAmountError, setLoanAmountError] = useState('');
+  
+  // Application Type Search state
+  const [appTypeSearchTerm, setAppTypeSearchTerm] = useState('');
+  const [showAppTypeDropdown, setShowAppTypeDropdown] = useState(false);
+  const [filteredAppTypes, setFilteredAppTypes] = useState<string[]>([]);
+  const [selectedDropdownIndex, setSelectedDropdownIndex] = useState(-1);
+  
+  // Undercaste Search state
+  const [undercasteSearchTerm, setUndercasteSearchTerm] = useState('');
+  const [showUndercasteDropdown, setShowUndercasteDropdown] = useState(false);
+  const [filteredUndercaste, setFilteredUndercaste] = useState<string[]>([]);
+  const [selectedUndercasteIndex, setSelectedUndercasteIndex] = useState(-1);
   
   // KYC Details state
   const [aadharDigits, setAadharDigits] = useState(['', '', '', '', '', '', '', '', '', '', '', '']);
@@ -195,6 +207,94 @@ const LoanApplication: React.FC = () => {
     'Automobile Repairing Service Center (2/3/4 Wheeler)'
   ];
 
+  // Initialize filtered app types
+  useEffect(() => {
+    setFilteredAppTypes(applicationTypes);
+    setFilteredUndercaste(undercasteOptions);
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.searchable-select-container')) {
+        setShowAppTypeDropdown(false);
+        setSelectedDropdownIndex(-1);
+        setShowUndercasteDropdown(false);
+        setSelectedUndercasteIndex(-1);
+      }
+    };
+
+    if (showAppTypeDropdown || showUndercasteDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showAppTypeDropdown, showUndercasteDropdown]);
+
+  // Handle application type dropdown toggle
+  const handleAppTypeDropdownToggle = () => {
+    const newState = !showAppTypeDropdown;
+    setShowAppTypeDropdown(newState);
+    setSelectedDropdownIndex(-1);
+    setAppTypeSearchTerm(''); // Clear search when opening
+    setFilteredAppTypes(applicationTypes); // Show all options initially
+  };
+
+  // Handle application type search within dropdown
+  const handleAppTypeSearch = (searchValue: string) => {
+    setAppTypeSearchTerm(searchValue);
+    setSelectedDropdownIndex(-1);
+    
+    if (!searchValue.trim()) {
+      setFilteredAppTypes(applicationTypes);
+    } else {
+      const filtered = applicationTypes.filter(type => 
+        type.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      setFilteredAppTypes(filtered);
+    }
+  };
+
+  const handleAppTypeSelect = (selectedType: string) => {
+    setApplicationType(selectedType);
+    setAppTypeSearchTerm('');
+    setShowAppTypeDropdown(false);
+    setSelectedDropdownIndex(-1);
+  };
+
+  const handleAppTypeKeyDown = (e: any) => {
+    if (!showAppTypeDropdown) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setSelectedDropdownIndex(prev => 
+          prev < filteredAppTypes.length - 1 ? prev + 1 : 0
+        );
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setSelectedDropdownIndex(prev => 
+          prev > 0 ? prev - 1 : filteredAppTypes.length - 1
+        );
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (selectedDropdownIndex >= 0 && filteredAppTypes[selectedDropdownIndex]) {
+          handleAppTypeSelect(filteredAppTypes[selectedDropdownIndex]);
+        }
+        break;
+      case 'Escape':
+        setShowAppTypeDropdown(false);
+        setSelectedDropdownIndex(-1);
+        break;
+    }
+  };
+
+
   // Basic Details dropdown options
   const rationCardTypes = ['Orange', 'Blue', 'Green', 'Yellow', 'White'];
   const subcasteOptions = ['Chalvadi, Channayya', 'Koli', 'Bhandari', 'Kunbi', 'Maratha', 'Other'];
@@ -234,8 +334,137 @@ const LoanApplication: React.FC = () => {
     }
   };
 
+  // Step validation functions
+  const validateStep1 = (): boolean => {
+    if (!loanAmount || loanAmount === '0') return false;
+    if (!applicationType) return false;
+    if (!loanTenure) return false;
+    if (loanAmountError) return false;
+    return true;
+  };
+
+  const validateStep2 = (): boolean => {
+    // Check if Aadhaar is filled and verified
+    const aadhaarFilled = aadharDigits.every(digit => digit !== '');
+    if (!aadhaarFilled || !aadhaarVerified) return false;
+    
+    // Check KYC details
+    if (!kycData.pan || !kycData.bankName || !kycData.accountNumber || 
+        !kycData.confirmAccountNumber || !kycData.ifscCode || !kycData.accountHolderName) return false;
+    
+    // Check if account numbers match
+    if (kycData.accountNumber !== kycData.confirmAccountNumber) return false;
+    
+    return true;
+  };
+
+  const validateStep3 = (): boolean => {
+    if (!basicDetails.firstName || !basicDetails.lastName || !basicDetails.gender || 
+        !basicDetails.age || !basicDetails.fatherHusbandName || !basicDetails.motherFullName ||
+        !basicDetails.basicEducation || !basicDetails.mobile || !basicDetails.dob ||
+        !basicDetails.email) return false;
+    return true;
+  };
+
+  const validateStep4 = (): boolean => {
+    const { currentAddress, permanentAddress } = addressDetails;
+    
+    // Validate current address
+    if (!currentAddress.address || !currentAddress.city || !currentAddress.state ||
+        !currentAddress.pincode || !currentAddress.district || !currentAddress.taluka) return false;
+    
+    // If not same as current, validate permanent address
+    if (!addressDetails.sameAsCurrent) {
+      if (!permanentAddress.address || !permanentAddress.city || !permanentAddress.state ||
+          !permanentAddress.pincode || !permanentAddress.district || !permanentAddress.taluka) return false;
+    }
+    
+    return true;
+  };
+
+  const validateStep5 = (): boolean => {
+    // At least one family member with required fields
+    return familyMembers.some(member => 
+      member.personName && member.relation && member.age && member.occupation
+    );
+  };
+
+  const validateStep6 = (): boolean => {
+    if (!collateralDetails.collateralType) return false;
+    
+    // Validate specific collateral details based on type
+    switch (collateralDetails.collateralType) {
+      case 'Gold':
+        return !!(collateralDetails.goldDetails.weight && collateralDetails.goldDetails.purity);
+      case 'Land':
+        return !!(collateralDetails.landDetails.area && collateralDetails.landDetails.location);
+      case 'Car':
+        return !!(collateralDetails.carDetails.make && collateralDetails.carDetails.model && 
+                 collateralDetails.carDetails.year && collateralDetails.carDetails.registrationNumber);
+      case 'Other':
+        return !!(collateralDetails.otherDetails.description && collateralDetails.otherDetails.value);
+      default:
+        return false;
+    }
+  };
+
+  const validateStep7 = (): boolean => {
+    // Check if guarantor Aadhaar is filled and verified
+    const guarantorAadhaarFilled = guarantorDetails.aadharDigits.every(digit => digit !== '');
+    if (!guarantorAadhaarFilled || !guarantorAadhaarVerified) return false;
+    
+    // Check guarantor basic details
+    if (!guarantorDetails.firstName || !guarantorDetails.lastName || !guarantorDetails.relationship ||
+        !guarantorDetails.mobile || !guarantorDetails.address || !guarantorDetails.guaranteeAmount) return false;
+    
+    return true;
+  };
+
+  const validateStep8 = (): boolean => {
+    // At least one witness with required fields
+    return witnesses.some(witness => 
+      witness.name && witness.relation && witness.contact
+    );
+  };
+
+  const validateStep9 = (): boolean => {
+    // At least one document uploaded
+    return documents.some(doc => doc.type && doc.file);
+  };
+
+  const validateStep10 = (): boolean => {
+    if (!vendorDetails.vendorType || !vendorDetails.vendorName || !vendorDetails.vendorContact ||
+        !vendorDetails.vendorAddress || !vendorDetails.vendorPincode || !vendorDetails.amountToBePaid) return false;
+    return true;
+  };
+
+  // Get validation function for current step
+  const getCurrentStepValidation = (): boolean => {
+    switch (currentStep) {
+      case 1: return validateStep1();
+      case 2: return validateStep2();
+      case 3: return validateStep3();
+      case 4: return validateStep4();
+      case 5: return validateStep5();
+      case 6: return validateStep6();
+      case 7: return validateStep7();
+      case 8: return validateStep8();
+      case 9: return validateStep9();
+      case 10: return validateStep10();
+      default: return true;
+    }
+  };
+
   const handleNext = () => {
     if (currentStep < 10) {
+      const isCurrentStepValid = getCurrentStepValidation();
+      if (!isCurrentStepValid) {
+        setToast({
+          open: true,
+          message: 'Please fill in all required fields before proceeding to the next step.'
+        });
+        return;
+      }
       setCurrentStep(currentStep + 1);
     }
   };
@@ -243,6 +472,66 @@ const LoanApplication: React.FC = () => {
   const handlePrevious = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+    }
+  };
+
+  // Handle undercaste dropdown toggle
+  const handleUndercasteDropdownToggle = () => {
+    const newState = !showUndercasteDropdown;
+    setShowUndercasteDropdown(newState);
+    setSelectedUndercasteIndex(-1);
+    setUndercasteSearchTerm(''); // Clear search when opening
+    setFilteredUndercaste(undercasteOptions); // Show all options initially
+  };
+
+  // Handle undercaste search within dropdown
+  const handleUndercasteSearch = (searchValue: string) => {
+    setUndercasteSearchTerm(searchValue);
+    setSelectedUndercasteIndex(-1);
+    
+    if (!searchValue.trim()) {
+      setFilteredUndercaste(undercasteOptions);
+    } else {
+      const filtered = undercasteOptions.filter(caste => 
+        caste.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      setFilteredUndercaste(filtered);
+    }
+  };
+
+  const handleUndercasteSelect = (selectedCaste: string) => {
+    handleBasicDetailsChange('undercaste', selectedCaste);
+    setUndercasteSearchTerm('');
+    setShowUndercasteDropdown(false);
+    setSelectedUndercasteIndex(-1);
+  };
+
+  const handleUndercasteKeyDown = (e: any) => {
+    if (!showUndercasteDropdown) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setSelectedUndercasteIndex(prev => 
+          prev < filteredUndercaste.length - 1 ? prev + 1 : 0
+        );
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setSelectedUndercasteIndex(prev => 
+          prev > 0 ? prev - 1 : filteredUndercaste.length - 1
+        );
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (selectedUndercasteIndex >= 0 && filteredUndercaste[selectedUndercasteIndex]) {
+          handleUndercasteSelect(filteredUndercaste[selectedUndercasteIndex]);
+        }
+        break;
+      case 'Escape':
+        setShowUndercasteDropdown(false);
+        setSelectedUndercasteIndex(-1);
+        break;
     }
   };
 
@@ -953,22 +1242,59 @@ const LoanApplication: React.FC = () => {
                       </div>
 
                       <div className="form-column">
-                        <IonItem className="form-item">
-                          <IonLabel position="stacked">Application Type</IonLabel>
-                          <IonSelect
-                            value={applicationType}
-                            onIonChange={(e) => setApplicationType(e.detail.value)}
-                            placeholder="Select application type"
-                            className="application-type-select"
-                            interface="popover"
-                          >
-                            {applicationTypes.map((type) => (
-                              <IonSelectOption key={type} value={type}>
-                                {type}
-                              </IonSelectOption>
-                            ))}
-                          </IonSelect>
-                        </IonItem>
+                        <div className="form-item">
+                          <label className="form-label">Application Type</label>
+                          <div className="searchable-select-container">
+                            <button 
+                              className="dropdown-trigger" 
+                              onClick={handleAppTypeDropdownToggle}
+                              type="button"
+                            >
+                              <span className={`dropdown-value ${!applicationType ? 'placeholder' : ''}`}>
+                                {applicationType || 'Select application type'}
+                              </span>
+                              <IonIcon 
+                                icon={chevronDownOutline} 
+                                className={`dropdown-arrow ${showAppTypeDropdown ? 'open' : ''}`} 
+                              />
+                            </button>
+                            
+                            {showAppTypeDropdown && (
+                              <div className="search-dropdown">
+                                <div className="search-dropdown-header">
+                                  <div className="search-input-container">
+                                    <IonInput
+                                      value={appTypeSearchTerm}
+                                      onIonInput={(e) => handleAppTypeSearch(e.detail.value!)}
+                                      onKeyDown={handleAppTypeKeyDown}
+                                      placeholder="Search application types..."
+                                      className="dropdown-search-input"
+                                      clearInput
+                                    />
+                                  </div>
+                                </div>
+                                <div className="search-dropdown-list">
+                                  {filteredAppTypes.length > 0 ? (
+                                    filteredAppTypes.map((type, index) => (
+                                      <div
+                                        key={type}
+                                        className={`search-dropdown-item ${index === selectedDropdownIndex ? 'selected' : ''}`}
+                                        onClick={() => handleAppTypeSelect(type)}
+                                        onMouseEnter={() => setSelectedDropdownIndex(index)}
+                                      >
+                                        {type}
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <div className="search-dropdown-item no-results">
+                                      No results found
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
 
@@ -1356,21 +1682,59 @@ const LoanApplication: React.FC = () => {
                         </IonItem>
                       </div>
                       <div className="form-column">
-                        <IonItem className="form-item">
-                          <IonLabel position="stacked">Undercaste</IonLabel>
-                          <IonSelect
-                            value={basicDetails.undercaste}
-                            onIonChange={(e) => handleBasicDetailsChange('undercaste', e.detail.value)}
-                            placeholder="Select undercaste"
-                            className="basic-select"
-                          >
-                            {undercasteOptions.map((caste) => (
-                              <IonSelectOption key={caste} value={caste}>
-                                {caste}
-                              </IonSelectOption>
-                            ))}
-                          </IonSelect>
-                        </IonItem>
+                        <div className="form-item">
+                          <label className="form-label">Undercaste</label>
+                          <div className="searchable-select-container">
+                            <button 
+                              className="dropdown-trigger" 
+                              onClick={handleUndercasteDropdownToggle}
+                              type="button"
+                            >
+                              <span className={`dropdown-value ${!basicDetails.undercaste ? 'placeholder' : ''}`}>
+                                {basicDetails.undercaste || 'Select undercaste'}
+                              </span>
+                              <IonIcon 
+                                icon={chevronDownOutline} 
+                                className={`dropdown-arrow ${showUndercasteDropdown ? 'open' : ''}`} 
+                              />
+                            </button>
+                            
+                            {showUndercasteDropdown && (
+                              <div className="search-dropdown">
+                                <div className="search-dropdown-header">
+                                  <div className="search-input-container">
+                                    <IonInput
+                                      value={undercasteSearchTerm}
+                                      onIonInput={(e) => handleUndercasteSearch(e.detail.value!)}
+                                      onKeyDown={handleUndercasteKeyDown}
+                                      placeholder="Search undercaste options..."
+                                      className="dropdown-search-input"
+                                      clearInput
+                                    />
+                                  </div>
+                                </div>
+                                <div className="search-dropdown-list">
+                                  {filteredUndercaste.length > 0 ? (
+                                    filteredUndercaste.map((caste, index) => (
+                                      <div
+                                        key={caste}
+                                        className={`search-dropdown-item ${index === selectedUndercasteIndex ? 'selected' : ''}`}
+                                        onClick={() => handleUndercasteSelect(caste)}
+                                        onMouseEnter={() => setSelectedUndercasteIndex(index)}
+                                      >
+                                        {caste}
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <div className="search-dropdown-item no-results">
+                                      No results found
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
 
@@ -2550,7 +2914,7 @@ const LoanApplication: React.FC = () => {
             <div className="navigation-buttons">
               <IonButton
                 fill="outline"
-                className="nav-button previous-button"
+                className={`nav-button previous-button ${currentStep === 1 ? 'disabled' : ''}`}
                 onClick={handlePrevious}
                 disabled={currentStep === 1}
               >
@@ -2560,23 +2924,33 @@ const LoanApplication: React.FC = () => {
               
               {currentStep === 10 ? (
                 <IonButton
-                  className="nav-button submit-button"
+                  className={`nav-button submit-button ${!getCurrentStepValidation() ? 'disabled' : ''}`}
                   onClick={handleSubmitApplication}
+                  disabled={!getCurrentStepValidation()}
                 >
-                  <IonIcon icon="checkmark" slot="start" />
+                  <IonIcon icon={checkmarkCircle} slot="start" />
                   Submit Application
                 </IonButton>
               ) : (
                 <IonButton
-                  className="nav-button next-button"
+                  className={`nav-button next-button ${!getCurrentStepValidation() ? 'disabled' : ''}`}
                   onClick={handleNext}
-                  disabled={currentStep === 10}
+                  disabled={!getCurrentStepValidation()}
                 >
                   Next
                   <IonIcon icon={chevronForwardOutline} slot="end" />
                 </IonButton>
               )}
             </div>
+            
+            {/* Validation Status Indicator */}
+            {!getCurrentStepValidation() && (
+              <div className="validation-message">
+                <IonText color="warning">
+                  <p>⚠️ Please complete all required fields to proceed</p>
+                </IonText>
+              </div>
+            )}
           </div>
         </div>
 

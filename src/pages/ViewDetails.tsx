@@ -40,6 +40,24 @@ const ViewDetails: React.FC = () => {
     fetchRequestDetails();
   }, [id]);
 
+  // Handle scroll indicators
+  useEffect(() => {
+    const tabsContainer = document.querySelector('.tabs-container');
+    if (tabsContainer) {
+      const handleScroll = () => {
+        tabsContainer.classList.add('scrolled');
+      };
+      
+      tabsContainer.addEventListener('scroll', handleScroll, { passive: true });
+      tabsContainer.addEventListener('touchstart', handleScroll, { passive: true });
+      
+      return () => {
+        tabsContainer.removeEventListener('scroll', handleScroll);
+        tabsContainer.removeEventListener('touchstart', handleScroll);
+      };
+    }
+  }, [requestDetails]);
+
   const fetchRequestDetails = async () => {
     try {
       setIsLoading(true);
@@ -503,6 +521,20 @@ const ViewDetails: React.FC = () => {
     );
   };
 
+  const handleAddressAction = (action: 'verify' | 'reject') => {
+    console.log(`Address ${action}ed`);
+    setToastMessage(`Address ${action}ed successfully`);
+    setShowToast(true);
+    // TODO: Implement actual API call
+  };
+
+  const handleGuarantorAction = (guarantorId: string, action: 'verify' | 'reject') => {
+    console.log(`Guarantor ${guarantorId} ${action}ed`);
+    setToastMessage(`Guarantor ${action}ed successfully`);
+    setShowToast(true);
+    // TODO: Implement actual API call
+  };
+
   const renderAddressInfo = () => {
     if (!requestDetails) return null;
 
@@ -554,6 +586,27 @@ const ViewDetails: React.FC = () => {
                 <span className="info-label">Village:</span>
                 <span className="info-value">{addressInfo.village}</span>
               </div>
+            </div>
+            
+            {/* Address Action Buttons */}
+            <div className="address-action-buttons">
+              <IonButton 
+                className="action-button verify-address-button"
+                onClick={() => handleAddressAction('verify')}
+                disabled={requestDetails.status === 'approved' || requestDetails.status === 'rejected'}
+              >
+                <IonIcon icon={checkmarkCircleOutline} slot="start" />
+                Verify Address
+              </IonButton>
+              
+              <IonButton 
+                className="action-button reject-address-button"
+                onClick={() => handleAddressAction('reject')}
+                disabled={requestDetails.status === 'approved' || requestDetails.status === 'rejected'}
+              >
+                <IonIcon icon={closeCircleOutline} slot="start" />
+                Reject Address
+              </IonButton>
             </div>
           </IonCardContent>
         </IonCard>
@@ -711,6 +764,32 @@ const ViewDetails: React.FC = () => {
                       <span className="guarantor-relationship">{guarantor.relationship}</span>
                       <span className="guarantor-mobile">{guarantor.mobile}</span>
                     </div>
+                  </div>
+                  
+                  {/* Guarantor Action Buttons */}
+                  <div className="guarantor-actions">
+                    <IonButton 
+                      fill="solid"
+                      size="small"
+                      color="success"
+                      className="verify-btn"
+                      onClick={() => handleGuarantorAction(guarantor.id, 'verify')}
+                      disabled={requestDetails.status === 'approved' || requestDetails.status === 'rejected'}
+                    >
+                      <IonIcon icon={checkmarkCircleOutline} slot="start" />
+                      Verify
+                    </IonButton>
+                    <IonButton 
+                      fill="solid"
+                      size="small"
+                      color="danger"
+                      className="reject-btn"
+                      onClick={() => handleGuarantorAction(guarantor.id, 'reject')}
+                      disabled={requestDetails.status === 'approved' || requestDetails.status === 'rejected'}
+                    >
+                      <IonIcon icon={closeCircleOutline} slot="start" />
+                      Reject
+                    </IonButton>
                   </div>
                 </div>
               ))}

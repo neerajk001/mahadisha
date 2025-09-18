@@ -31,6 +31,7 @@ import PincodeMapping from './pages/PincodeMapping';
 import Members from './pages/Members';
 import Config from './pages/Config';
 import Reports from './pages/Reports';
+import AdminReport from './admin/pages/Report';
 import Others from './pages/Others';
 import PublicSchemesPage from './pages/PublicSchemesPage';
 import About from './pages/About';
@@ -157,7 +158,7 @@ const App: React.FC = () => (
           <Config />
         </Route>
         <Route exact path="/reports">
-          <Reports />
+          <AdminReport />
         </Route>
         <Route exact path="/others">
           <Others />

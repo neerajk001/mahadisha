@@ -39,6 +39,9 @@ const Schemes: React.FC = () => {
   const [showBulkActions, setShowBulkActions] = useState(false);
   const [showSchemeDetails, setShowSchemeDetails] = useState(false);
   const [selectedSchemeForDetails, setSelectedSchemeForDetails] = useState<Scheme | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingScheme, setEditingScheme] = useState<Scheme | null>(null);
+  const [editFormData, setEditFormData] = useState<Partial<Scheme>>({});
 
   const cardsPerPage = 6;
 
@@ -156,8 +159,27 @@ const Schemes: React.FC = () => {
   };
 
   const handleEdit = (schemeId: string) => {
-    setToastMessage('Edit functionality will be implemented');
-    setShowToast(true);
+    const schemeToEdit = allSchemes.find(scheme => scheme.id === schemeId);
+    if (schemeToEdit) {
+      setEditingScheme(schemeToEdit);
+      setEditFormData({
+        name: schemeToEdit.name,
+        marathiName: schemeToEdit.marathiName,
+        type: schemeToEdit.type,
+        description: schemeToEdit.description,
+        minimumLoanLimit: schemeToEdit.minimumLoanLimit,
+        maximumLoanLimit: schemeToEdit.maximumLoanLimit,
+        subsidyLimit: schemeToEdit.subsidyLimit,
+        maximumSubsidyAmount: schemeToEdit.maximumSubsidyAmount,
+        downPaymentPercent: schemeToEdit.downPaymentPercent,
+        vendorInterestYearly: schemeToEdit.vendorInterestYearly,
+        minimumTenure: schemeToEdit.minimumTenure,
+        maximumTenure: schemeToEdit.maximumTenure,
+        status: schemeToEdit.status,
+        priority: schemeToEdit.priority
+      });
+      setShowEditModal(true);
+    }
   };
 
   const handleDelete = (schemeId: string) => {
@@ -233,6 +255,32 @@ const Schemes: React.FC = () => {
     setShowToast(true);
     setSelectedSchemes([]);
     setShowBulkActions(false);
+  };
+
+  // Edit form handlers
+  const handleEditFormChange = (field: keyof Scheme, value: any) => {
+    setEditFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleSaveEdit = () => {
+    if (editingScheme && editFormData) {
+      // TODO: Replace with actual API call to update scheme
+      console.log('Saving scheme:', { ...editingScheme, ...editFormData });
+      setToastMessage(`Scheme "${editFormData.name || editingScheme.name}" updated successfully`);
+      setShowToast(true);
+      setShowEditModal(false);
+      setEditingScheme(null);
+      setEditFormData({});
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setShowEditModal(false);
+    setEditingScheme(null);
+    setEditFormData({});
   };
 
   // Scheme details handler
@@ -874,6 +922,178 @@ const Schemes: React.FC = () => {
                     <span className="detail-value">{new Date(selectedSchemeForDetails.updatedAt).toLocaleDateString()}</span>
                   </div>
                 </div>
+              </div>
+            </div>
+          )}
+        </IonContent>
+      </IonModal>
+
+      {/* Edit Scheme Modal */}
+      <IonModal isOpen={showEditModal} onDidDismiss={handleCancelEdit}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Edit Scheme</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={handleCancelEdit}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="edit-scheme-content">
+          {editingScheme && (
+            <div className="edit-form-container">
+              {/* Basic Information */}
+              <div className="edit-section">
+                <h3>Basic Information</h3>
+                <IonItem>
+                  <IonLabel position="stacked">Scheme Name</IonLabel>
+                  <IonInput
+                    value={editFormData.name || ''}
+                    onIonInput={(e) => handleEditFormChange('name', e.detail.value!)}
+                    placeholder="Enter scheme name"
+                  />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Marathi Name</IonLabel>
+                  <IonInput
+                    value={editFormData.marathiName || ''}
+                    onIonInput={(e) => handleEditFormChange('marathiName', e.detail.value!)}
+                    placeholder="Enter Marathi name"
+                  />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Type</IonLabel>
+                  <IonSelect
+                    value={editFormData.type || ''}
+                    onIonChange={(e) => handleEditFormChange('type', e.detail.value)}
+                    placeholder="Select type"
+                  >
+                    {uniqueTypes.map(type => (
+                      <IonSelectOption key={type} value={type}>{type}</IonSelectOption>
+                    ))}
+                  </IonSelect>
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Description</IonLabel>
+                  <IonTextarea
+                    value={editFormData.description || ''}
+                    onIonInput={(e) => handleEditFormChange('description', e.detail.value!)}
+                    placeholder="Enter description"
+                    rows={3}
+                  />
+                </IonItem>
+              </div>
+
+              {/* Financial Details */}
+              <div className="edit-section">
+                <h3>Financial Details</h3>
+                <IonItem>
+                  <IonLabel position="stacked">Minimum Loan Limit (₹)</IonLabel>
+                  <IonInput
+                    type="number"
+                    value={editFormData.minimumLoanLimit?.toString() || ''}
+                    onIonInput={(e) => handleEditFormChange('minimumLoanLimit', parseInt(e.detail.value!) || 0)}
+                    placeholder="0"
+                  />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Maximum Loan Limit (₹)</IonLabel>
+                  <IonInput
+                    type="number"
+                    value={editFormData.maximumLoanLimit?.toString() || ''}
+                    onIonInput={(e) => handleEditFormChange('maximumLoanLimit', parseInt(e.detail.value!) || 0)}
+                    placeholder="0"
+                  />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Subsidy Limit (%)</IonLabel>
+                  <IonInput
+                    type="number"
+                    value={editFormData.subsidyLimit?.toString() || ''}
+                    onIonInput={(e) => handleEditFormChange('subsidyLimit', parseFloat(e.detail.value!) || 0)}
+                    placeholder="0"
+                  />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Maximum Subsidy Amount (₹)</IonLabel>
+                  <IonInput
+                    type="number"
+                    value={editFormData.maximumSubsidyAmount?.toString() || ''}
+                    onIonInput={(e) => handleEditFormChange('maximumSubsidyAmount', parseInt(e.detail.value!) || 0)}
+                    placeholder="0"
+                  />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Interest Rate (% yearly)</IonLabel>
+                  <IonInput
+                    type="number"
+                    value={editFormData.vendorInterestYearly?.toString() || ''}
+                    onIonInput={(e) => handleEditFormChange('vendorInterestYearly', parseFloat(e.detail.value!) || 0)}
+                    placeholder="0"
+                  />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Minimum Tenure (years)</IonLabel>
+                  <IonInput
+                    type="number"
+                    value={editFormData.minimumTenure?.toString() || ''}
+                    onIonInput={(e) => handleEditFormChange('minimumTenure', parseInt(e.detail.value!) || 0)}
+                    placeholder="0"
+                  />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Maximum Tenure (years)</IonLabel>
+                  <IonInput
+                    type="number"
+                    value={editFormData.maximumTenure?.toString() || ''}
+                    onIonInput={(e) => handleEditFormChange('maximumTenure', parseInt(e.detail.value!) || 0)}
+                    placeholder="0"
+                  />
+                </IonItem>
+              </div>
+
+              {/* Status and Priority */}
+              <div className="edit-section">
+                <h3>Status & Priority</h3>
+                <IonItem>
+                  <IonLabel position="stacked">Status</IonLabel>
+                  <IonSelect
+                    value={editFormData.status || ''}
+                    onIonChange={(e) => handleEditFormChange('status', e.detail.value)}
+                    placeholder="Select status"
+                  >
+                    {uniqueStatuses.map(status => (
+                      <IonSelectOption key={status} value={status}>
+                        {status.replace('_', ' ')}
+                      </IonSelectOption>
+                    ))}
+                  </IonSelect>
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Priority</IonLabel>
+                  <IonSelect
+                    value={editFormData.priority || ''}
+                    onIonChange={(e) => handleEditFormChange('priority', e.detail.value)}
+                    placeholder="Select priority"
+                  >
+                    {uniquePriorities.map(priority => (
+                      <IonSelectOption key={priority} value={priority}>{priority}</IonSelectOption>
+                    ))}
+                  </IonSelect>
+                </IonItem>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="edit-actions">
+                <IonButton fill="outline" onClick={handleCancelEdit}>
+                  <IonIcon icon={closeOutline} slot="start" />
+                  Cancel
+                </IonButton>
+                <IonButton fill="solid" onClick={handleSaveEdit}>
+                  <IonIcon icon={checkmarkOutline} slot="start" />
+                  Save Changes
+                </IonButton>
               </div>
             </div>
           )}

@@ -74,6 +74,7 @@
 .tabs-container ion-segment-button {
   --color: var(--color-text-secondary);
   --color-checked: #ffffff;
+  --background: #f5f5f5;
   --background-checked: #007bff;
   --border-radius: 8px;
   --padding-start: 1rem;
@@ -83,6 +84,7 @@
   font-size: 0.9rem;
   font-weight: 500;
   margin: 0 0.25rem;
+  border: 1px solid #e0e0e0;
 }
 
 .view-details-content {
@@ -218,11 +220,15 @@
   background: #ffffff !important;
   border-radius: 8px;
   border: 1px solid rgba(108, 117, 125, 0.3) !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .guarantor-info {
   display: flex;
   align-items: center;
+  flex: 1;
 }
 
 .guarantor-icon {
@@ -250,6 +256,41 @@
 .guarantor-mobile {
   font-size: 0.8rem;
   color: var(--color-text-secondary);
+}
+
+/* Guarantor Action Buttons */
+.guarantor-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.guarantor-actions .verify-btn {
+  --background: #28a745;
+  --background-hover: #218838;
+  --color: #ffffff;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  --padding-top: 0.5rem;
+  --padding-bottom: 0.5rem;
+  --border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  min-width: 70px;
+}
+
+.guarantor-actions .reject-btn {
+  --background: #dc3545;
+  --background-hover: #c82333;
+  --color: #ffffff;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  --padding-top: 0.5rem;
+  --padding-bottom: 0.5rem;
+  --border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  min-width: 70px;
 }
 
 /* Collaterals List */
@@ -341,21 +382,168 @@
     gap: 1rem;
   }
 
-    .summary-amount {
-      text-align: left;
-      margin-top: 1rem;
-    }
+  .summary-amount {
+    text-align: left;
+    margin-top: 1rem;
   }
+  
+  /* Mobile-only horizontal scrolling for tabs */
+  .tabs-container {
+    padding: 0 0.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    position: relative;
+  }
+  
+  .tabs-container::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Prominent scroll indicators */
+  .tabs-container::before {
+    content: '👈';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 123, 255, 0.9);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0 6px 6px 0;
+    z-index: 10;
+    animation: slide-hint 3s infinite;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .tabs-container::after {
+    content: '👉';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 123, 255, 0.9);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.2rem 0.4rem;
+    border-radius: 6px 0 0 6px;
+    z-index: 10;
+    animation: slide-hint 3s infinite;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  @keyframes slide-hint {
+    0%, 60%, 100% { opacity: 0.8; transform: translateY(-50%) scale(1); }
+    30% { opacity: 1; transform: translateY(-50%) scale(1.05); }
+  }
+  
+  /* Hide indicators after user starts scrolling or after delay */
+  .tabs-container:hover::before,
+  .tabs-container:hover::after,
+  .tabs-container.scrolled::before,
+  .tabs-container.scrolled::after {
+    animation: fade-out 0.8s ease-out forwards;
+  }
+  
+  /* Auto-hide after 5 seconds */
+  .tabs-container::before,
+  .tabs-container::after {
+    animation-delay: 5s;
+    animation-fill-mode: forwards;
+    animation-name: slide-hint, auto-hide;
+    animation-duration: 3s, 0.5s;
+    animation-iteration-count: infinite, 1;
+  }
+  
+  @keyframes fade-out {
+    to { opacity: 0; visibility: hidden; }
+  }
+  
+  @keyframes auto-hide {
+    0% { opacity: 0.8; }
+    100% { opacity: 0; visibility: hidden; }
+  }
+  
+  /* Add gradient fade effect for better indicator visibility */
+  .tabs-container {
+    background: linear-gradient(to right, 
+      rgba(255, 255, 255, 0.1) 0%, 
+      transparent 15%, 
+      transparent 85%, 
+      rgba(255, 255, 255, 0.1) 100%
+    );
+  }
+  
+  .tabs-container ion-segment {
+    padding: 0.5rem 0.5rem;
+    min-width: max-content;
+    width: max-content;
+  }
+  
+  .tabs-container ion-segment-button {
+    flex-shrink: 0;
+    white-space: nowrap;
+    --padding-start: 0.4rem;
+    --padding-end: 0.4rem;
+    margin: 0 0.05rem;
+    font-size: 0.75rem;
+    --background: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    min-width: auto;
+    width: auto;
+  }
+}
+
+/* Address Action Buttons */
+.address-action-buttons {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem 1rem;
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--color-border-light);
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.verify-address-button {
+  --background: #28a745;
+  --background-hover: #218838;
+  --color: #ffffff;
+  --box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.verify-address-button:hover {
+  transform: translateY(-1px);
+  --box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+.reject-address-button {
+  --background: #dc3545;
+  --background-hover: #c82333;
+  --color: #ffffff;
+  --box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.reject-address-button:hover {
+  transform: translateY(-1px);
+  --box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
 }
 
 /* Collateral Action Buttons */
 .collateral-action-buttons {
   display: flex;
-  gap: 1.5rem;
-  padding: 2.5rem 0 1rem 0;
-  margin-top: 2.5rem;
+  gap: 1rem;
+  padding: 1.5rem 1rem;
+  margin-top: 1.5rem;
   border-top: 1px solid var(--color-border-light);
-  justify-content: center;
+  justify-content: space-evenly;
+  align-items: center;
   flex-wrap: wrap;
 }
 
@@ -373,15 +561,21 @@
 
 .action-button {
   --border-radius: 8px;
-  --padding-start: 1.5rem;
-  --padding-end: 1.5rem;
+  --padding-start: 1.25rem;
+  --padding-end: 1.25rem;
   --padding-top: 0.75rem;
   --padding-bottom: 0.75rem;
   font-weight: 600;
   text-transform: none;
-  min-width: 160px;
-  font-size: 0.9rem;
+  flex: 1;
+  max-width: 180px;
+  min-width: 140px;
+  font-size: 0.85rem;
+  height: 44px;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .next-action-button {
@@ -433,25 +627,32 @@
   --box-shadow: none;
 }
 
-/* Mobile responsive for collateral action buttons */
+/* Mobile responsive for action buttons */
 @media (max-width: 768px) {
+  .address-action-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+  
+  .address-action-buttons .action-button {
+    width: 100%;
+    max-width: none;
+    min-width: auto;
+    flex: none;
+  }
+  
   .collateral-action-buttons {
     flex-direction: column;
     gap: 0.75rem;
+    padding: 1rem;
   }
   
   .collateral-action-buttons .action-button {
     width: 100%;
+    max-width: none;
     min-width: auto;
-  }
-    padding: 0 1rem;
-  }
-
-  .tabs-container ion-segment-button {
-    --padding-start: 0.75rem;
-    --padding-end: 0.75rem;
-    font-size: 0.8rem;
-    margin: 0 0.125rem;
+    flex: none;
   }
 
   .view-details-content {
@@ -473,9 +674,49 @@
   .collateral-item {
     padding: 0.75rem;
   }
+  
+  /* Mobile styles for guarantor actions */
+  .guarantor-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .guarantor-info {
+    width: 100%;
+  }
+  
+  .guarantor-actions {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 480px) {
+  .address-action-buttons {
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+  
+  .address-action-buttons .action-button {
+    font-size: 0.8rem;
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    height: 40px;
+  }
+  
+  .collateral-action-buttons {
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+  
+  .collateral-action-buttons .action-button {
+    font-size: 0.8rem;
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    height: 40px;
+  }
+  
   .page-title {
     font-size: 1rem;
     white-space: normal;
@@ -491,9 +732,17 @@
   }
 
   .tabs-container ion-segment-button {
-    --padding-start: 0.5rem;
-    --padding-end: 0.5rem;
-    font-size: 0.75rem;
+    --padding-start: 0.3rem;
+    --padding-end: 0.3rem;
+    font-size: 0.65rem;
+    flex-shrink: 0;
+    min-width: auto;
+    width: auto;
+    margin: 0 0.03rem;
+    --background: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    --padding-top: 0.4rem;
+    --padding-bottom: 0.4rem;
   }
 
   .info-item {
@@ -714,5 +963,20 @@
   
   .document-actions {
     gap: 0.25rem;
+  }
+  
+  /* Mobile styles for guarantor actions on small screens */
+  .guarantor-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .guarantor-actions .verify-btn,
+  .guarantor-actions .reject-btn {
+    width: 100%;
+    min-width: auto;
+    font-size: 0.75rem;
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
   }
 }

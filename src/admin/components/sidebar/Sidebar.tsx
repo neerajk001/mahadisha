@@ -155,7 +155,7 @@ const Sidebar: React.FC = () => {
       label: 'REPORTS', 
       icon: barChartOutline, 
       subItems: [
-        { name: 'Reports', route: '/reports', icon: 'location' }
+        { name: 'Reports', route: '/reports', icon: 'chart' }
       ]
     },
     { 
