@@ -88,9 +88,6 @@ const CustomReports: React.FC = () => {
                   <IonCardTitle className="section-title">
                     <IonIcon icon={filterOutline} className="section-icon" />
                     Advanced Filters
-                    <IonBadge color="primary" style={{ marginLeft: '0.5rem' }}>
-                      {searchQuery ? '1' : '0'}
-                    </IonBadge>
                   </IonCardTitle>
                   <IonIcon 
                     icon={showFilters ? chevronUpOutline : chevronDownOutline} 
@@ -178,9 +175,6 @@ const CustomReports: React.FC = () => {
                   <IonCardTitle className="section-title">
                     <IonIcon icon={analyticsOutline} className="section-icon" />
                     AI Insights & Analytics
-                    <IonBadge color="success" style={{ marginLeft: '0.5rem' }}>
-                      Live
-                    </IonBadge>
                   </IonCardTitle>
                   <IonIcon 
                     icon={showAIInsights ? chevronUpOutline : chevronDownOutline} 
@@ -298,9 +292,6 @@ const CustomReports: React.FC = () => {
                   <IonCardTitle className="section-title">
                     <IonIcon icon={analyticsOutline} className="section-icon" />
                     Report Table
-                    <IonBadge color="warning" style={{ marginLeft: '0.5rem' }}>
-                      {reportData.tableData.length} records
-                    </IonBadge>
                   </IonCardTitle>
                   <IonIcon 
                     icon={showReportTable ? chevronUpOutline : chevronDownOutline} 
@@ -462,13 +453,6 @@ const CustomReports: React.FC = () => {
           </div>
         </IonContent>
       </IonModal>
-
-      {/* Floating Action Button */}
-      <IonFab vertical="bottom" horizontal="end" slot="fixed">
-        <IonFabButton className="fab-add-report">
-          <IonIcon icon={addOutline} />
-        </IonFabButton>
-      </IonFab>
 
       {/* Toast for notifications */}
       <IonToast
