@@ -17,7 +17,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
-import { mockDataService, apiService } from '../services/api';
+import { mockDataService } from '../services/api';
 import type { BranchData } from '../types';
 import './BranchMaster.css';
 import './shared/MasterMobile.css';
