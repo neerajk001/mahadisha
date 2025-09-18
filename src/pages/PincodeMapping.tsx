@@ -13,6 +13,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
+import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { mockDataService } from '../services/api';
 import type { 
   PincodeMappingData, 
@@ -469,24 +470,12 @@ const PincodeMapping: React.FC = () => {
                             </div>
                           </td>
                           <td className="actions-cell">
-                            <div className="action-buttons">
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="edit-button"
-                                onClick={() => handleEdit(mapping)}
-                              >
-                                <IonIcon icon={createOutline} />
-                              </IonButton>
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="delete-button"
-                                onClick={() => handleDelete(mapping.id)}
-                              >
-                                <IonIcon icon={trashOutline} />
-                              </IonButton>
-                            </div>
+                            <ActionDropdown
+                              itemId={mapping.id}
+                              onEdit={() => handleEdit(mapping)}
+                              onDelete={() => handleDelete(mapping.id)}
+                              showView={false}
+                            />
                           </td>
                         </tr>
                       ))}

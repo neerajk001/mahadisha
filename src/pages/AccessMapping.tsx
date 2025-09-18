@@ -13,6 +13,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
+import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { mockDataService } from '../services/api';
 import type { AccessMappingData } from '../types';
 import './AccessMapping.css';
@@ -33,14 +34,12 @@ const AccessMapping: React.FC = () => {
     navbarAccess: [] as string[]
   });
   const [navbarAccessInput, setNavbarAccessInput] = useState('');
-  const [accessMappings, setAccessMappings] = useState<AccessMappingData[]>([]);
   const [showNavbarPopover, setShowNavbarPopover] = useState(false);
 
   const itemsPerPage = 5;
 
-  // Get access mapping data from mock service and combine with new mappings
-  const mockMappings = mockDataService.getAccessMappingData();
-  const allMappings = [...mockMappings, ...accessMappings];
+  // State for managing access mapping data - EXACTLY LIKE MANAGEPAGES
+  const [allMappings, setAllMappings] = useState<AccessMappingData[]>(() => mockDataService.getAccessMappingData());
   
   // Filter mappings based on search query
   const filteredMappings = useMemo(() => {
@@ -161,7 +160,8 @@ const AccessMapping: React.FC = () => {
       updatedAt: new Date().toISOString()
     };
 
-    setAccessMappings(prev => [...prev, newMapping]);
+    // Add the new mapping to the state - EXACTLY LIKE MANAGEPAGES
+    setAllMappings(prevMappings => [...prevMappings, newMapping]);
     setToastMessage(`Access mapping for "${newAccess.role}" added successfully`);
     setShowToast(true);
     handleCloseAddModal();
@@ -179,7 +179,8 @@ const AccessMapping: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedMappingId) {
-      setAccessMappings(prev => prev.filter(mapping => mapping.id !== selectedMappingId));
+      // Actually remove the mapping from the state - EXACTLY LIKE MANAGEPAGES
+      setAllMappings(prevMappings => prevMappings.filter(mapping => mapping.id !== selectedMappingId));
       setToastMessage('Access mapping deleted successfully');
       setShowToast(true);
       setSelectedMappingId(null);
@@ -300,24 +301,12 @@ const AccessMapping: React.FC = () => {
                             </div>
                           </td>
                           <td className="actions-cell">
-                            <div className="action-buttons">
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="edit-button"
-                                onClick={() => handleEdit(mapping.id)}
-                              >
-                                <IonIcon icon={createOutline} />
-                              </IonButton>
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="delete-button"
-                                onClick={() => handleDelete(mapping.id)}
-                              >
-                                <IonIcon icon={trashOutline} />
-                              </IonButton>
-                            </div>
+                            <ActionDropdown
+                              itemId={mapping.id}
+                              onEdit={() => handleEdit(mapping.id)}
+                              onDelete={() => handleDelete(mapping.id)}
+                              showView={false}
+                            />
                           </td>
                         </tr>
                       ))}

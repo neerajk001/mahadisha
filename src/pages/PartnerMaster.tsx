@@ -20,6 +20,7 @@ import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { mockDataService } from '../services/api';
 import type { PartnerMasterData } from '../types';
 import './PartnerMaster.css';
+import './shared/MasterMobile.css';
 
 const PartnerMaster: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');

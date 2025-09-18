@@ -3,17 +3,19 @@ import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
-  IonModal, IonItem, IonLabel, IonInput
+  IonModal, IonItem, IonLabel, IonInput, IonFab, IonFabButton, IonButtons
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
-  chevronBackOutline, chevronForwardOutline, closeOutline
+  chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
+  eyeOutline
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import { mockDataService } from '../services/api';
 import type { StatusMasterData } from '../types';
 import './StatusMaster.css';
+import './shared/MasterMobile.css';
 
 const StatusMaster: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -23,10 +25,12 @@ const StatusMaster: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [editingStatus, setEditingStatus] = useState<StatusMasterData | null>(null);
-  const [editForm, setEditForm] = useState({
-    name: ''
-  });
+  const [viewingStatus, setViewingStatus] = useState<StatusMasterData | null>(null);
+  const [editForm, setEditForm] = useState({ name: '' });
+  const [addForm, setAddForm] = useState({ name: '' });
 
   const itemsPerPage = 5;
 
@@ -47,8 +51,27 @@ const StatusMaster: React.FC = () => {
   const currentStatuses = filteredStatuses.slice(startIndex, endIndex);
 
   const handleAddStatus = () => {
-    setToastMessage('Add new status functionality will be implemented');
+    setShowAddModal(true);
+  };
+
+  const handleView = (statusId: string) => {
+    const status = allStatuses.find(s => s.id === statusId);
+    if (status) {
+      setViewingStatus(status);
+      setShowViewModal(true);
+    }
+  };
+
+  const handleSaveAdd = () => {
+    setToastMessage(`Status "${addForm.name}" created successfully`);
     setShowToast(true);
+    setShowAddModal(false);
+    setAddForm({ name: '' });
+  };
+
+  const handleCloseAdd = () => {
+    setShowAddModal(false);
+    setAddForm({ name: '' });
   };
 
   const handleEdit = (statusId: string) => {

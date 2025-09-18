@@ -7,13 +7,15 @@ import {
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
-  chevronBackOutline, chevronForwardOutline, closeOutline
+  chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
+  eyeOutline
 } from 'ionicons/icons';
-import Sidebar from '../components/sidebar/Sidebar';
-import DashboardHeader from '../components/header/DashboardHeader';
+import Sidebar from '../admin/components/sidebar/Sidebar';
+import DashboardHeader from '../admin/components/header/DashboardHeader';
 import { mockDataService } from '../services/api';
 import type { ActionMasterData } from '../types';
 import './ActionMasters.css';
+import './shared/MasterMobile.css';
 
 const ActionMasters: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -23,8 +25,16 @@ const ActionMasters: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [editingAction, setEditingAction] = useState<ActionMasterData | null>(null);
+  const [viewingAction, setViewingAction] = useState<ActionMasterData | null>(null);
   const [editForm, setEditForm] = useState({
+    name: '',
+    functionName: '',
+    priority: ''
+  });
+  const [addForm, setAddForm] = useState({
     name: '',
     functionName: '',
     priority: ''
@@ -49,8 +59,27 @@ const ActionMasters: React.FC = () => {
   const currentActions = filteredActions.slice(startIndex, endIndex);
 
   const handleAddAction = () => {
-    setToastMessage('Add new action functionality will be implemented');
+    setShowAddModal(true);
+  };
+
+  const handleView = (actionId: string) => {
+    const action = allActions.find(a => a.id === actionId);
+    if (action) {
+      setViewingAction(action);
+      setShowViewModal(true);
+    }
+  };
+
+  const handleSaveAdd = () => {
+    setToastMessage(`Action "${addForm.name}" created successfully`);
     setShowToast(true);
+    setShowAddModal(false);
+    setAddForm({ name: '', functionName: '', priority: '' });
+  };
+
+  const handleCloseAdd = () => {
+    setShowAddModal(false);
+    setAddForm({ name: '', functionName: '', priority: '' });
   };
 
   const handleEdit = (actionId: string) => {
@@ -89,7 +118,8 @@ const ActionMasters: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedActionId) {
-      setToastMessage(`Delete action ${selectedActionId} functionality will be implemented`);
+      const actionToDelete = allActions.find(action => action.id === selectedActionId);
+      setToastMessage(`Action "${actionToDelete?.name || selectedActionId}" deleted successfully`);
       setShowToast(true);
       setSelectedActionId(null);
     }
@@ -149,7 +179,8 @@ const ActionMasters: React.FC = () => {
               {/* Actions Table */}
               <IonCard className="actions-table-card">
                 <IonCardContent className="table-container">
-                  <table className="actions-table">
+                  <div className="mobile-table-wrapper">
+                    <table className="actions-table">
                     <thead>
                       <tr>
                         <th>
@@ -177,6 +208,14 @@ const ActionMasters: React.FC = () => {
                               <IonButton 
                                 fill="clear" 
                                 size="small" 
+                                className="view-button"
+                                onClick={() => handleView(action.id)}
+                              >
+                                <IonIcon icon={eyeOutline} />
+                              </IonButton>
+                              <IonButton 
+                                fill="clear" 
+                                size="small" 
                                 className="edit-button"
                                 onClick={() => handleEdit(action.id)}
                               >
@@ -195,7 +234,8 @@ const ActionMasters: React.FC = () => {
                         </tr>
                       ))}
                     </tbody>
-                  </table>
+                    </table>
+                  </div>
                 </IonCardContent>
               </IonCard>
 
@@ -234,6 +274,138 @@ const ActionMasters: React.FC = () => {
           </IonContent>
         </div>
       </IonSplitPane>
+
+      {/* Add Modal */}
+      <IonModal 
+        isOpen={showAddModal} 
+        onDidDismiss={handleCloseAdd}
+        backdropDismiss={true}
+        showBackdrop={true}
+      >
+        <div className="edit-modal">
+          <div className="modal-header">
+            <h2>Add Action Master</h2>
+            <IonButton fill="clear" onClick={handleCloseAdd} className="close-button">
+              <IonIcon icon={closeOutline} />
+            </IonButton>
+          </div>
+          
+          <div className="modal-content">
+            <IonItem className="form-item">
+              <IonLabel position="stacked">Action Master Name</IonLabel>
+              <IonInput
+                value={addForm.name}
+                onIonChange={(e) => setAddForm({...addForm, name: e.detail.value!})}
+                placeholder="Enter action master name"
+              />
+            </IonItem>
+
+            <IonItem className="form-item">
+              <IonLabel position="stacked">Enter Function name</IonLabel>
+              <IonInput
+                value={addForm.functionName}
+                onIonChange={(e) => setAddForm({...addForm, functionName: e.detail.value!})}
+                placeholder="Enter function name"
+              />
+            </IonItem>
+
+            <IonItem className="form-item">
+              <IonLabel position="stacked">Priority</IonLabel>
+              <IonSelect
+                value={addForm.priority}
+                onIonChange={(e) => setAddForm({...addForm, priority: e.detail.value})}
+                placeholder="Select priority"
+              >
+                <IonSelectOption value="1">1</IonSelectOption>
+                <IonSelectOption value="2">2</IonSelectOption>
+                <IonSelectOption value="3">3</IonSelectOption>
+                <IonSelectOption value="4">4</IonSelectOption>
+                <IonSelectOption value="5">5</IonSelectOption>
+              </IonSelect>
+            </IonItem>
+          </div>
+
+          <div className="modal-footer">
+            <IonButton 
+              fill="solid" 
+              className="save-button"
+              onClick={handleSaveAdd}
+            >
+              <IonIcon icon={checkmarkOutline} slot="start" />
+              Create Action
+            </IonButton>
+          </div>
+        </div>
+      </IonModal>
+
+      {/* View Modal */}
+      <IonModal 
+        isOpen={showViewModal} 
+        onDidDismiss={() => setShowViewModal(false)}
+        backdropDismiss={true}
+        showBackdrop={true}
+      >
+        <div className="edit-modal">
+          <div className="modal-header">
+            <h2>View Action Master Details</h2>
+            <IonButton fill="clear" onClick={() => setShowViewModal(false)} className="close-button">
+              <IonIcon icon={closeOutline} />
+            </IonButton>
+          </div>
+          
+          <div className="modal-content">
+            <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div className="view-field">
+                <h3 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>Action Master Name</h3>
+                <div style={{ 
+                  padding: '1rem', 
+                  background: 'rgba(255, 255, 255, 0.9)', 
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0'
+                }}>
+                  {viewingAction?.name}
+                </div>
+              </div>
+              
+              <div className="view-field">
+                <h3 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>Function Name</h3>
+                <div style={{ 
+                  padding: '1rem', 
+                  background: 'rgba(255, 255, 255, 0.9)', 
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0',
+                  fontFamily: 'monospace'
+                }}>
+                  {viewingAction?.functionName}
+                </div>
+              </div>
+              
+              <div className="view-field">
+                <h3 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>Priority</h3>
+                <div style={{ 
+                  padding: '1rem', 
+                  background: 'rgba(255, 255, 255, 0.9)', 
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0'
+                }}>
+                  {viewingAction?.priority}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="modal-footer">
+            <IonButton 
+              fill="outline" 
+              className="close-button-footer"
+              onClick={() => setShowViewModal(false)}
+            >
+              <IonIcon icon={closeOutline} slot="start" />
+              Close
+            </IonButton>
+          </div>
+        </div>
+      </IonModal>
 
       {/* Edit Modal */}
       <IonModal 

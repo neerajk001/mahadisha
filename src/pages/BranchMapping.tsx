@@ -11,6 +11,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
+import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { mockDataService } from '../services/api';
 import type { BranchMappingData } from '../types';
 import './BranchMapping.css';
@@ -39,13 +40,10 @@ const BranchMapping: React.FC = () => {
   });
   const [districtInput, setDistrictInput] = useState('');
   const [editDistrictInput, setEditDistrictInput] = useState('');
-  const [branchMappings, setBranchMappings] = useState<BranchMappingData[]>([]);
-
   const itemsPerPage = 5;
 
-  // Get branch mapping data from mock service and combine with new mappings
-  const mockMappings = mockDataService.getBranchMappingData();
-  const allMappings = [...mockMappings, ...branchMappings];
+  // State for managing branch mapping data - EXACTLY LIKE MANAGEPAGES
+  const [allMappings, setAllMappings] = useState<BranchMappingData[]>(() => mockDataService.getBranchMappingData());
   
   // Filter mappings based on search query
   const filteredMappings = useMemo(() => {
@@ -98,7 +96,8 @@ const BranchMapping: React.FC = () => {
       updatedAt: new Date().toISOString()
     };
 
-    setBranchMappings(prev => [...prev, newMapping]);
+    // Add the new mapping to the state - EXACTLY LIKE MANAGEPAGES
+    setAllMappings(prevMappings => [...prevMappings, newMapping]);
     setToastMessage(`Branch mapping for "${addForm.region}" added successfully`);
     setShowToast(true);
     setShowAddModal(false);
@@ -151,7 +150,8 @@ const BranchMapping: React.FC = () => {
       return;
     }
 
-    setBranchMappings(prev => prev.map(mapping => 
+    // Update the mapping in the state - EXACTLY LIKE MANAGEPAGES
+    setAllMappings(prevMappings => prevMappings.map(mapping => 
       mapping.id === editingMapping.id 
         ? { ...mapping, ...editForm, updatedAt: new Date().toISOString() }
         : mapping
@@ -227,7 +227,8 @@ const BranchMapping: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedMappingId) {
-      setBranchMappings(prev => prev.filter(mapping => mapping.id !== selectedMappingId));
+      // Actually remove the mapping from the state - EXACTLY LIKE MANAGEPAGES
+      setAllMappings(prevMappings => prevMappings.filter(mapping => mapping.id !== selectedMappingId));
       setToastMessage('Branch mapping deleted successfully');
       setShowToast(true);
       setSelectedMappingId(null);
@@ -341,32 +342,14 @@ const BranchMapping: React.FC = () => {
                             </div>
                           </td>
                           <td className="actions-cell">
-                            <div className="action-buttons">
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="view-button"
-                                onClick={() => handleView(mapping.id)}
-                              >
-                                <IonIcon icon={searchOutline} />
-                              </IonButton>
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="edit-button"
-                                onClick={() => handleEdit(mapping.id)}
-                              >
-                                <IonIcon icon={createOutline} />
-                              </IonButton>
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="delete-button"
-                                onClick={() => handleDelete(mapping.id)}
-                              >
-                                <IonIcon icon={trashOutline} />
-                              </IonButton>
-                            </div>
+                            <ActionDropdown
+                              itemId={mapping.id}
+                              onView={() => handleView(mapping.id)}
+                              onEdit={() => handleEdit(mapping.id)}
+                              onDelete={() => handleDelete(mapping.id)}
+                              showView={true}
+                              size="small"
+                            />
                           </td>
                         </tr>
                       ))}

@@ -74,6 +74,8 @@
   --width: 140px;
   --max-width: 200px;
   --min-width: 120px;
+  --offset-x: 0px;
+  --offset-y: 8px;
 }
 
 .action-dropdown-popover::part(content) {
@@ -242,9 +244,16 @@
 .partner-master-content .action-dropdown-trigger,
 .rejection-master-content .action-dropdown-trigger,
 .status-mapping-content .action-dropdown-trigger,
+.access-mapping-content .action-dropdown-trigger,
+.pincode-mapping-content .action-dropdown-trigger,
+.workflow-content .action-dropdown-trigger,
+.database-access-content .action-dropdown-trigger,
+.roles-content .action-dropdown-trigger,
+.branch-mapping-content .action-dropdown-trigger,
 table .action-dropdown-trigger,
 .pages-table .action-dropdown-trigger,
-.branches-table .action-dropdown-trigger {
+.branches-table .action-dropdown-trigger,
+.mappings-table .action-dropdown-trigger {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
   color: white !important;
   border: none !important;
@@ -260,9 +269,16 @@ table .action-dropdown-trigger,
 .partner-master-content .action-dropdown-trigger:hover,
 .rejection-master-content .action-dropdown-trigger:hover,
 .status-mapping-content .action-dropdown-trigger:hover,
+.access-mapping-content .action-dropdown-trigger:hover,
+.pincode-mapping-content .action-dropdown-trigger:hover,
+.workflow-content .action-dropdown-trigger:hover,
+.database-access-content .action-dropdown-trigger:hover,
+.roles-content .action-dropdown-trigger:hover,
+.branch-mapping-content .action-dropdown-trigger:hover,
 table .action-dropdown-trigger:hover,
 .pages-table .action-dropdown-trigger:hover,
-.branches-table .action-dropdown-trigger:hover {
+.branches-table .action-dropdown-trigger:hover,
+.mappings-table .action-dropdown-trigger:hover {
   background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
   color: white !important;
   transform: translateY(-1px);
@@ -279,9 +295,16 @@ table .action-dropdown-trigger:hover,
 .partner-master-content .action-dropdown-trigger:active,
 .rejection-master-content .action-dropdown-trigger:active,
 .status-mapping-content .action-dropdown-trigger:active,
+.access-mapping-content .action-dropdown-trigger:active,
+.pincode-mapping-content .action-dropdown-trigger:active,
+.workflow-content .action-dropdown-trigger:active,
+.database-access-content .action-dropdown-trigger:active,
+.roles-content .action-dropdown-trigger:active,
+.branch-mapping-content .action-dropdown-trigger:active,
 table .action-dropdown-trigger:active,
 .pages-table .action-dropdown-trigger:active,
-.branches-table .action-dropdown-trigger:active {
+.branches-table .action-dropdown-trigger:active,
+.mappings-table .action-dropdown-trigger:active {
   background: linear-gradient(135deg, #4c63d2 0%, #553c9a 100%) !important;
   color: white !important;
   transform: translateY(0);
@@ -314,4 +337,27 @@ table .action-dropdown-trigger:active,
     opacity: 0;
     transform: scale(0.95) translateY(-10px);
   }
+}
+
+/* Fix positioning issues in table cells */
+.actions-cell {
+  position: relative !important;
+}
+
+.actions-cell .action-dropdown-container {
+  position: relative !important;
+  display: inline-block !important;
+}
+
+/* Ensure proper positioning for AccessMapping and PincodeMapping */
+.access-mapping-content .actions-cell,
+.pincode-mapping-content .actions-cell {
+  position: relative !important;
+  text-align: center !important;
+}
+
+.access-mapping-content .action-dropdown-container,
+.pincode-mapping-content .action-dropdown-container {
+  position: relative !important;
+  display: inline-block !important;
 }

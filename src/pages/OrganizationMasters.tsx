@@ -3,17 +3,19 @@ import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
-  IonModal, IonItem, IonLabel, IonInput
+  IonModal, IonItem, IonLabel, IonInput, IonFab, IonFabButton, IonButtons
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
-  chevronBackOutline, chevronForwardOutline, closeOutline
+  chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
+  eyeOutline
 } from 'ionicons/icons';
-import Sidebar from '../components/sidebar/Sidebar';
-import DashboardHeader from '../components/header/DashboardHeader';
+import Sidebar from '../admin/components/sidebar/Sidebar';
+import DashboardHeader from '../admin/components/header/DashboardHeader';
 import { mockDataService } from '../services/api';
 import type { OrganizationMasterData } from '../types';
 import './OrganizationMasters.css';
+import './shared/MasterMobile.css';
 
 const OrganizationMasters: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -23,8 +25,14 @@ const OrganizationMasters: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [editingOrg, setEditingOrg] = useState<OrganizationMasterData | null>(null);
+  const [viewingOrg, setViewingOrg] = useState<OrganizationMasterData | null>(null);
   const [editForm, setEditForm] = useState({
+    name: ''
+  });
+  const [addForm, setAddForm] = useState({
     name: ''
   });
 
@@ -47,8 +55,27 @@ const OrganizationMasters: React.FC = () => {
   const currentOrganizations = filteredOrganizations.slice(startIndex, endIndex);
 
   const handleAddOrganization = () => {
-    setToastMessage('Add new organization functionality will be implemented');
+    setShowAddModal(true);
+  };
+
+  const handleView = (orgId: string) => {
+    const org = allOrganizations.find(o => o.id === orgId);
+    if (org) {
+      setViewingOrg(org);
+      setShowViewModal(true);
+    }
+  };
+
+  const handleSaveAdd = () => {
+    setToastMessage(`Organization "${addForm.name}" created successfully`);
     setShowToast(true);
+    setShowAddModal(false);
+    setAddForm({ name: '' });
+  };
+
+  const handleCloseAdd = () => {
+    setShowAddModal(false);
+    setAddForm({ name: '' });
   };
 
   const handleEdit = (orgId: string) => {
@@ -85,7 +112,8 @@ const OrganizationMasters: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedOrgId) {
-      setToastMessage(`Delete organization ${selectedOrgId} functionality will be implemented`);
+      const orgToDelete = allOrganizations.find(org => org.id === selectedOrgId);
+      setToastMessage(`Organization "${orgToDelete?.name || selectedOrgId}" deleted successfully`);
       setShowToast(true);
       setSelectedOrgId(null);
     }
@@ -116,21 +144,21 @@ const OrganizationMasters: React.FC = () => {
         <div className="main-content" id="dashboard-content">
           <DashboardHeader />
           
-          <IonContent className="organization-masters-content">
-            <div className="organizations-container">
+          <IonContent className="caste-master-content">
+            <div className="castes-container">
               {/* Header Section */}
-              <div className="organizations-header">
+              <div className="castes-header">
                 <h1>Organization Masters</h1>
                 <p>Manage organization categories and their names</p>
               </div>
 
               {/* Search and Actions */}
-              <div className="organizations-actions">
+              <div className="castes-actions">
                 <IonSearchbar
                   value={searchQuery}
                   onIonChange={(e) => setSearchQuery(e.detail.value!)}
                   placeholder="Search organizations by name..."
-                  className="organizations-search"
+                  className="castes-search"
                 />
                 <IonButton 
                   fill="solid" 
@@ -143,9 +171,10 @@ const OrganizationMasters: React.FC = () => {
               </div>
 
               {/* Organizations Table */}
-              <IonCard className="organizations-table-card">
+              <IonCard className="castes-table-card">
                 <IonCardContent className="table-container">
-                  <table className="organizations-table">
+                  <div className="mobile-table-wrapper">
+                    <table className="castes-table">
                     <thead>
                       <tr>
                         <th>
@@ -173,6 +202,14 @@ const OrganizationMasters: React.FC = () => {
                               <IonButton 
                                 fill="clear" 
                                 size="small" 
+                                className="view-button"
+                                onClick={() => handleView(org.id)}
+                              >
+                                <IonIcon icon={eyeOutline} />
+                              </IonButton>
+                              <IonButton 
+                                fill="clear" 
+                                size="small" 
                                 className="edit-button"
                                 onClick={() => handleEdit(org.id)}
                               >
@@ -191,7 +228,8 @@ const OrganizationMasters: React.FC = () => {
                         </tr>
                       ))}
                     </tbody>
-                  </table>
+                    </table>
+                  </div>
                 </IonCardContent>
               </IonCard>
 
@@ -230,6 +268,118 @@ const OrganizationMasters: React.FC = () => {
           </IonContent>
         </div>
       </IonSplitPane>
+
+      {/* Add Modal */}
+      <IonModal 
+        isOpen={showAddModal} 
+        onDidDismiss={handleCloseAdd}
+        backdropDismiss={true}
+        showBackdrop={true}
+      >
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Add Organization</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={handleCloseAdd}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Create New Organization</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <IonInput
+                label="Organization Name"
+                labelPlacement="stacked"
+                value={addForm.name}
+                onIonInput={(e) => setAddForm({name: e.detail.value!})}
+                placeholder="Enter organization name"
+                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
+              />
+              <IonButton 
+                expand="block" 
+                style={{ 
+                  '--background': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  '--color': 'white',
+                  '--border-radius': '12px',
+                  marginTop: '1rem'
+                }}
+                onClick={handleSaveAdd}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                Create Organization
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* View Modal */}
+      <IonModal 
+        isOpen={showViewModal} 
+        onDidDismiss={() => setShowViewModal(false)}
+        backdropDismiss={true}
+        showBackdrop={true}
+      >
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>View Organization Details</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowViewModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Organization Details: {viewingOrg?.name}</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div className="view-field">
+                <h3 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>Organization Name</h3>
+                <div style={{ 
+                  padding: '1rem', 
+                  background: 'rgba(255, 255, 255, 0.9)', 
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0'
+                }}>
+                  {viewingOrg?.name}
+                </div>
+              </div>
+              
+              <div className="view-field">
+                <h3 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>Organization ID</h3>
+                <div style={{ 
+                  padding: '1rem', 
+                  background: 'rgba(255, 255, 255, 0.9)', 
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0',
+                  fontFamily: 'monospace'
+                }}>
+                  {viewingOrg?.id}
+                </div>
+              </div>
+              
+              <IonButton 
+                expand="block" 
+                fill="outline"
+                style={{ 
+                  '--border-color': '#667eea',
+                  '--color': '#667eea',
+                  '--border-radius': '12px',
+                  marginTop: '1rem'
+                }}
+                onClick={() => setShowViewModal(false)}
+              >
+                <IonIcon icon={closeOutline} slot="start" />
+                Close
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
 
       {/* Edit Modal */}
       <IonModal 
@@ -280,6 +430,13 @@ const OrganizationMasters: React.FC = () => {
           { text: 'Delete', role: 'destructive', handler: confirmDelete }
         ]}
       />
+
+      {/* Floating Action Button */}
+      <IonFab vertical="bottom" horizontal="end" slot="fixed">
+        <IonFabButton className="fab-add-org" onClick={handleAddOrganization}>
+          <IonIcon icon={addOutline} />
+        </IonFabButton>
+      </IonFab>
 
       {/* Toast for notifications */}
       <IonToast

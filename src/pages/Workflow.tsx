@@ -16,6 +16,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
+import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { mockDataService } from '../services/api';
 import type { WorkflowData } from '../types';
 import './Workflow.css';
@@ -119,8 +120,8 @@ const Workflow: React.FC = () => {
     }
   ]);
 
-  // Get workflow data from mock service
-  const workflowData = mockDataService.getWorkflowData();
+  // State for managing workflow data - EXACTLY LIKE MANAGEPAGES
+  const [workflowData, setWorkflowData] = useState<WorkflowData[]>(() => mockDataService.getWorkflowData());
 
   // Filter tasks based on search query
   const filteredTasks = useMemo(() => {
@@ -506,36 +507,14 @@ const Workflow: React.FC = () => {
                                 </div>
                               </div>
                               <div className="task-actions">
-                                <IonButton 
-                                  fill="clear" 
+                                <ActionDropdown
+                                  itemId={task.id}
+                                  onView={() => handleViewTask(task)}
+                                  onEdit={() => handleEditTask(task)}
+                                  onDelete={() => handleDeleteTask(task.id)}
+                                  showView={true}
                                   size="small"
-                                  onClick={() => handleViewTask(task)}
-                                >
-                                  <IonIcon icon={eyeOutline} />
-                                </IonButton>
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small"
-                                  onClick={() => handleEditTask(task)}
-                                >
-                                  <IonIcon icon={createOutline} />
-                                </IonButton>
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small"
-                                  color="success"
-                                  onClick={() => handleUpdateTaskStatus(task.id, 'completed')}
-                                >
-                                  <IonIcon icon={checkmarkOutline} />
-                                </IonButton>
-                                <IonButton 
-                                  fill="clear" 
-                                  size="small"
-                                  color="danger"
-                                  onClick={() => handleDeleteTask(task.id)}
-                                >
-                                  <IonIcon icon={trashOutline} />
-                                </IonButton>
+                                />
                               </div>
                             </div>
                           </IonCardContent>

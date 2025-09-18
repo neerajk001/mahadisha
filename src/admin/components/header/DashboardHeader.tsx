@@ -15,15 +15,18 @@ import {
 import {
   chevronDownOutline,
   calendarOutline,
-  locationOutline
+  locationOutline,
+  menuOutline
 } from 'ionicons/icons';
 import { useLocation } from 'react-router-dom';
+import { useSidebar } from '../../contexts/SidebarContext';
 import './DashboardHeader.css';
 
 const DashboardHeader: React.FC = () => {
   const [userName, setUserName] = useState('Admin');
   const [userInitials, setUserInitials] = useState('AD');
   const location = useLocation();
+  const { toggleSidebar, isSidebarOpen } = useSidebar();
 
   useEffect(() => {
     // Get user info from localStorage or context
@@ -101,6 +104,17 @@ const DashboardHeader: React.FC = () => {
       <div className="top-dark-bar"></div>
       
       <IonToolbar className="dashboard-toolbar">
+        {/* Hamburger Menu - Only show when sidebar is closed */}
+        <div className={`hamburger-menu-container ${!isSidebarOpen ? 'show' : 'hide'}`}>
+          <IonButton 
+            fill="clear" 
+            className="hamburger-menu-button"
+            onClick={toggleSidebar}
+          >
+            <IonIcon icon={menuOutline} />
+          </IonButton>
+        </div>
+        
         {/* Left Side - Breadcrumb */}
         <div className="header-left">
           <div className="breadcrumb">

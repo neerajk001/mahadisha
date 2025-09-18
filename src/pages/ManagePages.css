@@ -314,9 +314,11 @@
   flex-direction: column;
 }
 
-.edit-button {
-  --color: white;
-  --background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+.view-button {
+  --background: #ffffff;
+  --color: #2196F3;
+  --background-hover: #e3f2fd;
+  --color-hover: #1976D2;
   --border-radius: 8px;
   --padding: 0.5rem;
   width: 40px;
@@ -324,17 +326,43 @@
   font-weight: 600;
   font-size: 1rem;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.view-button:hover {
+  transform: scale(1.05);
+  --background: #e3f2fd;
+  --color: #1976D2;
+}
+
+.edit-button {
+  --background: #ffffff;
+  --color: #4CAF50;
+  --background-hover: #e8f5e8;
+  --color-hover: #388E3C;
+  --border-radius: 8px;
+  --padding: 0.5rem;
+  width: 40px;
+  height: 40px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .edit-button:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
+  --background: #e8f5e8;
+  --color: #388E3C;
 }
 
 .delete-button {
-  --color: white;
-  --background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  --background: #ffffff;
+  --color: #f44336;
+  --background-hover: #ffebee;
+  --color-hover: #d32f2f;
   --border-radius: 8px;
   --padding: 0.5rem;
   width: 40px;
@@ -342,12 +370,14 @@
   font-weight: 600;
   font-size: 1rem;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .delete-button:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+  --background: #ffebee;
+  --color: #d32f2f;
 }
 
 /* Modern Card Grid Layout */
@@ -619,7 +649,7 @@
 
 /* Enhanced Pagination */
 .pagination-container {
-  display: flex;
+  display: flex !important;
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
@@ -631,8 +661,11 @@
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   margin-top: 2rem;
+  margin-bottom: 2rem;
   position: relative;
   z-index: 1;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .pagination-info p {
@@ -751,28 +784,72 @@
     --padding-end: 1rem;
   }
 
-  .pages-header {
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-  }
-
   .pages-header h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 
-  .pages-header p {
-    font-size: 1rem;
-  }
-
+  /* Mobile Actions Row Layout - Even spacing */
   .pages-actions {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-    padding: 1rem;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    margin-bottom: 1rem !important;
+    flex-wrap: nowrap !important;
+    gap: 0.75rem !important;
   }
 
+  /* Mobile Search - Takes available space */
   .pages-search {
-    min-width: auto;
+    flex: 1 !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+
+  /* Mobile buttons - Icon only */
+  .pages-actions ion-button {
+    --padding-start: 0.5rem !important;
+    --padding-end: 0.5rem !important;
+    min-width: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    --border-radius: 8px !important;
+  }
+
+  /* Hide text content but keep icons */
+  .pages-actions ion-button .button-inner {
+    flex-direction: column !important;
+  }
+
+  .pages-actions ion-button .button-inner > *:not(ion-icon) {
+    display: none !important;
+  }
+
+  .pages-actions ion-button ion-icon {
+    font-size: 1.3rem !important;
+    margin: 0 !important;
+  }
+
+  /* Specific styling for add button - Plus icon only */
+  .add-page-button {
+    --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    --color: white !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Ensure add button text is completely hidden */
+  .add-page-button .button-inner {
+    justify-content: center !important;
+  }
+
+  .add-page-button .button-inner > *:not(ion-icon) {
+    display: none !important;
+  }
+
+  /* Make sure grid view button is also properly sized */
+  .pages-actions ion-button:nth-child(2) {
+    flex-shrink: 0 !important;
   }
 
   .pages-grid {
@@ -807,21 +884,39 @@
     width: 100%;
   }
 
+  /* Mobile Pagination - Icon Only */
   .pagination-container {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-    padding: 1rem;
-  }
-
-  .pagination-controls {
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     gap: 0.5rem;
+    padding: 0.75rem;
   }
 
   .pagination-button {
-    min-width: auto;
-    width: 100%;
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .pagination-button .pagination-text {
+    display: none !important;
+  }
+
+  .pagination-button span {
+    display: none !important;
+  }
+
+  .pagination-info {
+    flex: 1;
+    text-align: center;
+  }
+
+  .pagination-info p {
+    font-size: 0.75rem;
+    margin: 0;
   }
 }
 

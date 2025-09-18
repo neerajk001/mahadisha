@@ -13,6 +13,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
+import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { mockDataService } from '../services/api';
 import type { RolesData } from '../types';
 import './Roles.css';
@@ -38,14 +39,10 @@ const Roles: React.FC = () => {
     name: ''
   });
   
-  // State for managing new roles
-  const [rolesItems, setRolesItems] = useState<RolesData[]>([]);
-
   const itemsPerPage = 5;
 
-  // Get roles data from mock service and combine with new items
-  const mockRoles = mockDataService.getRolesData();
-  const allRoles = [...mockRoles, ...rolesItems];
+  // State for managing roles data - EXACTLY LIKE MANAGEPAGES
+  const [allRoles, setAllRoles] = useState<RolesData[]>(() => mockDataService.getRolesData());
   
   // Filter roles based on search query
   const filteredRoles = useMemo(() => {
@@ -87,8 +84,8 @@ const Roles: React.FC = () => {
       updatedAt: new Date().toISOString()
     };
 
-    // Add to state
-    setRolesItems(prev => [...prev, newRole]);
+    // Add the new role to the state - EXACTLY LIKE MANAGEPAGES
+    setAllRoles(prevRoles => [...prevRoles, newRole]);
     
     setToastMessage(`Role "${addForm.name}" added successfully`);
     setShowToast(true);
@@ -129,12 +126,12 @@ const Roles: React.FC = () => {
       return;
     }
     
-    // Update the item in state
-    setRolesItems(prev => 
-      prev.map(item => 
-        item.id === editingRole.id 
-          ? { ...item, name: editForm.name.trim(), updatedAt: new Date().toISOString() }
-          : item
+    // Update the role in the state - EXACTLY LIKE MANAGEPAGES
+    setAllRoles(prevRoles => 
+      prevRoles.map(role => 
+        role.id === editingRole.id 
+          ? { ...role, name: editForm.name.trim(), updatedAt: new Date().toISOString() }
+          : role
       )
     );
     
@@ -171,8 +168,8 @@ const Roles: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedRoleId) {
-      // Remove from state
-      setRolesItems(prev => prev.filter(item => item.id !== selectedRoleId));
+      // Actually remove the role from the state - EXACTLY LIKE MANAGEPAGES
+      setAllRoles(prevRoles => prevRoles.filter(role => role.id !== selectedRoleId));
       
       const roleToDelete = allRoles.find(role => role.id === selectedRoleId);
       setToastMessage(`Role "${roleToDelete?.name || selectedRoleId}" deleted successfully`);
@@ -258,32 +255,14 @@ const Roles: React.FC = () => {
                             <span className="role-name">{role.name}</span>
                           </td>
                           <td className="actions-cell">
-                            <div className="action-buttons">
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="view-button"
-                                onClick={() => handleView(role.id)}
-                              >
-                                <IonIcon icon={eyeOutline} />
-                              </IonButton>
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="edit-button"
-                                onClick={() => handleEdit(role.id)}
-                              >
-                                <IonIcon icon={createOutline} />
-                              </IonButton>
-                              <IonButton 
-                                fill="clear" 
-                                size="small" 
-                                className="delete-button"
-                                onClick={() => handleDelete(role.id)}
-                              >
-                                <IonIcon icon={trashOutline} />
-                              </IonButton>
-                            </div>
+                            <ActionDropdown
+                              itemId={role.id}
+                              onView={() => handleView(role.id)}
+                              onEdit={() => handleEdit(role.id)}
+                              onDelete={() => handleDelete(role.id)}
+                              showView={true}
+                              size="small"
+                            />
                           </td>
                         </tr>
                       ))}
