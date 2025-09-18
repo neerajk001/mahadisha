@@ -105,14 +105,15 @@ const DashboardHeader: React.FC = () => {
       
       <IonToolbar className="dashboard-toolbar">
         {/* Hamburger Menu - Only show when sidebar is closed */}
+        <IonMenuButton slot="start" onClick={toggleSidebar} autoHide={false} />
         <div className={`hamburger-menu-container ${!isSidebarOpen ? 'show' : 'hide'}`}>
-          <IonButton 
+          {/* <IonButton 
             fill="clear" 
             className="hamburger-menu-button"
             onClick={toggleSidebar}
-          >
+          > 
             <IonIcon icon={menuOutline} />
-          </IonButton>
+          </IonButton> */}
         </div>
         
         {/* Left Side - Breadcrumb */}
