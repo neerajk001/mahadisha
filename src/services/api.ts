@@ -1522,12 +1522,51 @@ export const mockDataService = {
   ],
 
   // Mock Rejection Master Data
-  getRejectionMasterData: (): RejectionMasterData[] => [
+  _rejectionData: [
     { id: '1', name: 'User has not paid previous loan', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
     { id: '2', name: 'Test Rejection', createdAt: '2024-01-02', updatedAt: '2024-01-02' },
     { id: '3', name: 'Testing now', createdAt: '2024-01-03', updatedAt: '2024-01-03' },
     { id: '4', name: 'Applicant is not valid', createdAt: '2024-01-04', updatedAt: '2024-01-04' }
-  ],
+  ] as RejectionMasterData[],
+  
+  getRejectionMasterData: function(): RejectionMasterData[] {
+    return this._rejectionData;
+  },
+  
+  updateRejectionMasterData: function(id: string, data: Partial<RejectionMasterData>): RejectionMasterData | null {
+    const index = this._rejectionData.findIndex(item => item.id === id);
+    if (index === -1) return null;
+    
+    const updatedItem = {
+      ...this._rejectionData[index],
+      ...data,
+      updatedAt: new Date().toISOString().split('T')[0]
+    };
+    
+    this._rejectionData[index] = updatedItem;
+    return updatedItem;
+  },
+  
+  deleteRejectionMasterData: function(id: string): boolean {
+    const initialLength = this._rejectionData.length;
+    this._rejectionData = this._rejectionData.filter(item => item.id !== id);
+    return this._rejectionData.length < initialLength;
+  },
+  
+  addRejectionMasterData: function(data: Omit<RejectionMasterData, 'id' | 'createdAt' | 'updatedAt'>): RejectionMasterData {
+    const today = new Date().toISOString().split('T')[0];
+    const newId = (Math.max(...this._rejectionData.map(item => parseInt(item.id))) + 1).toString();
+    
+    const newItem: RejectionMasterData = {
+      id: newId,
+      ...data,
+      createdAt: today,
+      updatedAt: today
+    };
+    
+    this._rejectionData.push(newItem);
+    return newItem;
+  },
 
   // Mock Database Access Data
   getDatabaseAccessData: (): DatabaseAccessData[] => [

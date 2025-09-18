@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
@@ -31,12 +31,19 @@ const PartnerMaster: React.FC = () => {
   const [toastMessage, setToastMessage] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingPartner, setEditingPartner] = useState<PartnerMasterData | null>(null);
+
+  // Forms
   const [editForm, setEditForm] = useState({
     name: '',
     address: '',
     contact: ''
   });
-  
+  const [addForm, setAddForm] = useState({
+    name: '',
+    address: '',
+    contact: ''
+  });
+
   // Enhanced state for new functionality
   const [showAddModal, setShowAddModal] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
@@ -45,9 +52,14 @@ const PartnerMaster: React.FC = () => {
 
   const itemsPerPage = 5;
 
-  // Get partner master data from mock service
-  const allPartners = mockDataService.getPartnerMasterData();
-  
+  // Writable source of truth (simulate realtime locally)
+  const [partners, setPartners] = useState<PartnerMasterData[]>(
+    () => mockDataService.getPartnerMasterData()
+  );
+
+  // Use the writable state everywhere below
+  const allPartners = partners;
+
   // Filter and sort partners
   const filteredAndSortedPartners = useMemo(() => {
     let filtered = allPartners.filter(partner =>
@@ -60,13 +72,13 @@ const PartnerMaster: React.FC = () => {
     filtered.sort((a, b) => {
       const aValue = (a as any)[sortBy];
       const bValue = (b as any)[sortBy];
-      
+
       if (typeof aValue === 'string') {
         return sortOrder === 'asc' 
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       }
-      
+
       return sortOrder === 'asc' 
         ? aValue - bValue 
         : bValue - aValue;
@@ -76,10 +88,20 @@ const PartnerMaster: React.FC = () => {
   }, [allPartners, searchQuery, sortBy, sortOrder]);
 
   // Calculate pagination
-  const totalPages = Math.ceil(filteredAndSortedPartners.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredAndSortedPartners.length / itemsPerPage) || 1;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentPartners = filteredAndSortedPartners.slice(startIndex, endIndex);
+
+  // Keep page in range after filtering/deleting
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(totalPages);
+  }, [totalPages, currentPage]);
+
+  // Reset to first page on search
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   const getIconComponent = (iconName: string) => {
     switch (iconName) {
@@ -93,6 +115,7 @@ const PartnerMaster: React.FC = () => {
   };
 
   const handleAddPartner = () => {
+    setAddForm({ name: '', address: '', contact: '' });
     setShowAddModal(true);
   };
 
@@ -107,12 +130,31 @@ const PartnerMaster: React.FC = () => {
     setShowToast(true);
   };
 
+  // CREATE (UI simulation)
   const handleSavePartner = () => {
+    const name = addForm.name.trim();
+    const address = addForm.address.trim();
+    const contact = addForm.contact.trim();
+
+    if (!name) {
+      setToastMessage('Please enter partner name');
+      setShowToast(true);
+      return;
+    }
+
+    const newPartner: PartnerMasterData = {
+      id: (crypto as any)?.randomUUID?.() ?? String(Date.now()),
+      name,
+      address,
+      contact
+    };
+
+    setPartners(prev => [newPartner, ...prev]);
     setToastMessage('Partner saved successfully');
     setShowToast(true);
     setShowAddModal(false);
-    setShowEditModal(false);
-    setEditingPartner(null);
+    setAddForm({ name: '', address: '', contact: '' });
+    setCurrentPage(1); // show newly added on first page
   };
 
   const handleEdit = (partnerId: string) => {
@@ -128,14 +170,33 @@ const PartnerMaster: React.FC = () => {
     }
   };
 
+  // UPDATE (UI simulation)
   const handleSaveEdit = () => {
-    if (editingPartner) {
-      setToastMessage(`Partner "${editForm.name}" updated successfully`);
+    if (!editingPartner) return;
+
+    const name = editForm.name.trim();
+    const address = editForm.address.trim();
+    const contact = editForm.contact.trim();
+
+    if (!name) {
+      setToastMessage('Please enter partner name');
       setShowToast(true);
-      setShowEditModal(false);
-      setEditingPartner(null);
-      setEditForm({ name: '', address: '', contact: '' });
+      return;
     }
+
+    setPartners(prev =>
+      prev.map(p =>
+        p.id === editingPartner.id
+          ? { ...p, name, address, contact }
+          : p
+      )
+    );
+
+    setToastMessage(`Partner "${name}" updated successfully`);
+    setShowToast(true);
+    setShowEditModal(false);
+    setEditingPartner(null);
+    setEditForm({ name: '', address: '', contact: '' });
   };
 
   const handleCloseEdit = () => {
@@ -149,9 +210,11 @@ const PartnerMaster: React.FC = () => {
     setShowDeleteAlert(true);
   };
 
+  // DELETE (UI simulation)
   const confirmDelete = () => {
     if (selectedPartnerId) {
-      setToastMessage(`Delete partner ${selectedPartnerId} functionality will be implemented`);
+      setPartners(prev => prev.filter(p => p.id !== selectedPartnerId));
+      setToastMessage('Partner deleted');
       setShowToast(true);
       setSelectedPartnerId(null);
     }
@@ -370,7 +433,7 @@ const PartnerMaster: React.FC = () => {
               <div className="pagination-container">
                 <div className="pagination-info">
                   <p>
-                    Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedPartners.length)} of {filteredAndSortedPartners.length} partners
+                    Showing {filteredAndSortedPartners.length === 0 ? 0 : startIndex + 1} to {Math.min(endIndex, filteredAndSortedPartners.length)} of {filteredAndSortedPartners.length} partners
                   </p>
                 </div>
                 <div className="pagination-controls">
@@ -402,7 +465,7 @@ const PartnerMaster: React.FC = () => {
         </div>
       </IonSplitPane>
 
-      {/* Add Partner Modal */}
+      {/* Add Partner Modal (controlled) */}
       <IonModal isOpen={showAddModal} onDidDismiss={() => setShowAddModal(false)}>
         <IonHeader>
           <IonToolbar>
@@ -422,18 +485,24 @@ const PartnerMaster: React.FC = () => {
                 label="Partner Name"
                 labelPlacement="stacked"
                 placeholder="Enter partner name"
+                value={addForm.name}
+                onIonChange={(e) => setAddForm(f => ({ ...f, name: e.detail.value ?? '' }))}
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
               <IonInput
                 label="Address"
                 labelPlacement="stacked"
                 placeholder="Enter address"
+                value={addForm.address}
+                onIonChange={(e) => setAddForm(f => ({ ...f, address: e.detail.value ?? '' }))}
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
               <IonInput
                 label="Contact Number"
                 labelPlacement="stacked"
                 placeholder="Enter contact number"
+                value={addForm.contact}
+                onIonChange={(e) => setAddForm(f => ({ ...f, contact: e.detail.value ?? '' }))}
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
               <IonTextarea
@@ -461,7 +530,7 @@ const PartnerMaster: React.FC = () => {
         </IonContent>
       </IonModal>
 
-      {/* Edit Partner Modal */}
+      {/* Edit Partner Modal (controlled) */}
       <IonModal isOpen={showEditModal} onDidDismiss={() => setShowEditModal(false)}>
         <IonHeader>
           <IonToolbar>
@@ -481,21 +550,21 @@ const PartnerMaster: React.FC = () => {
                 label="Partner Name"
                 labelPlacement="stacked"
                 value={editForm.name}
-                onIonChange={(e) => setEditForm({...editForm, name: e.detail.value!})}
+                onIonChange={(e) => setEditForm({...editForm, name: e.detail.value ?? ''})}
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
               <IonInput
                 label="Address"
                 labelPlacement="stacked"
                 value={editForm.address}
-                onIonChange={(e) => setEditForm({...editForm, address: e.detail.value!})}
+                onIonChange={(e) => setEditForm({...editForm, address: e.detail.value ?? ''})}
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
               <IonInput
                 label="Contact Number"
                 labelPlacement="stacked"
                 value={editForm.contact}
-                onIonChange={(e) => setEditForm({...editForm, contact: e.detail.value!})}
+                onIonChange={(e) => setEditForm({...editForm, contact: e.detail.value ?? ''})}
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
               <IonTextarea

@@ -183,8 +183,12 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .action-dropdown-trigger {
-    min-width: 70px;
-    height: 32px;
+    min-width: 44px;
+    height: 36px;
+    --padding-start: 8px;
+    --padding-end: 8px;
+    border: 1px solid rgba(102, 126, 234, 0.3) !important;
+    border-radius: 8px !important;
   }
   
   .action-dropdown-text {
@@ -193,6 +197,12 @@
   
   .action-dropdown-chevron {
     margin-left: 0;
+    font-size: 16px;
+  }
+  
+  /* Make the ellipsis icon more prominent on mobile */
+  .action-dropdown-trigger ion-icon:first-child {
+    font-size: 18px;
   }
 }
 
