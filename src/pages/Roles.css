@@ -5,11 +5,13 @@
   --padding-end: 1.5rem;
   --padding-top: 1.5rem;
   --padding-bottom: 1.5rem;
+  min-height: 100vh;
 }
 
 .roles-container {
   max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
 }
 
 /* Header Section */
@@ -23,12 +25,14 @@
   font-weight: 700;
   color: var(--color-text-primary);
   margin: 0 0 0.5rem 0;
+  line-height: 1.2;
 }
 
 .roles-header p {
   font-size: 1rem;
   color: var(--color-text-secondary);
   margin: 0;
+  line-height: 1.4;
 }
 
 /* Actions Section */
@@ -42,20 +46,27 @@
 
 .roles-search {
   flex: 1;
-  min-width: 300px;
+  min-width: 250px;
   --background: var(--color-bg-primary);
   --border-radius: 8px;
   --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .add-role-button {
-  --background: var(--color-primary);
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --color: white;
   --border-radius: 8px;
-  --padding-start: 1rem;
-  --padding-end: 1rem;
+  --padding-start: 1.5rem;
+  --padding-end: 1.5rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
   font-weight: 600;
-  white-space: nowrap;
+  text-transform: none;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  min-width: 140px;
 }
 
 .add-role-button:hover {
@@ -68,11 +79,13 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   margin-bottom: 2rem;
+  background: var(--color-bg-primary);
 }
 
 .table-container {
   padding: 0;
   overflow-x: auto;
+  width: 100%;
 }
 
 /* Table Styles */
@@ -80,80 +93,80 @@
   width: 100%;
   border-collapse: collapse;
   background: var(--color-bg-primary);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
 }
 
 .roles-table th {
-  background: var(--color-bg-secondary);
-  color: var(--color-text-primary);
-  font-weight: 600;
-  font-size: 0.9rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
   padding: 1rem;
   text-align: left;
-  border-bottom: 2px solid var(--color-border-medium);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.85rem;
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
-.table-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.roles-table th:first-child {
+  border-top-left-radius: 12px;
 }
 
-.filter-icon {
-  font-size: 0.8rem;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.filter-icon:hover {
-  color: var(--color-primary);
+.roles-table th:last-child {
+  border-top-right-radius: 12px;
+  text-align: center;
 }
 
 .roles-table td {
   padding: 1rem;
-  border-bottom: 1px solid var(--color-border-light);
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
   font-size: 0.9rem;
-  color: var(--color-text-primary);
 }
 
 .roles-table tbody tr:hover {
-  background: var(--color-bg-secondary);
+  background-color: var(--color-bg-hover);
+  transition: background-color 0.2s ease;
 }
 
 .roles-table tbody tr:last-child td {
   border-bottom: none;
 }
 
-/* Row Styling */
-.even-row {
-  background: var(--color-bg-primary);
+.roles-table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 12px;
 }
 
-.odd-row {
-  background: rgba(0, 0, 0, 0.02);
+.roles-table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 12px;
 }
 
-/* Cell Styles */
+/* Role Name Cell */
 .role-name-cell {
-  min-width: 300px;
-}
-
-.role-name {
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-text-primary);
+  min-width: 200px;
+  width: auto;
 }
 
+/* Actions Cell */
 .actions-cell {
+  text-align: center;
+  width: 120px;
   min-width: 120px;
+  padding: 0.5rem;
 }
 
 .action-buttons {
   display: flex;
-  gap: 0.5rem;
+  justify-content: center;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .edit-button {
@@ -241,87 +254,259 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .roles-content {
-    --padding-start: 1rem;
-    --padding-end: 1rem;
+    --padding-start: 0.75rem;
+    --padding-end: 0.75rem;
+  }
+
+  .roles-header {
+    padding: 1rem 0;
+    margin-bottom: 1rem;
   }
 
   .roles-header h1 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .roles-header p {
+    font-size: 0.9rem;
+    margin-bottom: 0;
   }
 
   .roles-actions {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: nowrap;
+    margin-bottom: 1rem;
   }
 
   .roles-search {
-    min-width: auto;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .add-role-button {
+    flex-shrink: 0;
+    min-width: 110px;
+    --padding-start: 0.9rem;
+    --padding-end: 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  /* Optimize table container for mobile */
+  .roles-table-card {
+    margin: 0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Ensure table displays both columns properly on mobile */
+  .roles-table {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    min-width: 320px;
   }
 
   .roles-table th,
   .roles-table td {
     padding: 0.75rem 0.5rem;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  /* Name column takes most space, actions column fixed width */
+  .role-name-cell {
+    width: calc(100% - 100px);
+    min-width: auto;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .actions-cell {
+    width: 100px;
+    min-width: 100px;
+    padding: 0.5rem 0.3rem;
+    text-align: center;
   }
 
   .action-buttons {
-    gap: 0.5rem;
+    gap: 0.4rem;
     flex-direction: row;
+    justify-content: center;
+    align-items: center;
   }
 
   .edit-button,
   .delete-button {
-    width: 36px;
-    height: 36px;
-    --padding: 0.4rem;
+    width: 38px;
+    height: 38px;
+    --padding: 0.5rem;
     font-size: 0.9rem;
+  }
+
+  /* Ensure ActionDropdown is visible */
+  .actions-cell .action-dropdown-container {
+    display: block !important;
+    width: 100%;
+  }
+
+  .actions-cell .action-dropdown-trigger {
+    width: 44px !important;
+    height: 36px !important;
+    min-width: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto !important;
   }
 
   .pagination-container {
     flex-direction: column;
     gap: 1rem;
     text-align: center;
+    margin-top: 1.5rem;
+    padding: 1rem 0;
+  }
+
+  .pagination-info {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
   }
 
   .pagination-controls {
-    flex-direction: column;
+    flex-direction: row;
     gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   .pagination-button {
-    min-width: auto;
-    width: 100%;
+    min-width: 80px;
+    flex: 0 0 auto;
   }
 }
 
 @media (max-width: 480px) {
+  .roles-content {
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+  }
+
+  .roles-header {
+    padding: 0.75rem 0;
+    margin-bottom: 0.75rem;
+  }
+
   .roles-header h1 {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
   }
 
   .roles-header p {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    margin-bottom: 0;
+  }
+
+  .roles-actions {
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .add-role-button {
+    min-width: 90px;
+    --padding-start: 0.6rem;
+    --padding-end: 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  /* Further optimize table for very small screens */
+  .roles-table-card {
+    margin: 0;
+    border-radius: 6px;
+  }
+
+  .roles-table {
+    min-width: 300px;
   }
 
   .roles-table th,
   .roles-table td {
-    padding: 0.5rem 0.25rem;
-    font-size: 0.75rem;
+    padding: 0.5rem 0.3rem;
+    font-size: 0.8rem;
+  }
+
+  .role-name-cell {
+    width: calc(100% - 85px);
+    font-size: 0.8rem;
+  }
+
+  .actions-cell {
+    width: 85px;
+    min-width: 85px;
+    padding: 0.4rem 0.2rem;
+    text-align: center;
   }
 
   .action-buttons {
     flex-direction: row;
-    gap: 0.4rem;
+    gap: 0.25rem;
   }
 
   .edit-button,
   .delete-button {
-    width: 32px;
-    height: 32px;
-    --padding: 0.3rem;
-    font-size: 0.8rem;
+    width: 34px;
+    height: 34px;
+    --padding: 0.4rem;
+    font-size: 0.85rem;
   }
+
+  /* Ensure ActionDropdown is visible on very small screens */
+  .actions-cell .action-dropdown-container {
+    display: block !important;
+    width: 100%;
+  }
+
+  .actions-cell .action-dropdown-trigger {
+    width: 40px !important;
+    height: 32px !important;
+    min-width: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto !important;
+    --padding-start: 0.3rem !important;
+    --padding-end: 0.3rem !important;
+  }
+
+  .pagination-container {
+    margin-top: 1rem;
+    padding: 0.75rem 0;
+  }
+
+  .pagination-info {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .pagination-controls {
+    gap: 0.4rem;
+  }
+
+  .pagination-button {
+    min-width: 70px;
+    font-size: 0.85rem;
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+  }
+}
 
   .pagination-controls {
     gap: 0.25rem;

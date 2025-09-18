@@ -331,65 +331,7 @@ const Workflow: React.FC = () => {
                 <p>Manage disbursement and status management workflows</p>
               </div>
 
-              {/* Analytics Dashboard */}
-              <div className="analytics-section">
-                <IonGrid>
-                  <IonRow>
-                    <IonCol size="12" sizeMd="3">
-                      <IonCard className="analytics-card">
-                        <IonCardContent>
-                          <div className="analytics-item">
-                            <IonIcon icon={listOutline} className="analytics-icon" />
-                            <div className="analytics-content">
-                              <h3>{analyticsData.totalWorkflows}</h3>
-                              <p>Total Workflows</p>
-                            </div>
-                          </div>
-                        </IonCardContent>
-                      </IonCard>
-                    </IonCol>
-                    <IonCol size="12" sizeMd="3">
-                      <IonCard className="analytics-card">
-                        <IonCardContent>
-                          <div className="analytics-item">
-                            <IonIcon icon={playCircleOutline} className="analytics-icon" />
-                            <div className="analytics-content">
-                              <h3>{analyticsData.activeInstances}</h3>
-                              <p>Active Instances</p>
-                            </div>
-                          </div>
-                        </IonCardContent>
-                      </IonCard>
-                    </IonCol>
-                    <IonCol size="12" sizeMd="3">
-                      <IonCard className="analytics-card">
-                        <IonCardContent>
-                          <div className="analytics-item">
-                            <IonIcon icon={checkmarkOutline} className="analytics-icon" />
-                            <div className="analytics-content">
-                              <h3>{analyticsData.completedTasks}</h3>
-                              <p>Completed Tasks</p>
-                            </div>
-                          </div>
-                        </IonCardContent>
-                      </IonCard>
-                    </IonCol>
-                    <IonCol size="12" sizeMd="3">
-                      <IonCard className="analytics-card">
-                        <IonCardContent>
-                          <div className="analytics-item">
-                            <IonIcon icon={timeOutline} className="analytics-icon" />
-                            <div className="analytics-content">
-                              <h3>{analyticsData.averageCompletionTime}h</h3>
-                              <p>Avg. Completion Time</p>
-                            </div>
-                          </div>
-                        </IonCardContent>
-                      </IonCard>
-                    </IonCol>
-                  </IonRow>
-                </IonGrid>
-              </div>
+
 
               {/* Custom Tab Navigation */}
               <div className="custom-tab-bar">
@@ -398,24 +340,24 @@ const Workflow: React.FC = () => {
                   onClick={() => setActiveTab('workflows')}
                   className="tab-button"
                 >
-                  <IonIcon icon={listOutline} slot="start" />
-                  Workflows
+                  <IonIcon icon={listOutline} />
+                  <span className="tab-text">Workflows</span>
                 </IonButton>
                 <IonButton 
                   fill={activeTab === 'tasks' ? 'solid' : 'outline'}
                   onClick={() => setActiveTab('tasks')}
                   className="tab-button"
                 >
-                  <IonIcon icon={checkmarkOutline} slot="start" />
-                  Tasks
+                  <IonIcon icon={checkmarkOutline} />
+                  <span className="tab-text">Tasks</span>
                 </IonButton>
                 <IonButton 
                   fill={activeTab === 'instances' ? 'solid' : 'outline'}
                   onClick={() => setActiveTab('instances')}
                   className="tab-button"
                 >
-                  <IonIcon icon={playCircleOutline} slot="start" />
-                  Instances
+                  <IonIcon icon={playCircleOutline} />
+                  <span className="tab-text">Instances</span>
                 </IonButton>
               </div>
 

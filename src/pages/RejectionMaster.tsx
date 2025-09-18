@@ -41,11 +41,16 @@ const RejectionMaster: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [sortBy, setSortBy] = useState<'name'>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [newRejection, setNewRejection] = useState({
+    name: ''
+  });
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Make it a state variable
 
-  const itemsPerPage = 5;
-
-  // Get rejection master data from mock service
-  const allRejections = mockDataService.getRejectionMasterData();
+  // Get rejection master data from mock service with refresh trigger
+  const allRejections = useMemo(() => {
+    return mockDataService.getRejectionMasterData();
+  }, [refreshTrigger]);
   
   // Filter and sort rejections
   const filteredAndSortedRejections = useMemo(() => {
@@ -90,12 +95,17 @@ const RejectionMaster: React.FC = () => {
   };
 
   const handleAddRejection = () => {
+    setNewRejection({ name: '' });
     setShowAddModal(true);
   };
 
   const handleView = (rejection: RejectionMasterData) => {
-    setToastMessage(`Viewing rejection: ${rejection.name}`);
-    setShowToast(true);
+    setEditingRejection(rejection);
+    setEditForm({
+      name: rejection.name
+    });
+    // Set view-only mode by showing the edit modal but disabling edits
+    setShowEditModal(true);
   };
 
   const handleCopyName = (rejectionName: string) => {
@@ -105,11 +115,33 @@ const RejectionMaster: React.FC = () => {
   };
 
   const handleSaveRejection = () => {
-    setToastMessage('Rejection saved successfully');
-    setShowToast(true);
-    setShowAddModal(false);
-    setShowEditModal(false);
-    setEditingRejection(null);
+    if (newRejection.name.trim()) {
+      const addedRejection = mockDataService.addRejectionMasterData({
+        name: newRejection.name.trim()
+      });
+      
+      if (addedRejection) {
+        setToastMessage(`Rejection "${addedRejection.name}" added successfully`);
+        // Trigger refresh to update the UI
+        setRefreshTrigger(prev => prev + 1);
+        
+        // Calculate new pagination based on updated data length
+        setTimeout(() => {
+          const updatedData = mockDataService.getRejectionMasterData();
+          const newTotalPages = Math.ceil(updatedData.length / itemsPerPage);
+          setCurrentPage(newTotalPages); // Navigate to last page to see the new item
+        }, 100); // Increased timeout to ensure data is updated
+      } else {
+        setToastMessage('Error adding rejection');
+      }
+      
+      setShowToast(true);
+      setShowAddModal(false);
+      setNewRejection({ name: '' });
+    } else {
+      setToastMessage('Please enter a rejection name');
+      setShowToast(true);
+    }
   };
 
   const handleEdit = (rejectionId: string) => {
@@ -124,12 +156,26 @@ const RejectionMaster: React.FC = () => {
   };
 
   const handleSaveEdit = () => {
-    if (editingRejection) {
-      setToastMessage(`Rejection "${editForm.name}" updated successfully`);
+    if (editingRejection && editForm.name.trim()) {
+      const updatedRejection = mockDataService.updateRejectionMasterData(editingRejection.id, {
+        name: editForm.name.trim()
+      });
+      
+      if (updatedRejection) {
+        setToastMessage(`Rejection "${updatedRejection.name}" updated successfully`);
+        // Trigger refresh to update the UI
+        setRefreshTrigger(prev => prev + 1);
+      } else {
+        setToastMessage('Error updating rejection');
+      }
+      
       setShowToast(true);
       setShowEditModal(false);
       setEditingRejection(null);
       setEditForm({ name: '' });
+    } else {
+      setToastMessage('Please enter a rejection name');
+      setShowToast(true);
     }
   };
 
@@ -146,7 +192,24 @@ const RejectionMaster: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedRejectionId) {
-      setToastMessage(`Delete rejection ${selectedRejectionId} functionality will be implemented`);
+      const success = mockDataService.deleteRejectionMasterData(selectedRejectionId);
+      if (success) {
+        const deletedItem = allRejections.find(r => r.id === selectedRejectionId);
+        setToastMessage(`Rejection "${deletedItem?.name}" deleted successfully`);
+        // Trigger refresh to update the UI
+        setRefreshTrigger(prev => prev + 1);
+        
+        // Adjust pagination if needed after deletion
+        setTimeout(() => {
+          const updatedData = mockDataService.getRejectionMasterData();
+          const newTotalPages = Math.ceil(updatedData.length / itemsPerPage);
+          if (currentPage > newTotalPages && newTotalPages > 0) {
+            setCurrentPage(newTotalPages);
+          }
+        }, 0);
+      } else {
+        setToastMessage('Error deleting rejection');
+      }
       setShowToast(true);
       setSelectedRejectionId(null);
     }
@@ -348,6 +411,23 @@ const RejectionMaster: React.FC = () => {
                   <p>
                     Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedRejections.length)} of {filteredAndSortedRejections.length} rejections
                   </p>
+                  <div className="items-per-page">
+                    <IonSelect
+                      value={itemsPerPage}
+                      placeholder="Items per page"
+                      onIonChange={(e) => {
+                        setItemsPerPage(e.detail.value);
+                        setCurrentPage(1); // Reset to first page when changing items per page
+                      }}
+                      interface="popover"
+                      style={{ minWidth: '120px' }}
+                    >
+                      <IonSelectOption value={5}>5 per page</IonSelectOption>
+                      <IonSelectOption value={10}>10 per page</IonSelectOption>
+                      <IonSelectOption value={20}>20 per page</IonSelectOption>
+                      <IonSelectOption value={50}>50 per page</IonSelectOption>
+                    </IonSelect>
+                  </div>
                 </div>
                 <div className="pagination-controls">
                   <IonButton 
@@ -359,6 +439,35 @@ const RejectionMaster: React.FC = () => {
                     <IonIcon icon={chevronBackOutline} />
                     Previous
                   </IonButton>
+                  
+                  {/* Page numbers */}
+                  <div className="page-numbers">
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      let pageNum;
+                      if (totalPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (currentPage >= totalPages - 2) {
+                        pageNum = totalPages - 4 + i;
+                      } else {
+                        pageNum = currentPage - 2 + i;
+                      }
+                      
+                      return (
+                        <IonButton
+                          key={pageNum}
+                          fill={currentPage === pageNum ? "solid" : "clear"}
+                          size="small"
+                          onClick={() => setCurrentPage(pageNum)}
+                          className="page-number-button"
+                        >
+                          {pageNum}
+                        </IonButton>
+                      );
+                    })}
+                  </div>
+                  
                   <span className="page-info">
                     Page {currentPage} of {totalPages}
                   </span>
@@ -398,6 +507,8 @@ const RejectionMaster: React.FC = () => {
                 label="Rejection Name"
                 labelPlacement="stacked"
                 placeholder="Enter rejection reason name"
+                value={newRejection.name}
+                onIonChange={(e) => setNewRejection({...newRejection, name: e.detail.value!})}
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
               <IonTextarea

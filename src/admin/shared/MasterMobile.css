@@ -1,0 +1,202 @@
+/* Mobile-First Responsive Master Files CSS */
+
+/* Action Buttons - All Screen Sizes */
+.view-button,
+.edit-button,
+.delete-button {
+  width: 40px;
+  height: 40px;
+  --padding: 0.5rem;
+  --border-radius: 8px;
+  font-size: 1rem;
+  min-width: 40px;
+  flex-shrink: 0;
+  --background: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin: 0 3px;
+  transition: all 0.2s ease;
+}
+
+/* Individual button colors */
+.view-button {
+  --background: #ffffff;
+  --color: #2196F3;
+  --background-hover: #e3f2fd;
+  --color-hover: #1976D2;
+}
+
+.edit-button {
+  --background: #ffffff;
+  --color: #4CAF50;
+  --background-hover: #e8f5e8;
+  --color-hover: #388E3C;
+}
+
+.delete-button {
+  --background: #ffffff;
+  --color: #f44336;
+  --background-hover: #ffebee;
+  --color-hover: #d32f2f;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 0.25rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  min-width: 140px;
+  padding: 0.5rem;
+}
+
+/* Base Mobile Styles */
+@media (max-width: 768px) {
+  /* Content Padding */
+  .manage-pages-content,
+  .branch-master-content,
+  .caste-master-content,
+  .taluka-master-content,
+  .action-masters-content,
+  .organization-masters-content,
+  .status-master-content,
+  .partner-master-content,
+  .status-mapping-content,
+  .rejection-master-content {
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    --padding-top: 1rem;
+    --padding-bottom: 1rem;
+  }
+
+  /* Container Adjustments */
+  .pages-container,
+  .branches-container,
+  .castes-container,
+  .talukas-container,
+  .actions-container,
+  .organizations-container,
+  .statuses-container,
+  .partners-container,
+  .status-mappings-container,
+  .rejections-container {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  /* Header Section Mobile */
+  .pages-header,
+  .branches-header,
+  .castes-header,
+  .talukas-header,
+  .actions-header,
+  .organizations-header,
+  .statuses-header,
+  .partners-header,
+  .status-mappings-header,
+  .rejections-header {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 15px;
+    text-align: center;
+  }
+
+  .pages-header h1,
+  .branches-header h1,
+  .castes-header h1,
+  .talukas-header h1,
+  .actions-header h1,
+  .organizations-header h1,
+  .statuses-header h1,
+  .partners-header h1,
+  .status-mappings-header h1,
+  .rejections-header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .pages-header p,
+  .branches-header p,
+  .castes-header p,
+  .talukas-header p,
+  .actions-header p,
+  .organizations-header p,
+  .statuses-header p,
+  .partners-header p,
+  .status-mappings-header p,
+  .rejections-header p {
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  /* Actions Section Mobile */
+  .pages-actions,
+  .branches-actions,
+  .castes-actions,
+  .talukas-actions,
+  .actions-actions,
+  .organizations-actions,
+  .statuses-actions,
+  .partners-actions,
+  .status-mappings-actions,
+  .rejections-actions {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 15px;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Search Bar Mobile */
+  .pages-search,
+  .branches-search,
+  .castes-search,
+  .talukas-search,
+  .actions-search,
+  .organizations-search,
+  .statuses-search,
+  .partners-search,
+  .status-mappings-search,
+  .rejections-search {
+    min-width: auto;
+    width: 100%;
+    --border-radius: 12px;
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+  }
+
+  /* Add Button Mobile */
+  .add-page-button,
+  .add-branch-button,
+  .add-caste-button,
+  .add-taluka-button,
+  .add-action-button,
+  .add-organization-button,
+  .add-status-button,
+  .add-partner-button,
+  .add-status-mapping-button,
+  .add-rejection-button {
+    width: 100%;
+    --padding-top: 0.75rem;
+    --padding-bottom: 0.75rem;
+    --border-radius: 12px;
+    font-size: 1rem;
+  }
+
+  /* Table Card Mobile */
+  .pages-table-card,
+  .branches-table-card,
+  .castes-table-card,
+  .talukas-table-card,
+  .actions-table-card,
+  .organizations-table-card,
+  .statuses-table-card,
+  .partners-table-card,
+  .status-mappings-table-card,
+  .rejections-table-card {
+    border-radius: 15px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+}

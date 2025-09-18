@@ -1,96 +1,82 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
-  IonModal, IonItem, IonLabel, IonInput, IonTextarea, IonSelect, IonSelectOption,
-  IonCheckbox, IonBadge, IonChip, IonButtons, IonPopover, IonList, IonToggle,
-  IonRange, IonDatetime, IonText, IonFab, IonFabButton
+  IonModal, IonButtons, IonInput, IonTextarea, IonSelect, IonSelectOption,
+  IonBadge, IonChip, IonFab, IonFabButton, IonItem, IonLabel, IonList
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
+  keyOutline, homeOutline, gitBranchOutline, shieldOutline,
+  shuffleOutline, barChartOutline, fileTrayOutline, accessibilityOutline,
   chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
-  downloadOutline, refreshOutline, eyeOutline, settingsOutline,
-  arrowUpOutline, arrowDownOutline, appsOutline, gridOutline, listOutline,
-  cloudDownloadOutline, shareOutline, filterOutline, businessOutline, timeOutline
+  eyeOutline, settingsOutline, copyOutline, linkOutline, timeOutline,
+  peopleOutline, documentTextOutline, globeOutline, businessOutline,
+  locationOutline, callOutline, mailOutline, gridOutline, listOutline
 } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 import ActionDropdown from '../components/common/ActionDropdown';
 import { mockDataService } from '../../services/api';
 import type { BranchData } from '../../types';
-import './BranchMaster.css';
+import './BranchMaster.css';  // original 
+import '../../pages/shared/MasterMobile.css';
 
 const BranchMaster: React.FC = () => {
+  // State management
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   
-  // Advanced filters state
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
-  const [advancedFilters, setAdvancedFilters] = useState({
-    officeType: '',
-    dateRange: { start: '', end: '' },
-    sortBy: 'officeName',
-    sortOrder: 'asc' as 'asc' | 'desc'
-  });
-  
-  // Bulk operations state
-  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
-  const [showBulkActions, setShowBulkActions] = useState(false);
-  const [showBulkDeleteAlert, setShowBulkDeleteAlert] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'table'>('table');
-  const [showExportModal, setShowExportModal] = useState(false);
-  
-  // RBAC modals state
+  // CRUD modals state
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
+  const [editingBranch, setEditingBranch] = useState<BranchData | null>(null);
   const [viewingBranch, setViewingBranch] = useState<BranchData | null>(null);
-  const [addForm, setAddForm] = useState({
-    officeName: '',
-    officeType: '',
-    description: '',
-    permissions: [] as string[]
-  });
-
-  const itemsPerPage = 5;
-
-  // Get branch data from mock service
-  const allBranches = mockDataService.getBranchData();
+  const [editFormData, setEditFormData] = useState({ officeName: '', officeType: '' });
+  const [addFormData, setAddFormData] = useState({ officeName: '', officeType: '' });
   
-  // Filter and sort branches based on search query and advanced filters
+  // View options
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [sortBy, setSortBy] = useState<'officeName' | 'officeType' | 'createdAt'>('officeName');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  const itemsPerPage = 6;
+
+  // State for managing branches data
+  const [allBranches, setAllBranches] = useState<BranchData[]>([]);
+  
+  // Filter and sort branches
   const filteredAndSortedBranches = useMemo(() => {
-    let filtered = allBranches.filter(branch => {
-      const matchesSearch = branch.officeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           branch.officeType.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      const matchesOfficeType = !advancedFilters.officeType || 
-                               branch.officeType === advancedFilters.officeType;
-      
-      const matchesDateRange = !advancedFilters.dateRange.start || 
-                              (branch.createdAt >= advancedFilters.dateRange.start && 
-                               branch.createdAt <= advancedFilters.dateRange.end);
-      
-      return matchesSearch && matchesOfficeType && matchesDateRange;
-    });
-    
-    // Sort the filtered results
+    let filtered = allBranches.filter(branch =>
+      branch.officeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      branch.officeType.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    // Sort branches
     filtered.sort((a, b) => {
-      const aValue = a[advancedFilters.sortBy as keyof BranchData];
-      const bValue = b[advancedFilters.sortBy as keyof BranchData];
+      const aValue = (a as any)[sortBy];
+      const bValue = (b as any)[sortBy];
       
-      if (advancedFilters.sortOrder === 'asc') {
-        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-      } else {
-        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      if (typeof aValue === 'string') {
+        return sortOrder === 'asc' 
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
       }
+      
+      return sortOrder === 'asc' 
+        ? aValue - bValue 
+        : bValue - aValue;
     });
-    
+
     return filtered;
-  }, [allBranches, searchQuery, advancedFilters]);
+  }, [allBranches, searchQuery, sortBy, sortOrder]);
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredAndSortedBranches.length / itemsPerPage);
@@ -98,125 +84,134 @@ const BranchMaster: React.FC = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentBranches = filteredAndSortedBranches.slice(startIndex, endIndex);
 
-  // Bulk operations handlers
-  const handleSelectAll = () => {
-    if (selectedItems.size === currentBranches.length) {
-      setSelectedItems(new Set());
-    } else {
-      setSelectedItems(new Set(currentBranches.map(branch => branch.id)));
+  // Fetch branches on component mount
+  useEffect(() => {
+    fetchBranches();
+  }, []);
+
+  // CRUD Operations
+  const fetchBranches = async () => {
+    try {
+      setIsLoading(true);
+      const data = mockDataService.getBranchData();
+      setAllBranches(data);
+    } catch (error) {
+      console.error('Error fetching branches:', error);
+      setToastMessage('Failed to fetch branches');
+      setShowToast(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleSelectItem = (branchId: string) => {
-    const newSelected = new Set(selectedItems);
-    if (newSelected.has(branchId)) {
-      newSelected.delete(branchId);
-    } else {
-      newSelected.add(branchId);
-    }
-    setSelectedItems(newSelected);
-  };
-
-  const handleBulkDelete = () => {
-    setShowBulkDeleteAlert(true);
-  };
-
-  const confirmBulkDelete = () => {
-    setToastMessage(`Deleted ${selectedItems.size} branches successfully`);
-    setShowToast(true);
-    setSelectedItems(new Set());
-    setShowBulkActions(false);
-    setShowBulkDeleteAlert(false);
-  };
-
-  const handleBulkExport = () => {
-    setShowExportModal(true);
-  };
-
-  const handleExport = (format: string) => {
-    setToastMessage(`Exporting ${selectedItems.size} branches as ${format}`);
-    setShowToast(true);
-    setShowExportModal(false);
-  };
-
-  // Advanced filter handlers
-  const handleAdvancedFilterChange = (key: string, value: any) => {
-    setAdvancedFilters(prev => ({
-      ...prev,
-      [key]: value
-    }));
-  };
-
-  const clearAdvancedFilters = () => {
-    setAdvancedFilters({
-      officeType: '',
-      dateRange: { start: '', end: '' },
-      sortBy: 'officeName',
-      sortOrder: 'asc'
-    });
-  };
-
-  // RBAC handlers
   const handleAddBranch = () => {
-    setAddForm({ officeName: '', officeType: '', description: '', permissions: [] });
+    setAddFormData({ officeName: '', officeType: '' });
     setShowAddModal(true);
   };
 
-  const handleSaveAdd = () => {
-    if (!addForm.officeName.trim() || !addForm.officeType.trim()) {
-      setToastMessage('Please fill in all required fields');
-      setShowToast(true);
-      return;
-    }
-    
-    setToastMessage('Branch added successfully');
-    setShowToast(true);
-    setShowAddModal(false);
-    setAddForm({ officeName: '', officeType: '', description: '', permissions: [] });
-  };
-
-  const handleCloseAdd = () => {
-    setShowAddModal(false);
-    setAddForm({ officeName: '', officeType: '', description: '', permissions: [] });
-  };
-
-  const handleEdit = (branchId: string) => {
-    setToastMessage(`Edit branch ${branchId} functionality will be implemented`);
-    setShowToast(true);
-  };
-
-  const handleView = (branchId: string) => {
-    const branch = allBranches.find(b => b.id === branchId);
-    if (branch) {
-      setViewingBranch(branch);
-      setShowViewModal(true);
+  const handleSaveNewBranch = () => {
+    if (addFormData.officeName && addFormData.officeType) {
+      try {
+        // Create a new branch with mock data
+        const newBranch: BranchData = {
+          id: `branch-${Date.now()}`,
+          officeName: addFormData.officeName,
+          officeType: addFormData.officeType,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        
+        setAllBranches([...allBranches, newBranch]);
+        setShowAddModal(false);
+        setAddFormData({ officeName: '', officeType: '' });
+        setToastMessage(`Branch "${newBranch.officeName}" created successfully`);
+        setShowToast(true);
+      } catch (error) {
+        console.error('Error adding branch:', error);
+        setToastMessage('Failed to add branch');
+        setShowToast(true);
+      }
     }
   };
 
-  const handleCloseView = () => {
-    setShowViewModal(false);
-    setViewingBranch(null);
+  const handleEdit = (branch: BranchData) => {
+    setEditingBranch(branch);
+    setEditFormData({
+      officeName: branch.officeName,
+      officeType: branch.officeType
+    });
+    setShowEditModal(true);
+  };
+
+  const handleUpdateBranch = () => {
+    if (editingBranch && editFormData.officeName && editFormData.officeType) {
+      try {
+        // Update branch with mock data
+        const updatedBranch: BranchData = {
+          ...editingBranch,
+          officeName: editFormData.officeName,
+          officeType: editFormData.officeType,
+          updatedAt: new Date().toISOString()
+        };
+        
+        setAllBranches(prev => prev.map(b => b.id === updatedBranch.id ? updatedBranch : b));
+        setShowEditModal(false);
+        setEditingBranch(null);
+        setToastMessage(`Branch "${updatedBranch.officeName}" updated successfully`);
+        setShowToast(true);
+      } catch (error) {
+        console.error('Error updating branch:', error);
+        setToastMessage('Failed to update branch');
+        setShowToast(true);
+      }
+    }
+  };
+
+  const handleView = (branch: BranchData) => {
+    setViewingBranch(branch);
+    setShowViewModal(true);
   };
 
   const handleDelete = (branchId: string) => {
-    setSelectedBranchId(branchId);
-    setShowDeleteAlert(true);
+    const branchToDelete = allBranches.find(branch => branch.id === branchId);
+    if (branchToDelete) {
+      console.log("Delete triggered for branch ID:", branchId);
+      setSelectedBranchId(branchId);
+      setShowDeleteAlert(true);
+    } else {
+      setToastMessage('Branch not found');
+      setShowToast(true);
+    }
   };
 
   const confirmDelete = () => {
     if (selectedBranchId) {
-      setToastMessage(`Branch ${selectedBranchId} deleted successfully`);
-      setShowToast(true);
-      setSelectedBranchId(null);
+      try {
+        // Get the branch name before deletion for the toast message
+        const branchToDelete = allBranches.find(branch => branch.id === selectedBranchId);
+        
+        // Mock delete operation
+        setAllBranches(prev => prev.filter(b => b.id !== selectedBranchId));
+        setToastMessage(`Branch "${branchToDelete?.officeName || ''}" deleted successfully`);
+        setShowToast(true);
+      } catch (error) {
+        console.error('Error deleting branch:', error);
+        setToastMessage('Failed to delete branch');
+        setShowToast(true);
+      } finally {
+        setShowDeleteAlert(false);
+        setSelectedBranchId(null);
+      }
     }
-    setShowDeleteAlert(false);
   };
 
   const cancelDelete = () => {
-    setSelectedBranchId(null);
     setShowDeleteAlert(false);
+    setSelectedBranchId(null);
   };
+  
 
+  
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -229,505 +224,368 @@ const BranchMaster: React.FC = () => {
     }
   };
 
+  // Pagination handlers - removed duplicate declarations
+
+  // Toggle view mode
+  const toggleViewMode = () => {
+    setViewMode(viewMode === 'grid' ? 'table' : 'grid');
+  };
+
+  // Sort handlers
+  const handleSort = (field: 'officeName' | 'officeType' | 'createdAt') => {
+    if (sortBy === field) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(field);
+      setSortOrder('asc');
+    }
+  };
+
   return (
-    <IonPage>
-      <IonSplitPane contentId="dashboard-content" when="md">
+    <IonPage className="branch-master-page">
+      <IonSplitPane contentId="branch-master-content">
         <Sidebar />
-        <div className="main-content" id="dashboard-content">
-          <DashboardHeader />
+        <IonContent id="branch-master-content" className="branch-master-content">
+          <DashboardHeader title="Branch Master" />
           
-          <IonContent className="branch-master-content">
-            <div className="branches-container">
-              {/* Header Section */}
-              <div className="branches-header">
-                <h1>Branch Master</h1>
-                <p>Manage office branches and their types</p>
-              </div>
+          {/* Main Content */}
+          <div className="branches-container">
+            {/* Header Section */}
+            <IonCard className="branches-header">
+              <IonCardContent>
+                <h1>Branch Management</h1>
+                <p>Create, view, edit, and manage all branch offices in the system</p>
+              </IonCardContent>
+            </IonCard>
 
-              {/* Search and Actions */}
-              <div className="branches-actions">
-                <IonSearchbar
-                  value={searchQuery}
-                  onIonChange={(e) => setSearchQuery(e.detail.value!)}
-                  placeholder="Search branches by name or type..."
-                  className="branches-search"
-                />
-                <div className="action-buttons-group">
-                  <IonButton 
-                    fill="outline" 
-                    size="default"
-                    className="view-toggle-button"
-                    onClick={() => setViewMode(viewMode === 'table' ? 'grid' : 'table')}
-                  >
-                    <IonIcon icon={viewMode === 'table' ? gridOutline : listOutline} slot="start" />
-                    {viewMode === 'table' ? 'Grid View' : 'Table View'}
-                  </IonButton>
-                  <IonButton 
-                    fill="solid" 
-                    size="default"
-                    className="add-branch-button primary"
-                    onClick={handleAddBranch}
-                  >
-                    <IonIcon icon={businessOutline} slot="start" />
-                    Add Branch
-                  </IonButton>
-                </div>
-              </div>
-
-              {/* Advanced Filters */}
-              {showAdvancedFilters && (
-                <IonCard className="advanced-filters-card">
-                  <IonCardHeader>
-                    <IonCardTitle>Advanced Filters</IonCardTitle>
-                  </IonCardHeader>
-                  <IonCardContent>
-                    <IonGrid>
-                      <IonRow>
-                        <IonCol size="12" sizeMd="4">
-                          <IonItem>
-                            <IonLabel position="stacked">Office Type</IonLabel>
-                            <IonSelect
-                              value={advancedFilters.officeType}
-                              onIonChange={(e) => handleAdvancedFilterChange('officeType', e.detail.value)}
-                              placeholder="Select office type"
-                            >
-                              <IonSelectOption value="">All Types</IonSelectOption>
-                              <IonSelectOption value="Head Office">Head Office</IonSelectOption>
-                              <IonSelectOption value="Regional Office">Regional Office</IonSelectOption>
-                              <IonSelectOption value="District Office">District Office</IonSelectOption>
-                              <IonSelectOption value="Branch Office">Branch Office</IonSelectOption>
-                            </IonSelect>
-                          </IonItem>
-                        </IonCol>
-                        <IonCol size="12" sizeMd="4">
-                          <IonItem>
-                            <IonLabel position="stacked">Sort By</IonLabel>
-                            <IonSelect
-                              value={advancedFilters.sortBy}
-                              onIonChange={(e) => handleAdvancedFilterChange('sortBy', e.detail.value)}
-                            >
-                              <IonSelectOption value="officeName">Office Name</IonSelectOption>
-                              <IonSelectOption value="officeType">Office Type</IonSelectOption>
-                              <IonSelectOption value="createdAt">Created Date</IonSelectOption>
-                            </IonSelect>
-                          </IonItem>
-                        </IonCol>
-                        <IonCol size="12" sizeMd="4">
-                          <IonItem>
-                            <IonLabel position="stacked">Sort Order</IonLabel>
-                            <IonSelect
-                              value={advancedFilters.sortOrder}
-                              onIonChange={(e) => handleAdvancedFilterChange('sortOrder', e.detail.value)}
-                            >
-                              <IonSelectOption value="asc">Ascending</IonSelectOption>
-                              <IonSelectOption value="desc">Descending</IonSelectOption>
-                            </IonSelect>
-                          </IonItem>
-                        </IonCol>
-                      </IonRow>
-                      <IonRow>
-                        <IonCol size="12">
-                          <IonButton 
-                            fill="outline" 
-                            onClick={clearAdvancedFilters}
-                          >
-                            Clear Filters
-                          </IonButton>
-                        </IonCol>
-                      </IonRow>
-                    </IonGrid>
-                  </IonCardContent>
-                </IonCard>
-              )}
-
-              {/* Bulk Actions Bar */}
-              {selectedItems.size > 0 && (
-                <IonCard className="bulk-actions-card">
-                  <IonCardContent className="bulk-actions-content">
-                    <div className="bulk-actions-info">
-                      <IonText>
-                        <h3>{selectedItems.size} item(s) selected</h3>
-                      </IonText>
-                    </div>
-                    <div className="bulk-action-buttons">
+            {/* Actions Section */}
+            <IonCard className="branches-actions">
+              <IonCardContent>
+                <IonGrid>
+                  <IonRow className="ion-align-items-center">
+                    <IonCol size="12" sizeMd="6">
+                      <IonSearchbar
+                        value={searchQuery}
+                        onIonChange={e => setSearchQuery(e.detail.value!)}
+                        placeholder="Search branches..."
+                        className="branches-search"
+                      />
+                    </IonCol>
+                    <IonCol size="12" sizeMd="6" className="ion-text-end">
                       <IonButton 
-                        fill="outline" 
-                        size="small"
-                        onClick={handleBulkExport}
+                        className="view-toggle-button" 
+                        fill="clear"
+                        onClick={toggleViewMode}
                       >
-                        <IonIcon icon={cloudDownloadOutline} />
-                        Export
+                        <IonIcon icon={viewMode === 'grid' ? listOutline : gridOutline} />
                       </IonButton>
                       <IonButton 
-                        fill="outline" 
-                        size="small"
-                        color="danger"
-                        onClick={handleBulkDelete}
+                        className="add-branch-button" 
+                        onClick={handleAddBranch}
                       >
-                        <IonIcon icon={trashOutline} />
-                        Delete
+                        <IonIcon slot="start" icon={addOutline} />
+                        Add Branch
                       </IonButton>
-                      <IonButton 
-                        fill="clear" 
-                        size="small"
-                        onClick={() => setSelectedItems(new Set())}
-                      >
-                        <IonIcon icon={closeOutline} />
-                        Clear
-                      </IonButton>
-                    </div>
-                  </IonCardContent>
-                </IonCard>
-              )}
+                    </IonCol>
+                  </IonRow>
+                </IonGrid>
+              </IonCardContent>
+            </IonCard>
 
-              {/* Branch View - Grid or Table */}
-              {viewMode === 'grid' ? (
-                <div className="branches-grid">
-                  {currentBranches.map((branch) => (
-                    <div key={branch.id} className="branch-card">
-                      <div className="branch-card-header">
-                        <div className="branch-card-icon">
-                          <IonIcon icon={businessOutline} />
-                        </div>
-                        <div className="branch-card-title">
-                          <h3 className="branch-card-name">{branch.officeName}</h3>
-                          <div className="branch-card-type">{branch.officeType}</div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-content">
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={businessOutline} className="branch-card-meta-icon" />
-                            <span>Type: {branch.officeType}</span>
-                          </div>
-                        </div>
-                        
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={timeOutline} className="branch-card-meta-icon" />
-                            <span>Created: {new Date(branch.createdAt).toLocaleDateString()}</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-actions">
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button view"
-                          onClick={() => handleView(branch.id)}
-                        >
-                          <IonIcon icon={eyeOutline} />
-                          View
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button edit"
-                          onClick={() => handleEdit(branch.id)}
-                        >
-                          <IonIcon icon={createOutline} />
-                          Edit
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button delete"
-                          onClick={() => handleDelete(branch.id)}
-                        >
-                          <IonIcon icon={trashOutline} />
-                          Delete
-                        </IonButton>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                /* Table View */
-                <IonCard className="branches-table-card">
-                  <IonCardContent className="table-container">
+            {/* Branches Display */}
+            <IonCard className="branches-table-card">
+              <IonCardContent>
+                {isLoading ? (
+                  <div className="loading-container">
+                    <IonSpinner name="crescent" />
+                    <p>Loading branches...</p>
+                  </div>
+                ) : currentBranches.length === 0 ? (
+                  <div className="no-data-container">
+                    <p>No branches found. Add a new branch to get started.</p>
+                  </div>
+                ) : viewMode === 'grid' ? (
+                  // Grid View
+                  <IonGrid>
+                    <IonRow>
+                      {currentBranches.map(branch => (
+                        <IonCol size="12" sizeSm="6" sizeMd="4" key={branch.id}>
+                          <IonCard className="branch-card">
+                            <div className="branch-card-header">
+                              <h2>{branch.officeName}</h2>
+                              <div className="branch-path">
+                                /{branch.officeName.toLowerCase().replace(/\s+/g, '-')}
+                              </div>
+                            </div>
+                            <div className="branch-card-content">
+                              <div className="branch-info">
+                                <div className="branch-info-item">
+                                  <IonIcon icon={businessOutline} />
+                                  <span>Type: {branch.officeType}</span>
+                                </div>
+                                <div className="branch-info-item">
+                                  <IonIcon icon={timeOutline} />
+                                  <span>Created: {new Date(branch.createdAt).toLocaleDateString()}</span>
+                                </div>
+                              </div>
+                              <div className="branch-actions">
+                                <IonButton className="view-button" onClick={() => handleView(branch)}>
+                                  <IonIcon icon={eyeOutline} slot="start" />
+                                  VIEW
+                                </IonButton>
+                                <IonButton className="edit-button" onClick={() => handleEdit(branch)}>
+                                  <IonIcon icon={createOutline} slot="start" />
+                                  EDIT
+                                </IonButton>
+                                <IonButton className="delete-button" onClick={() => handleDelete(branch.id)}>
+                                  <IonIcon icon={trashOutline} slot="start" />
+                                  DELETE
+                                </IonButton>
+                              </div>
+                            </div>
+                          </IonCard>
+                        </IonCol>
+                      ))}
+                    </IonRow>
+                  </IonGrid>
+                ) : (
+                  // Table View
+                  <div className="table-container">
                     <table className="branches-table">
-                    <thead>
-                      <tr>
-                        <th className="checkbox-column">
-                          <IonCheckbox
-                            checked={selectedItems.size === currentBranches.length && currentBranches.length > 0}
-                            onIonChange={handleSelectAll}
-                          />
-                        </th>
-                        <th>
-                          <div className="table-header">
-                            <span>Office Name</span>
-                            <IonIcon icon={searchOutline} className="filter-icon" />
-                          </div>
-                        </th>
-                        <th>
-                          <div className="table-header">
-                            <span>Office Type</span>
-                            <IonIcon icon={searchOutline} className="filter-icon" />
-                          </div>
-                        </th>
-                        <th>
-                          <div className="table-header">
-                            <span>Actions</span>
-                            <IonIcon icon={searchOutline} className="filter-icon" />
-                          </div>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {currentBranches.map((branch, index) => (
-                        <tr key={branch.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
-                          <td className="checkbox-column">
-                            <IonCheckbox
-                              checked={selectedItems.has(branch.id)}
-                              onIonChange={() => handleSelectItem(branch.id)}
-                            />
-                          </td>
-                          <td className="office-name-cell">
-                            <span className="office-name">{branch.officeName}</span>
-                          </td>
-                          <td className="office-type-cell">
-                            <span className="office-type">{branch.officeType}</span>
-                          </td>
-                          <td className="actions-cell">
-                            <div className="action-buttons">
+                      <thead>
+                        <tr>
+                          <th onClick={() => handleSort('officeName')}>
+                            Office Name
+                            {sortBy === 'officeName' && (
+                              <IonIcon icon={sortOrder === 'asc' ? chevronBackOutline : chevronForwardOutline} />
+                            )}
+                          </th>
+                          <th onClick={() => handleSort('officeType')}>
+                            Office Type
+                            {sortBy === 'officeType' && (
+                              <IonIcon icon={sortOrder === 'asc' ? chevronBackOutline : chevronForwardOutline} />
+                            )}
+                          </th>
+                          <th onClick={() => handleSort('createdAt')}>
+                            Created Date
+                            {sortBy === 'createdAt' && (
+                              <IonIcon icon={sortOrder === 'asc' ? chevronBackOutline : chevronForwardOutline} />
+                            )}
+                          </th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {currentBranches.map(branch => (
+                          <tr key={branch.id}>
+                            <td>{branch.officeName}</td>
+                            <td>{branch.officeType}</td>
+                            <td>{new Date(branch.createdAt).toLocaleDateString()}</td>
+                            <td>
+                            <div className="table-actions">
                               <ActionDropdown
                                 itemId={branch.id}
-                                onView={() => handleView(branch.id)}
-                                onEdit={() => handleEdit(branch.id)}
+                                onView={() => handleView(branch)}
+                                onEdit={() => handleEdit(branch)}
                                 onDelete={() => handleDelete(branch.id)}
                                 showView={true}
                                 size="small"
                               />
                             </div>
                           </td>
-                        </tr>
-                      ))}
-                    </tbody>
+                          </tr>
+                        ))}
+                      </tbody>
                     </table>
-                  </IonCardContent>
-                </IonCard>
-              )}
+                  </div>
+                )}
 
-              {/* Pagination */}
-              <div className="pagination-container">
-                <div className="pagination-info">
-                  <p>
-                    Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedBranches.length)} of {filteredAndSortedBranches.length} branches
-                  </p>
-                </div>
-                <div className="pagination-controls">
-                  <IonButton 
-                    fill="clear" 
-                    disabled={currentPage === 1}
-                    onClick={handlePreviousPage}
-                    className="pagination-button"
-                  >
-                    <IonIcon icon={chevronBackOutline} />
-                    Previous
+                {/* Pagination */}
+                {filteredAndSortedBranches.length > 0 && (
+                  <div className="pagination-controls">
+                    <IonButton 
+                      disabled={currentPage === 1} 
+                      onClick={handlePreviousPage}
+                    >
+                      <IonIcon slot="icon-only" icon={chevronBackOutline} />
+                    </IonButton>
+                    <span>
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <IonButton 
+                      disabled={currentPage === totalPages} 
+                      onClick={handleNextPage}
+                    >
+                      <IonIcon slot="icon-only" icon={chevronForwardOutline} />
+                    </IonButton>
+                  </div>
+                )}
+              </IonCardContent>
+            </IonCard>
+          </div>
+
+          {/* Add Branch Modal */}
+          <IonModal isOpen={showAddModal} onDidDismiss={() => setShowAddModal(false)}>
+            <IonHeader>
+              <IonToolbar>
+                <IonTitle>Add New Branch</IonTitle>
+                <IonButtons slot="end">
+                  <IonButton onClick={() => setShowAddModal(false)}>
+                    <IonIcon icon={closeOutline} />
                   </IonButton>
-                  <span className="page-info">
-                    Page {currentPage} of {totalPages}
-                  </span>
-                  <IonButton 
-                    fill="clear" 
-                    disabled={currentPage === totalPages}
-                    onClick={handleNextPage}
-                    className="pagination-button"
-                  >
-                    Next
-                    <IonIcon icon={chevronForwardOutline} />
-                  </IonButton>
-                </div>
+                </IonButtons>
+              </IonToolbar>
+            </IonHeader>
+            <IonContent className="ion-padding">
+              <IonItem>
+                <IonLabel position="floating">Office Name</IonLabel>
+                <IonInput
+                  value={addFormData.officeName}
+                  onIonChange={e => setAddFormData({...addFormData, officeName: e.detail.value!})}
+                  required
+                />
+              </IonItem>
+              <IonItem>
+                <IonLabel position="floating">Office Type</IonLabel>
+                <IonSelect
+                  value={addFormData.officeType}
+                  onIonChange={e => setAddFormData({...addFormData, officeType: e.detail.value})}
+                >
+                  <IonSelectOption value="Head Office">Head Office</IonSelectOption>
+                  <IonSelectOption value="Regional Office">Regional Office</IonSelectOption>
+                  <IonSelectOption value="District Office">District Office</IonSelectOption>
+                  <IonSelectOption value="Branch Office">Branch Office</IonSelectOption>
+                </IonSelect>
+              </IonItem>
+              <div className="ion-padding">
+                <IonButton expand="block" onClick={handleSaveNewBranch}>
+                  <IonIcon slot="start" icon={checkmarkOutline} />
+                  Save Branch
+                </IonButton>
               </div>
-            </div>
-          </IonContent>
-        </div>
+            </IonContent>
+          </IonModal>
+
+          {/* Edit Branch Modal */}
+          <IonModal isOpen={showEditModal} onDidDismiss={() => setShowEditModal(false)}>
+            <IonHeader>
+              <IonToolbar>
+                <IonTitle>Edit Branch</IonTitle>
+                <IonButtons slot="end">
+                  <IonButton onClick={() => setShowEditModal(false)}>
+                    <IonIcon icon={closeOutline} />
+                  </IonButton>
+                </IonButtons>
+              </IonToolbar>
+            </IonHeader>
+            <IonContent className="ion-padding">
+              <IonItem>
+                <IonLabel position="floating">Office Name</IonLabel>
+                <IonInput
+                  value={editFormData.officeName}
+                  onIonChange={e => setEditFormData({...editFormData, officeName: e.detail.value!})}
+                  required
+                />
+              </IonItem>
+              <IonItem>
+                <IonLabel position="floating">Office Type</IonLabel>
+                <IonSelect
+                  value={editFormData.officeType}
+                  onIonChange={e => setEditFormData({...editFormData, officeType: e.detail.value})}
+                >
+                  <IonSelectOption value="Head Office">Head Office</IonSelectOption>
+                  <IonSelectOption value="Regional Office">Regional Office</IonSelectOption>
+                  <IonSelectOption value="District Office">District Office</IonSelectOption>
+                  <IonSelectOption value="Branch Office">Branch Office</IonSelectOption>
+                </IonSelect>
+              </IonItem>
+              <div className="ion-padding">
+                <IonButton expand="block" onClick={handleUpdateBranch}>
+                  <IonIcon slot="start" icon={checkmarkOutline} />
+                  Update Branch
+                </IonButton>
+              </div>
+            </IonContent>
+          </IonModal>
+
+          {/* View Branch Modal */}
+          <IonModal isOpen={showViewModal} onDidDismiss={() => setShowViewModal(false)}>
+            <IonHeader>
+              <IonToolbar>
+                <IonTitle>Branch Details</IonTitle>
+                <IonButtons slot="end">
+                  <IonButton onClick={() => setShowViewModal(false)}>
+                    <IonIcon icon={closeOutline} />
+                  </IonButton>
+                </IonButtons>
+              </IonToolbar>
+            </IonHeader>
+            <IonContent className="ion-padding">
+              {viewingBranch && (
+                <IonList>
+                  <IonItem>
+                    <IonLabel>
+                      <h2>Office Name</h2>
+                      <p>{viewingBranch.officeName}</p>
+                    </IonLabel>
+                  </IonItem>
+                  <IonItem>
+                    <IonLabel>
+                      <h2>Office Type</h2>
+                      <p>{viewingBranch.officeType}</p>
+                    </IonLabel>
+                  </IonItem>
+                  <IonItem>
+                    <IonLabel>
+                      <h2>Created Date</h2>
+                      <p>{new Date(viewingBranch.createdAt).toLocaleString()}</p>
+                    </IonLabel>
+                  </IonItem>
+                  <IonItem>
+                    <IonLabel>
+                      <h2>Last Updated</h2>
+                      <p>{new Date(viewingBranch.updatedAt).toLocaleString()}</p>
+                    </IonLabel>
+                  </IonItem>
+                </IonList>
+              )}
+              <div className="ion-padding">
+                <IonButton expand="block" onClick={() => setShowViewModal(false)}>
+                  Close
+                </IonButton>
+              </div>
+            </IonContent>
+          </IonModal>
+
+          {/* Delete Confirmation Alert */}
+          <IonAlert
+            isOpen={showDeleteAlert}
+            onDidDismiss={cancelDelete}
+            header="Confirm Delete"
+            message="Are you sure you want to delete this branch? This action cannot be undone."
+            buttons={[
+              {
+                text: 'Cancel',
+                role: 'cancel',
+                handler: cancelDelete
+              },
+              {
+                text: 'Delete',
+                handler: confirmDelete
+              }
+            ]}
+          />
+
+          {/* Toast Notification */}
+          <IonToast
+            isOpen={showToast}
+            onDidDismiss={() => setShowToast(false)}
+            message={toastMessage}
+            duration={3000}
+            position="bottom"
+          />
+        </IonContent>
       </IonSplitPane>
-
-      {/* Delete Confirmation Alert */}
-      <IonAlert
-        isOpen={showDeleteAlert}
-        onDidDismiss={cancelDelete}
-        header="Confirm Delete"
-        message="Are you sure you want to delete this branch? This action cannot be undone."
-        buttons={[
-          { text: 'Cancel', role: 'cancel', handler: cancelDelete },
-          { text: 'Delete', role: 'destructive', handler: confirmDelete }
-        ]}
-      />
-
-      {/* Bulk Delete Confirmation Alert */}
-      <IonAlert
-        isOpen={showBulkDeleteAlert}
-        onDidDismiss={() => setShowBulkDeleteAlert(false)}
-        header="Confirm Bulk Delete"
-        message={`Are you sure you want to delete ${selectedItems.size} branches? This action cannot be undone.`}
-        buttons={[
-          { text: 'Cancel', role: 'cancel', handler: () => setShowBulkDeleteAlert(false) },
-          { text: 'Delete', role: 'destructive', handler: confirmBulkDelete }
-        ]}
-      />
-
-      {/* Export Modal */}
-      <IonModal isOpen={showExportModal} onDidDismiss={() => setShowExportModal(false)}>
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Export Branches</IonTitle>
-            <IonButtons slot="end">
-              <IonButton onClick={() => setShowExportModal(false)}>
-                <IonIcon icon={closeOutline} />
-              </IonButton>
-            </IonButtons>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="export-modal-content">
-          <div className="export-options">
-            <IonButton 
-              expand="block" 
-              fill="outline"
-              onClick={() => handleExport('CSV')}
-            >
-              <IonIcon icon={cloudDownloadOutline} slot="start" />
-              Export as CSV
-            </IonButton>
-            <IonButton 
-              expand="block" 
-              fill="outline"
-              onClick={() => handleExport('Excel')}
-            >
-              <IonIcon icon={cloudDownloadOutline} slot="start" />
-              Export as Excel
-            </IonButton>
-            <IonButton 
-              expand="block" 
-              fill="outline"
-              onClick={() => handleExport('PDF')}
-            >
-              <IonIcon icon={cloudDownloadOutline} slot="start" />
-              Export as PDF
-            </IonButton>
-          </div>
-        </IonContent>
-      </IonModal>
-
-      {/* Add Branch Modal */}
-      <IonModal isOpen={showAddModal} onDidDismiss={handleCloseAdd}>
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Add New Branch</IonTitle>
-            <IonButtons slot="end">
-              <IonButton onClick={handleCloseAdd}>
-                <IonIcon icon={closeOutline} />
-              </IonButton>
-            </IonButtons>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="modal-content">
-          <IonItem>
-            <IonLabel position="stacked">Office Name *</IonLabel>
-            <IonInput
-              value={addForm.officeName}
-              onIonChange={(e) => setAddForm(prev => ({ ...prev, officeName: e.detail.value! }))}
-              placeholder="Enter office name"
-            />
-          </IonItem>
-          <IonItem>
-            <IonLabel position="stacked">Office Type *</IonLabel>
-            <IonSelect
-              value={addForm.officeType}
-              onIonChange={(e) => setAddForm(prev => ({ ...prev, officeType: e.detail.value }))}
-              placeholder="Select office type"
-            >
-              <IonSelectOption value="Head Office">Head Office</IonSelectOption>
-              <IonSelectOption value="Regional Office">Regional Office</IonSelectOption>
-              <IonSelectOption value="District Office">District Office</IonSelectOption>
-              <IonSelectOption value="Branch Office">Branch Office</IonSelectOption>
-            </IonSelect>
-          </IonItem>
-          <IonItem>
-            <IonLabel position="stacked">Description</IonLabel>
-            <IonTextarea
-              value={addForm.description}
-              onIonChange={(e) => setAddForm(prev => ({ ...prev, description: e.detail.value! }))}
-              placeholder="Enter description (optional)"
-              rows={3}
-            />
-          </IonItem>
-          <div className="modal-actions">
-            <IonButton 
-              expand="block" 
-              fill="solid"
-              onClick={handleSaveAdd}
-            >
-              <IonIcon icon={checkmarkOutline} slot="start" />
-              Add Branch
-            </IonButton>
-            <IonButton 
-              expand="block" 
-              fill="outline"
-              onClick={handleCloseAdd}
-            >
-              Cancel
-            </IonButton>
-          </div>
-        </IonContent>
-      </IonModal>
-
-      {/* View Branch Modal */}
-      <IonModal isOpen={showViewModal} onDidDismiss={handleCloseView}>
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Branch Details</IonTitle>
-            <IonButtons slot="end">
-              <IonButton onClick={handleCloseView}>
-                <IonIcon icon={closeOutline} />
-              </IonButton>
-            </IonButtons>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="view-modal-content">
-          {viewingBranch && (
-            <div>
-              <IonItem>
-                <IonLabel>
-                  <h2>Office Name</h2>
-                  <p>{viewingBranch.officeName}</p>
-                </IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>
-                  <h2>Office Type</h2>
-                  <p>{viewingBranch.officeType}</p>
-                </IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>
-                  <h2>Created At</h2>
-                  <p>{new Date(viewingBranch.createdAt).toLocaleDateString()}</p>
-                </IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>
-                  <h2>Updated At</h2>
-                  <p>{new Date(viewingBranch.updatedAt).toLocaleDateString()}</p>
-                </IonLabel>
-              </IonItem>
-            </div>
-          )}
-        </IonContent>
-      </IonModal>
-
-      {/* Toast for notifications */}
-      <IonToast
-        isOpen={showToast}
-        onDidDismiss={() => setShowToast(false)}
-        message={toastMessage}
-        duration={3000}
-        position="bottom"
-      />
     </IonPage>
   );
 };
