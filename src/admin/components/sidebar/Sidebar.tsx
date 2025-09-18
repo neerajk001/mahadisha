@@ -14,7 +14,7 @@ import {
   IonAvatar
 } from '@ionic/react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { useSidebar } from '../../contexts/SidebarContext';
+// import { useSidebar } from '../../contexts/SidebarContext';
 import {
   homeOutline,
   chevronDownOutline,
@@ -47,7 +47,7 @@ const Sidebar: React.FC = () => {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const history = useHistory();
   const location = useLocation();
-  const { isSidebarOpen, closeSidebar, toggleSidebar } = useSidebar();
+  // const { isSidebarOpen, closeSidebar, toggleSidebar } = useSidebar();
 
   const toggleExpanded = (item: string) => {
     setExpandedItems(prev => 
@@ -60,9 +60,9 @@ const Sidebar: React.FC = () => {
   const handleSubItemClick = (route: string) => {
     history.push(route);
     // Close sidebar on mobile after navigation
-    if (window.innerWidth <= 768) {
-      closeSidebar();
-    }
+    // if (window.innerWidth <= 768) {
+    //   closeSidebar();
+    // }
   };
 
 
@@ -189,18 +189,17 @@ const Sidebar: React.FC = () => {
   return (
     <>
       {/* Mobile Backdrop */}
-      {isSidebarOpen && window.innerWidth <= 768 && (
+      {/* {isSidebarOpen && window.innerWidth <= 768 && (
         <div 
           className="sidebar-backdrop" 
           onClick={closeSidebar}
         />
-      )}
+      )} */}
       
       <IonMenu 
-        contentId="dashboard-content" 
+        contentId="dashboard-content"
         type="overlay" 
-        className={`sidebar-menu ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}
-        disabled={!isSidebarOpen}
+        swipeGesture={true} 
       >
       <IonHeader>
         <IonToolbar className="sidebar-toolbar">
@@ -213,14 +212,14 @@ const Sidebar: React.FC = () => {
               />
             </div>
             {/* Toggle Button */}
-            <IonButton
+            {/* <IonButton
               fill="clear"
               size="small"
               className="sidebar-toggle-btn"
               onClick={toggleSidebar}
             >
               <IonIcon icon={closeOutline} />
-            </IonButton>
+            </IonButton> */}
           </div>
         </IonToolbar>
       </IonHeader>

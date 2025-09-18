@@ -10,7 +10,8 @@ import {
   IonSelect,
   IonSelectOption,
   IonAvatar,
-  IonMenuButton
+  IonMenuButton,
+  IonButtons
 } from '@ionic/react';
 import {
   chevronDownOutline,
@@ -19,14 +20,14 @@ import {
   menuOutline
 } from 'ionicons/icons';
 import { useLocation } from 'react-router-dom';
-import { useSidebar } from '../../contexts/SidebarContext';
+// import { useSidebar } from '../../contexts/SidebarContext';
 import './DashboardHeader.css';
 
 const DashboardHeader: React.FC = () => {
   const [userName, setUserName] = useState('Admin');
   const [userInitials, setUserInitials] = useState('AD');
   const location = useLocation();
-  const { toggleSidebar, isSidebarOpen } = useSidebar();
+  // const { toggleSidebar, isSidebarOpen } = useSidebar();
 
   useEffect(() => {
     // Get user info from localStorage or context
@@ -105,16 +106,14 @@ const DashboardHeader: React.FC = () => {
       
       <IonToolbar className="dashboard-toolbar">
         {/* Hamburger Menu - Only show when sidebar is closed */}
-        <IonMenuButton slot="start" onClick={toggleSidebar} autoHide={false} />
-        <div className={`hamburger-menu-container ${!isSidebarOpen ? 'show' : 'hide'}`}>
-          {/* <IonButton 
-            fill="clear" 
-            className="hamburger-menu-button"
-            onClick={toggleSidebar}
-          > 
+        <IonButtons slot="start">
+          <IonMenuButton autoHide={false} />
+        </IonButtons>
+        {/* <div className={`hamburger-menu-container ${!isSidebarOpen ? 'show' : 'hide'}`}> */}
+          {/* <IonButton fill="clear" slot="start" onClick={toggleSidebar}>
             <IonIcon icon={menuOutline} />
           </IonButton> */}
-        </div>
+        {/* </div> */}
         
         {/* Left Side - Breadcrumb */}
         <div className="header-left">

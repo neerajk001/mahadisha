@@ -1,7 +1,7 @@
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { SidebarProvider } from './admin/contexts/SidebarContext';
+// import { SidebarProvider } from './admin/contexts/SidebarContext';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
@@ -60,7 +60,7 @@ setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
-    <SidebarProvider>
+    {/* <SidebarProvider> */}
       <IonReactRouter>
         <IonRouterOutlet id="main-content">
         {/* Home Page */}
@@ -190,7 +190,7 @@ const App: React.FC = () => (
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>
-    </SidebarProvider>
+    {/* </SidebarProvider> */}
   </IonApp>
 );
 

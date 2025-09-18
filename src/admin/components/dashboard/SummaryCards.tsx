@@ -5,7 +5,8 @@ import {
   IonIcon,
   IonGrid,
   IonRow,
-  IonCol
+  IonCol,
+  IonLabel
 } from '@ionic/react';
 import {
   briefcaseOutline,
@@ -102,7 +103,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({ data }) => {
       <IonGrid>
         <IonRow>
           {summaryData.map((card, index) => (
-            <IonCol size="12" size-md="6" size-lg="3" key={index}>
+            <IonCol size-xs="3" size-md="6" size-lg="3" key={index}>
               <IonCard 
                 className="summary-card"
                 style={{ 
@@ -113,6 +114,10 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({ data }) => {
                 <IonCardContent className="summary-card-content">
                   <div className="card-icon" style={{ color: card.iconColor }}>
                     <IonIcon icon={card.icon} className="icon" />
+                    <IonLabel style={{ color: card.textColor }} className="card-title">{card.title}</IonLabel>
+                  </div>
+                  <div className="card-value" style={{ color: card.textColor }}>
+                    {card.value}
                   </div>
                 </IonCardContent>
               </IonCard>

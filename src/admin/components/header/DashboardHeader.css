@@ -37,61 +37,6 @@
   flex: 1;
 }
 
-/* Hamburger Menu Container - Smooth transitions */
-.hamburger-menu-container {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.hamburger-menu-container.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(-50%) translateX(0);
-}
-
-.hamburger-menu-container.hide {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-50%) translateX(-20px);
-  pointer-events: none;
-}
-
-/* Hamburger Menu Button - Positioned at very left edge */
-.hamburger-menu-button {
-  --color: var(--color-text-primary);
-  --padding-start: 0.5rem;
-  --padding-end: 0.5rem;
-  --padding-top: 0.5rem;
-  --padding-bottom: 0.5rem;
-  --border-radius: 8px;
-  min-width: 44px;
-  min-height: 44px;
-  margin: 0;
-  position: relative;
-  transform: scale(1);
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.hamburger-menu-button:hover {
-  --background: rgba(102, 126, 234, 0.1);
-  --color: var(--color-primary);
-  transform: scale(1.05);
-}
-
-.hamburger-menu-button ion-icon {
-  font-size: 1.4rem;
-  font-weight: 500;
-  transition: transform 0.2s ease;
-}
-
-.hamburger-menu-button:hover ion-icon {
-  transform: rotate(90deg);
-}
-
 .header-right {
   display: flex;
   align-items: center;
@@ -195,22 +140,13 @@
     --padding-end: 1rem;
     --min-height: 60px;
   }
-  
-  .hamburger-menu-container {
-    left: 0.75rem;
+
+  .breadcrumb{
+    display:none;
   }
   
-  .hamburger-menu-button {
-    --padding-start: 0.4rem;
-    --padding-end: 0.4rem;
-    --padding-top: 0.4rem;
-    --padding-bottom: 0.4rem;
-    min-width: 40px;
-    min-height: 40px;
-  }
-  
-  .hamburger-menu-button ion-icon {
-    font-size: 1.3rem;
+  .header-left {
+    gap: 0.5rem;
   }
   
   .breadcrumb {
@@ -239,21 +175,8 @@
     --min-height: 55px;
   }
   
-  .hamburger-menu-container {
-    left: 0.5rem;
-  }
-  
-  .hamburger-menu-button {
-    --padding-start: 0.3rem;
-    --padding-end: 0.3rem;
-    --padding-top: 0.3rem;
-    --padding-bottom: 0.3rem;
-    min-width: 36px;
-    min-height: 36px;
-  }
-  
-  .hamburger-menu-button ion-icon {
-    font-size: 1.2rem;
+  .header-left {
+    gap: 0.25rem;
   }
   
   .breadcrumb {
