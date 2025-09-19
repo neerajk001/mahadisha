@@ -3,12 +3,8 @@ import {
   IonPage,
   IonContent,
   IonSplitPane,
-  IonFab,
-  IonFabButton,
-  IonIcon,
   IonSpinner
 } from '@ionic/react';
-import { addOutline } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 import SummaryCards from '../components/dashboard/SummaryCards';
@@ -75,12 +71,8 @@ const Dashboard: React.FC = () => {
             )}
           </IonContent>
           
-          {/* Floating Action Button */}
-          <IonFab vertical="bottom" horizontal="end" slot="fixed">
-            <IonFabButton className="fab-button">
-              <IonIcon icon={addOutline} />
-            </IonFabButton>
-          </IonFab>
+          // removed Floating Action Button
+          
         </div>
       </IonSplitPane>
     </IonPage>

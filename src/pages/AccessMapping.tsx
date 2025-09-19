@@ -14,6 +14,7 @@ import {
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
+import { Pagination } from '../admin/components/shared';
 import { mockDataService } from '../services/api';
 import type { AccessMappingData } from '../types';
 import './AccessMapping.css';
@@ -240,7 +241,7 @@ const AccessMapping: React.FC = () => {
               </div>
 
               {/* Search and Actions */}
-              <div className="mapping-actions">
+              <div className="mapping-actions-row">
                 <IonSearchbar
                   value={searchQuery}
                   onIonChange={(e) => setSearchQuery(e.detail.value!)}
@@ -316,36 +317,14 @@ const AccessMapping: React.FC = () => {
               </IonCard>
 
               {/* Pagination */}
-              <div className="pagination-container">
-                <div className="pagination-info">
-                  <p>
-                    Showing {startIndex + 1} to {Math.min(endIndex, filteredMappings.length)} of {filteredMappings.length} mappings
-                  </p>
-                </div>
-                <div className="pagination-controls">
-                  <IonButton 
-                    fill="clear" 
-                    disabled={currentPage === 1}
-                    onClick={handlePreviousPage}
-                    className="pagination-button"
-                  >
-                    <IonIcon icon={chevronBackOutline} />
-                    Previous
-                  </IonButton>
-                  <span className="page-info">
-                    Page {currentPage} of {totalPages}
-                  </span>
-                  <IonButton 
-                    fill="clear" 
-                    disabled={currentPage === totalPages}
-                    onClick={handleNextPage}
-                    className="pagination-button"
-                  >
-                    Next
-                    <IonIcon icon={chevronForwardOutline} />
-                  </IonButton>
-                </div>
-              </div>
+              {filteredMappings.length > 0 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPreviousPage={handlePreviousPage}
+                  onNextPage={handleNextPage}
+                />
+              )}
             </div>
           </IonContent>
         </div>

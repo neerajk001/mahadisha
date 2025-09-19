@@ -17,6 +17,7 @@ import {
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
+import { Pagination } from '../admin/components/shared';
 import { mockDataService } from '../services/api';
 import type { PartnerMasterData } from '../types';
 import './PartnerMaster.css';
@@ -430,36 +431,17 @@ const PartnerMaster: React.FC = () => {
               )}
 
               {/* Pagination */}
-              <div className="pagination-container">
-                <div className="pagination-info">
-                  <p>
-                    Showing {filteredAndSortedPartners.length === 0 ? 0 : startIndex + 1} to {Math.min(endIndex, filteredAndSortedPartners.length)} of {filteredAndSortedPartners.length} partners
-                  </p>
-                </div>
-                <div className="pagination-controls">
-                  <IonButton 
-                    fill="clear" 
-                    disabled={currentPage === 1}
-                    onClick={handlePreviousPage}
-                    className="pagination-button"
-                  >
-                    <IonIcon icon={chevronBackOutline} />
-                    Previous
-                  </IonButton>
-                  <span className="page-info">
-                    Page {currentPage} of {totalPages}
-                  </span>
-                  <IonButton 
-                    fill="clear" 
-                    disabled={currentPage === totalPages}
-                    onClick={handleNextPage}
-                    className="pagination-button"
-                  >
-                    Next
-                    <IonIcon icon={chevronForwardOutline} />
-                  </IonButton>
-                </div>
-              </div>
+              {filteredAndSortedPartners.length > 0 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPreviousPage={handlePreviousPage}
+                  onNextPage={handleNextPage}
+                />
+              )}
+              
+              {/* Bottom spacing for pagination visibility */}
+              <div style={{ height: '3rem' }}></div>
             </div>
           </IonContent>
         </div>

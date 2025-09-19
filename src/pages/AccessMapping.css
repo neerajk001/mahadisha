@@ -5,6 +5,9 @@
   --padding-end: 1.5rem;
   --padding-top: 1.5rem;
   --padding-bottom: 1.5rem;
+  min-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .mapping-container {
@@ -40,6 +43,14 @@
   flex-wrap: wrap;
 }
 
+.mapping-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: nowrap;
+}
+
 .mapping-search {
   flex: 1;
   min-width: 300px;
@@ -73,11 +84,14 @@
 .table-container {
   padding: 0;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  white-space: nowrap; /* Prevent content wrapping */
 }
 
 /* Table Styles */
 .mappings-table {
   width: 100%;
+  min-width: 800px; /* Ensure table has minimum width for horizontal scrolling */
   border-collapse: collapse;
   background: var(--color-bg-primary);
 }
@@ -139,6 +153,7 @@
 /* Cell Styles */
 .role-cell {
   min-width: 150px;
+  white-space: normal; /* Allow text wrapping in cells */
 }
 
 .role-name {
@@ -148,6 +163,7 @@
 
 .page-access-cell {
   min-width: 200px;
+  white-space: normal; /* Allow text wrapping in cells */
 }
 
 .page-access-text {
@@ -157,6 +173,12 @@
 
 .navbar-access-cell {
   min-width: 300px;
+  white-space: normal; /* Allow text wrapping in cells */
+}
+
+.actions-cell {
+  min-width: 120px;
+  white-space: normal; /* Allow text wrapping in cells */
 }
 
 .navbar-access {
@@ -481,13 +503,32 @@ ion-popover ion-label p {
   .access-mapping-content {
     --padding-start: 1rem;
     --padding-end: 1rem;
+    --padding-top: 1rem;
+    --padding-bottom: 1rem;
+    min-height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mapping-container {
+    min-height: auto;
   }
 
   .mapping-header h1 {
     font-size: 1.5rem;
   }
 
+  .mapping-header p {
+    font-size: 0.95rem;
+  }
+
   .mapping-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .mapping-actions-row {
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
@@ -497,15 +538,49 @@ ion-popover ion-label p {
     min-width: auto;
   }
 
+  /* Enhanced mobile table scrolling */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+  }
+
+  .mappings-table {
+    min-width: 700px; /* Reduced for tablet but still forces horizontal scroll */
+  }
+
   .mappings-table th,
   .mappings-table td {
-    padding: 0.75rem 0.5rem;
-    font-size: 0.8rem;
+    padding: 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .role-cell {
+    min-width: 120px;
+  }
+
+  .page-access-cell {
+    min-width: 150px;
+  }
+
+  .navbar-access-cell {
+    min-width: 250px;
+  }
+
+  .actions-cell {
+    min-width: 100px;
   }
 
   .action-buttons {
+    flex-direction: column;
     gap: 0.5rem;
-    flex-direction: row;
+  }
+
+  .action-button {
+    width: 100%;
+    height: 32px;
+    font-size: 0.8rem;
   }
 
   .edit-button,
@@ -566,6 +641,20 @@ ion-popover ion-label p {
 }
 
 @media (max-width: 480px) {
+  .access-mapping-content {
+    --padding-start: 0.75rem;
+    --padding-end: 0.75rem;
+    --padding-top: 0.75rem;
+    --padding-bottom: 0.75rem;
+    min-height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mapping-container {
+    min-height: auto;
+  }
+
   .mapping-header h1 {
     font-size: 1.25rem;
   }
@@ -573,6 +662,67 @@ ion-popover ion-label p {
   .mapping-header p {
     font-size: 0.9rem;
   }
+
+  .mapping-actions-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  /* Mobile table with horizontal scrolling */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 6px;
+    margin: 0 -0.75rem; /* Extend to screen edges */
+    padding: 0 0.75rem;
+  }
+
+  .mappings-table {
+    min-width: 600px; /* Force horizontal scrolling on mobile */
+  }
+
+  .mappings-table th,
+  .mappings-table td {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .role-cell {
+    min-width: 100px;
+  }
+
+  .page-access-cell {
+    min-width: 120px;
+  }
+
+  .navbar-access-cell {
+    min-width: 200px;
+  }
+
+  .actions-cell {
+    min-width: 80px;
+  }
+
+  /* Compact chips for mobile */
+  .access-chip-small {
+    font-size: 0.7rem;
+    height: 20px;
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .action-button {
+    width: 100%;
+    height: 28px;
+    font-size: 0.75rem;
+  }
+}
 
   .mappings-table th,
   .mappings-table td {

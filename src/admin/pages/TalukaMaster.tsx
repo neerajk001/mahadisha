@@ -4,7 +4,7 @@ import {
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
   IonModal, IonButtons, IonInput, IonTextarea, IonSelect, IonSelectOption,
-  IonBadge, IonChip, IonFab, IonFabButton
+  IonBadge, IonChip
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
@@ -18,6 +18,7 @@ import {
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 import ActionDropdown from '../components/common/ActionDropdown';
+import { Pagination } from '../components/shared';
 import { mockDataService } from '../../services/api';
 import type { TalukaData } from '../../types';
 import './TalukaMaster.css';
@@ -306,36 +307,17 @@ const TalukaMaster: React.FC = () => {
               )}
 
               {/* Pagination */}
-              <div className="pagination-container">
-                <div className="pagination-info">
-                  <p>
-                    Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedTalukas.length)} of {filteredAndSortedTalukas.length} talukas
-                  </p>
-                </div>
-                <div className="pagination-controls">
-                  <IonButton 
-                    fill="clear" 
-                    disabled={currentPage === 1}
-                    onClick={handlePreviousPage}
-                    className="pagination-button"
-                  >
-                    <IonIcon icon={chevronBackOutline} />
-                    Previous
-                  </IonButton>
-                  <span className="page-info">
-                    Page {currentPage} of {totalPages}
-                  </span>
-                  <IonButton 
-                    fill="clear" 
-                    disabled={currentPage === totalPages}
-                    onClick={handleNextPage}
-                    className="pagination-button"
-                  >
-                    Next
-                    <IonIcon icon={chevronForwardOutline} />
-                  </IonButton>
-                </div>
-              </div>
+              {filteredAndSortedTalukas.length > 0 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPreviousPage={handlePreviousPage}
+                  onNextPage={handleNextPage}
+                />
+              )}
+              
+              {/* Bottom spacing for pagination visibility */}
+              <div style={{ height: '3rem' }}></div>
             </div>
           </IonContent>
         </div>
@@ -459,12 +441,6 @@ const TalukaMaster: React.FC = () => {
         </IonContent>
       </IonModal>
 
-      {/* Floating Action Button */}
-      <IonFab vertical="bottom" horizontal="end" slot="fixed">
-        <IonFabButton className="fab-add-page" onClick={handleAddTaluka}>
-          <IonIcon icon={addOutline} />
-        </IonFabButton>
-      </IonFab>
 
       {/* Toast for notifications */}
       <IonToast

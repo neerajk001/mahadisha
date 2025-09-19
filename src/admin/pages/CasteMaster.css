@@ -4,7 +4,7 @@
   --padding-start: 1.5rem;
   --padding-end: 1.5rem;
   --padding-top: 1.5rem;
-  --padding-bottom: 1.5rem;
+  --padding-bottom: 4rem;
   min-height: 100vh;
 }
 
@@ -153,14 +153,14 @@
 
 /* Page Card */
 .page-card {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
   border-radius: 20px;
   padding: 1.5rem;
   box-shadow: 
     0 15px 35px rgba(0, 0, 0, 0.1),
     0 5px 15px rgba(0, 0, 0, 0.06);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -221,20 +221,17 @@
   font-weight: 700;
   color: #2d3748;
   margin: 0 0 0.25rem 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .page-card-url {
   font-size: 0.9rem;
-  color: #718096;
+  color: #4a5568;
   font-family: 'Courier New', monospace;
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(102, 126, 234, 0.15);
   padding: 0.25rem 0.5rem;
   border-radius: 8px;
   display: inline-block;
+  border: 1px solid rgba(102, 126, 234, 0.2);
 }
 
 /* Card Content */
@@ -247,6 +244,10 @@
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
+  background: rgba(248, 250, 252, 0.8);
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(102, 126, 234, 0.15);
 }
 
 .page-card-meta-item {
@@ -254,7 +255,8 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.85rem;
-  color: #4a5568;
+  color: #2d3748;
+  font-weight: 600;
 }
 
 .page-card-meta-icon {
@@ -458,50 +460,93 @@
 
 /* Pagination */
 .pagination-container {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+  border-radius: 20px;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.1),
+    0 5px 15px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.pagination-info {
+  text-align: center;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 1rem;
-  background: var(--color-bg-primary);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .pagination-info p {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  font-size: 1rem;
+  color: #4a5568;
   margin: 0;
+  font-weight: 600;
 }
 
-.pagination-controls {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
 
 .pagination-button {
-  --color: var(--color-primary);
-  --background: transparent;
-  --border-radius: 6px;
-  --padding-start: 0.75rem;
-  --padding-end: 0.75rem;
-  font-weight: 500;
-  min-width: 100px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 50px !important;
+  height: 50px !important;
+  border: none !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+  font-size: 1.2rem !important;
+  font-weight: bold !important;
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  --color: white !important;
+  --border-radius: 50% !important;
+  --box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+  --padding: 0 !important;
+  --padding-start: 0 !important;
+  --padding-end: 0 !important;
+  --padding-top: 0 !important;
+  --padding-bottom: 0 !important;
+}
+
+.pagination-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
 }
 
 .pagination-button:disabled {
-  --color: var(--color-text-disabled);
   opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.pagination-button ion-icon {
+  font-size: 1.5rem;
 }
 
 .page-info {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  padding: 0.5rem 1rem;
-  background: var(--color-bg-secondary);
-  border-radius: 6px;
-  border: 1px solid var(--color-border-light);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2d3748;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-radius: 12px;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  backdrop-filter: blur(10px);
+  text-align: center;
 }
 
 /* Responsive Design */
@@ -509,6 +554,13 @@
   .caste-master-content {
     --padding-start: 1rem;
     --padding-end: 1rem;
+    --padding-bottom: 5rem;
+  }
+  
+  .manage-pages-content {
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    --padding-bottom: 5rem;
   }
 
   .castes-header h1 {
@@ -536,6 +588,111 @@
     flex-direction: row;
   }
 
+  /* Mobile Grid Layout - Single Column */
+  .pages-grid,
+  .branches-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+
+  /* Mobile Pagination - Compact and Centered */
+  .pagination-container {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.75rem !important;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%) !important;
+    border-radius: 15px !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    margin: 1.5rem 0 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 10 !important;
+    width: auto !important;
+    max-width: 280px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .pagination-info {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+
+  .pagination-button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 44px !important;
+    height: 44px !important;
+    border: none !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    --color: white !important;
+    --border-radius: 50% !important;
+    --box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+    --padding: 0 !important;
+    --padding-start: 0 !important;
+    --padding-end: 0 !important;
+    --padding-top: 0 !important;
+    --padding-bottom: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .pagination-button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4) !important;
+  }
+
+  .pagination-button:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+  }
+
+  .pagination-button ion-icon {
+    font-size: 1.3rem !important;
+    color: white !important;
+  }
+
+  .pagination-info {
+    text-align: center !important;
+    margin: 0 !important;
+    order: 1 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .pagination-info p {
+    font-size: 0.85rem !important;
+    margin: 0 !important;
+    color: #4a5568 !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+
+  .page-info {
+    font-size: 0.8rem !important;
+    padding: 0.4rem 0.8rem !important;
+    min-width: 80px !important;
+    border-radius: 8px !important;
+  }
+
   .edit-button,
   .delete-button {
     width: 36px;
@@ -544,20 +701,45 @@
     font-size: 0.9rem;
   }
 
+
   .pagination-container {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
+    max-width: 240px !important;
+    padding: 0.5rem !important;
+    gap: 0.4rem !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
   }
 
-  .pagination-controls {
-    flex-direction: column;
-    gap: 0.5rem;
+  .pagination-info {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
   }
 
   .pagination-button {
-    min-width: auto;
-    width: 100%;
+    width: 40px !important;
+    height: 40px !important;
+    --padding: 0 !important;
+    --padding-start: 0 !important;
+    --padding-end: 0 !important;
+    --padding-top: 0 !important;
+    --padding-bottom: 0 !important;
+  }
+
+  .pagination-button ion-icon {
+    font-size: 1.1rem !important;
+  }
+
+  .pagination-info p {
+    font-size: 0.75rem !important;
+  }
+
+  .page-info {
+    font-size: 0.8rem !important;
+    padding: 0.4rem 0.8rem !important;
+    min-width: 80px !important;
   }
 }
 
@@ -672,23 +854,6 @@
   animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both;
 }
 
-/* Floating Action Button */
-.fab-add-page {
-  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --color: white;
-  --border-radius: 50%;
-  --padding: 1rem;
-  width: 64px;
-  height: 64px;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.fab-add-page:hover {
-  --background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-  transform: scale(1.1) rotate(5deg);
-  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
-}
 
 /* Modal Styles */
 .page-modal-content {

@@ -18,6 +18,7 @@ import {
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 import ActionDropdown from '../components/common/ActionDropdown';
+import { Pagination } from '../components/shared';
 import { mockDataService } from '../../services/api';
 import type { BranchData } from '../../types';
 import './BranchMaster.css';  // original 
@@ -258,39 +259,33 @@ const BranchMaster: React.FC = () => {
               </IonCardContent>
             </IonCard>
 
-            {/* Actions Section */}
-            <IonCard className="branches-actions">
-              <IonCardContent>
-                <IonGrid>
-                  <IonRow className="ion-align-items-center">
-                    <IonCol size="12" sizeMd="6">
-                      <IonSearchbar
-                        value={searchQuery}
-                        onIonChange={e => setSearchQuery(e.detail.value!)}
-                        placeholder="Search branches..."
-                        className="branches-search"
-                      />
-                    </IonCol>
-                    <IonCol size="12" sizeMd="6" className="ion-text-end">
-                      <IonButton 
-                        className="view-toggle-button" 
-                        fill="clear"
-                        onClick={toggleViewMode}
-                      >
-                        <IonIcon icon={viewMode === 'grid' ? listOutline : gridOutline} />
-                      </IonButton>
-                      <IonButton 
-                        className="add-branch-button" 
-                        onClick={handleAddBranch}
-                      >
-                        <IonIcon slot="start" icon={addOutline} />
-                        Add Branch
-                      </IonButton>
-                    </IonCol>
-                  </IonRow>
-                </IonGrid>
-              </IonCardContent>
-            </IonCard>
+            {/* Enhanced Search and Actions */}
+            <div className="branches-actions">
+              <IonSearchbar
+                value={searchQuery}
+                onIonChange={e => setSearchQuery(e.detail.value!)}
+                placeholder="Search branches by name or type..."
+                className="branches-search"
+              />
+              <IonButton 
+                fill="outline" 
+                size="small"
+                onClick={toggleViewMode}
+                className="view-mode-button"
+              >
+                <IonIcon icon={viewMode === 'grid' ? listOutline : gridOutline} />
+                {viewMode === 'grid' ? 'Table View' : 'Grid View'}
+              </IonButton>
+              <IonButton 
+                fill="solid" 
+                size="small"
+                onClick={handleAddBranch}
+                className="add-branch-button"
+              >
+                <IonIcon icon={addOutline} />
+                Add New Branch
+              </IonButton>
+            </div>
 
             {/* Branches Display */}
             <IonCard className="branches-table-card">
@@ -306,10 +301,9 @@ const BranchMaster: React.FC = () => {
                   </div>
                 ) : viewMode === 'grid' ? (
                   // Grid View
-                  <IonGrid>
-                    <IonRow>
-                      {currentBranches.map(branch => (
-                        <IonCol size="12" sizeSm="6" sizeMd="4" key={branch.id}>
+                  <div className="branches-grid">
+                    {currentBranches.map(branch => (
+                      <div key={branch.id} className="branch-card-wrapper">
                           <IonCard className="branch-card">
                             <div className="branch-card-header">
                               <h2>{branch.officeName}</h2>
@@ -328,26 +322,25 @@ const BranchMaster: React.FC = () => {
                                   <span>Created: {new Date(branch.createdAt).toLocaleDateString()}</span>
                                 </div>
                               </div>
-                              <div className="branch-actions">
-                                <IonButton className="view-button" onClick={() => handleView(branch)}>
-                                  <IonIcon icon={eyeOutline} slot="start" />
+                              <div className="branch-card-actions">
+                                <IonButton className="branch-card-button view" onClick={() => handleView(branch)}>
+                                  <IonIcon icon={eyeOutline} />
                                   VIEW
                                 </IonButton>
-                                <IonButton className="edit-button" onClick={() => handleEdit(branch)}>
-                                  <IonIcon icon={createOutline} slot="start" />
+                                <IonButton className="branch-card-button edit" onClick={() => handleEdit(branch)}>
+                                  <IonIcon icon={createOutline} />
                                   EDIT
                                 </IonButton>
-                                <IonButton className="delete-button" onClick={() => handleDelete(branch.id)}>
-                                  <IonIcon icon={trashOutline} slot="start" />
+                                <IonButton className="branch-card-button delete" onClick={() => handleDelete(branch.id)}>
+                                  <IonIcon icon={trashOutline} />
                                   DELETE
                                 </IonButton>
                               </div>
                             </div>
                           </IonCard>
-                        </IonCol>
+                        </div>
                       ))}
-                    </IonRow>
-                  </IonGrid>
+                  </div>
                 ) : (
                   // Table View
                   <div className="table-container">
@@ -402,23 +395,12 @@ const BranchMaster: React.FC = () => {
 
                 {/* Pagination */}
                 {filteredAndSortedBranches.length > 0 && (
-                  <div className="pagination-controls">
-                    <IonButton 
-                      disabled={currentPage === 1} 
-                      onClick={handlePreviousPage}
-                    >
-                      <IonIcon slot="icon-only" icon={chevronBackOutline} />
-                    </IonButton>
-                    <span>
-                      Page {currentPage} of {totalPages}
-                    </span>
-                    <IonButton 
-                      disabled={currentPage === totalPages} 
-                      onClick={handleNextPage}
-                    >
-                      <IonIcon slot="icon-only" icon={chevronForwardOutline} />
-                    </IonButton>
-                  </div>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPreviousPage={handlePreviousPage}
+                    onNextPage={handleNextPage}
+                  />
                 )}
               </IonCardContent>
             </IonCard>
