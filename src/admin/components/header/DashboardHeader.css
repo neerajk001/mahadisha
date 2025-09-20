@@ -23,8 +23,8 @@
   --background: transparent;
   --color: var(--color-text-primary);
   --min-height: 70px;
-  --padding-start: 2rem;
-  --padding-end: 2rem;
+  /* --padding-start: 2rem; */
+  /* --padding-end: 2rem; */
   --border-width: 0;
   --box-shadow: none;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -133,11 +133,28 @@
 /* Filter row styles moved to FilterRow.css component */
 
 /* Responsive Design */
+@media (min-width: 768px) {
+  .header-logo {
+      display: none;
+    }
+}
 
 @media (max-width: 768px) {
+      .header-left-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem; /* space between toggle and logo */
+    }
+
+    .header-logo {
+      height: 60px;   /* adjust size as needed */
+      width: auto;
+      object-fit: contain;
+    }
+
   .dashboard-toolbar {
-    --padding-start: 1rem;
-    --padding-end: 1rem;
+    /* --padding-start: 1rem; */
+    /* --padding-end: 1rem; */
     --min-height: 60px;
   }
 
@@ -170,8 +187,8 @@
 
 @media (max-width: 480px) {
   .dashboard-toolbar {
-    --padding-start: 0.75rem;
-    --padding-end: 0.75rem;
+    /* --padding-start: 0.75rem; */
+    /* --padding-end: 0.75rem; */
     --min-height: 55px;
   }
   
@@ -208,8 +225,8 @@
 /* Extra Small Devices */
 @media (max-width: 360px) {
   .dashboard-toolbar {
-    --padding-start: 0.5rem;
-    --padding-end: 0.5rem;
+    /* --padding-start: 0.5rem; */
+    /* --padding-end: 0.5rem; */
     --min-height: 50px;
   }
   

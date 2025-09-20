@@ -4,10 +4,19 @@ http://ionicframework.com/docs/theming/ */
 /* ========================================
    CENTRALIZED COLOR SYSTEM
    ======================================== */
+.ion-page, .ion-app {
+  padding-top: env(safe-area-inset-top); /* for devices with notch */
+  /* margin: 0; */
+  /* padding: 0; */
+  box-sizing: border-box;
+}
+
+
+
 
 :root {
   /* Primary Colors - Main brand colors */
-  --color-primary: #008080;           /* Teal - Main brand color */
+  --color-primary: #566b6b;           /* Teal - Main brand color */
   --color-primary-dark: #006666;      /* Darker teal for gradients */
   --color-primary-light: #00a0a0;     /* Lighter teal for hover states */
   --color-primary-rgb: 0, 128, 128;   /* RGB values for rgba() usage */

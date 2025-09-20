@@ -1,6 +1,6 @@
 /* Summary Cards Container */
 .summary-cards-container {
-  padding: 1rem;
+  /* padding: 1rem; */
   background: transparent;
   position: relative;
   z-index: 2;
@@ -106,11 +106,34 @@
   margin: 0;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+
+
+  @media (min-width: 768px) {
   .summary-cards-container {
     padding: 0.75rem;
   }
+  .side-status{
+    max-height: 650px;
+    overflow:auto;
+  }
+
+  .resContainer{
+    width: 100% !important;
+    height: 600px !important;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  /* .summary-cards-container { */
+    /* padding: 0.75rem; */
+  /* } */
+
+  .resContainer{
+    width: 100% !important;
+    height: 250px !important;
+  }
+  
   
   .summary-card-content {
     padding: 1rem 0.75rem;
@@ -135,9 +158,9 @@
 }
 
 @media (max-width: 480px) {
-  .summary-cards-container {
+  /* .summary-cards-container {
     padding: 0.5rem;
-  }
+  } */
   
   .summary-card-content {
     padding: 0.75rem 0.5rem;

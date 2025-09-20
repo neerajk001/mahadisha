@@ -55,11 +55,19 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { useEffect } from 'react';
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
+const App: React.FC = () => {
+  useEffect(() => {
+    // Set status bar color and style
+    StatusBar.setOverlaysWebView({ overlay: false });
+    StatusBar.setBackgroundColor({ color: '#566b6b' }); // your primary color
+    StatusBar.setStyle({ style: Style.Dark });
+  }, []);
+ return (<IonApp>
     {/* <SidebarProvider> */}
       <IonReactRouter>
         <IonRouterOutlet id="main-content">
@@ -186,12 +194,12 @@ const App: React.FC = () => (
 
         {/* Default route → go to home directly */}
         <Route exact path="/">
-          <Redirect to="/home" />
+          <Redirect to="/login" />
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>
     {/* </SidebarProvider> */}
-  </IonApp>
-);
+  </IonApp>);
+};
 
 export default App;
