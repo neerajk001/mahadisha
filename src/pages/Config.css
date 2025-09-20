@@ -890,6 +890,13 @@
   .config-content {
     --padding-start: 1rem;
     --padding-end: 1rem;
+    --padding-top: 1rem;
+    --padding-bottom: 1rem;
+  }
+
+  .config-container {
+    max-width: 100%;
+    margin: 0;
   }
 
   .config-header {
@@ -897,41 +904,85 @@
     gap: 1.5rem;
     align-items: stretch;
     padding: 1.5rem;
+    margin-bottom: 1.5rem;
   }
 
   .header-left {
     justify-content: center;
     text-align: center;
+    gap: 1rem;
+  }
+
+  .header-icon {
+    font-size: 2rem;
+    padding: 0.75rem;
+  }
+
+  .header-info h1 {
+    font-size: 1.3rem;
+  }
+
+  .header-info p {
+    font-size: 0.85rem;
   }
 
   .header-actions {
     justify-content: center;
     flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .add-button,
+  .save-button {
+    flex: 1;
+    min-width: 120px;
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    --padding-top: 0.75rem;
+    --padding-bottom: 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .add-button ion-icon,
+  .save-button ion-icon {
+    margin-right: 0.5rem;
+  }
+
+  .config-tabs {
+    margin-bottom: 1.5rem;
+    padding: 0 1rem;
   }
 
   .config-tabs ion-segment-button {
-    --padding-start: 0.75rem;
-    --padding-end: 0.75rem;
-    font-size: 0.8rem;
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+    font-size: 0.75rem;
     margin: 0 0.125rem;
+    min-width: 60px;
   }
 
   .config-controls {
     flex-direction: column;
     align-items: stretch;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
   }
 
   .search-filter-section {
     flex-direction: column;
     min-width: auto;
+    gap: 1rem;
   }
 
   .import-export-section {
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
   }
 
   .config-field {
     padding: 1rem;
+    margin-bottom: 1rem;
   }
 
   .field-header {
@@ -942,6 +993,8 @@
 
   .field-actions {
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
   .field-content {
@@ -953,49 +1006,219 @@
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
+    padding: 1rem 0;
   }
 
   .preference-content,
   .security-content {
     justify-content: center;
   }
+
+  .preference-select,
+  .security-select {
+    min-width: 100%;
+    width: 100%;
+  }
+
+  .status-item,
+  .metric-item {
+    padding: 0.75rem 0;
+  }
+
+  .status-content,
+  .metric-content {
+    gap: 0.5rem;
+  }
+
+  .metric-progress {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+
+  .metric-value {
+    text-align: left;
+    min-width: auto;
+  }
 }
 
 @media (max-width: 480px) {
-  .config-header h1 {
-    font-size: 1.3rem;
+  .config-content {
+    --padding-start: 0.75rem;
+    --padding-end: 0.75rem;
+    --padding-top: 0.75rem;
+    --padding-bottom: 0.75rem;
+  }
+
+  .config-header {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .header-left {
+    gap: 0.75rem;
   }
 
   .header-icon {
-    font-size: 2rem;
-    padding: 0.75rem;
+    font-size: 1.75rem;
+    padding: 0.5rem;
+  }
+
+  .header-info h1 {
+    font-size: 1.2rem;
+  }
+
+  .header-info p {
+    font-size: 0.8rem;
+  }
+
+  .header-actions {
+    gap: 0.5rem;
+  }
+
+  .add-button,
+  .save-button {
+    min-width: 100px;
+    --padding-start: 0.75rem;
+    --padding-end: 0.75rem;
+    --padding-top: 0.5rem;
+    --padding-bottom: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .add-button ion-icon,
+  .save-button ion-icon {
+    margin-right: 0.25rem;
+    font-size: 0.9rem;
+  }
+
+  .config-tabs {
+    padding: 0 0.5rem;
+    margin-bottom: 1rem;
   }
 
   .config-tabs ion-segment-button {
-    --padding-start: 0.5rem;
-    --padding-end: 0.5rem;
-    font-size: 0.7rem;
+    --padding-start: 0.25rem;
+    --padding-end: 0.25rem;
+    font-size: 0.65rem;
+    margin: 0 0.0625rem;
+    min-width: 50px;
+  }
+
+  .config-controls {
+    margin-bottom: 1rem;
   }
 
   .config-field {
     padding: 0.75rem;
+    margin-bottom: 0.75rem;
   }
 
   .field-key {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .config-value {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  .field-actions {
+    gap: 0.25rem;
+  }
+
+  .edit-field-button,
+  .save-field-button,
+  .cancel-field-button {
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+    --padding-top: 0.4rem;
+    --padding-bottom: 0.4rem;
+    font-size: 0.7rem;
+  }
+
+  .preference-item,
+  .security-item {
+    padding: 0.75rem 0;
+  }
+
+  .preference-label,
+  .security-label {
+    font-size: 0.85rem;
+  }
+
+  .preference-description,
+  .security-description {
+    font-size: 0.75rem;
+  }
+
+  .status-label,
+  .metric-label {
+    font-size: 0.75rem;
+  }
+
+  .status-value,
+  .metric-value {
+    font-size: 0.85rem;
   }
 
   .modal-content {
-    --padding-start: 1rem;
-    --padding-end: 1rem;
+    --padding-start: 0.75rem;
+    --padding-end: 0.75rem;
+    --padding-top: 1rem;
+    --padding-bottom: 1rem;
   }
 
   .modal-actions {
     flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .modal-actions ion-button {
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    --padding-top: 0.75rem;
+    --padding-bottom: 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  /* Improve touch targets for mobile */
+  .add-button,
+  .save-button,
+  .edit-field-button,
+  .save-field-button,
+  .cancel-field-button {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  /* Better spacing for mobile cards */
+  .status-card,
+  .performance-card,
+  .preferences-card,
+  .security-card {
+    margin-bottom: 1rem;
+  }
+
+  /* Improve form inputs for mobile */
+  .config-input,
+  .config-textarea,
+  .modal-input,
+  .modal-select,
+  .modal-textarea {
+    min-height: 44px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  /* Better mobile navigation */
+  .config-tabs ion-segment {
+    --background: transparent;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .config-tabs ion-segment::-webkit-scrollbar {
+    display: none;
   }
 }
 

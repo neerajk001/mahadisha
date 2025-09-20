@@ -520,6 +520,53 @@ export interface RegionReportData {
   banks: BankData[];
 }
 
+// Monthly Progress Report Types
+export interface MonthlyProgressData {
+  srNo: number;
+  district: string;
+  target: {
+    phy: number;
+    fin: number;
+  };
+  bankPendencyForYear: number;
+  proposalsReceived: {
+    upToLastMonth: number;
+    duringTheMonth: number;
+    total: number;
+  };
+  proposalsSentToBank: {
+    upToLastMonth: number;
+    duringTheMonth: number;
+    total: number;
+  };
+  sanctioned: {
+    upToLastMonth: number;
+    duringTheMonth: number;
+    total: number;
+  };
+  disbursementDuringMonth: {
+    beneficiaries: number;
+    subsidy: number;
+    mm: number;
+    bankLoan: number;
+  };
+  totalDisbursement: {
+    beneficiaries: number;
+    subsidy: number;
+    mm: number;
+    bankLoan: number;
+  };
+  proposalsPendingForDisbursement: number;
+  proposalsRejected: {
+    bank: number;
+    office: number;
+  };
+  proposalsPending: {
+    bank: number;
+    office: number;
+  };
+}
+
 export interface AddressInfo {
   currentAddress: string;
   permanentAddress: string;

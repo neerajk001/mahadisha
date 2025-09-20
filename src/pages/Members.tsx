@@ -15,12 +15,18 @@ import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import { mockDataService } from '../services/api';
 import type { MembersData } from '../types';
+import { Pagination } from '../admin/components/shared';
+import { RBACControls, RBACHeader } from '../components/shared';
 import './Members.css';
 
 const Members: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   
   // Advanced search states
   const [showSearchPopover, setShowSearchPopover] = useState(false);
@@ -100,6 +106,25 @@ const Members: React.FC = () => {
       member.status.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [allMembers, searchQuery]);
+
+  // Calculate pagination
+  const totalPages = Math.max(1, Math.ceil(filteredMembers.length / itemsPerPage));
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentMembers = filteredMembers.slice(startIndex, endIndex);
+
+  // Pagination handlers
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
 
   // Form handlers
@@ -330,6 +355,7 @@ const Members: React.FC = () => {
   const handleSearchInput = (e: CustomEvent) => {
     const value = e.detail.value!;
     setSearchQuery(value);
+    setCurrentPage(1); // Reset to first page when search changes
     if (value.length > 0) {
       setShowSearchPopover(true);
     } else {
@@ -421,29 +447,27 @@ const Members: React.FC = () => {
           <IonContent className="members-content">
             <div className="members-container">
               {/* Header Section */}
-              <div className="members-header">
-                <h1>Members ({filteredMembers.length})</h1>
-              </div>
+              <RBACHeader
+                title={`Members (${filteredMembers.length})`}
+                subtitle="Manage user members and their roles"
+              />
 
               {/* Advanced Search Section */}
-              <div className="search-section">
-                <div className="search-content">
-                  <IonSearchbar
-                    value={searchQuery}
-                    onIonInput={handleSearchInput}
-                    placeholder="Search members by name, email, phone, district, role, or status..."
-                    className="advanced-search"
-                    showClearButton="focus"
-                  />
-                  <IonButton 
-                    fill="solid" 
-                    className="add-members-button"
-                    onClick={handleAddMember}
-                  >
-                    <IonIcon icon={addOutline} />
-                    Add Member
-                  </IonButton>
-                </div>
+              <RBACControls
+                searchQuery={searchQuery}
+                onSearchChange={(value) => {
+                  setSearchQuery(value);
+                  setCurrentPage(1); // Reset to first page when search changes
+                  if (value.length > 0) {
+                    setShowSearchPopover(true);
+                  } else {
+                    setShowSearchPopover(false);
+                  }
+                }}
+                searchPlaceholder="Search members by name, email, phone, district, role, or status..."
+                onAddNew={handleAddMember}
+                addButtonText="Add Member"
+              />
                 
                 {/* Search Suggestions Popover */}
                 <IonPopover
@@ -465,7 +489,6 @@ const Members: React.FC = () => {
                     ))}
                   </IonList>
                 </IonPopover>
-              </div>
 
               {/* Members Table */}
               <IonCard className="members-table-card">
@@ -517,7 +540,7 @@ const Members: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredMembers.map((member, index) => (
+                      {currentMembers.map((member, index) => (
                         <tr key={member.id} className={`${index % 2 === 0 ? 'even-row' : 'odd-row'} ${member.status === 'Deleted' ? 'deleted-row' : ''}`}>
                           <td className="name-cell">
                             <span className="member-name">{member.name}</span>
@@ -597,6 +620,17 @@ const Members: React.FC = () => {
                   </table>
                 </IonCardContent>
               </IonCard>
+
+              {/* Pagination */}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPreviousPage={handlePreviousPage}
+                onNextPage={handleNextPage}
+              />
+              
+              {/* Bottom spacing for pagination visibility */}
+              <div style={{ height: '3rem' }}></div>
             </div>
           </IonContent>
         </div>

@@ -43,7 +43,8 @@ import {
   MembersData,
   ConfigData,
   RegionReportData,
-  BankData
+  BankData,
+  MonthlyProgressData
 } from '../types';
 
 // API Configuration
@@ -1995,6 +1996,136 @@ export const mockDataService = {
           proposalsPending: { phy: 10, fin: 500000 }
         }
       ]
+    }
+  ],
+
+  // Mock Monthly Progress Report Data
+  getMonthlyProgressData: (): MonthlyProgressData[] => [
+    {
+      srNo: 1,
+      district: 'Akola',
+      target: { phy: 0, fin: 0 },
+      bankPendencyForYear: 0,
+      proposalsReceived: { upToLastMonth: 2, duringTheMonth: 0, total: 2 },
+      proposalsSentToBank: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      sanctioned: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      disbursementDuringMonth: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      totalDisbursement: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      proposalsPendingForDisbursement: 0,
+      proposalsRejected: { bank: 0, office: 0 },
+      proposalsPending: { bank: 0, office: 2 }
+    },
+    {
+      srNo: 2,
+      district: 'Amravati',
+      target: { phy: 0, fin: 0 },
+      bankPendencyForYear: 0,
+      proposalsReceived: { upToLastMonth: 3, duringTheMonth: 0, total: 3 },
+      proposalsSentToBank: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      sanctioned: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      disbursementDuringMonth: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      totalDisbursement: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      proposalsPendingForDisbursement: 0,
+      proposalsRejected: { bank: 0, office: 0 },
+      proposalsPending: { bank: 0, office: 3 }
+    },
+    {
+      srNo: 3,
+      district: 'Bhandara',
+      target: { phy: 0, fin: 0 },
+      bankPendencyForYear: 0,
+      proposalsReceived: { upToLastMonth: 1, duringTheMonth: 0, total: 1 },
+      proposalsSentToBank: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      sanctioned: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      disbursementDuringMonth: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      totalDisbursement: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      proposalsPendingForDisbursement: 0,
+      proposalsRejected: { bank: 0, office: 0 },
+      proposalsPending: { bank: 0, office: 1 }
+    },
+    {
+      srNo: 4,
+      district: 'Buldhana',
+      target: { phy: 0, fin: 0 },
+      bankPendencyForYear: 0,
+      proposalsReceived: { upToLastMonth: 4, duringTheMonth: 0, total: 4 },
+      proposalsSentToBank: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      sanctioned: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      disbursementDuringMonth: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      totalDisbursement: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      proposalsPendingForDisbursement: 0,
+      proposalsRejected: { bank: 0, office: 0 },
+      proposalsPending: { bank: 0, office: 4 }
+    },
+    {
+      srNo: 5,
+      district: 'Chandrapur',
+      target: { phy: 0, fin: 0 },
+      bankPendencyForYear: 0,
+      proposalsReceived: { upToLastMonth: 1, duringTheMonth: 0, total: 1 },
+      proposalsSentToBank: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      sanctioned: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      disbursementDuringMonth: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      totalDisbursement: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      proposalsPendingForDisbursement: 0,
+      proposalsRejected: { bank: 0, office: 0 },
+      proposalsPending: { bank: 0, office: 1 }
+    },
+    {
+      srNo: 6,
+      district: 'GONDIA',
+      target: { phy: 0, fin: 0 },
+      bankPendencyForYear: 0,
+      proposalsReceived: { upToLastMonth: 1, duringTheMonth: 0, total: 1 },
+      proposalsSentToBank: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      sanctioned: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      disbursementDuringMonth: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      totalDisbursement: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      proposalsPendingForDisbursement: 0,
+      proposalsRejected: { bank: 0, office: 0 },
+      proposalsPending: { bank: 0, office: 1 }
+    },
+    {
+      srNo: 7,
+      district: 'Gondia',
+      target: { phy: 0, fin: 0 },
+      bankPendencyForYear: 0,
+      proposalsReceived: { upToLastMonth: 1, duringTheMonth: 0, total: 1 },
+      proposalsSentToBank: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      sanctioned: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      disbursementDuringMonth: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      totalDisbursement: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      proposalsPendingForDisbursement: 0,
+      proposalsRejected: { bank: 0, office: 0 },
+      proposalsPending: { bank: 0, office: 1 }
+    },
+    {
+      srNo: 8,
+      district: 'KOLHAPUR',
+      target: { phy: 0, fin: 0 },
+      bankPendencyForYear: 0,
+      proposalsReceived: { upToLastMonth: 2, duringTheMonth: 0, total: 2 },
+      proposalsSentToBank: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      sanctioned: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      disbursementDuringMonth: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      totalDisbursement: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      proposalsPendingForDisbursement: 0,
+      proposalsRejected: { bank: 0, office: 0 },
+      proposalsPending: { bank: 0, office: 2 }
+    },
+    {
+      srNo: 9,
+      district: 'Kolhapur',
+      target: { phy: 0, fin: 0 },
+      bankPendencyForYear: 0,
+      proposalsReceived: { upToLastMonth: 7, duringTheMonth: 0, total: 7 },
+      proposalsSentToBank: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      sanctioned: { upToLastMonth: 0, duringTheMonth: 0, total: 0 },
+      disbursementDuringMonth: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      totalDisbursement: { beneficiaries: 0, subsidy: 0, mm: 0, bankLoan: 0 },
+      proposalsPendingForDisbursement: 0,
+      proposalsRejected: { bank: 0, office: 0 },
+      proposalsPending: { bank: 0, office: 7 }
     }
   ]
 };

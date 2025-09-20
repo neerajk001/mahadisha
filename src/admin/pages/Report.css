@@ -1108,14 +1108,720 @@
   --box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 
+/* Due Recovery Report Styles */
+.due-recovery-section {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.due-recovery-header {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.due-recovery-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  flex: 1;
+  min-width: 300px;
+}
+
+.export-excel-btn {
+  --background: rgba(255, 255, 255, 0.2);
+  --color: white;
+  --border-radius: 8px;
+  --padding: 0.75rem 1.5rem;
+  --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.export-excel-btn:hover {
+  --background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+  --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Scheme Tabs Container */
+.scheme-tabs-container {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.scheme-tabs {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.scheme-tabs::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scheme-tabs::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.scheme-tabs::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.scheme-tabs::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.scheme-tab {
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: fit-content;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.scheme-tab:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  color: #374151;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.scheme-tab.active {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border-color: #1d4ed8;
+  color: white;
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+  transform: translateY(-1px);
+}
+
+.scheme-tab.active:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4);
+}
+
+/* Due Recovery Table */
+.due-recovery-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  min-width: 1400px;
+}
+
+.due-recovery-table th {
+  background: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  padding: 1rem 0.75rem;
+  text-align: center;
+  border: 1px solid #dee2e6;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.due-recovery-table .main-header th {
+  background: #e9ecef;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #212529;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.due-recovery-table .sub-header th {
+  background: #f8f9fa;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #6c757d;
+  border-top: 1px solid #dee2e6;
+}
+
+.due-recovery-table td {
+  padding: 1rem 0.75rem;
+  text-align: center;
+  border: 1px solid #dee2e6;
+  background: white;
+  font-weight: 500;
+}
+
+.due-recovery-table .particulars-cell {
+  text-align: left !important;
+  font-weight: 600;
+  color: #374151;
+  background: #f8f9fa !important;
+  min-width: 200px;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.due-recovery-table .total-cell {
+  background: #e0f2fe !important;
+  font-weight: 700;
+  color: #0369a1;
+  border-left: 2px solid #0ea5e9;
+  border-right: 2px solid #0ea5e9;
+}
+
+.due-recovery-table .grand-total-cell {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+  font-weight: 800;
+  color: #92400e;
+  border: 2px solid #f59e0b;
+  font-size: 1rem;
+}
+
+.due-recovery-table .data-row:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.due-recovery-table .data-row:nth-child(even) .particulars-cell {
+  background: #e9ecef !important;
+}
+
+.due-recovery-table .data-row:hover {
+  background: #e3f2fd;
+}
+
+.due-recovery-table .data-row:hover .particulars-cell {
+  background: #d1ecf1 !important;
+}
+
+.due-recovery-table .data-row:hover .total-cell {
+  background: #bae6fd !important;
+}
+
+.due-recovery-table .data-row:hover .grand-total-cell {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+}
+
+/* Comparative Report Styles */
+.comparative-section {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.comparative-header {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  color: white;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.comparative-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  flex: 1;
+  min-width: 300px;
+}
+
+/* Comparative Table */
+.comparative-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  min-width: 800px;
+}
+
+.comparative-table th {
+  background: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  padding: 1rem 0.75rem;
+  text-align: center;
+  border: 1px solid #dee2e6;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.comparative-table .main-header th {
+  background: #e9ecef;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #212529;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.comparative-table .sub-header th {
+  background: #f8f9fa;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #6c757d;
+  border-top: 1px solid #dee2e6;
+}
+
+.comparative-table td {
+  padding: 1rem 0.75rem;
+  text-align: center;
+  border: 1px solid #dee2e6;
+  background: white;
+  font-weight: 500;
+}
+
+.comparative-table .district-cell {
+  text-align: left !important;
+  font-weight: 600;
+  color: #374151;
+  background: #f8f9fa !important;
+  min-width: 120px;
+}
+
+.comparative-table .difference-cell {
+  background: #f8f9fa !important;
+  min-width: 150px;
+  vertical-align: top;
+  padding: 0.75rem !important;
+}
+
+.difference-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.phy-diff,
+.fin-diff {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  background: white;
+  border: 1px solid #e5e7eb;
+}
+
+.diff-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+}
+
+.diff-value {
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.diff-value.positive {
+  color: #059669;
+}
+
+.diff-value.negative {
+  color: #dc2626;
+}
+
+.comparative-table .data-row:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.comparative-table .data-row:nth-child(even) .district-cell {
+  background: #e9ecef !important;
+}
+
+.comparative-table .data-row:nth-child(even) .difference-cell {
+  background: #e9ecef !important;
+}
+
+.comparative-table .data-row:hover {
+  background: #e0f2fe;
+}
+
+.comparative-table .data-row:hover .district-cell {
+  background: #d1ecf1 !important;
+}
+
+.comparative-table .data-row:hover .difference-cell {
+  background: #d1ecf1 !important;
+}
+
+.comparative-table .data-row:hover .phy-diff,
+.comparative-table .data-row:hover .fin-diff {
+  background: #f0f9ff;
+  border-color: #0ea5e9;
+}
+
+/* Regional Report Styles */
+.regional-section {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.regional-header {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: white;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.regional-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  flex: 1;
+  min-width: 300px;
+}
+
+/* Regional Table */
+.regional-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  min-width: 2000px;
+}
+
+.regional-table th {
+  background: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  border: 1px solid #dee2e6;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.regional-table .main-header th {
+  background: #e9ecef;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #212529;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.regional-table .sub-header th {
+  background: #f8f9fa;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: #6c757d;
+  border-top: 1px solid #dee2e6;
+}
+
+.regional-table td {
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  border: 1px solid #dee2e6;
+  background: white;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.regional-table .district-cell {
+  text-align: left !important;
+  font-weight: 600;
+  color: #374151;
+  background: #f8f9fa !important;
+  min-width: 120px;
+}
+
+.regional-table .total-cell {
+  background: #fef3c7 !important;
+  font-weight: 700;
+  color: #92400e;
+  border: 2px solid #f59e0b !important;
+}
+
+.regional-table .region-header-row {
+  background: #d1fae5 !important;
+  border: 2px solid #10b981 !important;
+}
+
+.regional-table .region-header-cell {
+  background: #10b981 !important;
+  color: white !important;
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: center !important;
+  padding: 1rem !important;
+  border: none !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 5;
+  display: table-cell !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.regional-table .data-row:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.regional-table .data-row:nth-child(even) .district-cell {
+  background: #e9ecef !important;
+}
+
+.regional-table .data-row:hover {
+  background: #e0f2fe;
+}
+
+.regional-table .data-row:hover .district-cell {
+  background: #d1ecf1 !important;
+}
+
+.regional-table .data-row:hover .total-cell {
+  background: #fef3c7 !important;
+  border-color: #f59e0b !important;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .organization-title {
     font-size: 1.3rem;
   }
 
+  /* Due Recovery Mobile Styles */
+  .due-recovery-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .due-recovery-header h2 {
+    font-size: 1.25rem;
+    min-width: auto;
+  }
+
+  .export-excel-btn {
+    --padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .scheme-tabs {
+    gap: 0.25rem;
+  }
+
+  .scheme-tab {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .due-recovery-table {
+    font-size: 0.75rem;
+    min-width: 1200px;
+  }
+
+  .due-recovery-table th,
+  .due-recovery-table td {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .due-recovery-table .particulars-cell {
+    min-width: 150px;
+    max-width: 150px;
+    font-size: 0.7rem;
+  }
+
+  /* Comparative Mobile Styles */
+  .comparative-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .comparative-header h2 {
+    font-size: 1.25rem;
+    min-width: auto;
+  }
+
+  .comparative-table {
+    font-size: 0.8rem;
+    min-width: 700px;
+  }
+
+  .comparative-table th,
+  .comparative-table td {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .comparative-table .district-cell {
+    min-width: 100px;
+  }
+
+  .comparative-table .difference-cell {
+    min-width: 120px;
+    padding: 0.5rem !important;
+  }
+
+  .phy-diff,
+  .fin-diff {
+    padding: 0.2rem 0.4rem;
+  }
+
+  .diff-label {
+    font-size: 0.7rem;
+  }
+
+  .diff-value {
+    font-size: 0.75rem;
+  }
+
+  /* Regional Mobile Styles */
+  .regional-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .regional-header h2 {
+    font-size: 1.25rem;
+    min-width: auto;
+  }
+
+  .regional-table {
+    font-size: 0.7rem;
+    min-width: 1800px;
+  }
+
+  .regional-table th,
+  .regional-table td {
+    padding: 0.4rem 0.25rem;
+  }
+
+  .regional-table .district-cell {
+    min-width: 100px;
+  }
+
+  .regional-table .region-header-cell {
+    font-size: 0.9rem;
+    padding: 0.75rem !important;
+  }
+
   .report-main-title {
     font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Due Recovery Extra Small Mobile Styles */
+  .due-recovery-header h2 {
+    font-size: 1rem;
+  }
+
+  .export-excel-btn {
+    --padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+  }
+
+  .scheme-tab {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .due-recovery-table {
+    font-size: 0.7rem;
+    min-width: 1000px;
+  }
+
+  .due-recovery-table th,
+  .due-recovery-table td {
+    padding: 0.4rem 0.2rem;
+  }
+
+  .due-recovery-table .particulars-cell {
+    min-width: 120px;
+    max-width: 120px;
+    font-size: 0.65rem;
+  }
+
+  /* Comparative Extra Small Mobile Styles */
+  .comparative-header h2 {
+    font-size: 1rem;
+  }
+
+  .comparative-table {
+    font-size: 0.7rem;
+    min-width: 600px;
+  }
+
+  .comparative-table th,
+  .comparative-table td {
+    padding: 0.4rem 0.2rem;
+  }
+
+  .comparative-table .district-cell {
+    min-width: 80px;
+  }
+
+  .comparative-table .difference-cell {
+    min-width: 100px;
+    padding: 0.4rem !important;
+  }
+
+  .phy-diff,
+  .fin-diff {
+    padding: 0.15rem 0.3rem;
+  }
+
+  .diff-label {
+    font-size: 0.65rem;
+  }
+
+  .diff-value {
+    font-size: 0.7rem;
+  }
+
+  /* Regional Extra Small Mobile Styles */
+  .regional-header h2 {
+    font-size: 1rem;
+  }
+
+  .regional-table {
+    font-size: 0.65rem;
+    min-width: 1600px;
+  }
+
+  .regional-table th,
+  .regional-table td {
+    padding: 0.3rem 0.2rem;
+  }
+
+  .regional-table .district-cell {
+    min-width: 80px;
+  }
+
+  .regional-table .region-header-cell {
+    font-size: 0.8rem;
+    padding: 0.6rem !important;
   }
 
   .report-tabs-container {

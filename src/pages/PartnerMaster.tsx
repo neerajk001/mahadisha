@@ -18,6 +18,7 @@ import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { Pagination } from '../admin/components/shared';
+import { MasterCard, MasterControls, MasterHeader } from '../components/shared';
 import { mockDataService } from '../services/api';
 import type { PartnerMasterData } from '../types';
 import './PartnerMaster.css';
@@ -147,7 +148,9 @@ const PartnerMaster: React.FC = () => {
       id: (crypto as any)?.randomUUID?.() ?? String(Date.now()),
       name,
       address,
-      contact
+      contact,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
     setPartners(prev => [newPartner, ...prev]);
@@ -249,98 +252,48 @@ const PartnerMaster: React.FC = () => {
           <IonContent className="manage-pages-content">
             <div className="pages-container">
               {/* Header Section */}
-              <div className="pages-header">
-                <h1>Partner Master</h1>
-                <p>Manage partner organizations and their details</p>
-              </div>
+              <MasterHeader
+                title="Partner Master"
+                subtitle="Manage partner organizations and their details"
+              />
 
               {/* Enhanced Search and Actions */}
-              <div className="pages-actions">
-                <IonSearchbar
-                  value={searchQuery}
-                  onIonChange={(e) => setSearchQuery(e.detail.value!)}
-                  placeholder="Search partners by name, address, or contact..."
-                  className="pages-search"
-                />
-                <IonButton 
-                  fill="outline" 
-                  size="small"
-                  onClick={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
-                >
-                  <IonIcon icon={viewMode === 'grid' ? barChartOutline : eyeOutline} />
-                  {viewMode === 'grid' ? 'Table View' : 'Grid View'}
-                </IonButton>
-                <IonButton 
-                  fill="solid" 
-                  className="add-page-button"
-                  onClick={handleAddPartner}
-                >
-                  <IonIcon icon={addOutline} />
-                  Add New Partner
-                </IonButton>
-              </div>
+              <MasterControls
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search partners by name, address, or contact..."
+                viewMode={viewMode}
+                onViewModeToggle={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
+                onAddNew={handleAddPartner}
+                addButtonText="Add New Partner"
+              />
 
               {/* Partners Grid */}
               {viewMode === 'grid' ? (
-                <div className="branches-grid">
+                <div className="master-cards-grid" style={{ padding: '1rem' }}>
                   {currentPartners.map((partner) => (
-                    <div key={partner.id} className="branch-card">
-                      <div className="branch-card-header">
-                        <div className="branch-card-icon">
-                          <IonIcon icon={peopleOutline} />
-                        </div>
-                        <div className="branch-card-title">
-                          <h3 className="branch-card-name">{partner.name}</h3>
-                          <div className="branch-card-type">Partner Organization</div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-content">
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={locationOutline} className="branch-card-meta-icon" />
-                            <span>Address: {partner.address}</span>
-                          </div>
-                        </div>
-                        
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={documentTextOutline} className="branch-card-meta-icon" />
-                            <span>Contact: {partner.contact}</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-actions">
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button view"
-                          onClick={() => handleView(partner)}
-                        >
-                          <IonIcon icon={eyeOutline} />
-                          View
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button edit"
-                          onClick={() => handleEdit(partner.id)}
-                        >
-                          <IonIcon icon={createOutline} />
-                          Edit
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button delete"
-                          onClick={() => handleDelete(partner.id)}
-                        >
-                          <IonIcon icon={trashOutline} />
-                          Delete
-                        </IonButton>
-                      </div>
-                    </div>
+                    <MasterCard
+                      key={partner.id}
+                      id={partner.id}
+                      title={partner.name}
+                      subtitle="Partner Organization"
+                      icon={peopleOutline}
+                      metaItems={[
+                        {
+                          icon: locationOutline,
+                          label: "Address",
+                          value: partner.address
+                        },
+                        {
+                          icon: documentTextOutline,
+                          label: "Contact",
+                          value: partner.contact
+                        }
+                      ]}
+                      onView={() => handleView(partner)}
+                      onEdit={() => handleEdit(partner.id)}
+                      onDelete={() => handleDelete(partner.id)}
+                    />
                   ))}
                 </div>
               ) : (

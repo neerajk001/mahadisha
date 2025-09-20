@@ -4,7 +4,7 @@
   --padding-start: 1.5rem;
   --padding-end: 1.5rem;
   --padding-top: 1.5rem;
-  --padding-bottom: 1.5rem;
+  --padding-bottom: 4rem;
   min-height: 100vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -504,7 +504,7 @@ ion-popover ion-label p {
     --padding-start: 1rem;
     --padding-end: 1rem;
     --padding-top: 1rem;
-    --padding-bottom: 1rem;
+    --padding-bottom: 5rem;
     min-height: 100vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;

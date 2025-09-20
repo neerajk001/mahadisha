@@ -15,6 +15,7 @@ import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { Pagination } from '../admin/components/shared';
+import { RBACControls, RBACHeader } from '../components/shared';
 import { mockDataService } from '../services/api';
 import type { 
   PincodeMappingData, 
@@ -370,42 +371,22 @@ const PincodeMapping: React.FC = () => {
           <IonContent className="pincode-mapping-content">
             <div className="mappings-container">
               {/* Header Section */}
-              <div className="mappings-header">
-                <h1>Pincode Mapping</h1>
-                <p>Manage district to pincode mapping with advanced features</p>
-              </div>
+              <RBACHeader
+                title="Pincode Mapping"
+                subtitle="Manage district to pincode mapping with advanced features"
+              />
 
 
               {/* Enhanced Actions Bar */}
-              <div className="mappings-actions">
-                <div className="search-section">
-                  <IonSearchbar
-                    value={searchQuery}
-                    onIonChange={(e) => setSearchQuery(e.detail.value!)}
-                    placeholder="Search by district, pincode, state, or region..."
-                    className="mappings-search"
-                  />
-                  <IonButton 
-                    fill="outline" 
-                    className="filter-button"
-                    onClick={() => setShowFiltersModal(true)}
-                  >
-                    <IonIcon icon={filterOutline} />
-                    Filters
-                  </IonButton>
-                </div>
-                
-                <div className="action-buttons">
-                  <IonButton 
-                    fill="solid" 
-                    className="add-mapping-button"
-                    onClick={handleAddMapping}
-                  >
-                    <IonIcon icon={addOutline} />
-                    Add Mapping
-                  </IonButton>
-                </div>
-              </div>
+              <RBACControls
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search by district, pincode, state, or region..."
+                onAddNew={handleAddMapping}
+                addButtonText="Add Mapping"
+                showFilterButton={true}
+                onFilterClick={() => setShowFiltersModal(true)}
+              />
 
               {/* Enhanced Table */}
               <IonCard className="mappings-table-card">

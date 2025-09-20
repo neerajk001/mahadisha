@@ -39,25 +39,41 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({
   const popoverRef = useRef<HTMLIonPopoverElement>(null);
   const triggerRef = useRef<HTMLIonButtonElement>(null);
 
-  const handleEdit = () => {
+  const handleEdit = (event?: Event) => {
+    event?.stopPropagation();
+    setIsOpen(false);
     if (onEdit) {
-      onEdit();
+      setTimeout(() => onEdit(), 100);
     }
-    setIsOpen(false);
   };
 
-  const handleDelete = () => {
+  const handleDelete = (event?: Event) => {
+    event?.stopPropagation();
+    setIsOpen(false);
     if (onDelete) {
-      onDelete();
+      setTimeout(() => onDelete(), 100);
     }
-    setIsOpen(false);
   };
 
-  const handleView = () => {
-    if (onView) {
-      onView();
-    }
+  const handleView = (event?: Event) => {
+    event?.stopPropagation();
     setIsOpen(false);
+    if (onView) {
+      setTimeout(() => onView(), 100);
+    }
+  };
+
+  const handlePopoverOpen = () => {
+    setIsOpen(true);
+    // Ensure proper positioning after a small delay
+    setTimeout(() => {
+      if (popoverRef.current) {
+        const popover = popoverRef.current as any;
+        if (popover.reposition) {
+          popover.reposition();
+        }
+      }
+    }, 50);
   };
 
 
@@ -68,7 +84,7 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({
         fill="clear"
         size={size}
         className="action-dropdown-trigger"
-        onClick={() => setIsOpen(true)}
+        onClick={handlePopoverOpen}
         disabled={disabled}
         id={`action-trigger-${itemId}`}
       >
@@ -81,19 +97,25 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({
         ref={popoverRef}
         trigger={`action-trigger-${itemId}`}
         isOpen={isOpen}
-        onDidDismiss={() => setIsOpen(false)}
+        onDidDismiss={(event) => {
+          setIsOpen(false);
+          event.stopPropagation();
+        }}
+        onWillDismiss={() => setIsOpen(false)}
         showBackdrop={true}
         dismissOnSelect={true}
+        backdropDismiss={true}
         side="bottom"
-        alignment="end"
+        alignment="center"
         className="action-dropdown-popover"
+        keepContentsMounted={true}
       >
         <IonList className="action-dropdown-list">
           {showView && onView && (
             <IonItem
               button
               className="action-dropdown-item view-item"
-              onClick={handleView}
+              onClick={(e) => handleView(e.nativeEvent)}
             >
               <IonIcon icon={eyeOutline} slot="start" className="action-dropdown-icon" />
               <IonLabel>View</IonLabel>
@@ -105,7 +127,7 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({
             <IonItem
               button
               className="action-dropdown-item edit-item"
-              onClick={handleEdit}
+              onClick={(e) => handleEdit(e.nativeEvent)}
             >
               <IonIcon icon={createOutline} slot="start" className="action-dropdown-icon" />
               <IonLabel>Edit</IonLabel>
@@ -116,7 +138,7 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({
             <IonItem
               button
               className="action-dropdown-item delete-item"
-              onClick={handleDelete}
+              onClick={(e) => handleDelete(e.nativeEvent)}
             >
               <IonIcon icon={trashOutline} slot="start" className="action-dropdown-icon" />
               <IonLabel>Delete</IonLabel>

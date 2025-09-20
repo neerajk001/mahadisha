@@ -147,13 +147,14 @@
   box-shadow: 
     0 15px 35px rgba(0, 0, 0, 0.1),
     0 5px 15px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
+  overflow: visible;
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   position: relative;
   z-index: 1;
   margin-bottom: 2rem;
+  width: 100%;
 }
 
 .pages-table-card::before {
@@ -170,8 +171,11 @@
 
 .table-container {
   padding: 0;
-  overflow-x: auto;
+  overflow-x: auto !important;
+  overflow-y: visible;
   background: transparent;
+  width: 100%;
+  max-width: 100%;
 }
 
 /* Table Styles */
@@ -179,7 +183,7 @@
   width: 100%;
   border-collapse: collapse;
   background: transparent;
-  min-width: 800px;
+  min-width: 1000px;
 }
 
 .pages-table th {
@@ -230,7 +234,7 @@
 
 .pages-table tbody tr:hover {
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
-  transform: scale(1.01);
+  transform: none !important;
 }
 
 .pages-table tbody tr:nth-child(even) {
@@ -304,14 +308,35 @@
 }
 
 .actions-cell {
-  min-width: 120px;
+  min-width: 150px;
+  width: 150px;
+  position: relative !important;
+  text-align: center;
+  overflow: visible !important;
+  z-index: 10;
 }
 
 .action-buttons {
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+/* Ensure table doesn't create new stacking context */
+.pages-table {
+  transform: none !important;
+  position: static !important;
+}
+
+.pages-table tbody tr {
+  transform: none !important;
+}
+
+.table-container {
+  transform: none !important;
+  position: relative !important;
 }
 
 .edit-button {
@@ -882,21 +907,24 @@
 
 /* Scrollbar Styling */
 .table-container::-webkit-scrollbar {
-  height: 8px;
+  height: 12px;
 }
 
 .table-container::-webkit-scrollbar-track {
-  background: var(--color-bg-secondary);
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  margin: 0 20px;
 }
 
 .table-container::-webkit-scrollbar-thumb {
-  background: var(--color-border-medium);
-  border-radius: 4px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 6px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
 .table-container::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-secondary);
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
 /* Loading and Empty States */

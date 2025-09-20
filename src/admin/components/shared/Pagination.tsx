@@ -17,7 +17,9 @@ const Pagination: React.FC<PaginationProps> = ({
   onNextPage,
   className = ''
 }) => {
-  if (totalPages <= 1) {
+  // Always show pagination for loan sections - don't hide even if only 1 page
+  // Only return null if no data at all
+  if (totalPages < 1) {
     return null;
   }
 
