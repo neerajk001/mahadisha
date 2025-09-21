@@ -7,12 +7,15 @@ import {
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
-  chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline
+  chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
+  eyeOutline, gridOutline, listOutline, locationOutline, documentTextOutline, timeOutline
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { Pagination } from '../admin/components/shared';
+import { MasterCard, MasterHeader, MasterControls } from '../components/shared';
+import '../components/shared/MasterCard.css';
 import { mockDataService } from '../services/api';
 import type { BranchMappingData } from '../types';
 import './BranchMapping.css';
@@ -20,6 +23,7 @@ import './BranchMapping.css';
 const BranchMapping: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [viewMode, setViewMode] = useState<'table' | 'grid'>('grid');
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [selectedMappingId, setSelectedMappingId] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
@@ -283,31 +287,52 @@ const BranchMapping: React.FC = () => {
           <IonContent className="branch-mapping-content">
             <div className="mappings-container">
               {/* Header Section */}
-              <div className="mappings-header">
-                <h1>Branch Mapping</h1>
-                <p>Manage region to district mapping</p>
-              </div>
+              <MasterHeader
+                title="Branch Mapping"
+                subtitle="Manage region to district mapping"
+              />
 
               {/* Search and Actions */}
-              <div className="mappings-actions-row">
-                <IonSearchbar
-                  value={searchQuery}
-                  onIonChange={(e) => setSearchQuery(e.detail.value!)}
-                  placeholder="Search by region or district..."
-                  className="mappings-search-row"
-                />
-                <IonButton 
-                  fill="solid" 
-                  className="add-mapping-button-row"
-                  onClick={handleAddMapping}
-                >
-                  <IonIcon icon={addOutline} />
-                  + ADD MAPPING
-                </IonButton>
-              </div>
+              <MasterControls
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search by region or district..."
+                viewMode={viewMode}
+                onViewModeToggle={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
+                onAddNew={handleAddMapping}
+                addButtonText="+ ADD MAPPING"
+              />
 
-              {/* Mappings Table */}
-              <IonCard className="mappings-table-card">
+              {/* Mappings Grid */}
+              {viewMode === 'grid' ? (
+                <div className="master-cards-grid" style={{ padding: '1rem' }}>
+                  {currentMappings.map((mapping) => (
+                    <MasterCard
+                      key={mapping.id}
+                      id={mapping.id}
+                      title={mapping.region}
+                      subtitle="Branch Mapping"
+                      icon={locationOutline}
+                      metaItems={[
+                        {
+                          icon: documentTextOutline,
+                          label: "Districts",
+                          value: `${mapping.districts.length} districts`
+                        },
+                        {
+                          icon: timeOutline,
+                          label: "Created",
+                          value: new Date(mapping.createdAt).toLocaleDateString()
+                        }
+                      ]}
+                      onView={() => handleView(mapping.id)}
+                      onEdit={() => handleEdit(mapping.id)}
+                      onDelete={() => handleDelete(mapping.id)}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <IonCard className="mappings-table-card">
                 <IonCardContent className="table-container">
                   <table className="mappings-table">
                     <thead>
@@ -358,6 +383,7 @@ const BranchMapping: React.FC = () => {
                   </table>
                 </IonCardContent>
               </IonCard>
+              )}
 
               {/* Pagination */}
               {filteredMappings.length > 0 && (

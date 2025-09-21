@@ -17,6 +17,7 @@ import {
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 import { Pagination } from '../components/shared';
+import MasterControls from '../../components/shared/MasterControls';
 import { mockDataService } from '../../services/api';
 import type { Scheme, SchemeFilters } from '../../types';
 import './Schemes.css';
@@ -163,6 +164,11 @@ const Schemes: React.FC = () => {
   const handleApply = (schemeId: string) => {
     // Navigate to Loan Application page and pass the schemeId
     history.push(`/loan-application?schemeId=${schemeId}`);
+  };
+
+  const handleAddNew = () => {
+    console.log('Add new scheme');
+    // TODO: Implement add functionality
   };
 
   const handleEdit = (schemeId: string) => {
@@ -384,29 +390,17 @@ const Schemes: React.FC = () => {
           
           <IonContent className="schemes-content">
             <div className="schemes-container">
-              {/* Search and Filter Bar */}
-              <div className="schemes-navigation">
-                <IonSearchbar
-                  value={searchQuery}
-                  onIonChange={(e) => setSearchQuery(e.detail.value!)}
-                  placeholder="Search schemes, descriptions, tags..."
-                  className="schemes-search"
-                />
-
-                <IonButton 
-                  fill="outline"
-                  onClick={() => setShowAdvancedFilters(true)}
-                  className="filter-toggle-button"
-                >
-                  <IonIcon icon={filterOutline} />
-                  <span className="filter-text">Filters</span>
-                  {Object.keys(advancedFilters).length > 0 && (
-                    <IonBadge color="primary" className="filter-badge">
-                      {Object.keys(advancedFilters).length}
-                    </IonBadge>
-                  )}
-                </IonButton>
-              </div>
+              {/* Master Controls */}
+              <MasterControls
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search schemes, descriptions, tags..."
+                showFilterButton={true}
+                onFilterClick={() => setShowAdvancedFilters(true)}
+                filterButtonText="Filters"
+                onAddNew={handleAddNew}
+                addButtonText="Add Scheme"
+              />
 
 
               {/* Bulk Actions */}
@@ -585,14 +579,12 @@ const Schemes: React.FC = () => {
               </div>
 
               {/* Pagination */}
-              {filteredAndSortedSchemes.length > 0 && (
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPreviousPage={handlePreviousPage}
-                  onNextPage={handleNextPage}
-                />
-              )}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPreviousPage={handlePreviousPage}
+                onNextPage={handleNextPage}
+              />
               
               {/* Bottom spacing for pagination visibility */}
               <div style={{ height: '3rem' }}></div>

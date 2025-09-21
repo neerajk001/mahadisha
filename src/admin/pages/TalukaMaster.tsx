@@ -19,6 +19,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 import ActionDropdown from '../components/common/ActionDropdown';
 import { Pagination } from '../components/shared';
+import { MasterCard, MasterControls, MasterHeader } from '../../components/shared';
 import { mockDataService } from '../../services/api';
 import type { TalukaData } from '../../types';
 import './TalukaMaster.css';
@@ -35,14 +36,16 @@ const TalukaMaster: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingTaluka, setEditingTaluka] = useState<TalukaData | null>(null);
+  const [editFormData, setEditFormData] = useState({ name: '', district: '', description: '' });
+  const [addFormData, setAddFormData] = useState({ name: '', district: '', description: '' });
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [sortBy, setSortBy] = useState<'name' | 'createdAt'>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const itemsPerPage = 6;
 
-  // Get taluka data from mock service
-  const allTalukas = mockDataService.getTalukaData();
+  // State for managing talukas data - REAL-TIME CRUD
+  const [allTalukas, setAllTalukas] = useState<TalukaData[]>(() => mockDataService.getTalukaData());
   
   // Filter and sort talukas
   const filteredAndSortedTalukas = useMemo(() => {
@@ -81,6 +84,11 @@ const TalukaMaster: React.FC = () => {
 
   const handleEdit = (taluka: TalukaData) => {
     setEditingTaluka(taluka);
+    setEditFormData({
+      name: taluka.name,
+      district: taluka.district || '',
+      description: taluka.description || ''
+    });
     setShowEditModal(true);
   };
 
@@ -102,7 +110,11 @@ const TalukaMaster: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedTalukaId) {
-      setToastMessage(`Delete taluka ${selectedTalukaId} functionality will be implemented`);
+      // Remove the taluka from state
+      setAllTalukas(prevTalukas => prevTalukas.filter(taluka => taluka.id !== selectedTalukaId));
+      
+      const talukaToDelete = allTalukas.find(taluka => taluka.id === selectedTalukaId);
+      setToastMessage(`Taluka "${talukaToDelete?.name || selectedTalukaId}" deleted successfully`);
       setShowToast(true);
       setSelectedTalukaId(null);
     }
@@ -126,12 +138,54 @@ const TalukaMaster: React.FC = () => {
     }
   };
 
-  const handleSaveTaluka = () => {
-    setToastMessage('Taluka saved successfully');
-    setShowToast(true);
-    setShowAddModal(false);
-    setShowEditModal(false);
-    setEditingTaluka(null);
+  const handleSaveNewTaluka = () => {
+    if (addFormData.name) {
+      // Generate a new ID for the taluka
+      const newId = `taluka-${Date.now()}`;
+      
+      // Create the new taluka object
+      const newTaluka: TalukaData = {
+        id: newId,
+        name: addFormData.name,
+        district: addFormData.district || '',
+        description: addFormData.description || '',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      // Add the new taluka to the state
+      setAllTalukas(prevTalukas => [...prevTalukas, newTaluka]);
+      
+      setToastMessage(`Taluka "${addFormData.name}" created successfully`);
+      setShowToast(true);
+      setShowAddModal(false);
+      setAddFormData({ name: '', district: '', description: '' });
+    } else {
+      setToastMessage('Please fill in the taluka name');
+      setShowToast(true);
+    }
+  };
+
+  const handleUpdateTaluka = () => {
+    if (editingTaluka && editFormData.name) {
+      // Update the taluka in the state
+      setAllTalukas(prevTalukas => 
+        prevTalukas.map(taluka => 
+          taluka.id === editingTaluka.id 
+            ? { ...taluka, name: editFormData.name, district: editFormData.district, description: editFormData.description, updatedAt: new Date().toISOString() }
+            : taluka
+        )
+      );
+      
+      setToastMessage(`Taluka "${editFormData.name}" updated successfully`);
+      setShowToast(true);
+      setShowEditModal(false);
+      setEditingTaluka(null);
+      setEditFormData({ name: '', district: '', description: '' });
+    } else {
+      setToastMessage('Please fill in the taluka name');
+      setShowToast(true);
+    }
   };
 
   return (
@@ -144,98 +198,48 @@ const TalukaMaster: React.FC = () => {
           <IonContent className="manage-pages-content">
             <div className="pages-container">
               {/* Header Section */}
-              <div className="pages-header">
-                <h1>Taluka Master</h1>
-                <p>Manage taluka categories and their names</p>
-              </div>
+              <MasterHeader
+                title="Taluka Master"
+                subtitle="Manage taluka categories and their names"
+              />
 
               {/* Enhanced Search and Actions */}
-              <div className="pages-actions">
-                <IonSearchbar
-                  value={searchQuery}
-                  onIonChange={(e) => setSearchQuery(e.detail.value!)}
-                  placeholder="Search talukas by name..."
-                  className="pages-search"
-                />
-                <IonButton 
-                  fill="outline" 
-                  size="small"
-                  onClick={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
-                >
-                  <IonIcon icon={viewMode === 'grid' ? barChartOutline : eyeOutline} />
-                  {viewMode === 'grid' ? 'Table View' : 'Grid View'}
-                </IonButton>
-                <IonButton 
-                  fill="solid" 
-                  className="add-page-button"
-                  onClick={handleAddTaluka}
-                >
-                  <IonIcon icon={addOutline} />
-                  Add New Taluka
-                </IonButton>
-              </div>
+              <MasterControls
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search talukas by name..."
+                viewMode={viewMode}
+                onViewModeToggle={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
+                onAddNew={handleAddTaluka}
+                addButtonText="Add New Taluka"
+              />
 
               {/* Talukas Grid */}
               {viewMode === 'grid' ? (
-                <div className="branches-grid">
+                <div className="master-cards-grid" style={{ padding: '1rem' }}>
                   {currentTalukas.map((taluka) => (
-                    <div key={taluka.id} className="branch-card">
-                      <div className="branch-card-header">
-                        <div className="branch-card-icon">
-                          <IonIcon icon={locationOutline} />
-                        </div>
-                        <div className="branch-card-title">
-                          <h3 className="branch-card-name">{taluka.name}</h3>
-                          <div className="branch-card-type">Taluka Region</div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-content">
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={mapOutline} className="branch-card-meta-icon" />
-                            <span>Code: TLK-{taluka.id.slice(-3)}</span>
-                          </div>
-                        </div>
-                        
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={timeOutline} className="branch-card-meta-icon" />
-                            <span>Status: Active</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-actions">
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button view"
-                          onClick={() => handleView(taluka)}
-                        >
-                          <IonIcon icon={eyeOutline} />
-                          View
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button edit"
-                          onClick={() => handleEdit(taluka)}
-                        >
-                          <IonIcon icon={createOutline} />
-                          Edit
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button delete"
-                          onClick={() => handleDelete(taluka.id)}
-                        >
-                          <IonIcon icon={trashOutline} />
-                          Delete
-                        </IonButton>
-                      </div>
-                    </div>
+                    <MasterCard
+                      key={taluka.id}
+                      id={taluka.id}
+                      title={taluka.name}
+                      subtitle="Taluka Region"
+                      icon={locationOutline}
+                      metaItems={[
+                        {
+                          icon: mapOutline,
+                          label: "Code",
+                          value: `TLK-${taluka.id.slice(-3)}`
+                        },
+                        {
+                          icon: timeOutline,
+                          label: "Status",
+                          value: "Active"
+                        }
+                      ]}
+                      onView={() => handleView(taluka)}
+                      onEdit={() => handleEdit(taluka)}
+                      onDelete={() => handleDelete(taluka.id)}
+                    />
                   ))}
                 </div>
               ) : (
@@ -292,6 +296,7 @@ const TalukaMaster: React.FC = () => {
                               <div className="action-buttons">
                                 <ActionDropdown
                                   itemId={taluka.id}
+                                  onView={() => handleView(taluka)}
                                   onEdit={() => handleEdit(taluka)}
                                   onDelete={() => handleDelete(taluka.id)}
                                   size="small"
@@ -354,18 +359,24 @@ const TalukaMaster: React.FC = () => {
               <IonInput
                 label="Taluka Name"
                 labelPlacement="stacked"
+                value={addFormData.name}
+                onIonInput={(e) => setAddFormData({...addFormData, name: e.detail.value!})}
                 placeholder="Enter taluka name"
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
               <IonInput
                 label="District"
                 labelPlacement="stacked"
+                value={addFormData.district}
+                onIonInput={(e) => setAddFormData({...addFormData, district: e.detail.value!})}
                 placeholder="Enter district name"
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
               <IonTextarea
                 label="Description (Optional)"
                 labelPlacement="stacked"
+                value={addFormData.description}
+                onIonInput={(e) => setAddFormData({...addFormData, description: e.detail.value!})}
                 placeholder="Enter description"
                 rows={3}
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
@@ -378,7 +389,7 @@ const TalukaMaster: React.FC = () => {
                   '--border-radius': '12px',
                   marginTop: '1rem'
                 }}
-                onClick={handleSaveTaluka}
+                onClick={handleSaveNewTaluka}
               >
                 <IonIcon icon={checkmarkOutline} slot="start" />
                 Create Taluka
@@ -407,18 +418,23 @@ const TalukaMaster: React.FC = () => {
               <IonInput
                 label="Taluka Name"
                 labelPlacement="stacked"
-                value={editingTaluka?.name}
+                value={editFormData.name}
+                onIonInput={(e) => setEditFormData({...editFormData, name: e.detail.value!})}
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
               <IonInput
                 label="District"
                 labelPlacement="stacked"
+                value={editFormData.district}
+                onIonInput={(e) => setEditFormData({...editFormData, district: e.detail.value!})}
                 placeholder="Enter district name"
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
               <IonTextarea
                 label="Description (Optional)"
                 labelPlacement="stacked"
+                value={editFormData.description}
+                onIonInput={(e) => setEditFormData({...editFormData, description: e.detail.value!})}
                 placeholder="Enter description"
                 rows={3}
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
@@ -431,7 +447,7 @@ const TalukaMaster: React.FC = () => {
                   '--border-radius': '12px',
                   marginTop: '1rem'
                 }}
-                onClick={handleSaveTaluka}
+                onClick={handleUpdateTaluka}
               >
                 <IonIcon icon={checkmarkOutline} slot="start" />
                 Update Taluka

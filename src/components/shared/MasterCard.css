@@ -1,0 +1,327 @@
+/* Master Cards Grid Layout */
+.master-cards-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+  gap: 1.5rem !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 1rem !important;
+  overflow: hidden !important;
+}
+
+/* Ensure parent containers don't cause overflow */
+.master-cards-grid * {
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+}
+
+/* Master Card Component Styles */
+.master-card {
+  background: white !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.master-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Purple Banner Header */
+.master-card-banner {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  padding: 1.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  position: relative !important;
+}
+
+.master-card-banner-icon {
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.master-card-banner-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.master-card-banner-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 0.25rem 0;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.master-card-banner-subtitle {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
+}
+
+/* Card Content */
+.master-card-content {
+  flex: 1;
+  padding: 1.5rem;
+  padding-top: 1rem;
+}
+
+.master-card-meta {
+  margin-bottom: 0.75rem;
+}
+
+.master-card-meta:last-child {
+  margin-bottom: 0;
+}
+
+.master-card-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: #4a5568;
+  line-height: 1.4;
+}
+
+.master-card-meta-icon {
+  font-size: 1.1rem;
+  color: #667eea;
+  flex-shrink: 0;
+}
+
+/* Card Actions */
+.master-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  padding: 1rem 1.5rem 1.5rem;
+  margin-top: auto;
+}
+
+.master-card-button {
+  --border-radius: 8px;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  --padding-top: 0.5rem;
+  --padding-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+  min-width: auto;
+  height: 32px;
+  flex: 1;
+}
+
+.master-card-button.view {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --color: white;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.master-card-button.view:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.master-card-button.edit {
+  --background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+  --color: white;
+  box-shadow: 0 2px 8px rgba(78, 205, 196, 0.3);
+}
+
+.master-card-button.edit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(78, 205, 196, 0.4);
+}
+
+.master-card-button.delete {
+  --background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  --color: white;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+.master-card-button.delete:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+}
+
+/* Grid Layout for Cards */
+.master-cards-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)) !important;
+  gap: 2rem !important;
+  margin-bottom: 2rem !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .master-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .master-card-banner {
+    padding: 1.25rem;
+  }
+  
+  .master-card-banner-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
+  }
+  
+  .master-card-banner-title {
+    font-size: 1.2rem;
+  }
+  
+  .master-card-content {
+    padding: 1.25rem;
+  }
+  
+  .master-card-actions {
+    padding: 1rem 1.25rem 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .master-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+    gap: 1rem !important;
+    padding: 0.75rem !important;
+  }
+  
+  .master-card-banner {
+    padding: 1.25rem;
+  }
+  
+  .master-card-content {
+    padding: 1.25rem;
+  }
+  
+  .master-card-actions {
+    padding: 1rem 1.25rem 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .master-cards-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+    padding: 0.5rem !important;
+  }
+  .master-card {
+    margin-bottom: 1rem !important;
+  }
+  
+  .master-card-banner {
+    padding: 0.75rem !important;
+    flex-direction: row !important;
+    text-align: left !important;
+    gap: 0.5rem !important;
+  }
+  
+  .master-card-banner-icon {
+    width: 2rem !important;
+    height: 2rem !important;
+    font-size: 1rem !important;
+  }
+  
+  .master-card-banner-title {
+    font-size: 0.9rem !important;
+    margin: 0 !important;
+  }
+  
+  .master-card-banner-subtitle {
+    font-size: 0.75rem !important;
+    margin-top: 0.25rem !important;
+  }
+  
+  .master-card-content {
+    padding: 0.75rem !important;
+  }
+  
+  .master-card-meta-item {
+    font-size: 0.8rem !important;
+  }
+  
+  .master-card-meta-icon {
+    font-size: 0.9rem !important;
+  }
+  
+  .master-card-actions {
+    flex-direction: row !important;
+    gap: 0.25rem !important;
+    padding: 0.5rem 0.75rem 0.75rem !important;
+    justify-content: center !important;
+  }
+  
+  .master-card-button {
+    width: auto !important;
+    min-width: 2.5rem !important;
+    height: 2.5rem !important;
+    padding: 0 !important;
+    font-size: 0 !important;
+  }
+  
+  .master-card-button ion-icon {
+    font-size: 1.1rem !important;
+  }
+}
+
+/* Additional Mobile Container Fixes */
+@media (max-width: 600px) {
+  .master-cards-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+    padding: 0.5rem !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  .master-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* Animation Keyframes */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

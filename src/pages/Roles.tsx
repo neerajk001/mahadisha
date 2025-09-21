@@ -15,6 +15,7 @@ import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { Pagination } from '../admin/components/shared';
+import { RBACControls, RBACHeader } from '../components/shared';
 import { mockDataService } from '../services/api';
 import type { RolesData } from '../types';
 import './Roles.css';
@@ -207,28 +208,19 @@ const Roles: React.FC = () => {
           <IonContent className="roles-content">
             <div className="roles-container">
               {/* Header Section */}
-              <div className="roles-header">
-                <h1>Roles</h1>
-                <p>Manage district roles and their permissions</p>
-              </div>
+              <RBACHeader
+                title="Roles"
+                subtitle="Manage district roles and their permissions"
+              />
 
               {/* Search and Actions */}
-              <div className="roles-actions">
-                <IonSearchbar
-                  value={searchQuery}
-                  onIonChange={(e) => setSearchQuery(e.detail.value!)}
-                  placeholder="Search roles by name..."
-                  className="roles-search"
-                />
-                <IonButton 
-                  fill="solid" 
-                  className="add-role-button"
-                  onClick={handleAddRole}
-                >
-                  <IonIcon icon={addOutline} />
-                  + ADD ROLE
-                </IonButton>
-              </div>
+              <RBACControls
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search roles by name..."
+                onAddNew={handleAddRole}
+                addButtonText="+ ADD ROLE"
+              />
 
               {/* Roles Table */}
               <IonCard className="roles-table-card">
@@ -281,6 +273,9 @@ const Roles: React.FC = () => {
                   onNextPage={handleNextPage}
                 />
               )}
+              
+              {/* Bottom spacing for pagination visibility */}
+              <div style={{ height: '3rem' }}></div>
             </div>
           </IonContent>
         </div>

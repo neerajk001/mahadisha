@@ -15,6 +15,7 @@ import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { Pagination } from '../admin/components/shared';
+import { RBACControls, RBACHeader } from '../components/shared';
 import { mockDataService } from '../services/api';
 import type { DatabaseAccessData } from '../types';
 import './DatabaseAccess.css';
@@ -212,28 +213,19 @@ const DatabaseAccess: React.FC = () => {
           <IonContent className="database-access-content">
             <div className="access-container">
               {/* Header Section */}
-              <div className="access-header">
-                <h1>Database Access</h1>
-                <p>Manage database access permissions and roles</p>
-              </div>
+              <RBACHeader
+                title="Database Access"
+                subtitle="Manage database access permissions and roles"
+              />
 
               {/* Search and Actions */}
-              <div className="access-actions">
-                <IonSearchbar
-                  value={searchQuery}
-                  onIonChange={(e) => setSearchQuery(e.detail.value!)}
-                  placeholder="Search by name or permissions..."
-                  className="access-search"
-                />
-                <IonButton 
-                  fill="solid" 
-                  className="add-access-button"
-                  onClick={handleAddAccess}
-                >
-                  <IonIcon icon={addOutline} />
-                  + ADD ACCESS
-                </IonButton>
-              </div>
+              <RBACControls
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search by name or permissions..."
+                onAddNew={handleAddAccess}
+                addButtonText="+ ADD ACCESS"
+              />
 
               {/* Access Table */}
               <IonCard className="access-table-card">

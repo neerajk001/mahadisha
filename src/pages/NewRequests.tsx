@@ -31,6 +31,7 @@ import {
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import { Pagination } from '../admin/components/shared';
+import MasterControls from '../components/shared/MasterControls';
 // Import RequestCard component
 import RequestCard from '../components/requests/RequestCardNew';
 import RequestList from '../components/requests/RequestList';
@@ -86,7 +87,7 @@ const NewRequests: React.FC = () => {
   } = useLoanRequests(searchParams);
 
   // Calculate pagination
-  const totalPages = Math.ceil((requests?.length || 0) / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil((requests?.length || 0) / itemsPerPage));
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentRequests = requests?.slice(startIndex, endIndex) || [];
@@ -227,75 +228,48 @@ const NewRequests: React.FC = () => {
           {/* New Requests Content */}
           <IonContent className="new-requests-content">
             <div className="new-requests-container">
-              {/* Search and Filter Section */}
-              <div className="search-filter-section">
-                <div className="search-section">
-                  <IonSearchbar
-                    value={searchQuery}
-                    onIonInput={(e) => setSearchQuery(e.detail.value!)}
-                    placeholder="Search by Loan ID, Name or District"
-                    className="request-searchbar"
-                  />
-                </div>
-                
-                <div className="filter-section">
-                  <div className="filter-group">
-                    <label className="filter-label">Status</label>
-                    <select
-                      value={filters.status}
-                      onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                      className="filter-select"
-                    >
-                      {statusOptions.map(option => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  <div className="filter-group">
-                    <label className="filter-label">District</label>
-                    <select
-                      value={filters.district}
-                      onChange={(e) => setFilters(prev => ({ ...prev, district: e.target.value }))}
-                      className="filter-select"
-                    >
-                      {districtOptions.map(option => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                
-                <div className="view-controls">
-                  <div className="view-toggle">
-                    <button
-                      className={`view-button ${viewMode === 'card' ? 'active' : 'inactive'}`}
-                      onClick={() => setViewMode('card')}
-                    >
-                      <IonIcon icon={cardOutline} />
-                      <span>Card View</span>
-                    </button>
-                    <button
-                      className={`view-button ${viewMode === 'list' ? 'active' : 'inactive'}`}
-                      onClick={() => setViewMode('list')}
-                    >
-                      <IonIcon icon={listOutline} />
-                      <span>List View</span>
-                    </button>
-                  </div>
-                  
-                  <IonButton
-                    fill="clear"
-                    size="small"
-                    onClick={() => refetch()}
-                    className="refresh-button"
+              {/* Master Controls */}
+              <MasterControls
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search by Loan ID, Name or District"
+                viewMode={viewMode}
+                onViewModeToggle={() => setViewMode(viewMode === 'card' ? 'list' : 'card')}
+                viewModeLabels={{ primary: 'Card View', secondary: 'List View' }}
+                showRefreshButton={true}
+                onRefresh={() => refetch()}
+              />
+
+              {/* Filter Section */}
+              <div className="filter-section">
+                <div className="filter-group">
+                  <label className="filter-label">Status</label>
+                  <select
+                    value={filters.status}
+                    onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+                    className="filter-select"
                   >
-                    <IonIcon icon={refreshOutline} />
-                  </IonButton>
+                    {statusOptions.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="filter-group">
+                  <label className="filter-label">District</label>
+                  <select
+                    value={filters.district}
+                    onChange={(e) => setFilters(prev => ({ ...prev, district: e.target.value }))}
+                    className="filter-select"
+                  >
+                    {districtOptions.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -340,16 +314,18 @@ const NewRequests: React.FC = () => {
                         onRepayment={handleRepayment}
                       />
                     )}
+                  </>
+                )}
 
-                    {/* Pagination */}
-                    {(requests?.length || 0) > 0 && (
-                      <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPreviousPage={handlePreviousPage}
-                        onNextPage={handleNextPage}
-                      />
-                    )}
+                {/* Pagination - moved outside conditional */}
+                {!isLoading && !error && (
+                  <>
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPreviousPage={handlePreviousPage}
+                      onNextPage={handleNextPage}
+                    />
                     
                     {/* Bottom spacing for pagination visibility */}
                     <div style={{ height: '3rem' }}></div>

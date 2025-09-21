@@ -19,6 +19,7 @@ import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { Pagination } from '../admin/components/shared';
+import { MasterCard, MasterHeader } from '../components/shared';
 import { mockDataService } from '../services/api';
 import type { StatusMappingData } from '../types';
 import './StatusMapping.css';
@@ -49,7 +50,8 @@ const StatusMapping: React.FC = () => {
   const itemsPerPage = 5;
 
   // Get status mapping data from mock service
-  const allMappings = mockDataService.getStatusMappingData();
+  // State for managing status mapping data - REAL-TIME CRUD
+  const [allMappings, setAllMappings] = useState<StatusMappingData[]>(() => mockDataService.getStatusMappingData());
   
   // Filter and sort mappings
   const filteredAndSortedMappings = useMemo(() => {
@@ -130,22 +132,72 @@ const StatusMapping: React.FC = () => {
     }
   };
 
-  const handleSaveMapping = () => {
-    if (editingMapping) {
-      setToastMessage(`Status mapping "${formData.currentStatus}" updated successfully`);
+  const handleSaveAdd = () => {
+    if (formData.currentStatus && formData.role) {
+      // Generate a new ID for the status mapping
+      const newId = `mapping-${Date.now()}`;
+      
+      // Create the new status mapping object
+      const newMapping: StatusMappingData = {
+        id: newId,
+        status: formData.currentStatus,
+        role: formData.role,
+        visibleFields: formData.visibleFields,
+        nextPossibleStatuses: formData.nextPossibleStatuses,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      // Add the new mapping to the state
+      setAllMappings(prevMappings => [...prevMappings, newMapping]);
+      
+      setToastMessage(`Status mapping "${formData.currentStatus}" created successfully`);
+      setShowToast(true);
+      setShowAddModal(false);
+      setFormData({
+        currentStatus: '',
+        role: '',
+        visibleFields: [],
+        nextPossibleStatuses: []
+      });
     } else {
-      setToastMessage(`New status mapping "${formData.currentStatus}" created successfully`);
+      setToastMessage('Please fill in all required fields');
+      setShowToast(true);
     }
-    setShowToast(true);
-    setShowAddModal(false);
-    setShowEditModal(false);
-    setEditingMapping(null);
-    setFormData({
-      currentStatus: '',
-      role: '',
-      visibleFields: [],
-      nextPossibleStatuses: []
-    });
+  };
+
+  const handleSaveEdit = () => {
+    if (editingMapping && formData.currentStatus && formData.role) {
+      // Update the mapping in the state
+      setAllMappings(prevMappings => 
+        prevMappings.map(mapping => 
+          mapping.id === editingMapping.id 
+            ? { 
+                ...mapping, 
+                status: formData.currentStatus, 
+                role: formData.role,
+                visibleFields: formData.visibleFields,
+                nextPossibleStatuses: formData.nextPossibleStatuses,
+                updatedAt: new Date().toISOString() 
+              }
+            : mapping
+        )
+      );
+      
+      setToastMessage(`Status mapping "${formData.currentStatus}" updated successfully`);
+      setShowToast(true);
+      setShowEditModal(false);
+      setEditingMapping(null);
+      setFormData({
+        currentStatus: '',
+        role: '',
+        visibleFields: [],
+        nextPossibleStatuses: []
+      });
+    } else {
+      setToastMessage('Please fill in all required fields');
+      setShowToast(true);
+    }
   };
 
   const handleCloseModal = () => {
@@ -167,7 +219,11 @@ const StatusMapping: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedMappingId) {
-      setToastMessage(`Delete status mapping ${selectedMappingId} functionality will be implemented`);
+      // Remove the mapping from state
+      setAllMappings(prevMappings => prevMappings.filter(mapping => mapping.id !== selectedMappingId));
+      
+      const mappingToDelete = allMappings.find(mapping => mapping.id === selectedMappingId);
+      setToastMessage(`Status mapping "${mappingToDelete?.status || selectedMappingId}" deleted successfully`);
       setShowToast(true);
       setSelectedMappingId(null);
     }
@@ -222,10 +278,10 @@ const StatusMapping: React.FC = () => {
           <IonContent className="manage-pages-content">
             <div className="pages-container">
               {/* Header Section */}
-              <div className="pages-header">
-                <h1>Status Mapping</h1>
-                <p>Manage workflow status mappings and role assignments</p>
-              </div>
+              <MasterHeader
+                title="Status Mapping"
+                subtitle="Manage workflow status mappings and role assignments"
+              />
 
               {/* Enhanced Search and Actions */}
               <div className="pages-actions">
@@ -255,65 +311,30 @@ const StatusMapping: React.FC = () => {
 
               {/* Status Mappings Grid */}
               {viewMode === 'grid' ? (
-                <div className="branches-grid">
+                <div className="master-cards-grid" style={{ padding: '1rem' }}>
                   {currentMappings.map((mapping) => (
-                    <div key={mapping.id} className="branch-card">
-                      <div className="branch-card-header">
-                        <div className="branch-card-icon">
-                          <IonIcon icon={swapVerticalOutline} />
-                        </div>
-                        <div className="branch-card-title">
-                          <h3 className="branch-card-name">{mapping.status}</h3>
-                          <div className="branch-card-type">Status Mapping</div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-content">
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={peopleOutline} className="branch-card-meta-icon" />
-                            <span>Role: {mapping.role}</span>
-                          </div>
-                        </div>
-                        
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={documentTextOutline} className="branch-card-meta-icon" />
-                            <span>Fields: {mapping.visibleFields.length}</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-actions">
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button view"
-                          onClick={() => handleView(mapping)}
-                        >
-                          <IonIcon icon={eyeOutline} />
-                          View
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button edit"
-                          onClick={() => handleEdit(mapping.id)}
-                        >
-                          <IonIcon icon={createOutline} />
-                          Edit
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button delete"
-                          onClick={() => handleDelete(mapping.id)}
-                        >
-                          <IonIcon icon={trashOutline} />
-                          Delete
-                        </IonButton>
-                      </div>
-                    </div>
+                    <MasterCard
+                      key={mapping.id}
+                      id={mapping.id}
+                      title={mapping.status}
+                      subtitle="Status Mapping"
+                      icon={swapVerticalOutline}
+                      metaItems={[
+                        {
+                          icon: peopleOutline,
+                          label: "Role",
+                          value: mapping.role
+                        },
+                        {
+                          icon: documentTextOutline,
+                          label: "Fields",
+                          value: `${mapping.visibleFields.length} fields`
+                        }
+                      ]}
+                      onView={() => handleView(mapping)}
+                      onEdit={() => handleEdit(mapping.id)}
+                      onDelete={() => handleDelete(mapping.id)}
+                    />
                   ))}
                 </div>
               ) : (
@@ -482,7 +503,7 @@ const StatusMapping: React.FC = () => {
                   '--border-radius': '12px',
                   marginTop: '1rem'
                 }}
-                onClick={handleSaveMapping}
+                onClick={handleSaveAdd}
               >
                 <IonIcon icon={checkmarkOutline} slot="start" />
                 Create Status Mapping
@@ -546,7 +567,7 @@ const StatusMapping: React.FC = () => {
                   '--border-radius': '12px',
                   marginTop: '1rem'
                 }}
-                onClick={handleSaveMapping}
+                onClick={handleSaveEdit}
               >
                 <IonIcon icon={checkmarkOutline} slot="start" />
                 Update Status Mapping

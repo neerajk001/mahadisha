@@ -4,7 +4,7 @@
   --padding-start: 1.5rem;
   --padding-end: 1.5rem;
   --padding-top: 1.5rem;
-  --padding-bottom: 1.5rem;
+  --padding-bottom: 4rem;
 }
 
 .members-container {
@@ -429,6 +429,7 @@
   .members-content {
     --padding-start: 1rem;
     --padding-end: 1rem;
+    --padding-bottom: 5rem;
   }
 
   .members-header h1 {

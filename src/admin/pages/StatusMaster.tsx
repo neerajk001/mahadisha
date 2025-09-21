@@ -18,6 +18,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 import ActionDropdown from '../components/common/ActionDropdown';
 import { Pagination } from '../components/shared';
+import { MasterCard, MasterControls, MasterHeader } from '../../components/shared';
 import { mockDataService } from '../../services/api';
 import type { StatusMasterData } from '../../types';
 import './StatusMaster.css';
@@ -34,6 +35,9 @@ const StatusMaster: React.FC = () => {
   const [editForm, setEditForm] = useState({
     name: ''
   });
+  const [addForm, setAddForm] = useState({
+    name: ''
+  });
   
   // Enhanced state for new functionality
   const [showAddModal, setShowAddModal] = useState(false);
@@ -43,8 +47,8 @@ const StatusMaster: React.FC = () => {
 
   const itemsPerPage = 5;
 
-  // Get status master data from mock service
-  const allStatuses = mockDataService.getStatusMasterData();
+  // State for managing status data - REAL-TIME CRUD
+  const [allStatuses, setAllStatuses] = useState<StatusMasterData[]>(() => mockDataService.getStatusMasterData());
   
   // Filter and sort statuses
   const filteredAndSortedStatuses = useMemo(() => {
@@ -103,12 +107,30 @@ const StatusMaster: React.FC = () => {
     setShowToast(true);
   };
 
-  const handleSaveStatus = () => {
-    setToastMessage('Status saved successfully');
-    setShowToast(true);
-    setShowAddModal(false);
-    setShowEditModal(false);
-    setEditingStatus(null);
+  const handleSaveAdd = () => {
+    if (addForm.name) {
+      // Generate a new ID for the status
+      const newId = `status-${Date.now()}`;
+      
+      // Create the new status object
+      const newStatus: StatusMasterData = {
+        id: newId,
+        name: addForm.name,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      // Add the new status to the state
+      setAllStatuses(prevStatuses => [...prevStatuses, newStatus]);
+      
+      setToastMessage(`Status "${addForm.name}" created successfully`);
+      setShowToast(true);
+      setShowAddModal(false);
+      setAddForm({ name: '' });
+    } else {
+      setToastMessage('Please fill in the status name');
+      setShowToast(true);
+    }
   };
 
   const handleEdit = (statusId: string) => {
@@ -123,12 +145,24 @@ const StatusMaster: React.FC = () => {
   };
 
   const handleSaveEdit = () => {
-    if (editingStatus) {
+    if (editingStatus && editForm.name) {
+      // Update the status in the state
+      setAllStatuses(prevStatuses => 
+        prevStatuses.map(status => 
+          status.id === editingStatus.id 
+            ? { ...status, name: editForm.name, updatedAt: new Date().toISOString() }
+            : status
+        )
+      );
+      
       setToastMessage(`Status "${editForm.name}" updated successfully`);
       setShowToast(true);
       setShowEditModal(false);
       setEditingStatus(null);
       setEditForm({ name: '' });
+    } else {
+      setToastMessage('Please fill in the status name');
+      setShowToast(true);
     }
   };
 
@@ -145,7 +179,11 @@ const StatusMaster: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedStatusId) {
-      setToastMessage(`Delete status ${selectedStatusId} functionality will be implemented`);
+      // Remove the status from state
+      setAllStatuses(prevStatuses => prevStatuses.filter(status => status.id !== selectedStatusId));
+      
+      const statusToDelete = allStatuses.find(status => status.id === selectedStatusId);
+      setToastMessage(`Status "${statusToDelete?.name || selectedStatusId}" deleted successfully`);
       setShowToast(true);
       setSelectedStatusId(null);
     }
@@ -179,98 +217,48 @@ const StatusMaster: React.FC = () => {
           <IonContent className="manage-pages-content">
             <div className="pages-container">
               {/* Header Section */}
-              <div className="pages-header">
-                <h1>Status Master</h1>
-                <p>Manage status categories and their names</p>
-              </div>
+              <MasterHeader
+                title="Status Master"
+                subtitle="Manage status categories and their names"
+              />
 
               {/* Enhanced Search and Actions */}
-              <div className="pages-actions">
-                <IonSearchbar
-                  value={searchQuery}
-                  onIonChange={(e) => setSearchQuery(e.detail.value!)}
-                  placeholder="Search statuses by name..."
-                  className="pages-search"
-                />
-                <IonButton 
-                  fill="outline" 
-                  size="small"
-                  onClick={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
-                >
-                  <IonIcon icon={viewMode === 'grid' ? barChartOutline : eyeOutline} />
-                  {viewMode === 'grid' ? 'Table View' : 'Grid View'}
-                </IonButton>
-                <IonButton 
-                  fill="solid" 
-                  className="add-page-button"
-                  onClick={handleAddStatus}
-                >
-                  <IonIcon icon={addOutline} />
-                  Add New Status
-                </IonButton>
-              </div>
+              <MasterControls
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search statuses by name..."
+                viewMode={viewMode}
+                onViewModeToggle={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
+                onAddNew={handleAddStatus}
+                addButtonText="Add New Status"
+              />
 
               {/* Statuses Grid */}
               {viewMode === 'grid' ? (
-                <div className="branches-grid">
+                <div className="master-cards-grid" style={{ padding: '1rem' }}>
                   {currentStatuses.map((status) => (
-                    <div key={status.id} className="branch-card">
-                      <div className="branch-card-header">
-                        <div className="branch-card-icon">
-                          <IonIcon icon={checkmarkOutline} />
-                        </div>
-                        <div className="branch-card-title">
-                          <h3 className="branch-card-name">{status.name}</h3>
-                          <div className="branch-card-type">Status</div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-content">
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={documentTextOutline} className="branch-card-meta-icon" />
-                            <span>Code: STAT-{status.id.slice(-3)}</span>
-                          </div>
-                        </div>
-                        
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={timeOutline} className="branch-card-meta-icon" />
-                            <span>Status: Active</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-actions">
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button view"
-                          onClick={() => handleView(status)}
-                        >
-                          <IonIcon icon={eyeOutline} />
-                          View
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button edit"
-                          onClick={() => handleEdit(status.id)}
-                        >
-                          <IonIcon icon={createOutline} />
-                          Edit
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button delete"
-                          onClick={() => handleDelete(status.id)}
-                        >
-                          <IonIcon icon={trashOutline} />
-                          Delete
-                        </IonButton>
-                      </div>
-                    </div>
+                    <MasterCard
+                      key={status.id}
+                      id={status.id}
+                      title={status.name}
+                      subtitle="Status"
+                      icon={checkmarkOutline}
+                      metaItems={[
+                        {
+                          icon: documentTextOutline,
+                          label: "Code",
+                          value: `STAT-${status.id.slice(-3)}`
+                        },
+                        {
+                          icon: timeOutline,
+                          label: "Status",
+                          value: "Active"
+                        }
+                      ]}
+                      onView={() => handleView(status)}
+                      onEdit={() => handleEdit(status.id)}
+                      onDelete={() => handleDelete(status.id)}
+                    />
                   ))}
                 </div>
               ) : (
@@ -378,6 +366,8 @@ const StatusMaster: React.FC = () => {
                 label="Status Name"
                 labelPlacement="stacked"
                 placeholder="Enter status name"
+                value={addForm.name}
+                onIonInput={(e) => setAddForm({ ...addForm, name: e.detail.value! })}
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
               <IonInput
@@ -401,7 +391,7 @@ const StatusMaster: React.FC = () => {
                   '--border-radius': '12px',
                   marginTop: '1rem'
                 }}
-                onClick={handleSaveStatus}
+                onClick={handleSaveAdd}
               >
                 <IonIcon icon={checkmarkOutline} slot="start" />
                 Create Status

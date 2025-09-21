@@ -3,7 +3,7 @@
   --background: linear-gradient(135deg, #F9F6F2 0%, #FFF7F0 100%);
   --padding-start: 1.5rem;
   --padding-end: 1.5rem;
-  --padding-top: 1.5rem;
+  --padding-top: 0;
   --padding-bottom: 1.5rem;
 }
 
@@ -138,6 +138,29 @@
   --background: var(--color-bg-primary);
   --border-radius: 8px;
   --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* View Controls */
+.view-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.view-toggle {
+  display: flex;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  padding: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.view-toggle ion-button {
+  --border-radius: 6px;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --min-height: 32px;
+  margin: 0;
 }
 
 @media (max-width: 768px) {

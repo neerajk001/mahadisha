@@ -18,6 +18,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 import ActionDropdown from '../components/common/ActionDropdown';
 import { Pagination } from '../components/shared';
+import { MasterCard, MasterControls, MasterHeader } from '../../components/shared';
 import { mockDataService } from '../../services/api';
 import type { ActionMasterData } from '../../types';
 import './ActionMasters.css';
@@ -36,6 +37,11 @@ const ActionMasters: React.FC = () => {
     functionName: '',
     priority: ''
   });
+  const [addForm, setAddForm] = useState({
+    name: '',
+    functionName: '',
+    priority: ''
+  });
   
   // Enhanced state for new functionality
   const [showAddModal, setShowAddModal] = useState(false);
@@ -45,8 +51,8 @@ const ActionMasters: React.FC = () => {
 
   const itemsPerPage = 5;
 
-  // Get action master data from mock service
-  const allActions = mockDataService.getActionMasterData();
+  // State for managing actions data - REAL-TIME CRUD
+  const [allActions, setAllActions] = useState<ActionMasterData[]>(() => mockDataService.getActionMasterData());
   
   // Filter and sort actions
   const filteredAndSortedActions = useMemo(() => {
@@ -110,12 +116,32 @@ const ActionMasters: React.FC = () => {
     setShowToast(true);
   };
 
-  const handleSaveAction = () => {
-    setToastMessage('Action saved successfully');
-    setShowToast(true);
-    setShowAddModal(false);
-    setShowEditModal(false);
-    setEditingAction(null);
+  const handleSaveAdd = () => {
+    if (addForm.name && addForm.functionName && addForm.priority) {
+      // Generate a new ID for the action
+      const newId = `action-${Date.now()}`;
+      
+      // Create the new action object
+      const newAction: ActionMasterData = {
+        id: newId,
+        name: addForm.name,
+        functionName: addForm.functionName,
+        priority: parseInt(addForm.priority),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      // Add the new action to the state
+      setAllActions(prevActions => [...prevActions, newAction]);
+      
+      setToastMessage(`Action "${addForm.name}" created successfully`);
+      setShowToast(true);
+      setShowAddModal(false);
+      setAddForm({ name: '', functionName: '', priority: '' });
+    } else {
+      setToastMessage('Please fill in all required fields');
+      setShowToast(true);
+    }
   };
 
   const handleEdit = (actionId: string) => {
@@ -132,12 +158,24 @@ const ActionMasters: React.FC = () => {
   };
 
   const handleSaveEdit = () => {
-    if (editingAction) {
+    if (editingAction && editForm.name && editForm.functionName && editForm.priority) {
+      // Update the action in the state
+      setAllActions(prevActions => 
+        prevActions.map(action => 
+          action.id === editingAction.id 
+            ? { ...action, name: editForm.name, functionName: editForm.functionName, priority: parseInt(editForm.priority), updatedAt: new Date().toISOString() }
+            : action
+        )
+      );
+      
       setToastMessage(`Action "${editForm.name}" updated successfully`);
       setShowToast(true);
       setShowEditModal(false);
       setEditingAction(null);
       setEditForm({ name: '', functionName: '', priority: '' });
+    } else {
+      setToastMessage('Please fill in all required fields');
+      setShowToast(true);
     }
   };
 
@@ -154,7 +192,11 @@ const ActionMasters: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedActionId) {
-      setToastMessage(`Delete action ${selectedActionId} functionality will be implemented`);
+      // Remove the action from state
+      setAllActions(prevActions => prevActions.filter(action => action.id !== selectedActionId));
+      
+      const actionToDelete = allActions.find(action => action.id === selectedActionId);
+      setToastMessage(`Action "${actionToDelete?.name || selectedActionId}" deleted successfully`);
       setShowToast(true);
       setSelectedActionId(null);
     }
@@ -188,98 +230,48 @@ const ActionMasters: React.FC = () => {
           <IonContent className="manage-pages-content">
             <div className="pages-container">
               {/* Header Section */}
-              <div className="pages-header">
-                <h1>Action Masters</h1>
-                <p>Manage action categories and their configurations</p>
-              </div>
+              <MasterHeader
+                title="Action Masters"
+                subtitle="Manage action categories and their configurations"
+              />
 
               {/* Enhanced Search and Actions */}
-              <div className="pages-actions">
-                <IonSearchbar
-                  value={searchQuery}
-                  onIonChange={(e) => setSearchQuery(e.detail.value!)}
-                  placeholder="Search actions by name or function..."
-                  className="pages-search"
-                />
-                <IonButton 
-                  fill="outline" 
-                  size="small"
-                  onClick={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
-                >
-                  <IonIcon icon={viewMode === 'grid' ? barChartOutline : eyeOutline} />
-                  {viewMode === 'grid' ? 'Table View' : 'Grid View'}
-                </IonButton>
-                <IonButton 
-                  fill="solid" 
-                  className="add-page-button"
-                  onClick={handleAddAction}
-                >
-                  <IonIcon icon={addOutline} />
-                  Add New Action
-                </IonButton>
-              </div>
+              <MasterControls
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search actions by name or function..."
+                viewMode={viewMode}
+                onViewModeToggle={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
+                onAddNew={handleAddAction}
+                addButtonText="Add New Action"
+              />
 
               {/* Actions Grid */}
               {viewMode === 'grid' ? (
-                <div className="branches-grid">
+                <div className="master-cards-grid" style={{ padding: '1rem' }}>
                   {currentActions.map((action) => (
-                    <div key={action.id} className="branch-card">
-                      <div className="branch-card-header">
-                        <div className="branch-card-icon">
-                          <IonIcon icon={settingsOutline} />
-                        </div>
-                        <div className="branch-card-title">
-                          <h3 className="branch-card-name">{action.name}</h3>
-                          <div className="branch-card-type">{action.functionName}</div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-content">
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={documentTextOutline} className="branch-card-meta-icon" />
-                            <span>Priority: {action.priority}</span>
-                          </div>
-                        </div>
-                        
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={timeOutline} className="branch-card-meta-icon" />
-                            <span>Status: Active</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-actions">
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button view"
-                          onClick={() => handleView(action)}
-                        >
-                          <IonIcon icon={eyeOutline} />
-                          View
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button edit"
-                          onClick={() => handleEdit(action.id)}
-                        >
-                          <IonIcon icon={createOutline} />
-                          Edit
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button delete"
-                          onClick={() => handleDelete(action.id)}
-                        >
-                          <IonIcon icon={trashOutline} />
-                          Delete
-                        </IonButton>
-                      </div>
-                    </div>
+                    <MasterCard
+                      key={action.id}
+                      id={action.id}
+                      title={action.name}
+                      subtitle={action.functionName}
+                      icon={settingsOutline}
+                      metaItems={[
+                        {
+                          icon: documentTextOutline,
+                          label: "Priority",
+                          value: action.priority.toString()
+                        },
+                        {
+                          icon: timeOutline,
+                          label: "Status",
+                          value: "Active"
+                        }
+                      ]}
+                      onView={() => handleView(action)}
+                      onEdit={() => handleEdit(action.id)}
+                      onDelete={() => handleDelete(action.id)}
+                    />
                   ))}
                 </div>
               ) : (
@@ -345,6 +337,7 @@ const ActionMasters: React.FC = () => {
                               <div className="action-buttons">
                                 <ActionDropdown
                                   itemId={action.id}
+                                  onView={() => handleView(action)}
                                   onEdit={() => handleEdit(action.id)}
                                   onDelete={() => handleDelete(action.id)}
                                   size="small"
@@ -424,7 +417,7 @@ const ActionMasters: React.FC = () => {
                   '--border-radius': '12px',
                   marginTop: '1rem'
                 }}
-                onClick={handleSaveAction}
+                onClick={handleSaveAdd}
               >
                 <IonIcon icon={checkmarkOutline} slot="start" />
                 Create Action

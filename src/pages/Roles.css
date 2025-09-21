@@ -4,7 +4,7 @@
   --padding-start: 1.5rem;
   --padding-end: 1.5rem;
   --padding-top: 1.5rem;
-  --padding-bottom: 1.5rem;
+  --padding-bottom: 4rem;
   min-height: 100vh;
 }
 
@@ -256,6 +256,7 @@
   .roles-content {
     --padding-start: 0.75rem;
     --padding-end: 0.75rem;
+    --padding-bottom: 5rem;
   }
 
   .roles-header {

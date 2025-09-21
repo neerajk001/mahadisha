@@ -18,6 +18,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 import ActionDropdown from '../components/common/ActionDropdown';
 import { Pagination } from '../components/shared';
+import { MasterCard, MasterControls, MasterHeader } from '../../components/shared';
 import { mockDataService } from '../../services/api';
 import type { CasteData } from '../../types';
 import './CasteMaster.css';
@@ -34,14 +35,16 @@ const CasteMaster: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingCaste, setEditingCaste] = useState<CasteData | null>(null);
+  const [editFormData, setEditFormData] = useState({ name: '', description: '' });
+  const [addFormData, setAddFormData] = useState({ name: '', description: '' });
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [sortBy, setSortBy] = useState<'name' | 'createdAt'>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const itemsPerPage = 6;
 
-  // Get caste data from mock service
-  const allCastes = mockDataService.getCasteData();
+  // State for managing castes data - REAL-TIME CRUD
+  const [allCastes, setAllCastes] = useState<CasteData[]>(() => mockDataService.getCasteData());
   
   // Filter and sort castes
   const filteredAndSortedCastes = useMemo(() => {
@@ -80,6 +83,10 @@ const CasteMaster: React.FC = () => {
 
   const handleEdit = (caste: CasteData) => {
     setEditingCaste(caste);
+    setEditFormData({
+      name: caste.name,
+      description: caste.description || ''
+    });
     setShowEditModal(true);
   };
 
@@ -101,7 +108,11 @@ const CasteMaster: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedCasteId) {
-      setToastMessage(`Delete caste ${selectedCasteId} functionality will be implemented`);
+      // Remove the caste from state
+      setAllCastes(prevCastes => prevCastes.filter(caste => caste.id !== selectedCasteId));
+      
+      const casteToDelete = allCastes.find(caste => caste.id === selectedCasteId);
+      setToastMessage(`Caste "${casteToDelete?.name || selectedCasteId}" deleted successfully`);
       setShowToast(true);
       setSelectedCasteId(null);
     }
@@ -125,12 +136,53 @@ const CasteMaster: React.FC = () => {
     }
   };
 
-  const handleSaveCaste = () => {
-    setToastMessage('Caste saved successfully');
-    setShowToast(true);
-    setShowAddModal(false);
-    setShowEditModal(false);
-    setEditingCaste(null);
+  const handleSaveNewCaste = () => {
+    if (addFormData.name) {
+      // Generate a new ID for the caste
+      const newId = `caste-${Date.now()}`;
+      
+      // Create the new caste object
+      const newCaste: CasteData = {
+        id: newId,
+        name: addFormData.name,
+        description: addFormData.description || '',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      // Add the new caste to the state
+      setAllCastes(prevCastes => [...prevCastes, newCaste]);
+      
+      setToastMessage(`Caste "${addFormData.name}" created successfully`);
+      setShowToast(true);
+      setShowAddModal(false);
+      setAddFormData({ name: '', description: '' });
+    } else {
+      setToastMessage('Please fill in the caste name');
+      setShowToast(true);
+    }
+  };
+
+  const handleUpdateCaste = () => {
+    if (editingCaste && editFormData.name) {
+      // Update the caste in the state
+      setAllCastes(prevCastes => 
+        prevCastes.map(caste => 
+          caste.id === editingCaste.id 
+            ? { ...caste, name: editFormData.name, description: editFormData.description, updatedAt: new Date().toISOString() }
+            : caste
+        )
+      );
+      
+      setToastMessage(`Caste "${editFormData.name}" updated successfully`);
+      setShowToast(true);
+      setShowEditModal(false);
+      setEditingCaste(null);
+      setEditFormData({ name: '', description: '' });
+    } else {
+      setToastMessage('Please fill in the caste name');
+      setShowToast(true);
+    }
   };
 
   return (
@@ -143,98 +195,48 @@ const CasteMaster: React.FC = () => {
           <IonContent className="manage-pages-content">
             <div className="pages-container">
               {/* Header Section */}
-              <div className="pages-header">
-                <h1>Caste Master</h1>
-                <p>Manage caste categories and their names</p>
-              </div>
+              <MasterHeader
+                title="Caste Master"
+                subtitle="Manage caste categories and their names"
+              />
 
               {/* Enhanced Search and Actions */}
-              <div className="pages-actions">
-                <IonSearchbar
-                  value={searchQuery}
-                  onIonChange={(e) => setSearchQuery(e.detail.value!)}
-                  placeholder="Search castes by name..."
-                  className="pages-search"
-                />
-                <IonButton 
-                  fill="outline" 
-                  size="small"
-                  onClick={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
-                >
-                  <IonIcon icon={viewMode === 'grid' ? barChartOutline : eyeOutline} />
-                  {viewMode === 'grid' ? 'Table View' : 'Grid View'}
-                </IonButton>
-                <IonButton 
-                  fill="solid" 
-                  className="add-page-button"
-                  onClick={handleAddCaste}
-                >
-                  <IonIcon icon={addOutline} />
-                  Add New Caste
-                </IonButton>
-              </div>
+              <MasterControls
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search castes by name..."
+                viewMode={viewMode}
+                onViewModeToggle={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
+                onAddNew={handleAddCaste}
+                addButtonText="Add New Caste"
+              />
 
               {/* Castes Grid */}
               {viewMode === 'grid' ? (
-                <div className="branches-grid">
+                <div className="master-cards-grid" style={{ padding: '1rem' }}>
                   {currentCastes.map((caste) => (
-                    <div key={caste.id} className="branch-card">
-                      <div className="branch-card-header">
-                        <div className="branch-card-icon">
-                          <IonIcon icon={peopleOutline} />
-                        </div>
-                        <div className="branch-card-title">
-                          <h3 className="branch-card-name">{caste.name}</h3>
-                          <div className="branch-card-type">Caste Category</div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-content">
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={documentTextOutline} className="branch-card-meta-icon" />
-                            <span>ID: {caste.id}</span>
-                          </div>
-                        </div>
-                        
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={timeOutline} className="branch-card-meta-icon" />
-                            <span>Status: Active</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-actions">
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button view"
-                          onClick={() => handleView(caste)}
-                        >
-                          <IonIcon icon={eyeOutline} />
-                          View
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button edit"
-                          onClick={() => handleEdit(caste)}
-                        >
-                          <IonIcon icon={createOutline} />
-                          Edit
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button delete"
-                          onClick={() => handleDelete(caste.id)}
-                        >
-                          <IonIcon icon={trashOutline} />
-                          Delete
-                        </IonButton>
-                      </div>
-                    </div>
+                    <MasterCard
+                      key={caste.id}
+                      id={caste.id}
+                      title={caste.name}
+                      subtitle="Caste Category"
+                      icon={peopleOutline}
+                      metaItems={[
+                        {
+                          icon: documentTextOutline,
+                          label: "ID",
+                          value: caste.id.slice(-6)
+                        },
+                        {
+                          icon: timeOutline,
+                          label: "Status",
+                          value: "Active"
+                        }
+                      ]}
+                      onView={() => handleView(caste)}
+                      onEdit={() => handleEdit(caste)}
+                      onDelete={() => handleDelete(caste.id)}
+                    />
                   ))}
                 </div>
               ) : (
@@ -279,6 +281,7 @@ const CasteMaster: React.FC = () => {
                               <div className="action-buttons">
                                 <ActionDropdown
                                   itemId={caste.id}
+                                  onView={() => handleView(caste)}
                                   onEdit={() => handleEdit(caste)}
                                   onDelete={() => handleDelete(caste.id)}
                                   size="small"
@@ -341,12 +344,16 @@ const CasteMaster: React.FC = () => {
               <IonInput
                 label="Caste Name"
                 labelPlacement="stacked"
+                value={addFormData.name}
+                onIonInput={(e) => setAddFormData({...addFormData, name: e.detail.value!})}
                 placeholder="Enter caste name"
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
               <IonTextarea
                 label="Description (Optional)"
                 labelPlacement="stacked"
+                value={addFormData.description}
+                onIonInput={(e) => setAddFormData({...addFormData, description: e.detail.value!})}
                 placeholder="Enter description"
                 rows={3}
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
@@ -359,7 +366,7 @@ const CasteMaster: React.FC = () => {
                   '--border-radius': '12px',
                   marginTop: '1rem'
                 }}
-                onClick={handleSaveCaste}
+                onClick={handleSaveNewCaste}
               >
                 <IonIcon icon={checkmarkOutline} slot="start" />
                 Create Caste
@@ -388,12 +395,15 @@ const CasteMaster: React.FC = () => {
               <IonInput
                 label="Caste Name"
                 labelPlacement="stacked"
-                value={editingCaste?.name}
+                value={editFormData.name}
+                onIonInput={(e) => setEditFormData({...editFormData, name: e.detail.value!})}
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
               />
               <IonTextarea
                 label="Description (Optional)"
                 labelPlacement="stacked"
+                value={editFormData.description}
+                onIonInput={(e) => setEditFormData({...editFormData, description: e.detail.value!})}
                 placeholder="Enter description"
                 rows={3}
                 style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
@@ -406,7 +416,7 @@ const CasteMaster: React.FC = () => {
                   '--border-radius': '12px',
                   marginTop: '1rem'
                 }}
-                onClick={handleSaveCaste}
+                onClick={handleUpdateCaste}
               >
                 <IonIcon icon={checkmarkOutline} slot="start" />
                 Update Caste

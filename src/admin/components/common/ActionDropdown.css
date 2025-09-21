@@ -72,40 +72,57 @@
 /* Popover Styles */
 .action-dropdown-popover {
   --width: 140px;
-  --max-width: 200px;
+  --max-width: 160px;
   --min-width: 120px;
   --offset-x: 0px;
   --offset-y: 8px;
 }
 
 .action-dropdown-popover::part(content) {
-  padding: 4px 0;
+  padding: 8px 0;
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  border: 1px solid #e9ecef;
-  background: white;
+  border: 1px solid #e0e0e0;
+  background: #ffffff !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .action-dropdown-list {
-  padding: 0;
+  padding: 8px 6px;
   margin: 0;
   background: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: stretch;
 }
 
 .action-dropdown-item {
-  --padding-start: 12px;
-  --padding-end: 12px;
-  --padding-top: 8px;
-  --padding-bottom: 8px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 4px;
+  --padding-bottom: 4px;
   --color: #495057;
   --background: transparent;
   --background-hover: #f8f9fa;
   --background-activated: #e9ecef;
   --border-width: 0;
   
-  font-size: 14px;
-  transition: background-color 0.2s ease;
+  font-size: 13px;
+  transition: all 0.2s ease;
   cursor: pointer;
+  height: 30px;
+  max-width: 130px;
+  min-width: 100px;
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2px 4px;
+  border-radius: 6px;
+  box-sizing: border-box;
 }
 
 .action-dropdown-item:hover {
@@ -117,35 +134,63 @@
 }
 
 .action-dropdown-item.view-item {
-  --color: #0d6efd;
+  --background: #007bff !important;
+  --color: #ffffff !important;
+  color: #ffffff !important;
+  background: #007bff !important;
 }
 
 .action-dropdown-item.view-item:hover {
-  --background: #e7f1ff;
-  --color: #0a58ca;
+  --background: #0056b3 !important;
+  --color: #ffffff !important;
+  color: #ffffff !important;
+  background: #0056b3 !important;
 }
 
 .action-dropdown-item.edit-item {
-  --color: #198754;
+  --background: #6c757d !important;
+  --color: #ffffff !important;
+  color: #ffffff !important;
+  background: #6c757d !important;
 }
 
 .action-dropdown-item.edit-item:hover {
-  --background: #e8f5e8;
-  --color: #146c43;
+  --background: #5a6268 !important;
+  --color: #ffffff !important;
+  color: #ffffff !important;
+  background: #5a6268 !important;
 }
 
 .action-dropdown-item.delete-item {
-  --color: #dc3545;
+  --background: #dc3545 !important;
+  --color: #ffffff !important;
+  color: #ffffff !important;
+  background: #dc3545 !important;
 }
 
 .action-dropdown-item.delete-item:hover {
-  --background: #f8d7da;
-  --color: #b02a37;
+  --background: #c82333 !important;
+  --color: #ffffff !important;
+  color: #ffffff !important;
+  background: #c82333 !important;
 }
 
 .action-dropdown-icon {
-  font-size: 16px;
-  margin-right: 8px;
+  font-size: 13px;
+  margin-right: 5px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.action-dropdown-item ion-label {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  margin: 0 !important;
+  flex-shrink: 0;
+  line-height: 1.3 !important;
+  display: flex;
+  align-items: center;
 }
 
 /* Size Variants */
@@ -218,8 +263,8 @@
   }
   
   .action-dropdown-popover::part(content) {
-    background: #1a202c;
-    border-color: #2d3748;
+    background: #ffffff !important;
+    border: 1px solid #e0e0e0;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(76, 99, 210, 0.15);
   }
   
@@ -229,16 +274,46 @@
     --background-activated: #4a5568;
   }
   
+  .action-dropdown-item.view-item {
+    --background: #007bff !important;
+    --color: #ffffff !important;
+    color: #ffffff !important;
+    background: #007bff !important;
+  }
+  
   .action-dropdown-item.view-item:hover {
-    --background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%);
+    --background: #0056b3 !important;
+    --color: #ffffff !important;
+    color: #ffffff !important;
+    background: #0056b3 !important;
+  }
+  
+  .action-dropdown-item.edit-item {
+    --background: #6c757d !important;
+    --color: #ffffff !important;
+    color: #ffffff !important;
+    background: #6c757d !important;
   }
   
   .action-dropdown-item.edit-item:hover {
-    --background: linear-gradient(135deg, #9a3412 0%, #c2410c 50%);
+    --background: #5a6268 !important;
+    --color: #ffffff !important;
+    color: #ffffff !important;
+    background: #5a6268 !important;
+  }
+  
+  .action-dropdown-item.delete-item {
+    --background: #dc3545 !important;
+    --color: #ffffff !important;
+    color: #ffffff !important;
+    background: #dc3545 !important;
   }
   
   .action-dropdown-item.delete-item:hover {
-    --background: linear-gradient(135deg, #991b1b 0%, #dc2626 50%);
+    --background: #c82333 !important;
+    --color: #ffffff !important;
+    color: #ffffff !important;
+    background: #c82333 !important;
   }
 }
 
@@ -359,15 +434,81 @@ table .action-dropdown-trigger:active,
   display: inline-block !important;
 }
 
-/* Ensure proper positioning for AccessMapping and PincodeMapping */
+/* Ensure all action dropdown containers have consistent positioning */
+.action-dropdown-container {
+  position: relative !important;
+  display: inline-block !important;
+  z-index: 1000;
+}
+
+/* Ensure proper positioning for AccessMapping, PincodeMapping, and TalukaMaster */
 .access-mapping-content .actions-cell,
-.pincode-mapping-content .actions-cell {
+.pincode-mapping-content .actions-cell,
+.manage-pages-content .actions-cell {
   position: relative !important;
   text-align: center !important;
 }
 
 .access-mapping-content .action-dropdown-container,
-.pincode-mapping-content .action-dropdown-container {
+.pincode-mapping-content .action-dropdown-container,
+.manage-pages-content .action-dropdown-container {
   position: relative !important;
   display: inline-block !important;
+}
+
+/* Force proper popover positioning in table cells */
+.actions-cell .action-dropdown-popover,
+.manage-pages-content .action-dropdown-popover {
+  --offset-x: 0px !important;
+  --offset-y: 8px !important;
+}
+
+/* Global ActionDropdown positioning fix */
+.action-dropdown-popover {
+  --offset-x: 0px !important;
+  --offset-y: 8px !important;
+}
+
+/* Ensure proper backdrop behavior */
+.action-dropdown-popover ion-backdrop {
+  opacity: 0.32 !important;
+  background: rgba(0, 0, 0, 0.32) !important;
+}
+
+/* Ensure consistent popover behavior across all contexts */
+ion-popover.action-dropdown-popover {
+  --offset-x: 0px !important;
+  --offset-y: 8px !important;
+  --min-width: 120px !important;
+  --max-width: 160px !important;
+}
+
+/* Force recalculation of popover position */
+.action-dropdown-trigger[aria-expanded="true"] + ion-popover {
+  --offset-x: 0px !important;
+  --offset-y: 8px !important;
+}
+
+/* Ensure table cells don't interfere with popover positioning */
+.pages-table td.actions-cell {
+  overflow: visible !important;
+  position: relative !important;
+}
+
+/* Global fix for all pages with ActionDropdown */
+.manage-pages-content .pages-table,
+.manage-pages-content .table-container,
+.manage-pages-content .pages-table tbody tr,
+.manage-pages-content .pages-table tbody tr:hover {
+  transform: none !important;
+  position: static !important;
+}
+
+.manage-pages-content .table-container {
+  position: relative !important;
+}
+
+.manage-pages-content .actions-cell {
+  position: relative !important;
+  overflow: visible !important;
 }

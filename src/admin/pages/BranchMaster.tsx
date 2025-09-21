@@ -19,6 +19,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 import ActionDropdown from '../components/common/ActionDropdown';
 import { Pagination } from '../components/shared';
+import { MasterCard, MasterControls, MasterHeader } from '../../components/shared';
 import { mockDataService } from '../../services/api';
 import type { BranchData } from '../../types';
 import './BranchMaster.css';  // original 
@@ -252,40 +253,21 @@ const BranchMaster: React.FC = () => {
           {/* Main Content */}
           <div className="branches-container">
             {/* Header Section */}
-            <IonCard className="branches-header">
-              <IonCardContent>
-                <h1>Branch Management</h1>
-                <p>Create, view, edit, and manage all branch offices in the system</p>
-              </IonCardContent>
-            </IonCard>
+            <MasterHeader
+              title="Branch Management"
+              subtitle="Create, view, edit, and manage all branch offices in the system"
+            />
 
             {/* Enhanced Search and Actions */}
-            <div className="branches-actions">
-              <IonSearchbar
-                value={searchQuery}
-                onIonChange={e => setSearchQuery(e.detail.value!)}
-                placeholder="Search branches by name or type..."
-                className="branches-search"
-              />
-              <IonButton 
-                fill="outline" 
-                size="small"
-                onClick={toggleViewMode}
-                className="view-mode-button"
-              >
-                <IonIcon icon={viewMode === 'grid' ? listOutline : gridOutline} />
-                {viewMode === 'grid' ? 'Table View' : 'Grid View'}
-              </IonButton>
-              <IonButton 
-                fill="solid" 
-                size="small"
-                onClick={handleAddBranch}
-                className="add-branch-button"
-              >
-                <IonIcon icon={addOutline} />
-                Add New Branch
-              </IonButton>
-            </div>
+            <MasterControls
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              searchPlaceholder="Search branches by name or type..."
+              viewMode={viewMode}
+              onViewModeToggle={toggleViewMode}
+              onAddNew={handleAddBranch}
+              addButtonText="Add New Branch"
+            />
 
             {/* Branches Display */}
             <IonCard className="branches-table-card">
@@ -301,45 +283,31 @@ const BranchMaster: React.FC = () => {
                   </div>
                 ) : viewMode === 'grid' ? (
                   // Grid View
-                  <div className="branches-grid">
+                  <div className="master-cards-grid" style={{ padding: '1rem' }}>
                     {currentBranches.map(branch => (
-                      <div key={branch.id} className="branch-card-wrapper">
-                          <IonCard className="branch-card">
-                            <div className="branch-card-header">
-                              <h2>{branch.officeName}</h2>
-                              <div className="branch-path">
-                                /{branch.officeName.toLowerCase().replace(/\s+/g, '-')}
-                              </div>
-                            </div>
-                            <div className="branch-card-content">
-                              <div className="branch-info">
-                                <div className="branch-info-item">
-                                  <IonIcon icon={businessOutline} />
-                                  <span>Type: {branch.officeType}</span>
-                                </div>
-                                <div className="branch-info-item">
-                                  <IonIcon icon={timeOutline} />
-                                  <span>Created: {new Date(branch.createdAt).toLocaleDateString()}</span>
-                                </div>
-                              </div>
-                              <div className="branch-card-actions">
-                                <IonButton className="branch-card-button view" onClick={() => handleView(branch)}>
-                                  <IonIcon icon={eyeOutline} />
-                                  VIEW
-                                </IonButton>
-                                <IonButton className="branch-card-button edit" onClick={() => handleEdit(branch)}>
-                                  <IonIcon icon={createOutline} />
-                                  EDIT
-                                </IonButton>
-                                <IonButton className="branch-card-button delete" onClick={() => handleDelete(branch.id)}>
-                                  <IonIcon icon={trashOutline} />
-                                  DELETE
-                                </IonButton>
-                              </div>
-                            </div>
-                          </IonCard>
-                        </div>
-                      ))}
+                      <MasterCard
+                        key={branch.id}
+                        id={branch.id}
+                        title={branch.officeName}
+                        subtitle={branch.officeType}
+                        icon={businessOutline}
+                        metaItems={[
+                          {
+                            icon: locationOutline,
+                            label: "Path",
+                            value: `/${branch.officeName.toLowerCase().replace(/\s+/g, '-')}`
+                          },
+                          {
+                            icon: timeOutline,
+                            label: "Created",
+                            value: new Date(branch.createdAt).toLocaleDateString()
+                          }
+                        ]}
+                        onView={() => handleView(branch)}
+                        onEdit={() => handleEdit(branch)}
+                        onDelete={() => handleDelete(branch.id)}
+                      />
+                    ))}
                   </div>
                 ) : (
                   // Table View

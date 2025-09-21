@@ -4,7 +4,7 @@ import {
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
   IonModal, IonButtons, IonInput, IonTextarea, IonSelect, IonSelectOption,
-  IonBadge, IonChip, IonFab, IonFabButton
+  IonBadge, IonChip
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
@@ -18,6 +18,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 import ActionDropdown from '../components/common/ActionDropdown';
 import { Pagination } from '../components/shared';
+import { MasterCard, MasterControls, MasterHeader } from '../../components/shared';
 import { mockDataService } from '../../services/api';
 import type { OrganizationMasterData } from '../../types';
 import './OrganizationMasters.css';
@@ -34,6 +35,9 @@ const OrganizationMasters: React.FC = () => {
   const [editForm, setEditForm] = useState({
     name: ''
   });
+  const [addForm, setAddForm] = useState({
+    name: ''
+  });
   
   // Enhanced state for new functionality
   const [showAddModal, setShowAddModal] = useState(false);
@@ -43,8 +47,8 @@ const OrganizationMasters: React.FC = () => {
 
   const itemsPerPage = 5;
 
-  // Get organization master data from mock service
-  const allOrganizations = mockDataService.getOrganizationMasterData();
+  // State for managing organizations data - REAL-TIME CRUD
+  const [allOrganizations, setAllOrganizations] = useState<OrganizationMasterData[]>(() => mockDataService.getOrganizationMasterData());
   
   // Filter and sort organizations
   const filteredAndSortedOrganizations = useMemo(() => {
@@ -103,12 +107,30 @@ const OrganizationMasters: React.FC = () => {
     setShowToast(true);
   };
 
-  const handleSaveOrganization = () => {
-    setToastMessage('Organization saved successfully');
-    setShowToast(true);
-    setShowAddModal(false);
-    setShowEditModal(false);
-    setEditingOrg(null);
+  const handleSaveAdd = () => {
+    if (addForm.name) {
+      // Generate a new ID for the organization
+      const newId = `org-${Date.now()}`;
+      
+      // Create the new organization object
+      const newOrganization: OrganizationMasterData = {
+        id: newId,
+        name: addForm.name,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      // Add the new organization to the state
+      setAllOrganizations(prevOrganizations => [...prevOrganizations, newOrganization]);
+      
+      setToastMessage(`Organization "${addForm.name}" created successfully`);
+      setShowToast(true);
+      setShowAddModal(false);
+      setAddForm({ name: '' });
+    } else {
+      setToastMessage('Please fill in the organization name');
+      setShowToast(true);
+    }
   };
 
   const handleEdit = (orgId: string) => {
@@ -123,12 +145,24 @@ const OrganizationMasters: React.FC = () => {
   };
 
   const handleSaveEdit = () => {
-    if (editingOrg) {
+    if (editingOrg && editForm.name) {
+      // Update the organization in the state
+      setAllOrganizations(prevOrganizations => 
+        prevOrganizations.map(org => 
+          org.id === editingOrg.id 
+            ? { ...org, name: editForm.name, updatedAt: new Date().toISOString() }
+            : org
+        )
+      );
+      
       setToastMessage(`Organization "${editForm.name}" updated successfully`);
       setShowToast(true);
       setShowEditModal(false);
       setEditingOrg(null);
       setEditForm({ name: '' });
+    } else {
+      setToastMessage('Please fill in the organization name');
+      setShowToast(true);
     }
   };
 
@@ -145,7 +179,11 @@ const OrganizationMasters: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedOrgId) {
-      setToastMessage(`Delete organization ${selectedOrgId} functionality will be implemented`);
+      // Remove the organization from state
+      setAllOrganizations(prevOrganizations => prevOrganizations.filter(org => org.id !== selectedOrgId));
+      
+      const orgToDelete = allOrganizations.find(org => org.id === selectedOrgId);
+      setToastMessage(`Organization "${orgToDelete?.name || selectedOrgId}" deleted successfully`);
       setShowToast(true);
       setSelectedOrgId(null);
     }
@@ -179,98 +217,48 @@ const OrganizationMasters: React.FC = () => {
           <IonContent className="manage-pages-content">
             <div className="pages-container">
               {/* Header Section */}
-              <div className="pages-header">
-                <h1>Organization Masters</h1>
-                <p>Manage organization categories and their names</p>
-              </div>
+              <MasterHeader
+                title="Organization Masters"
+                subtitle="Manage organization categories and their names"
+              />
 
               {/* Enhanced Search and Actions */}
-              <div className="pages-actions">
-                <IonSearchbar
-                  value={searchQuery}
-                  onIonChange={(e) => setSearchQuery(e.detail.value!)}
-                  placeholder="Search organizations by name..."
-                  className="pages-search"
-                />
-                <IonButton 
-                  fill="outline" 
-                  size="small"
-                  onClick={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
-                >
-                  <IonIcon icon={viewMode === 'grid' ? barChartOutline : eyeOutline} />
-                  {viewMode === 'grid' ? 'Table View' : 'Grid View'}
-                </IonButton>
-                <IonButton 
-                  fill="solid" 
-                  className="add-page-button"
-                  onClick={handleAddOrganization}
-                >
-                  <IonIcon icon={addOutline} />
-                  Add New Organization
-                </IonButton>
-              </div>
+              <MasterControls
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search organizations by name..."
+                viewMode={viewMode}
+                onViewModeToggle={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
+                onAddNew={handleAddOrganization}
+                addButtonText="Add New Organization"
+              />
 
               {/* Organizations Grid */}
               {viewMode === 'grid' ? (
-                <div className="branches-grid">
+                <div className="master-cards-grid" style={{ padding: '1rem' }}>
                   {currentOrganizations.map((org) => (
-                    <div key={org.id} className="branch-card">
-                      <div className="branch-card-header">
-                        <div className="branch-card-icon">
-                          <IonIcon icon={businessOutline} />
-                        </div>
-                        <div className="branch-card-title">
-                          <h3 className="branch-card-name">{org.name}</h3>
-                          <div className="branch-card-type">Organization</div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-content">
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={documentTextOutline} className="branch-card-meta-icon" />
-                            <span>Code: ORG-{org.id.slice(-3)}</span>
-                          </div>
-                        </div>
-                        
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={timeOutline} className="branch-card-meta-icon" />
-                            <span>Status: Active</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-actions">
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button view"
-                          onClick={() => handleView(org)}
-                        >
-                          <IonIcon icon={eyeOutline} />
-                          View
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button edit"
-                          onClick={() => handleEdit(org.id)}
-                        >
-                          <IonIcon icon={createOutline} />
-                          Edit
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button delete"
-                          onClick={() => handleDelete(org.id)}
-                        >
-                          <IonIcon icon={trashOutline} />
-                          Delete
-                        </IonButton>
-                      </div>
-                    </div>
+                    <MasterCard
+                      key={org.id}
+                      id={org.id}
+                      title={org.name}
+                      subtitle="Organization"
+                      icon={businessOutline}
+                      metaItems={[
+                        {
+                          icon: documentTextOutline,
+                          label: "Code",
+                          value: `ORG-${org.id.slice(-3)}`
+                        },
+                        {
+                          icon: timeOutline,
+                          label: "Status",
+                          value: "Active"
+                        }
+                      ]}
+                      onView={() => handleView(org)}
+                      onEdit={() => handleEdit(org.id)}
+                      onDelete={() => handleDelete(org.id)}
+                    />
                   ))}
                 </div>
               ) : (
@@ -327,6 +315,7 @@ const OrganizationMasters: React.FC = () => {
                               <div className="action-buttons">
                                 <ActionDropdown
                                   itemId={org.id}
+                                  onView={() => handleView(org)}
                                   onEdit={() => handleEdit(org.id)}
                                   onDelete={() => handleDelete(org.id)}
                                   size="small"
@@ -350,6 +339,9 @@ const OrganizationMasters: React.FC = () => {
                   onNextPage={handleNextPage}
                 />
               )}
+              
+              {/* Bottom spacing for pagination visibility */}
+              <div style={{ height: '3rem' }}></div>
             </div>
           </IonContent>
         </div>
@@ -398,7 +390,7 @@ const OrganizationMasters: React.FC = () => {
                   '--border-radius': '12px',
                   marginTop: '1rem'
                 }}
-                onClick={handleSaveOrganization}
+                onClick={handleSaveAdd}
               >
                 <IonIcon icon={checkmarkOutline} slot="start" />
                 Create Organization
@@ -474,12 +466,6 @@ const OrganizationMasters: React.FC = () => {
         ]}
       />
 
-      {/* Floating Action Button */}
-      <IonFab vertical="bottom" horizontal="end" slot="fixed">
-        <IonFabButton className="fab-add-page" onClick={handleAddOrganization}>
-          <IonIcon icon={addOutline} />
-        </IonFabButton>
-      </IonFab>
 
       {/* Toast for notifications */}
       <IonToast

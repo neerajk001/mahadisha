@@ -18,6 +18,7 @@ import { createOutline, trashOutline, filterOutline } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import { Pagination } from '../admin/components/shared';
+import MasterControls from '../components/shared/MasterControls';
 import { useApplicationTypes } from '../hooks/useApplicationTypes';
 import type { ApplicationType } from '../types';
 import './ApplicationType.css';
@@ -26,16 +27,22 @@ const ApplicationType: React.FC = () => {
   const { data: applicationTypes, isLoading, error, delete: deleteApplicationType } = useApplicationTypes();
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
+  // Filter application types based on search query
+  const filteredApplicationTypes = applicationTypes?.filter(type =>
+    type.name.toLowerCase().includes(searchQuery.toLowerCase())
+  ) || [];
+
   // Calculate pagination
-  const totalPages = Math.ceil((applicationTypes?.length || 0) / itemsPerPage);
+  const totalPages = Math.ceil(filteredApplicationTypes.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentApplicationTypes = applicationTypes?.slice(startIndex, endIndex) || [];
+  const currentApplicationTypes = filteredApplicationTypes.slice(startIndex, endIndex);
 
   // Pagination handlers
   const handlePreviousPage = () => {
@@ -53,6 +60,16 @@ const ApplicationType: React.FC = () => {
   const handleEdit = (id: number) => {
     console.log('Edit application type:', id);
     // TODO: Implement edit functionality
+  };
+
+  const handleAddNew = () => {
+    console.log('Add new application type');
+    // TODO: Implement add functionality
+  };
+
+  const handleFilterClick = () => {
+    console.log('Filter clicked');
+    // TODO: Implement filter functionality
   };
 
   const handleDelete = (id: number) => {
@@ -94,13 +111,19 @@ const ApplicationType: React.FC = () => {
               {/* Page Header */}
               <div className="page-header">
                 <h1 className="page-title">Application Types</h1>
-                <div className="page-actions">
-                  <IonButton fill="outline" size="small">
-                    <IonIcon icon={filterOutline} slot="start" />
-                    Filter
-                  </IonButton>
-                </div>
               </div>
+
+              {/* Master Controls */}
+              <MasterControls
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search application types..."
+                showFilterButton={true}
+                onFilterClick={handleFilterClick}
+                filterButtonText="Filter"
+                onAddNew={handleAddNew}
+                addButtonText="Add Application Type"
+              />
 
               {/* Application Types List */}
               <div className="list-container">
@@ -156,19 +179,21 @@ const ApplicationType: React.FC = () => {
                       </IonItem>
                     ))}
                   </IonList>
+                )}
 
-                  {/* Pagination */}
-                  {(applicationTypes?.length || 0) > 0 && (
+                {/* Pagination - moved outside conditional */}
+                {!isLoading && !error && (
+                  <>
                     <Pagination
                       currentPage={currentPage}
                       totalPages={totalPages}
                       onPreviousPage={handlePreviousPage}
                       onNextPage={handleNextPage}
                     />
-                  )}
-                  
-                  {/* Bottom spacing for pagination visibility */}
-                  <div style={{ height: '3rem' }}></div>
+                    
+                    {/* Bottom spacing for pagination visibility */}
+                    <div style={{ height: '3rem' }}></div>
+                  </>
                 )}
               </div>
             </div>

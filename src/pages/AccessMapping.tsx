@@ -15,6 +15,7 @@ import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { Pagination } from '../admin/components/shared';
+import { RBACControls, RBACHeader } from '../components/shared';
 import { mockDataService } from '../services/api';
 import type { AccessMappingData } from '../types';
 import './AccessMapping.css';
@@ -235,28 +236,19 @@ const AccessMapping: React.FC = () => {
           <IonContent className="access-mapping-content">
             <div className="mapping-container">
               {/* Header Section */}
-              <div className="mapping-header">
-                <h1>Access Mapping</h1>
-                <p>Manage role-based access control and permissions</p>
-              </div>
+              <RBACHeader
+                title="Access Mapping"
+                subtitle="Manage role-based access control and permissions"
+              />
 
               {/* Search and Actions */}
-              <div className="mapping-actions-row">
-                <IonSearchbar
-                  value={searchQuery}
-                  onIonChange={(e) => setSearchQuery(e.detail.value!)}
-                  placeholder="Search by role or access..."
-                  className="mapping-search"
-                />
-                <IonButton 
-                  fill="solid" 
-                  className="add-mapping-button"
-                  onClick={handleAddMapping}
-                >
-                  <IonIcon icon={addOutline} />
-                  + ADD MAPPING
-                </IonButton>
-              </div>
+              <RBACControls
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search by role or access..."
+                onAddNew={handleAddMapping}
+                addButtonText="+ ADD MAPPING"
+              />
 
               {/* Mappings Table */}
               <IonCard className="mappings-table-card">
@@ -325,6 +317,9 @@ const AccessMapping: React.FC = () => {
                   onNextPage={handleNextPage}
                 />
               )}
+              
+              {/* Bottom spacing for pagination visibility */}
+              <div style={{ height: '3rem' }}></div>
             </div>
           </IonContent>
         </div>

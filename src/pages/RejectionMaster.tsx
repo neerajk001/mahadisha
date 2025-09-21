@@ -4,7 +4,7 @@ import {
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
   IonModal, IonButtons, IonInput, IonTextarea, IonSelect, IonSelectOption,
-  IonBadge, IonChip, IonFab, IonFabButton
+  IonBadge, IonChip
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
@@ -19,6 +19,7 @@ import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { Pagination } from '../admin/components/shared';
+import { MasterCard, MasterControls, MasterHeader } from '../components/shared';
 import { mockDataService } from '../services/api';
 import type { RejectionMasterData } from '../types';
 import './RejectionMaster.css';
@@ -48,10 +49,8 @@ const RejectionMaster: React.FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Make it a state variable
 
-  // Get rejection master data from mock service with refresh trigger
-  const allRejections = useMemo(() => {
-    return mockDataService.getRejectionMasterData();
-  }, [refreshTrigger]);
+  // State for managing rejection data - REAL-TIME CRUD
+  const [allRejections, setAllRejections] = useState<RejectionMasterData[]>(() => mockDataService.getRejectionMasterData());
   
   // Filter and sort rejections
   const filteredAndSortedRejections = useMemo(() => {
@@ -115,27 +114,23 @@ const RejectionMaster: React.FC = () => {
     setShowToast(true);
   };
 
-  const handleSaveRejection = () => {
+  const handleSaveAdd = () => {
     if (newRejection.name.trim()) {
-      const addedRejection = mockDataService.addRejectionMasterData({
-        name: newRejection.name.trim()
-      });
+      // Generate a new ID for the rejection
+      const newId = `rejection-${Date.now()}`;
       
-      if (addedRejection) {
-        setToastMessage(`Rejection "${addedRejection.name}" added successfully`);
-        // Trigger refresh to update the UI
-        setRefreshTrigger(prev => prev + 1);
-        
-        // Calculate new pagination based on updated data length
-        setTimeout(() => {
-          const updatedData = mockDataService.getRejectionMasterData();
-          const newTotalPages = Math.ceil(updatedData.length / itemsPerPage);
-          setCurrentPage(newTotalPages); // Navigate to last page to see the new item
-        }, 100); // Increased timeout to ensure data is updated
-      } else {
-        setToastMessage('Error adding rejection');
-      }
+      // Create the new rejection object
+      const newRejectionData: RejectionMasterData = {
+        id: newId,
+        name: newRejection.name.trim(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
       
+      // Add the new rejection to the state
+      setAllRejections(prevRejections => [...prevRejections, newRejectionData]);
+      
+      setToastMessage(`Rejection "${newRejection.name}" added successfully`);
       setShowToast(true);
       setShowAddModal(false);
       setNewRejection({ name: '' });
@@ -158,18 +153,16 @@ const RejectionMaster: React.FC = () => {
 
   const handleSaveEdit = () => {
     if (editingRejection && editForm.name.trim()) {
-      const updatedRejection = mockDataService.updateRejectionMasterData(editingRejection.id, {
-        name: editForm.name.trim()
-      });
+      // Update the rejection in the state
+      setAllRejections(prevRejections => 
+        prevRejections.map(rejection => 
+          rejection.id === editingRejection.id 
+            ? { ...rejection, name: editForm.name.trim(), updatedAt: new Date().toISOString() }
+            : rejection
+        )
+      );
       
-      if (updatedRejection) {
-        setToastMessage(`Rejection "${updatedRejection.name}" updated successfully`);
-        // Trigger refresh to update the UI
-        setRefreshTrigger(prev => prev + 1);
-      } else {
-        setToastMessage('Error updating rejection');
-      }
-      
+      setToastMessage(`Rejection "${editForm.name}" updated successfully`);
       setShowToast(true);
       setShowEditModal(false);
       setEditingRejection(null);
@@ -193,24 +186,11 @@ const RejectionMaster: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedRejectionId) {
-      const success = mockDataService.deleteRejectionMasterData(selectedRejectionId);
-      if (success) {
-        const deletedItem = allRejections.find(r => r.id === selectedRejectionId);
-        setToastMessage(`Rejection "${deletedItem?.name}" deleted successfully`);
-        // Trigger refresh to update the UI
-        setRefreshTrigger(prev => prev + 1);
-        
-        // Adjust pagination if needed after deletion
-        setTimeout(() => {
-          const updatedData = mockDataService.getRejectionMasterData();
-          const newTotalPages = Math.ceil(updatedData.length / itemsPerPage);
-          if (currentPage > newTotalPages && newTotalPages > 0) {
-            setCurrentPage(newTotalPages);
-          }
-        }, 0);
-      } else {
-        setToastMessage('Error deleting rejection');
-      }
+      // Remove the rejection from state
+      setAllRejections(prevRejections => prevRejections.filter(rejection => rejection.id !== selectedRejectionId));
+      
+      const rejectionToDelete = allRejections.find(rejection => rejection.id === selectedRejectionId);
+      setToastMessage(`Rejection "${rejectionToDelete?.name || selectedRejectionId}" deleted successfully`);
       setShowToast(true);
       setSelectedRejectionId(null);
     }
@@ -244,98 +224,48 @@ const RejectionMaster: React.FC = () => {
           <IonContent className="manage-pages-content">
             <div className="pages-container">
               {/* Header Section */}
-              <div className="pages-header">
-                <h1>Rejection Master</h1>
-                <p>Manage rejection reasons and their details</p>
-              </div>
+              <MasterHeader
+                title="Rejection Master"
+                subtitle="Manage rejection reasons and their details"
+              />
 
               {/* Enhanced Search and Actions */}
-              <div className="pages-actions">
-                <IonSearchbar
-                  value={searchQuery}
-                  onIonChange={(e) => setSearchQuery(e.detail.value!)}
-                  placeholder="Search rejections by name..."
-                  className="pages-search"
-                />
-                <IonButton 
-                  fill="outline" 
-                  size="small"
-                  onClick={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
-                >
-                  <IonIcon icon={viewMode === 'grid' ? barChartOutline : eyeOutline} />
-                  {viewMode === 'grid' ? 'Table View' : 'Grid View'}
-                </IonButton>
-                <IonButton 
-                  fill="solid" 
-                  className="add-page-button"
-                  onClick={handleAddRejection}
-                >
-                  <IonIcon icon={addOutline} />
-                  Add New Rejection
-                </IonButton>
-              </div>
+              <MasterControls
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search rejections by name..."
+                viewMode={viewMode}
+                onViewModeToggle={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
+                onAddNew={handleAddRejection}
+                addButtonText="Add New Rejection"
+              />
 
               {/* Rejections Grid */}
               {viewMode === 'grid' ? (
-                <div className="branches-grid">
+                <div className="master-cards-grid" style={{ padding: '1rem' }}>
                   {currentRejections.map((rejection) => (
-                    <div key={rejection.id} className="branch-card">
-                      <div className="branch-card-header">
-                        <div className="branch-card-icon">
-                          <IonIcon icon={closeCircleOutline} />
-                        </div>
-                        <div className="branch-card-title">
-                          <h3 className="branch-card-name">{rejection.name}</h3>
-                          <div className="branch-card-type">Rejection Reason</div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-content">
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={documentTextOutline} className="branch-card-meta-icon" />
-                            <span>Code: REJ-{rejection.id.slice(-3)}</span>
-                          </div>
-                        </div>
-                        
-                        <div className="branch-card-meta">
-                          <div className="branch-card-meta-item">
-                            <IonIcon icon={timeOutline} className="branch-card-meta-icon" />
-                            <span>Type: Standard</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="branch-card-actions">
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button view"
-                          onClick={() => handleView(rejection)}
-                        >
-                          <IonIcon icon={eyeOutline} />
-                          View
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button edit"
-                          onClick={() => handleEdit(rejection.id)}
-                        >
-                          <IonIcon icon={createOutline} />
-                          Edit
-                        </IonButton>
-                        <IonButton 
-                          fill="clear" 
-                          size="small" 
-                          className="branch-card-button delete"
-                          onClick={() => handleDelete(rejection.id)}
-                        >
-                          <IonIcon icon={trashOutline} />
-                          Delete
-                        </IonButton>
-                      </div>
-                    </div>
+                    <MasterCard
+                      key={rejection.id}
+                      id={rejection.id}
+                      title={rejection.name}
+                      subtitle="Rejection Reason"
+                      icon={closeCircleOutline}
+                      metaItems={[
+                        {
+                          icon: documentTextOutline,
+                          label: "Code",
+                          value: `REJ-${rejection.id.slice(-3)}`
+                        },
+                        {
+                          icon: timeOutline,
+                          label: "Type",
+                          value: "Standard"
+                        }
+                      ]}
+                      onView={() => handleView(rejection)}
+                      onEdit={() => handleEdit(rejection.id)}
+                      onDelete={() => handleDelete(rejection.id)}
+                    />
                   ))}
                 </div>
               ) : (
@@ -415,6 +345,9 @@ const RejectionMaster: React.FC = () => {
                   onNextPage={handleNextPage}
                 />
               )}
+              
+              {/* Bottom spacing for pagination visibility */}
+              <div style={{ height: '3rem' }}></div>
             </div>
           </IonContent>
         </div>
@@ -459,7 +392,7 @@ const RejectionMaster: React.FC = () => {
                   '--border-radius': '12px',
                   marginTop: '1rem'
                 }}
-                onClick={handleSaveRejection}
+                onClick={handleSaveAdd}
               >
                 <IonIcon icon={checkmarkOutline} slot="start" />
                 Create Rejection
@@ -529,12 +462,6 @@ const RejectionMaster: React.FC = () => {
         ]}
       />
 
-      {/* Floating Action Button */}
-      <IonFab vertical="bottom" horizontal="end" slot="fixed">
-        <IonFabButton className="fab-add-page" onClick={handleAddRejection}>
-          <IonIcon icon={addOutline} />
-        </IonFabButton>
-      </IonFab>
 
       {/* Toast for notifications */}
       <IonToast
