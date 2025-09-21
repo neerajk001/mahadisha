@@ -15,8 +15,9 @@ import {
   IonAlert
 } from '@ionic/react';
 import { createOutline, trashOutline, filterOutline } from 'ionicons/icons';
-import Sidebar from '../components/sidebar/Sidebar';
-import DashboardHeader from '../components/header/DashboardHeader';
+import Sidebar from '../admin/components/sidebar/Sidebar';
+import DashboardHeader from '../admin/components/header/DashboardHeader';
+import { Pagination } from '../admin/components/shared';
 import { useApplicationTypes } from '../hooks/useApplicationTypes';
 import type { ApplicationType } from '../types';
 import './ApplicationType.css';
@@ -25,6 +26,29 @@ const ApplicationType: React.FC = () => {
   const { data: applicationTypes, isLoading, error, delete: deleteApplicationType } = useApplicationTypes();
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+  // Calculate pagination
+  const totalPages = Math.ceil((applicationTypes?.length || 0) / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentApplicationTypes = applicationTypes?.slice(startIndex, endIndex) || [];
+
+  // Pagination handlers
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   const handleEdit = (id: number) => {
     console.log('Edit application type:', id);
@@ -106,7 +130,7 @@ const ApplicationType: React.FC = () => {
                   </div>
                 ) : (
                   <IonList className="application-types-list">
-                    {applicationTypes?.map((type) => (
+                    {currentApplicationTypes.map((type) => (
                       <IonItem key={type.id} className="application-type-item">
                         <IonLabel className="application-type-name">
                           {type.name}
@@ -132,6 +156,19 @@ const ApplicationType: React.FC = () => {
                       </IonItem>
                     ))}
                   </IonList>
+
+                  {/* Pagination */}
+                  {(applicationTypes?.length || 0) > 0 && (
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPreviousPage={handlePreviousPage}
+                      onNextPage={handleNextPage}
+                    />
+                  )}
+                  
+                  {/* Bottom spacing for pagination visibility */}
+                  <div style={{ height: '3rem' }}></div>
                 )}
               </div>
             </div>

@@ -1,0 +1,199 @@
+/* Shared Pagination Component Styles */
+.shared-pagination-container {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+  border-radius: 20px;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.1),
+    0 5px 15px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.shared-pagination-info {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.shared-pagination-button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 50px !important;
+  height: 50px !important;
+  border: none !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+  font-size: 1.2rem !important;
+  font-weight: bold !important;
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  --color: white !important;
+  --border-radius: 50% !important;
+  --box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+  --padding: 0 !important;
+  --padding-start: 0 !important;
+  --padding-end: 0 !important;
+  --padding-top: 0 !important;
+  --padding-bottom: 0 !important;
+}
+
+.shared-pagination-button:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+}
+
+.shared-pagination-button:disabled {
+  --background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%) !important;
+  --color: #a0aec0 !important;
+  opacity: 0.6;
+  box-shadow: none !important;
+  cursor: not-allowed;
+}
+
+.shared-page-info {
+  font-size: 0.8rem !important;
+  font-weight: 700;
+  color: #2d3748;
+  padding: 0.4rem 0.8rem !important;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-radius: 8px !important;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  backdrop-filter: blur(10px);
+  min-width: 80px !important;
+  white-space: nowrap;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .shared-pagination-container {
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    max-width: 280px !important;
+    margin: 2rem auto !important;
+    padding: 0.75rem !important;
+    gap: 0.5rem !important;
+  }
+
+  .shared-pagination-info {
+    flex-shrink: 0 !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .shared-page-info {
+    font-size: 0.75rem !important;
+    padding: 0.3rem 0.6rem !important;
+    min-width: 70px !important;
+  }
+
+  .shared-pagination-button {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 1rem !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+    flex-shrink: 0 !important;
+    --padding: 0 !important;
+    --padding-start: 0 !important;
+    --padding-end: 0 !important;
+    --padding-top: 0 !important;
+    --padding-bottom: 0 !important;
+  }
+
+  .shared-pagination-button:hover:not(:disabled) {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .shared-pagination-container {
+    max-width: 240px !important;
+    padding: 0.5rem !important;
+    gap: 0.4rem !important;
+  }
+
+  .shared-pagination-button {
+    width: 40px !important;
+    height: 40px !important;
+    --padding: 0 !important;
+    --padding-start: 0 !important;
+    --padding-end: 0 !important;
+    --padding-top: 0 !important;
+    --padding-bottom: 0 !important;
+  }
+
+  .shared-pagination-button ion-icon {
+    font-size: 1.1rem !important;
+  }
+
+  .shared-page-info {
+    font-size: 0.7rem !important;
+    padding: 0.3rem 0.5rem !important;
+    min-width: 65px !important;
+  }
+}
+
+/* Animation for smooth transitions */
+.shared-pagination-container {
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Focus styles for accessibility */
+.shared-pagination-button:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Additional theme variations (optional) */
+.shared-pagination-container.compact {
+  padding: 1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.shared-pagination-container.minimal {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  backdrop-filter: none;
+}
+
+.shared-pagination-container.dark {
+  background: linear-gradient(145deg, rgba(45, 55, 72, 0.95) 0%, rgba(26, 32, 44, 0.9) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.shared-pagination-container.dark .shared-page-info {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+  color: #e2e8f0;
+  border: 2px solid rgba(102, 126, 234, 0.3);
+}

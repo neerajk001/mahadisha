@@ -6,7 +6,7 @@
 }
 
 .new-requests-container {
-  padding: 2rem;
+  padding: 2rem 2rem 4rem 2rem;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -273,7 +273,7 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .new-requests-container {
-    padding: 1rem;
+    padding: 1rem 1rem 5rem 1rem;
   }
   
   .search-filter-section {

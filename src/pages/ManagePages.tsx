@@ -17,6 +17,7 @@ import {
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
+import { Pagination } from '../admin/components/shared';
 import { mockDataService } from '../services/api';
 import type { PageData } from '../types';
 import './ManagePages.css';
@@ -229,14 +230,16 @@ const ManagePages: React.FC = () => {
                   fill="outline" 
                   size="small"
                   onClick={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
+                  className="view-mode-button"
                 >
                   <IonIcon icon={viewMode === 'grid' ? barChartOutline : eyeOutline} />
                   {viewMode === 'grid' ? 'Table View' : 'Grid View'}
                 </IonButton>
                 <IonButton 
                   fill="solid" 
-                  className="add-page-button"
+                  size="small"
                   onClick={handleAddPage}
+                  className="add-page-button"
                 >
                   <IonIcon icon={addOutline} />
                   Add New Page
@@ -375,39 +378,18 @@ const ManagePages: React.FC = () => {
                 </IonCard>
               )}
 
-              {/* Pagination - Show if there are pages */}
+              {/* Pagination */}
               {filteredAndSortedPages.length > 0 && (
-                <div className="pagination-container">
-                  <div className="pagination-info">
-                    <p>
-                      Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedPages.length)} of {filteredAndSortedPages.length} pages
-                    </p>
-                  </div>
-                  <div className="pagination-controls">
-                    <IonButton 
-                      fill="clear" 
-                      disabled={currentPage === 1}
-                      onClick={handlePreviousPage}
-                      className="pagination-button"
-                    >
-                      <IonIcon icon={chevronBackOutline} />
-                      <span className="pagination-text">Previous</span>
-                    </IonButton>
-                    <span className="page-info">
-                      Page {currentPage} of {totalPages}
-                    </span>
-                    <IonButton 
-                      fill="clear" 
-                      disabled={currentPage === totalPages || totalPages === 0}
-                      onClick={handleNextPage}
-                      className="pagination-button"
-                    >
-                      <span className="pagination-text">Next</span>
-                      <IonIcon icon={chevronForwardOutline} />
-                    </IonButton>
-                  </div>
-                </div>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPreviousPage={handlePreviousPage}
+                  onNextPage={handleNextPage}
+                />
               )}
+              
+              {/* Bottom spacing for pagination visibility */}
+              <div style={{ height: '3rem' }}></div>
             </div>
           </IonContent>
         </div>
@@ -780,13 +762,6 @@ const ManagePages: React.FC = () => {
           </div>
         </IonContent>
       </IonModal>
-
-      {/* Floating Action Button */}
-      <IonFab vertical="bottom" horizontal="end" slot="fixed">
-        <IonFabButton className="fab-add-page" onClick={handleAddPage}>
-          <IonIcon icon={addOutline} />
-        </IonFabButton>
-      </IonFab>
 
       {/* Toast for notifications */}
       <IonToast

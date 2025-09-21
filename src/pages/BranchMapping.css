@@ -14,41 +14,190 @@
 
 /* Header Section */
 .mappings-header {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
   text-align: center;
+  position: relative;
+  z-index: 1;
+  padding: 2rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+  border-radius: 25px;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.1),
+    0 8px 16px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.mappings-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+  background-size: 300% 100%;
+  animation: gradientShift 3s ease infinite;
 }
 
 .mappings-header h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  margin: 0 0 0.5rem 0;
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 1rem 0;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 2;
 }
 
 .mappings-header p {
-  font-size: 1rem;
-  color: var(--color-text-secondary);
+  font-size: 1.2rem;
+  color: #4a5568;
   margin: 0;
+  font-weight: 500;
+  position: relative;
+  z-index: 2;
 }
 
 /* Actions Section */
 .mappings-actions {
   display: flex;
   align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+  padding: 1.5rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+  border-radius: 20px;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.1),
+    0 5px 15px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Row Layout for Search and Add Button */
+.mappings-actions-row {
+  display: flex;
+  align-items: center;
   gap: 1rem;
   margin-bottom: 2rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+}
+
+@media (min-width: 769px) {
+  .mappings-actions-row {
+    flex-wrap: nowrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .mappings-actions-row {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .mappings-actions-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
 }
 
 .mappings-search {
   flex: 1;
-  min-width: 300px;
+  min-width: 350px;
+  --background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%);
+  --border-radius: 15px;
+  --box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  --color: #2d3748;
+  --placeholder-color: #718096;
+  --icon-color: #667eea;
+  border: 2px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+}
+
+.mappings-search:focus-within {
+  border: 2px solid #667eea;
+  --box-shadow: 0 12px 35px rgba(102, 126, 234, 0.2);
+  transform: translateY(-2px);
+}
+
+.mappings-search-row {
+  flex: 1;
+  min-width: 200px;
   --background: var(--color-bg-primary);
   --border-radius: 8px;
   --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+@media (max-width: 768px) {
+  .mappings-search-row {
+    min-width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mappings-search-row {
+    min-width: 100%;
+    flex: 1 1 100%;
+  }
+}
+
+.view-mode-button {
+  --background: transparent;
+  --color: #4ecdc4;
+  --border-color: #4ecdc4;
+  --border-radius: 15px;
+  --padding-start: 1.5rem;
+  --padding-end: 1.5rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  font-weight: 700;
+  font-size: 1rem;
+  white-space: nowrap;
+  box-shadow: 0 8px 25px rgba(78, 205, 196, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.view-mode-button:hover {
+  --background: rgba(78, 205, 196, 0.1);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 15px 40px rgba(78, 205, 196, 0.3);
+}
+
 .add-mapping-button {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --color: white;
+  --border-radius: 15px;
+  --padding-start: 1.5rem;
+  --padding-end: 1.5rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  font-weight: 700;
+  font-size: 1rem;
+  white-space: nowrap;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.add-mapping-button:hover {
+  --background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+}
+
+.add-mapping-button-row {
   --background: var(--color-primary);
   --color: white;
   --border-radius: 8px;
@@ -56,9 +205,29 @@
   --padding-end: 1rem;
   font-weight: 600;
   white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .add-mapping-button-row {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-mapping-button-row {
+    width: 100%;
+    flex: 1 1 100%;
+    margin-top: 0.5rem;
+  }
 }
 
 .add-mapping-button:hover {
+  --background: var(--color-primary-dark);
+}
+
+.add-mapping-button-row:hover {
   --background: var(--color-primary-dark);
 }
 
@@ -73,11 +242,14 @@
 .table-container {
   padding: 0;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
 }
 
 /* Table Styles */
 .mappings-table {
   width: 100%;
+  min-width: 800px;
   border-collapse: collapse;
   background: var(--color-bg-primary);
 }
@@ -139,6 +311,7 @@
 /* Cell Styles */
 .region-cell {
   min-width: 150px;
+  white-space: normal;
 }
 
 .region-name {
@@ -148,6 +321,7 @@
 
 .districts-cell {
   min-width: 300px;
+  white-space: normal;
 }
 
 .districts-list {
@@ -181,6 +355,7 @@
 
 .actions-cell {
   min-width: 150px;
+  white-space: normal;
 }
 
 .action-buttons {
@@ -240,52 +415,104 @@
   transform: scale(1.05);
 }
 
-/* Pagination */
+/* Enhanced Pagination */
 .pagination-container {
-  display: flex;
-  justify-content: space-between;
+  display: flex !important;
+  justify-content: center;
   align-items: center;
-  padding: 1rem;
-  background: var(--color-bg-primary);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+  border-radius: 20px;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.1),
+    0 5px 15px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.pagination-info {
+  text-align: center;
+  order: 2;
 }
 
 .pagination-info p {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  font-size: 1rem;
+  color: #4a5568;
   margin: 0;
+  font-weight: 600;
 }
 
 .pagination-controls {
   display: flex;
-  align-items: center;
   gap: 1rem;
 }
 
+.pagination-controls:first-child {
+  order: 1;
+}
+
+.pagination-controls:last-child {
+  order: 3;
+}
+
 .pagination-button {
-  --color: var(--color-primary);
-  --background: transparent;
-  --border-radius: 6px;
-  --padding-start: 0.75rem;
-  --padding-end: 0.75rem;
-  font-weight: 500;
-  min-width: 100px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 50px !important;
+  height: 50px !important;
+  border: none !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+  font-size: 1.2rem !important;
+  font-weight: bold !important;
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  --color: white !important;
+  --border-radius: 50% !important;
+  --box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+  --padding: 0 !important;
+  --padding-start: 0 !important;
+  --padding-end: 0 !important;
+  --padding-top: 0 !important;
+  --padding-bottom: 0 !important;
+}
+
+.pagination-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
 }
 
 .pagination-button:disabled {
-  --color: var(--color-text-disabled);
   opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.pagination-button ion-icon {
+  font-size: 1.5rem;
 }
 
 .page-info {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  padding: 0.5rem 1rem;
-  background: var(--color-bg-secondary);
-  border-radius: 6px;
-  border: 1px solid var(--color-border-light);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2d3748;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-radius: 12px;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  backdrop-filter: blur(10px);
+  text-align: center;
 }
 
 /* Add/Edit Mapping Modal Styles */
@@ -468,6 +695,30 @@
   margin-top: 0.5rem;
 }
 
+/* Keyframe Animations */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .branch-mapping-content {
@@ -479,14 +730,179 @@
     font-size: 1.5rem;
   }
 
+  /* Mobile Actions Row Layout - Even spacing */
   .mappings-actions {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    margin-bottom: 1rem !important;
+    flex-wrap: nowrap !important;
+    gap: 0.75rem !important;
   }
 
+  /* Mobile Search - Takes available space */
   .mappings-search {
-    min-width: auto;
+    flex: 1 !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+
+  /* Mobile buttons - Icon only */
+  .mappings-actions ion-button {
+    --padding-start: 0.5rem !important;
+    --padding-end: 0.5rem !important;
+    min-width: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    --border-radius: 8px !important;
+  }
+
+  /* Hide text content but keep icons on mobile */
+  .mappings-actions ion-button .button-inner {
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .mappings-actions ion-button .button-inner > *:not(ion-icon) {
+    display: none !important;
+  }
+
+  .mappings-actions ion-button ion-icon {
+    font-size: 1.3rem !important;
+    margin: 0 !important;
+  }
+
+  /* View mode button mobile styling - teal outline with icon only */
+  .view-mode-button {
+    --background: transparent !important;
+    --color: #4ecdc4 !important;
+    --border-color: #4ecdc4 !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Add mapping button mobile styling - purple solid with plus icon only */
+  .add-mapping-button {
+    --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    --color: white !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Mobile Pagination - Compact and Centered */
+  .pagination-container {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.75rem !important;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%) !important;
+    border-radius: 15px !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    margin: 1.5rem 0 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 10 !important;
+    width: auto !important;
+    max-width: 280px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .pagination-controls {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.75rem !important;
+    width: 100% !important;
+  }
+
+  .pagination-button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 44px !important;
+    height: 44px !important;
+    border: none !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    --color: white !important;
+    --border-radius: 50% !important;
+    --box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+    --padding: 0 !important;
+    --padding-start: 0 !important;
+    --padding-end: 0 !important;
+    --padding-top: 0 !important;
+    --padding-bottom: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .pagination-button ion-icon {
+    font-size: 1.3rem !important;
+    color: white !important;
+  }
+
+  .pagination-info {
+    text-align: center !important;
+    margin: 0 !important;
+    order: 1 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .pagination-info p {
+    font-size: 0.85rem !important;
+    margin: 0 !important;
+    color: #4a5568 !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+  }
+
+  .page-info {
+    font-size: 0.9rem !important;
+    margin: 0 !important;
+    text-align: center !important;
+    color: #2d3748 !important;
+    font-weight: 700 !important;
+    padding: 0.6rem 1.2rem !important;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%) !important;
+    border-radius: 12px !important;
+    border: 2px solid rgba(102, 126, 234, 0.2) !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -1rem;
+    padding: 0 1rem;
+  }
+
+  .mappings-table {
+    min-width: 700px;
+  }
+
+  .region-cell {
+    min-width: 120px;
+  }
+
+  .districts-cell {
+    min-width: 250px;
+  }
+
+  .actions-cell {
+    min-width: 120px;
   }
 
   .mappings-table th,
@@ -521,8 +937,13 @@
   }
 
   .pagination-button {
-    min-width: auto;
-    width: 100%;
+    width: 40px !important;
+    height: 40px !important;
+    --padding: 0 !important;
+    --padding-start: 0 !important;
+    --padding-end: 0 !important;
+    --padding-top: 0 !important;
+    --padding-bottom: 0 !important;
   }
 
   .modal-header {
@@ -565,6 +986,34 @@
 
   .mappings-header p {
     font-size: 0.9rem;
+  }
+
+  .mappings-actions-row {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -1rem;
+    padding: 0 1rem;
+  }
+
+  .mappings-table {
+    min-width: 600px;
+  }
+
+  .region-cell {
+    min-width: 100px;
+  }
+
+  .districts-cell {
+    min-width: 200px;
+  }
+
+  .actions-cell {
+    min-width: 100px;
   }
 
   .mappings-table th,

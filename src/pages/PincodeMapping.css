@@ -31,29 +31,44 @@
   margin: 0;
 }
 
-
 /* Enhanced Actions Section */
 .mappings-actions {
   display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  gap: 1rem;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.75rem;
   margin-bottom: 2rem;
   background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
-  padding: 1rem;
+  padding: 0.75rem;
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(0, 0, 0, 0.03);
   border: 1px solid rgba(0, 0, 0, 0.05);
   min-height: 44px;
+  flex-wrap: nowrap;
+}
+
+@media (max-width: 480px) {
+  .mappings-actions {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 .search-section {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.25rem;
   flex: 1;
-  max-width: 600px;
+  min-width: 0;
   height: 44px;
+  max-width: 60%;
+}
+
+@media (max-width: 480px) {
+  .search-section {
+    max-width: 50%;
+    gap: 0.1rem;
+  }
 }
 
 .mappings-search {
@@ -85,8 +100,8 @@
   --color: #5CA8A3;
   --border-color: rgba(92, 168, 163, 0.2);
   --border-radius: 12px;
-  --padding-start: 1rem;
-  --padding-end: 1rem;
+  --padding-start: 0.6rem;
+  --padding-end: 0.6rem;
   --min-height: 44px;
   --height: 44px;
   font-weight: 600;
@@ -99,6 +114,23 @@
   align-items: center;
   justify-content: center;
   vertical-align: top;
+  flex-shrink: 0;
+}
+
+.filter-button ion-icon,
+.add-mapping-button ion-icon {
+  margin-right: 0.25rem;
+}
+
+
+@media (max-width: 480px) {
+  .filter-button {
+    --padding-start: 0.3rem;
+    --padding-end: 0.3rem;
+    --min-height: 36px;
+    font-size: 0.75rem;
+    --border-radius: 8px;
+  }
 }
 
 .filter-button:hover {
@@ -112,18 +144,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
   height: 44px;
   min-height: 44px;
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
+@media (max-width: 480px) {
+  .action-buttons {
+    gap: 0.1rem;
+    height: 36px;
+    min-height: 36px;
+  }
+}
 
 .add-mapping-button {
   --background: #5CA8A3;
   --color: white;
   --border-radius: 12px;
-  --padding-start: 1.5rem;
-  --padding-end: 1.5rem;
+  --padding-start: 0.8rem;
+  --padding-end: 0.8rem;
   --min-height: 44px;
   --height: 44px;
   font-weight: 600;
@@ -137,12 +178,22 @@
   vertical-align: top;
 }
 
+
+@media (max-width: 480px) {
+  .add-mapping-button {
+    --padding-start: 0.4rem;
+    --padding-end: 0.4rem;
+    --min-height: 36px;
+    font-size: 0.75rem;
+    --border-radius: 8px;
+  }
+}
+
 .add-mapping-button:hover {
   --background: #4a8b87;
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(92, 168, 163, 0.4);
 }
-
 
 /* Table Card */
 .mappings-table-card {
@@ -155,6 +206,7 @@
 .table-container {
   padding: 0;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Enhanced Table Styles */
@@ -162,6 +214,29 @@
   width: 100%;
   border-collapse: collapse;
   background: var(--color-bg-primary);
+  min-width: 700px;
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    margin: 0 -1rem;
+    border-radius: 0;
+  }
+  
+  .mappings-table {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 480px) {
+  .table-container {
+    margin: 0 -1rem;
+    border-radius: 0;
+  }
+  
+  .mappings-table {
+    min-width: 500px;
+  }
 }
 
 .mappings-table th {
@@ -176,7 +251,6 @@
   top: 0;
   z-index: 10;
 }
-
 
 .table-header {
   display: flex;
@@ -218,16 +292,46 @@
   gap: 0.25rem;
 }
 
+@media (max-width: 768px) {
+  .district-info {
+    gap: 0.2rem;
+  }
+}
+
 .district-name {
   font-weight: 600;
   color: var(--color-text-primary);
   font-size: 1rem;
 }
 
+@media (max-width: 768px) {
+  .district-name {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .district-name {
+    font-size: 0.8rem;
+  }
+}
+
 .district-description {
   font-size: 0.8rem;
   color: var(--color-text-secondary);
   font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .district-description {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .district-description {
+    font-size: 0.65rem;
+  }
 }
 
 .state-cell,
@@ -293,7 +397,6 @@
   padding: 0.5rem;
 }
 
-
 .edit-button {
   --color: white;
   --background: #17a2b8;
@@ -332,25 +435,36 @@
 
 /* Enhanced Pagination */
 .pagination-container {
-  display: flex;
-  justify-content: space-between;
+  display: flex !important;
+  justify-content: center;
   align-items: center;
-  padding: 1rem;
-  background: var(--color-bg-primary);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+  border-radius: 20px;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.1),
+    0 5px 15px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .pagination-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  text-align: center;
+  order: 2;
 }
 
 .pagination-info p {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  font-size: 1rem;
+  color: #4a5568;
   margin: 0;
+  font-weight: 600;
 }
 
 .pagination-stats {
@@ -498,7 +612,6 @@
   background: var(--color-bg-primary);
 }
 
-
 /* Filters Modal */
 .filters-container {
   max-width: 500px;
@@ -535,74 +648,10 @@
     font-size: 1.5rem;
   }
 
-
-  .mappings-actions {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-  }
-
-  .search-section {
-    flex-direction: row;
-    gap: 0.75rem;
-    max-width: none;
-  }
-
-  .mappings-search {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .filter-button {
-    --min-height: 44px;
-    flex-shrink: 0;
-  }
-
-  .action-buttons {
-    justify-content: center;
-    margin-top: 0.5rem;
-  }
-
-  .add-mapping-button {
-    --min-height: 44px;
-    flex: 1;
-    max-width: 300px;
-  }
-
-
   .mappings-table th,
   .mappings-table td {
     padding: 0.75rem 0.5rem;
     font-size: 0.8rem;
-  }
-
-
-  .district-info {
-    gap: 0.5rem;
-  }
-
-  .pincodes-list {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .actions-cell .action-buttons {
-    gap: 0.5rem;
-    flex-direction: row;
-    padding: 0.25rem;
-  }
-
-  .edit-button,
-  .delete-button {
-    width: 38px;
-    height: 38px;
-    --padding: 0.4rem;
-    font-size: 0.9rem;
-  }
-
-  .actions-cell {
-    min-width: 140px;
-    width: 140px;
   }
 
   .pagination-container {
@@ -667,50 +716,10 @@
     font-size: 0.9rem;
   }
 
-  .mappings-actions {
-    padding: 0.75rem;
-    gap: 0.75rem;
-  }
-
-  .search-section {
-    gap: 0.5rem;
-    flex-direction: row;
-  }
-
-  .mappings-search {
-    --min-height: 40px;
-  }
-
-  .filter-button {
-    --min-height: 40px;
-    --padding-start: 0.75rem;
-    --padding-end: 0.75rem;
-  }
-
-  .action-buttons {
-    gap: 0.5rem;
-    justify-content: center;
-  }
-
-  .add-mapping-button {
-    --min-height: 40px;
-    --padding-start: 1rem;
-    --padding-end: 1rem;
-  }
-
   .mappings-table th,
   .mappings-table td {
     padding: 0.5rem 0.25rem;
     font-size: 0.75rem;
-  }
-
-
-  .district-name {
-    font-size: 0.9rem;
-  }
-
-  .district-description {
-    font-size: 0.7rem;
   }
 
   .actions-cell .action-buttons {

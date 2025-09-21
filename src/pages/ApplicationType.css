@@ -4,7 +4,7 @@
   --padding-start: 2rem;
   --padding-end: 2rem;
   --padding-top: 2rem;
-  --padding-bottom: 2rem;
+  --padding-bottom: 4rem;
   flex: 1;
   overflow-y: auto;
 }
@@ -175,7 +175,7 @@
     --padding-start: 1rem;
     --padding-end: 1rem;
     --padding-top: 1rem;
-    --padding-bottom: 1rem;
+    --padding-bottom: 5rem;
   }
   
   .page-header {

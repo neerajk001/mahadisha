@@ -16,6 +16,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
+import { Pagination } from '../components/shared';
 import { mockDataService } from '../../services/api';
 import type { Scheme, SchemeFilters } from '../../types';
 import './Schemes.css';
@@ -583,71 +584,18 @@ const Schemes: React.FC = () => {
                 </IonGrid>
               </div>
 
-              {/* Pagination Navigation */}
-              <div className="pagination-container">
-                <div className="pagination-info">
-                  <p>
-                    Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedSchemes.length)} of {filteredAndSortedSchemes.length} schemes
-                  </p>
-                </div>
-                
-                <div className="pagination-controls">
-                  <div className="page-numbers">
-                    {Array.from({ length: totalPages }, (_, index) => {
-                      const pageNumber = index + 1;
-                      const isCurrentPage = pageNumber === currentPage;
-                      const showPage = totalPages <= 5 || 
-                                      pageNumber === 1 || 
-                                      pageNumber === totalPages ||
-                                      Math.abs(pageNumber - currentPage) <= 1;
-                      
-                      if (!showPage && pageNumber !== 2 && pageNumber !== totalPages - 1) {
-                        return null;
-                      }
-                      
-                      if (!showPage) {
-                        return <span key={pageNumber} className="page-ellipsis">...</span>;
-                      }
-                      
-                      return (
-                        <IonButton
-                          key={pageNumber}
-                          fill={isCurrentPage ? "solid" : "clear"}
-                          size="small"
-                          className={`page-number ${isCurrentPage ? 'active' : ''}`}
-                          onClick={() => setCurrentPage(pageNumber)}
-                        >
-                          {pageNumber}
-                        </IonButton>
-                      );
-                    })}
-                  </div>
-                  
-                  <div className="pagination-nav-buttons">
-                    <IonButton 
-                      fill="outline" 
-                      disabled={currentPage === 1}
-                      onClick={handlePreviousPage}
-                      className="pagination-button"
-                      size="small"
-                      aria-label="Previous Page"
-                    >
-                      <IonIcon icon={chevronBackOutline} />
-                    </IonButton>
-                    
-                    <IonButton 
-                      fill="outline" 
-                      disabled={currentPage === totalPages}
-                      onClick={handleNextPage}
-                      className="pagination-button"
-                      size="small"
-                      aria-label="Next Page"
-                    >
-                      <IonIcon icon={chevronForwardOutline} />
-                    </IonButton>
-                  </div>
-                </div>
-              </div>
+              {/* Pagination */}
+              {filteredAndSortedSchemes.length > 0 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPreviousPage={handlePreviousPage}
+                  onNextPage={handleNextPage}
+                />
+              )}
+              
+              {/* Bottom spacing for pagination visibility */}
+              <div style={{ height: '3rem' }}></div>
             </div>
           </IonContent>
 
@@ -679,7 +627,7 @@ const Schemes: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent className="advanced-filters-content">
-          <div className="filters-container">
+          <div className="filters-container">   
             {/* Type Filter */}
             <div className="filter-section">
               <IonText color="primary">

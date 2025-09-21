@@ -17,6 +17,7 @@ import {
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
+import { Pagination } from '../admin/components/shared';
 import { mockDataService } from '../services/api';
 import type { WorkflowData } from '../types';
 import './Workflow.css';
@@ -122,6 +123,10 @@ const Workflow: React.FC = () => {
 
   // State for managing workflow data - EXACTLY LIKE MANAGEPAGES
   const [workflowData, setWorkflowData] = useState<WorkflowData[]>(() => mockDataService.getWorkflowData());
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(6);
 
   // Filter tasks based on search query
   const filteredTasks = useMemo(() => {
@@ -131,6 +136,25 @@ const Workflow: React.FC = () => {
       task.assignedTo.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [tasks, searchQuery]);
+
+  // Calculate pagination for workflows
+  const totalPages = Math.ceil(workflowData.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentWorkflows = workflowData.slice(startIndex, endIndex);
+
+  // Pagination handlers
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   // Calculate analytics data
   const calculateAnalytics = () => {
@@ -365,46 +389,58 @@ const Workflow: React.FC = () => {
               <div className="tab-content">
                 {/* Workflows Tab */}
                 {activeTab === 'workflows' && (
-              <div className="workflow-cards">
-                {workflowData.map((workflow, index) => (
-                  <IonCard key={workflow.id} className="workflow-card">
-                    <IonCardHeader className="workflow-card-header">
-                      <IonCardTitle className="workflow-title">{workflow.name}</IonCardTitle>
-                      <div className="organization-info">
-                        Organization: {workflow.organizationId}
-                      </div>
-                    </IonCardHeader>
-                    <IonCardContent className="workflow-card-content">
-                      <div className="task-section">
-                        <div className="task-item">
-                          <div className="task-name">{workflow.taskName}</div>
-                          <div className="task-details">
-                            <div className="task-id">Task ID: {workflow.taskId}</div>
-                            <div className="next-tasks">Next Tasks: {workflow.nextTasks}</div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="workflow-actions">
-                            <IonButton 
-                              fill="solid" 
-                              size="small"
-                              className="start-workflow-button"
-                              onClick={() => handleStartWorkflow(workflow)}
-                            >
-                              <IonIcon icon={playOutline} />
-                            </IonButton>
-                        <IonButton 
-                          fill="solid" 
-                          size="small"
-                          className="add-task-button"
-                              onClick={() => handleAddTask(workflow.id)}
-                        >
-                          <IonIcon icon={addOutline} />
-                        </IonButton>
-                      </div>
-                    </IonCardContent>
-                  </IonCard>
-                ))}
+                  <div>
+                    <div className="workflow-cards">
+                      {currentWorkflows.map((workflow, index) => (
+                        <IonCard key={workflow.id} className="workflow-card">
+                          <IonCardHeader className="workflow-card-header">
+                            <IonCardTitle className="workflow-title">{workflow.name}</IonCardTitle>
+                            <div className="organization-info">
+                              Organization: {workflow.organizationId}
+                            </div>
+                          </IonCardHeader>
+                          <IonCardContent className="workflow-card-content">
+                            <div className="task-section">
+                              <div className="task-item">
+                                <div className="task-name">{workflow.taskName}</div>
+                                <div className="task-details">
+                                  <div className="task-id">Task ID: {workflow.taskId}</div>
+                                  <div className="next-tasks">Next Tasks: {workflow.nextTasks}</div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="workflow-actions">
+                              <IonButton 
+                                fill="solid" 
+                                size="small"
+                                className="start-workflow-button"
+                                onClick={() => handleStartWorkflow(workflow)}
+                              >
+                                <IonIcon icon={playOutline} />
+                              </IonButton>
+                              <IonButton 
+                                fill="solid" 
+                                size="small"
+                                className="add-task-button"
+                                onClick={() => handleAddTask(workflow.id)}
+                              >
+                                <IonIcon icon={addOutline} />
+                              </IonButton>
+                            </div>
+                          </IonCardContent>
+                        </IonCard>
+                      ))}
+                    </div>
+                    
+                    {/* Pagination for Workflows */}
+                    {workflowData.length > 0 && (
+                      <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPreviousPage={handlePreviousPage}
+                        onNextPage={handleNextPage}
+                      />
+                    )}
                   </div>
                 )}
 

@@ -4,7 +4,7 @@
   --padding-start: 1.5rem;
   --padding-end: 1.5rem;
   --padding-top: 1.5rem;
-  --padding-bottom: 1.5rem;
+  --padding-bottom: 4rem;
   min-height: 100vh;
 }
 
@@ -645,6 +645,7 @@
   .manage-pages-content {
     --padding-start: 1rem;
     --padding-end: 1rem;
+    --padding-bottom: 5rem;
   }
 
   .pages-header {

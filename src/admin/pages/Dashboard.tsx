@@ -3,12 +3,8 @@ import {
   IonPage,
   IonContent,
   IonSplitPane,
-  IonFab,
-  IonFabButton,
-  IonIcon,
   IonSpinner
 } from '@ionic/react';
-import { addOutline } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 import FilterRow from '../components/dashboard/FilterRow';

@@ -18,6 +18,7 @@ import {
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
+import { Pagination } from '../admin/components/shared';
 import { mockDataService } from '../services/api';
 import type { RejectionMasterData } from '../types';
 import './RejectionMaster.css';
@@ -406,82 +407,14 @@ const RejectionMaster: React.FC = () => {
               )}
 
               {/* Pagination */}
-              <div className="pagination-container">
-                <div className="pagination-info">
-                  <p>
-                    Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedRejections.length)} of {filteredAndSortedRejections.length} rejections
-                  </p>
-                  <div className="items-per-page">
-                    <IonSelect
-                      value={itemsPerPage}
-                      placeholder="Items per page"
-                      onIonChange={(e) => {
-                        setItemsPerPage(e.detail.value);
-                        setCurrentPage(1); // Reset to first page when changing items per page
-                      }}
-                      interface="popover"
-                      style={{ minWidth: '120px' }}
-                    >
-                      <IonSelectOption value={5}>5 per page</IonSelectOption>
-                      <IonSelectOption value={10}>10 per page</IonSelectOption>
-                      <IonSelectOption value={20}>20 per page</IonSelectOption>
-                      <IonSelectOption value={50}>50 per page</IonSelectOption>
-                    </IonSelect>
-                  </div>
-                </div>
-                <div className="pagination-controls">
-                  <IonButton 
-                    fill="clear" 
-                    disabled={currentPage === 1}
-                    onClick={handlePreviousPage}
-                    className="pagination-button"
-                  >
-                    <IonIcon icon={chevronBackOutline} />
-                    Previous
-                  </IonButton>
-                  
-                  {/* Page numbers */}
-                  <div className="page-numbers">
-                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                      let pageNum;
-                      if (totalPages <= 5) {
-                        pageNum = i + 1;
-                      } else if (currentPage <= 3) {
-                        pageNum = i + 1;
-                      } else if (currentPage >= totalPages - 2) {
-                        pageNum = totalPages - 4 + i;
-                      } else {
-                        pageNum = currentPage - 2 + i;
-                      }
-                      
-                      return (
-                        <IonButton
-                          key={pageNum}
-                          fill={currentPage === pageNum ? "solid" : "clear"}
-                          size="small"
-                          onClick={() => setCurrentPage(pageNum)}
-                          className="page-number-button"
-                        >
-                          {pageNum}
-                        </IonButton>
-                      );
-                    })}
-                  </div>
-                  
-                  <span className="page-info">
-                    Page {currentPage} of {totalPages}
-                  </span>
-                  <IonButton 
-                    fill="clear" 
-                    disabled={currentPage === totalPages}
-                    onClick={handleNextPage}
-                    className="pagination-button"
-                  >
-                    Next
-                    <IonIcon icon={chevronForwardOutline} />
-                  </IonButton>
-                </div>
-              </div>
+              {filteredAndSortedRejections.length > 0 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPreviousPage={handlePreviousPage}
+                  onNextPage={handleNextPage}
+                />
+              )}
             </div>
           </IonContent>
         </div>

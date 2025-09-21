@@ -5,11 +5,28 @@
   --padding-end: 1.5rem;
   --padding-top: 1.5rem;
   --padding-bottom: 1.5rem;
+  min-height: 100vh;
 }
 
 .branches-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
+  position: relative;
+}
+
+.branches-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* Header Section */
@@ -35,21 +52,39 @@
 .branches-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  flex-wrap: nowrap;
-  width: 100%;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+  padding: 1.5rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+  border-radius: 20px;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.1),
+    0 5px 15px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .branches-search {
   flex: 1;
-  min-width: 250px;
-  max-width: 500px;
-  --background: var(--color-bg-primary);
-  --border-radius: 8px;
-  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  --placeholder-color: #999;
-  --color: var(--color-text-primary);
+  min-width: 350px;
+  --background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%);
+  --border-radius: 15px;
+  --box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  --color: #2d3748;
+  --placeholder-color: #718096;
+  --icon-color: #667eea;
+  border: 2px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+}
+
+.branches-search:focus-within {
+  border: 2px solid #667eea;
+  --box-shadow: 0 12px 35px rgba(102, 126, 234, 0.2);
+  transform: translateY(-2px);
 }
 
 .action-buttons-group {
@@ -292,42 +327,92 @@
   transform: scale(1.05);
 }
 
-/* Pagination */
+/* Enhanced Pagination */
 .pagination-container {
-  display: flex;
-  justify-content: space-between;
+  display: flex !important;
+  justify-content: center;
   align-items: center;
-  padding: 1rem;
-  background: var(--color-bg-primary);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+  border-radius: 20px;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.1),
+    0 5px 15px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.pagination-info {
+  text-align: center;
+  order: 2;
 }
 
 .pagination-info p {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  font-size: 1rem;
+  color: #4a5568;
   margin: 0;
+  font-weight: 600;
 }
 
 .pagination-controls {
   display: flex;
-  align-items: center;
   gap: 1rem;
 }
 
+.pagination-controls:first-child {
+  order: 1;
+}
+
+.pagination-controls:last-child {
+  order: 3;
+}
+
 .pagination-button {
-  --color: var(--color-primary);
-  --background: transparent;
-  --border-radius: 6px;
-  --padding-start: 0.75rem;
-  --padding-end: 0.75rem;
-  font-weight: 500;
-  min-width: 100px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 50px !important;
+  height: 50px !important;
+  border: none !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+  font-size: 1.2rem !important;
+  font-weight: bold !important;
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  --color: white !important;
+  --border-radius: 50% !important;
+  --box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+  --padding: 0 !important;
+  --padding-start: 0 !important;
+  --padding-end: 0 !important;
+  --padding-top: 0 !important;
+  --padding-bottom: 0 !important;
+}
+
+.pagination-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
 }
 
 .pagination-button:disabled {
-  --color: var(--color-text-disabled);
   opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.pagination-button ion-icon {
+  font-size: 1.5rem;
 }
 
 .page-info {
@@ -352,37 +437,89 @@
   }
   
   .branches-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .branches-actions {
-    flex-direction: column;
-    align-items: stretch;
+    grid-template-columns: 1fr;
     gap: 1rem;
   }
 
+  /* Mobile Card Actions - Icon Only */
+  .branch-card-actions {
+    gap: 0.6rem;
+    padding: 1rem 0.75rem 0.75rem 0.75rem;
+    justify-content: center;
+    margin-top: 0.75rem;
+  }
+
+  .branch-card-button {
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+    --padding-top: 0.5rem;
+    --padding-bottom: 0.5rem;
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
+    flex: none;
+    max-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Hide text content but keep icons visible */
+  .branch-card-button .button-inner {
+    flex-direction: column !important;
+    justify-content: center !important;
+  }
+
+  .branch-card-button .button-inner > *:not(ion-icon) {
+    display: none !important;
+  }
+
+  .branch-card-button ion-icon {
+    font-size: 1rem !important;
+    margin: 0 !important;
+  }
+
+  .branches-actions {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 1rem !important;
+    justify-content: space-between !important;
+  }
+
   .branches-search {
-    min-width: auto;
-    max-width: 100%;
+    flex: 1 !important;
+    min-width: auto !important;
+    max-width: none !important;
   }
 
   .action-buttons-group {
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
-    width: 100%;
-    justify-content: stretch;
+    flex-shrink: 0;
+    justify-content: flex-end;
   }
 
-  .view-toggle-button,
+  .view-mode-button,
   .add-branch-button {
-    flex: 1;
-    min-width: 0;
-    font-size: 0.9rem;
-    height: 40px;
-    --padding-start: 0.75rem;
-    --padding-end: 0.75rem;
+    min-width: 48px !important;
+    width: 48px !important;
+    height: 48px !important;
+    flex-shrink: 0 !important;
+    --padding-start: 0 !important;
+    --padding-end: 0 !important;
+  }
+
+  /* Hide text on mobile, show only icons */
+  .view-mode-button .button-inner > *:not(ion-icon),
+  .add-branch-button .button-inner > *:not(ion-icon) {
+    display: none !important;
+  }
+
+  .view-mode-button ion-icon,
+  .add-branch-button ion-icon {
+    font-size: 1.3rem !important;
+    margin: 0 !important;
   }
 
   .branches-table th,
@@ -431,17 +568,48 @@
     font-size: 0.9rem;
   }
 
+  /* Single column for very small screens */
+  .branches-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .branch-card-button {
+    min-width: 32px;
+    width: 32px;
+    height: 32px;
+    max-width: 32px;
+  }
+
+  .branch-card-button ion-icon {
+    font-size: 0.9rem !important;
+  }
+
   .action-buttons-group {
-    flex-direction: column;
+    flex-direction: row !important;
     gap: 0.5rem;
   }
 
-  .view-toggle-button,
+  .view-mode-button,
   .add-branch-button {
-    width: 100%;
-    min-width: auto;
+    width: 48px !important;
+    min-width: 48px !important;
     font-size: 0.85rem;
-    height: 38px;
+    height: 48px !important;
+    --padding-start: 0 !important;
+    --padding-end: 0 !important;
+  }
+
+  /* Ensure text is hidden on smaller screens too */
+  .view-mode-button .button-inner > *:not(ion-icon),
+  .add-branch-button .button-inner > *:not(ion-icon) {
+    display: none !important;
+  }
+
+  .view-mode-button ion-icon,
+  .add-branch-button ion-icon {
+    font-size: 1.2rem !important;
+    margin: 0 !important;
   }
 
   .branches-table th,
@@ -706,7 +874,7 @@
 /* Grid View Styles */
 .branches-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
   margin-bottom: 2rem;
   position: relative;
@@ -804,7 +972,7 @@
 
 /* Card Content */
 .branch-card-content {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .branch-card-meta {
@@ -831,19 +999,30 @@
 .branch-card-actions {
   display: flex;
   gap: 0.75rem;
-  justify-content: space-evenly;
-  padding: 0 0.5rem;
+  justify-content: center;
+  align-items: center;
+  padding: 1.25rem 1rem 0.75rem 1rem;
+  border-top: 2px solid rgba(102, 126, 234, 0.1);
+  margin-top: 1rem;
 }
 
 .branch-card-button {
+  flex: 1;
   --border-radius: 12px;
-  --padding-start: 1rem;
-  --padding-end: 1rem;
-  --padding-top: 0.5rem;
-  --padding-bottom: 0.5rem;
+  --padding-start: 0.8rem;
+  --padding-end: 0.8rem;
+  --padding-top: 0.7rem;
+  --padding-bottom: 0.7rem;
   font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  max-width: 75px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .branch-card-button.view {

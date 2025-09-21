@@ -30,6 +30,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
+import { Pagination } from '../admin/components/shared';
 // Import RequestCard component
 import RequestCard from '../components/requests/RequestCardNew';
 import RequestList from '../components/requests/RequestList';
@@ -58,6 +59,10 @@ const NewRequests: React.FC = () => {
   const [emiSchedule, setEmiSchedule] = useState<EMISchedule[]>([]);
   const [showStatusLogsModal, setShowStatusLogsModal] = useState(false);
   const [selectedRequestForStatusLogs, setSelectedRequestForStatusLogs] = useState<LoanRequest | null>(null);
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   const searchParams: RequestSearchParams = useMemo(() => ({
     query: searchQuery,
@@ -79,6 +84,25 @@ const NewRequests: React.FC = () => {
     downloadPDF,
     getRepaymentSchedule
   } = useLoanRequests(searchParams);
+
+  // Calculate pagination
+  const totalPages = Math.ceil((requests?.length || 0) / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentRequests = requests?.slice(startIndex, endIndex) || [];
+
+  // Pagination handlers
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   const handleStatusChange = (requestId: string, newStatus: string) => {
     setSelectedRequest(requestId);
@@ -298,7 +322,7 @@ const NewRequests: React.FC = () => {
                     
                     {viewMode === 'card' ? (
                       <RequestCard
-                        requests={requests || []}
+                        requests={currentRequests}
                         onStatusChange={handleStatusChange}
                         onViewDetails={handleViewDetails}
                         onSendEmail={handleSendEmail}
@@ -308,7 +332,7 @@ const NewRequests: React.FC = () => {
                       />
                     ) : (
                       <RequestList
-                        requests={requests || []}
+                        requests={currentRequests}
                         onStatusChange={handleStatusChange}
                         onViewDetails={handleViewDetails}
                         onSendEmail={handleSendEmail}
@@ -316,6 +340,19 @@ const NewRequests: React.FC = () => {
                         onRepayment={handleRepayment}
                       />
                     )}
+
+                    {/* Pagination */}
+                    {(requests?.length || 0) > 0 && (
+                      <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPreviousPage={handlePreviousPage}
+                        onNextPage={handleNextPage}
+                      />
+                    )}
+                    
+                    {/* Bottom spacing for pagination visibility */}
+                    <div style={{ height: '3rem' }}></div>
                   </>
                 )}
               </div>
