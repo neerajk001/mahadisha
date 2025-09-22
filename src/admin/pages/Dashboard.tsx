@@ -3,7 +3,10 @@ import {
   IonPage,
   IonContent,
   IonSplitPane,
-  IonSpinner
+  IonSpinner,
+  IonFab,
+  IonFabButton,
+  IonIcon
 } from '@ionic/react';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
@@ -13,6 +16,7 @@ import ChartsSection from '../components/dashboard/ChartsSection';
 import { useDashboard } from '../hooks/useDashboard';
 import { ActiveFilters } from '../../types';
 import './Dashboard.css';
+import { addOutline } from 'ionicons/icons';
 
 const Dashboard: React.FC = () => {
   const [filters, setFilters] = useState<ActiveFilters>({
