@@ -106,8 +106,8 @@
 }
 
 .castes-table th {
-  background: var(--color-bg-secondary);
-  color: var(--color-text-primary);
+  background: #f1f3f4 !important;
+  color: #374151 !important;
   font-weight: 600;
   font-size: 0.9rem;
   padding: 1rem;

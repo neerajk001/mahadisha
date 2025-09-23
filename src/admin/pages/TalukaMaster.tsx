@@ -19,7 +19,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 import ActionDropdown from '../components/common/ActionDropdown';
 import { Pagination } from '../components/shared';
-import { MasterCard, MasterControls, MasterHeader } from '../../components/shared';
+import { MasterCard, MasterControls, MasterHeader, ScrollableTableContainer } from '../../components/shared';
 import { mockDataService } from '../../services/api';
 import type { TalukaData } from '../../types';
 import './TalukaMaster.css';
@@ -243,9 +243,8 @@ const TalukaMaster: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <IonCard className="pages-table-card">
-                  <IonCardContent className="table-container">
-                    <table className="pages-table">
+                <ScrollableTableContainer cardClassName="pages-table-card">
+                  <table className="pages-table">
                       <thead>
                         <tr>
                           <th>
@@ -307,8 +306,7 @@ const TalukaMaster: React.FC = () => {
                         ))}
                       </tbody>
                     </table>
-                  </IonCardContent>
-                </IonCard>
+                </ScrollableTableContainer>
               )}
 
               {/* Pagination */}

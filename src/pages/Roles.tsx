@@ -15,7 +15,7 @@ import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { Pagination } from '../admin/components/shared';
-import { RBACControls, RBACHeader } from '../components/shared';
+import { RBACControls, RBACHeader, ScrollableTableContainer } from '../components/shared';
 import { mockDataService } from '../services/api';
 import type { RolesData } from '../types';
 import './Roles.css';
@@ -223,9 +223,8 @@ const Roles: React.FC = () => {
               />
 
               {/* Roles Table */}
-              <IonCard className="roles-table-card">
-                <IonCardContent className="table-container">
-                  <table className="roles-table">
+              <ScrollableTableContainer cardClassName="roles-table-card">
+                <table className="roles-table">
                     <thead>
                       <tr>
                         <th>
@@ -261,8 +260,7 @@ const Roles: React.FC = () => {
                       ))}
                     </tbody>
                   </table>
-                </IonCardContent>
-              </IonCard>
+              </ScrollableTableContainer>
 
               {/* Pagination */}
               {filteredRoles.length > 0 && (

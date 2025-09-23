@@ -18,7 +18,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 import ActionDropdown from '../components/common/ActionDropdown';
 import { Pagination } from '../components/shared';
-import { MasterCard, MasterControls, MasterHeader } from '../../components/shared';
+import { MasterCard, MasterControls, MasterHeader, ScrollableTableContainer } from '../../components/shared';
 import { mockDataService } from '../../services/api';
 import type { ActionMasterData } from '../../types';
 import './ActionMasters.css';
@@ -275,81 +275,79 @@ const ActionMasters: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <IonCard className="pages-table-card">
-                  <IonCardContent className="table-container">
-                    <table className="pages-table">
-                      <thead>
-                        <tr>
-                          <th>
-                            <div className="table-header">
-                              <span>Name</span>
-                              <IonIcon icon={searchOutline} className="filter-icon" />
+                <ScrollableTableContainer cardClassName="pages-table-card">
+                  <table className="pages-table">
+                    <thead>
+                      <tr>
+                        <th>
+                          <div className="table-header">
+                            <span>Name</span>
+                            <IonIcon icon={searchOutline} className="filter-icon" />
+                          </div>
+                        </th>
+                        <th>
+                          <div className="table-header">
+                            <span>Function Name</span>
+                            <IonIcon icon={searchOutline} className="filter-icon" />
+                          </div>
+                        </th>
+                        <th>
+                          <div className="table-header">
+                            <span>Priority</span>
+                            <IonIcon icon={searchOutline} className="filter-icon" />
+                          </div>
+                        </th>
+                        <th>
+                          <div className="table-header">
+                            <span>Icon</span>
+                            <IonIcon icon={searchOutline} className="filter-icon" />
+                          </div>
+                        </th>
+                        <th>
+                          <div className="table-header">
+                            <span>Actions</span>
+                            <IonIcon icon={searchOutline} className="filter-icon" />
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {currentActions.map((action, index) => (
+                        <tr key={action.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
+                          <td className="name-cell">
+                            <div className="page-name">
+                              <IonIcon icon={settingsOutline} className="page-icon" />
+                              <span>{action.name}</span>
                             </div>
-                          </th>
-                          <th>
-                            <div className="table-header">
-                              <span>Function Name</span>
-                              <IonIcon icon={searchOutline} className="filter-icon" />
+                          </td>
+                          <td className="url-cell">
+                            <code className="url-code">{action.functionName}</code>
+                          </td>
+                          <td className="url-cell">
+                            <code className="url-code">{action.priority}</code>
+                          </td>
+                          <td className="icon-cell">
+                            <div className="icon-display">
+                              <IonIcon icon={settingsOutline} className="display-icon" />
+                              <span className="icon-name">settingsOutline</span>
                             </div>
-                          </th>
-                          <th>
-                            <div className="table-header">
-                              <span>Priority</span>
-                              <IonIcon icon={searchOutline} className="filter-icon" />
+                          </td>
+                          <td className="actions-cell">
+                            <div className="action-buttons">
+                              <ActionDropdown
+                                itemId={action.id}
+                                onView={() => handleView(action)}
+                                onEdit={() => handleEdit(action.id)}
+                                onDelete={() => handleDelete(action.id)}
+                                size="small"
+                              />
                             </div>
-                          </th>
-                          <th>
-                            <div className="table-header">
-                              <span>Icon</span>
-                              <IonIcon icon={searchOutline} className="filter-icon" />
-                            </div>
-                          </th>
-                          <th>
-                            <div className="table-header">
-                              <span>Actions</span>
-                              <IonIcon icon={searchOutline} className="filter-icon" />
-                            </div>
-                          </th>
+                          </td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {currentActions.map((action, index) => (
-                          <tr key={action.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
-                            <td className="name-cell">
-                              <div className="page-name">
-                                <IonIcon icon={settingsOutline} className="page-icon" />
-                                <span>{action.name}</span>
-                              </div>
-                            </td>
-                            <td className="url-cell">
-                              <code className="url-code">{action.functionName}</code>
-                            </td>
-                            <td className="url-cell">
-                              <code className="url-code">{action.priority}</code>
-                            </td>
-                            <td className="icon-cell">
-                              <div className="icon-display">
-                                <IonIcon icon={settingsOutline} className="display-icon" />
-                                <span className="icon-name">settingsOutline</span>
-                              </div>
-                            </td>
-                            <td className="actions-cell">
-                              <div className="action-buttons">
-                                <ActionDropdown
-                                  itemId={action.id}
-                                  onView={() => handleView(action)}
-                                  onEdit={() => handleEdit(action.id)}
-                                  onDelete={() => handleDelete(action.id)}
-                                  size="small"
-                                />
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </IonCardContent>
-                </IonCard>
+                      ))}
+                    </tbody>
+                  </table>
+                </ScrollableTableContainer>
               )}
 
               {/* Pagination */}

@@ -15,7 +15,7 @@ import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { Pagination } from '../admin/components/shared';
-import { RBACControls, RBACHeader } from '../components/shared';
+import { RBACControls, RBACHeader, ScrollableTableContainer } from '../components/shared';
 import { mockDataService } from '../services/api';
 import type { DatabaseAccessData } from '../types';
 import './DatabaseAccess.css';
@@ -228,9 +228,8 @@ const DatabaseAccess: React.FC = () => {
               />
 
               {/* Access Table */}
-              <IonCard className="access-table-card">
-                <IonCardContent className="table-container">
-                  <table className="access-table">
+              <ScrollableTableContainer cardClassName="access-table-card">
+                <table className="access-table">
                     <thead>
                       <tr>
                         <th>
@@ -275,8 +274,7 @@ const DatabaseAccess: React.FC = () => {
                       ))}
                     </tbody>
                   </table>
-                </IonCardContent>
-              </IonCard>
+              </ScrollableTableContainer>
 
               {/* Pagination */}
               {filteredAccess.length > 0 && (

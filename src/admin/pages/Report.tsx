@@ -56,7 +56,6 @@ import {
   chevronDownOutline,
   chevronUpOutline,
   closeOutline,
-  eyeOutline,
   shareOutline,
   addOutline
 } from 'ionicons/icons';
@@ -502,7 +501,6 @@ const Report: React.FC = () => {
     }
   ];
 
-  const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
   const [expandedRegions, setExpandedRegions] = useState<Set<string>>(new Set(['PUNE REGION']));
   
   // Refs for date inputs
@@ -1442,29 +1440,7 @@ const Report: React.FC = () => {
             </div>
 
             {/* View Mode Toggle */}
-            <div className="view-mode-toggle">
-              <IonButton
-                fill={viewMode === 'table' ? 'solid' : 'outline'}
-                size="small"
-                onClick={() => setViewMode('table')}
-              >
-                <IonIcon icon={barChartOutline} slot="start" />
-                Table View
-              </IonButton>
-              <IonButton
-                fill={viewMode === 'cards' ? 'solid' : 'outline'}
-                size="small"
-                onClick={() => setViewMode('cards')}
-              >
-                <IonIcon icon={eyeOutline} slot="start" />
-                Card View
-              </IonButton>
-            </div>
 
-            {/* Debug Info */}
-            <div style={{padding: '10px', background: '#f0f0f0', margin: '10px 0', border: '2px solid red'}}>
-              <strong>🔍 DEBUG INFO:</strong> Active Tab = "{activeTab}" | Monthly Data Length = {monthlyProgressData.length} | Activity Data Length = {activityWiseData.length} | Due Recovery Data Length = {dueRecoveryData.length} | Comparative Data Length = {comparativeReportData.length} | Regional Data Length = {regionalReportData.length} | Active Scheme Tab = "{activeSchemeTab}"
-            </div>
 
             {/* Report Tables/Cards */}
             <div className="report-data-container">
@@ -1841,7 +1817,7 @@ const Report: React.FC = () => {
                     </table>
                   </div>
                 </div>
-              ) : activeTab === 'bankwise' && viewMode === 'table' ? (
+              ) : activeTab === 'bankwise' ? (
                 // Bankwise Table View
                 regionReports.map((region) => (
                   <div key={region.regionName} className="region-report-section">
@@ -1959,67 +1935,7 @@ const Report: React.FC = () => {
                     )}
                   </div>
                 ))
-              ) : (
-                // Card View
-                <IonGrid>
-                  <IonRow>
-                    {regionReports.map((region) => (
-                      <IonCol key={region.regionName} size="12">
-                        <IonCard className="region-card">
-                          <IonCardHeader>
-                            <IonCardTitle>{region.regionName}</IonCardTitle>
-                            <div className="region-meta">
-                              <IonChip color="primary">
-                                <IonLabel>{region.banks.length} Banks</IonLabel>
-                              </IonChip>
-                              <IonChip color={region.performance >= 80 ? 'success' : 'warning'}>
-                                <IonLabel>{region.performance}% Performance</IonLabel>
-                              </IonChip>
-                            </div>
-                          </IonCardHeader>
-                          <IonCardContent>
-                            <IonGrid>
-                              <IonRow>
-                                {region.banks.map((bank) => (
-                                  <IonCol key={bank.srNo} size="12" size-md="6" size-lg="4">
-                                    <div className="bank-card">
-                                      <div className="bank-card-header">
-                                        <h4>{bank.bankName}</h4>
-                                        <IonBadge color="primary">#{bank.srNo}</IonBadge>
-                                      </div>
-                                      <div className="bank-metrics">
-                                        <div className="metric">
-                                          <span className="metric-label">Target</span>
-                                          <span className="metric-value">{formatCurrency(bank.target.fin)}</span>
-                                        </div>
-                                        <div className="metric">
-                                          <span className="metric-label">Disbursed</span>
-                                          <span className="metric-value success">{formatCurrency(bank.loansDisbursed.fin)}</span>
-                                        </div>
-                                        <div className="metric">
-                                          <span className="metric-label">Pending</span>
-                                          <span className="metric-value warning">{formatNumber(bank.proposalsPending.phy)}</span>
-                                        </div>
-                                        <div className="metric">
-                                          <span className="metric-label">Achievement</span>
-                                          <IonProgressBar 
-                                            value={(bank.loansDisbursed.fin / bank.target.fin)} 
-                                            color="success"
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </IonCol>
-                                ))}
-                              </IonRow>
-                            </IonGrid>
-                          </IonCardContent>
-                        </IonCard>
-                      </IonCol>
-                    ))}
-                  </IonRow>
-                </IonGrid>
-              )}
+              ) : null}
             </div>
           </IonContent>
 

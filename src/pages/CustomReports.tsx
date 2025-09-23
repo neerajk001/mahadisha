@@ -17,6 +17,7 @@ import {
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
+import { ScrollableTableContainer } from '../components/shared';
 import { mockDataService } from '../services/api';
 import type { ReportData } from '../types';
 import './CustomReports.css';
@@ -319,7 +320,7 @@ const CustomReports: React.FC = () => {
                       </IonButton>
                     </div>
                     
-                    <div className="table-container">
+                    <ScrollableTableContainer cardClassName="report-table-card">
                       <table className="report-table">
                         <thead>
                           <tr>
@@ -396,7 +397,7 @@ const CustomReports: React.FC = () => {
                           ))}
                         </tbody>
                       </table>
-                    </div>
+                    </ScrollableTableContainer>
                   </IonCardContent>
                 )}
               </IonCard>

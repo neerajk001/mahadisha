@@ -1,0 +1,347 @@
+/* Scrollable Table Container Component Styles */
+
+.scrollable-table-card {
+  margin: 0; /* Default no margins, will be set by media queries */
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Table Container */
+.scrollable-table-card .table-container {
+  padding: 0 1rem !important;
+  overflow-x: scroll !important;
+  overflow-y: visible !important;
+  -webkit-overflow-scrolling: touch !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  position: relative !important;
+  /* Ensure scrolling works on mobile */
+  touch-action: pan-x !important;
+  overscroll-behavior-x: contain !important;
+}
+
+/* Mobile Table Wrapper */
+.scrollable-table-card .mobile-table-wrapper {
+  width: 100% !important;
+  overflow-x: scroll !important;
+  overflow-y: visible !important;
+  -webkit-overflow-scrolling: touch !important;
+  position: relative !important;
+  min-height: fit-content !important;
+  padding: 0 1rem !important;
+  /* Force horizontal scrolling */
+  touch-action: pan-x !important;
+  overscroll-behavior-x: contain !important;
+}
+
+
+/* Custom Scrollbars */
+.table-container::-webkit-scrollbar,
+.mobile-table-wrapper::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.table-container::-webkit-scrollbar-track,
+.mobile-table-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb,
+.mobile-table-wrapper::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 4px;
+  opacity: 0.7;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover,
+.mobile-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+  opacity: 1;
+}
+
+/* Table Styles */
+.scrollable-table-card .table-container table,
+.scrollable-table-card .mobile-table-wrapper table {
+  min-width: 800px !important;
+  width: max-content !important;
+  table-layout: auto !important;
+  border-collapse: collapse !important;
+  font-size: 0.9rem !important;
+  /* Ensure table doesn't shrink */
+  flex-shrink: 0 !important;
+}
+
+.table-container th,
+.table-container td,
+.mobile-table-wrapper th,
+.mobile-table-wrapper td {
+  white-space: nowrap;
+  min-width: 120px;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.table-container th,
+.mobile-table-wrapper th {
+  background: #f1f3f4 !important;
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Override any blue gradient backgrounds on table headers */
+.scrollable-table-card .table-container th,
+.scrollable-table-card .mobile-table-wrapper th,
+.scrollable-table-card table th,
+.scrollable-table-card th,
+.table-container th,
+.mobile-table-wrapper th,
+table th {
+  background: #f1f3f4 !important;
+  background-image: none !important;
+  background-color: #f1f3f4 !important;
+  color: #374151 !important;
+}
+
+/* Additional overrides for any remaining blue backgrounds */
+.pages-table th,
+.branches-table th,
+.castes-table th,
+.talukas-table th,
+.actions-table th,
+.organizations-table th,
+.statuses-table th,
+.partners-table th,
+.status-mappings-table th,
+.rejections-table th,
+.application-types-table th {
+  background: #f1f3f4 !important;
+  background-image: none !important;
+  background-color: #f1f3f4 !important;
+  color: #374151 !important;
+}
+
+.table-container td,
+.mobile-table-wrapper td {
+  color: #4b5563;
+  font-size: 0.85rem;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 0.25rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  min-width: 120px;
+  padding: 0.25rem;
+}
+
+.action-buttons ion-button {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+}
+
+/* Desktop Styles */
+@media (min-width: 769px) {
+  .scrollable-table-card {
+    margin: 0 0.5rem 1.5rem 0.5rem !important; /* More centered desktop margins */
+  }
+  
+  .scrollable-table-card .table-container,
+  .scrollable-table-card .mobile-table-wrapper {
+    padding: 1rem !important; /* Desktop padding */
+    overflow-x: auto !important; /* Auto scroll on desktop */
+    overflow-y: visible !important;
+    width: 100% !important;
+    position: relative !important;
+  }
+
+  .scrollable-table-card .table-container table,
+  .scrollable-table-card .mobile-table-wrapper table {
+    width: 100% !important; /* Full width on desktop */
+    min-width: auto !important; /* No minimum width on desktop */
+    font-size: 0.9rem !important;
+  }
+
+  .table-container th,
+  .table-container td,
+  .mobile-table-wrapper th,
+  .mobile-table-wrapper td {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    white-space: normal;
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .scrollable-table-card {
+    overflow: visible !important;
+    margin: 0 0.5rem 1.5rem 0.5rem !important; /* Balanced mobile margins */
+  }
+  
+  .scrollable-table-card .table-container,
+  .scrollable-table-card .mobile-table-wrapper {
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: #9ca3af #f1f1f1 !important;
+    /* Force horizontal scrolling on mobile */
+    overflow-x: scroll !important;
+    overflow-y: visible !important;
+    /* Prevent vertical scrolling interference */
+    touch-action: pan-x !important;
+    overscroll-behavior-x: contain !important;
+    overscroll-behavior-y: auto !important;
+    /* Ensure proper width */
+    width: 100% !important;
+    min-width: 100% !important;
+    /* Add left and right padding for mobile */
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  .scrollable-table-card .table-container table,
+  .scrollable-table-card .mobile-table-wrapper table {
+    font-size: 0.85rem !important;
+    line-height: 1.4 !important;
+    /* Ensure table maintains its width */
+    min-width: 800px !important;
+    width: max-content !important;
+    flex-shrink: 0 !important;
+  }
+
+  .table-container th,
+  .table-container td,
+  .mobile-table-wrapper th,
+  .mobile-table-wrapper td {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.8rem;
+  }
+
+  .action-buttons {
+    gap: 0.5rem;
+    padding: 0.25rem;
+  }
+
+  .action-buttons ion-button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Hide text in action buttons on mobile, show only icons */
+  .action-buttons ion-button span {
+    display: none !important;
+  }
+  .action-buttons ion-button {
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+    min-width: 44px;
+    width: 44px;
+  }
+
+}
+
+@media (max-width: 480px) {
+  .scrollable-table-card {
+    margin: 0 0.25rem 1.5rem 0.25rem !important; /* Balanced small mobile margins */
+  }
+  
+  .table-container th,
+  .table-container td,
+  .mobile-table-wrapper th,
+  .mobile-table-wrapper td {
+    padding: 0.4rem 0.2rem;
+    font-size: 0.75rem;
+    min-width: 100px;
+  }
+
+  .action-buttons ion-button {
+    min-height: 40px;
+    min-width: 40px;
+  }
+
+  /* Hide text in action buttons on small mobile, show only icons */
+  .action-buttons ion-button span {
+    display: none !important;
+  }
+  .action-buttons ion-button {
+    --padding-start: 0.4rem;
+    --padding-end: 0.4rem;
+    min-width: 40px;
+    width: 40px;
+  }
+}
+
+/* Loading and Empty States */
+.loading-container,
+.no-data-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #6b7280;
+}
+
+.loading-container ion-spinner {
+  margin-bottom: 1rem;
+}
+
+.no-data-container p {
+  margin: 0;
+  font-size: 1rem;
+  color: #9ca3af;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scrollable-table-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* FINAL OVERRIDE - Remove all blue backgrounds from table headers */
+* th,
+th,
+table th,
+.pages-table th,
+.branches-table th,
+.castes-table th,
+.talukas-table th,
+.actions-table th,
+.organizations-table th,
+.statuses-table th,
+.partners-table th,
+.status-mappings-table th,
+.rejections-table th,
+.application-types-table th {
+  background: #f1f3f4 !important;
+  background-image: none !important;
+  background-color: #f1f3f4 !important;
+  color: #374151 !important;
+}

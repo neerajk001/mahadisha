@@ -18,7 +18,7 @@ import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { Pagination } from '../admin/components/shared';
-import { MasterCard, MasterControls, MasterHeader } from '../components/shared';
+import { MasterCard, MasterControls, MasterHeader, ScrollableTableContainer } from '../components/shared';
 import { mockDataService } from '../services/api';
 import type { PageData } from '../types';
 import './ManagePages.css';
@@ -259,72 +259,70 @@ const ManagePages: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <IonCard className="pages-table-card">
-                  <IonCardContent className="table-container">
-                    <table className="pages-table">
-                      <thead>
-                        <tr>
-                          <th>
-                            <div className="table-header">
-                              <span>Name</span>
-                              <IonIcon icon={searchOutline} className="filter-icon" />
+                <ScrollableTableContainer cardClassName="pages-table-card">
+                  <table className="pages-table">
+                    <thead>
+                      <tr>
+                        <th>
+                          <div className="table-header">
+                            <span>Name</span>
+                            <IonIcon icon={searchOutline} className="filter-icon" />
+                          </div>
+                        </th>
+                        <th>
+                          <div className="table-header">
+                            <span>URL</span>
+                            <IonIcon icon={searchOutline} className="filter-icon" />
+                          </div>
+                        </th>
+                        <th>
+                          <div className="table-header">
+                            <span>Icon</span>
+                            <IonIcon icon={searchOutline} className="filter-icon" />
+                          </div>
+                        </th>
+                        <th>
+                          <div className="table-header">
+                            <span>Actions</span>
+                            <IonIcon icon={searchOutline} className="filter-icon" />
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {currentPages.map((page, index) => (
+                        <tr key={page.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
+                          <td className="name-cell">
+                            <div className="page-name">
+                              <IonIcon icon={getIconComponent(page.icon)} className="page-icon" />
+                              <span>{page.name}</span>
                             </div>
-                          </th>
-                          <th>
-                            <div className="table-header">
-                              <span>URL</span>
-                              <IonIcon icon={searchOutline} className="filter-icon" />
+                          </td>
+                          <td className="url-cell">
+                            <code className="url-code">{page.url}</code>
+                          </td>
+                          <td className="icon-cell">
+                            <div className="icon-display">
+                              <IonIcon icon={getIconComponent(page.icon)} className="display-icon" />
+                              <span className="icon-name">{page.icon}</span>
                             </div>
-                          </th>
-                          <th>
-                            <div className="table-header">
-                              <span>Icon</span>
-                              <IonIcon icon={searchOutline} className="filter-icon" />
+                          </td>
+                          <td className="actions-cell">
+                            <div className="action-buttons">
+                              <ActionDropdown
+                                itemId={page.id}
+                                onView={() => handleView(page)}
+                                onEdit={() => handleEdit(page)}
+                                onDelete={() => handleDelete(page.id)}
+                                size="small"
+                              />
                             </div>
-                          </th>
-                          <th>
-                            <div className="table-header">
-                              <span>Actions</span>
-                              <IonIcon icon={searchOutline} className="filter-icon" />
-                            </div>
-                          </th>
+                          </td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {currentPages.map((page, index) => (
-                          <tr key={page.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
-                            <td className="name-cell">
-                              <div className="page-name">
-                                <IonIcon icon={getIconComponent(page.icon)} className="page-icon" />
-                                <span>{page.name}</span>
-                              </div>
-                            </td>
-                            <td className="url-cell">
-                              <code className="url-code">{page.url}</code>
-                            </td>
-                            <td className="icon-cell">
-                              <div className="icon-display">
-                                <IonIcon icon={getIconComponent(page.icon)} className="display-icon" />
-                                <span className="icon-name">{page.icon}</span>
-                              </div>
-                            </td>
-                            <td className="actions-cell">
-                              <div className="action-buttons">
-                                <ActionDropdown
-                                  itemId={page.id}
-                                  onView={() => handleView(page)}
-                                  onEdit={() => handleEdit(page)}
-                                  onDelete={() => handleDelete(page.id)}
-                                  size="small"
-                                />
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </IonCardContent>
-                </IonCard>
+                      ))}
+                    </tbody>
+                  </table>
+                </ScrollableTableContainer>
               )}
 
               {/* Pagination */}

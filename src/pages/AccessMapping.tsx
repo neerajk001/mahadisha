@@ -15,7 +15,7 @@ import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { Pagination } from '../admin/components/shared';
-import { RBACControls, RBACHeader } from '../components/shared';
+import { RBACControls, RBACHeader, ScrollableTableContainer } from '../components/shared';
 import { mockDataService } from '../services/api';
 import type { AccessMappingData } from '../types';
 import './AccessMapping.css';
@@ -251,9 +251,8 @@ const AccessMapping: React.FC = () => {
               />
 
               {/* Mappings Table */}
-              <IonCard className="mappings-table-card">
-                <IonCardContent className="table-container">
-                  <table className="mappings-table">
+              <ScrollableTableContainer cardClassName="mappings-table-card">
+                <table className="mappings-table">
                     <thead>
                       <tr>
                         <th>
@@ -305,8 +304,7 @@ const AccessMapping: React.FC = () => {
                       ))}
                     </tbody>
                   </table>
-                </IonCardContent>
-              </IonCard>
+              </ScrollableTableContainer>
 
               {/* Pagination */}
               {filteredMappings.length > 0 && (

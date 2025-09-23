@@ -19,7 +19,7 @@ import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { Pagination } from '../admin/components/shared';
-import { MasterCard, MasterHeader } from '../components/shared';
+import { MasterCard, MasterHeader, MasterControls, ScrollableTableContainer } from '../components/shared';
 import { mockDataService } from '../services/api';
 import type { StatusMappingData } from '../types';
 import './StatusMapping.css';
@@ -284,30 +284,15 @@ const StatusMapping: React.FC = () => {
               />
 
               {/* Enhanced Search and Actions */}
-              <div className="pages-actions">
-                <IonSearchbar
-                  value={searchQuery}
-                  onIonChange={(e) => setSearchQuery(e.detail.value!)}
-                  placeholder="Search mappings by status, role, or fields..."
-                  className="pages-search"
-                />
-                <IonButton 
-                  fill="outline" 
-                  size="small"
-                  onClick={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
-                >
-                  <IonIcon icon={viewMode === 'grid' ? barChartOutline : eyeOutline} />
-                  {viewMode === 'grid' ? 'Table View' : 'Grid View'}
-                </IonButton>
-                <IonButton 
-                  fill="solid" 
-                  className="add-page-button"
-                  onClick={handleAddNewMapping}
-                >
-                  <IonIcon icon={addOutline} />
-                  Add New Mapping
-                </IonButton>
-              </div>
+              <MasterControls
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Search mappings by status, role, or fields..."
+                viewMode={viewMode}
+                onViewModeToggle={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
+                onAddNew={handleAddNewMapping}
+                addButtonText="Add New Mapping"
+              />
 
               {/* Status Mappings Grid */}
               {viewMode === 'grid' ? (
@@ -338,96 +323,94 @@ const StatusMapping: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <IonCard className="pages-table-card">
-                  <IonCardContent className="table-container">
-                    <table className="pages-table">
-                      <thead>
-                        <tr>
-                          <th>
-                            <div className="table-header">
-                              <span>Status</span>
-                              <IonIcon icon={searchOutline} className="filter-icon" />
+                <ScrollableTableContainer cardClassName="pages-table-card">
+                  <table className="pages-table">
+                    <thead>
+                      <tr>
+                        <th>
+                          <div className="table-header">
+                            <span>Status</span>
+                            <IonIcon icon={searchOutline} className="filter-icon" />
+                          </div>
+                        </th>
+                        <th>
+                          <div className="table-header">
+                            <span>Role</span>
+                            <IonIcon icon={searchOutline} className="filter-icon" />
+                          </div>
+                        </th>
+                        <th>
+                          <div className="table-header">
+                            <span>Visible Fields</span>
+                          </div>
+                        </th>
+                        <th>
+                          <div className="table-header">
+                            <span>Mapping Code</span>
+                          </div>
+                        </th>
+                        <th>
+                          <div className="table-header">
+                            <span>Icon</span>
+                          </div>
+                        </th>
+                        <th>
+                          <div className="table-header">
+                            <span>Actions</span>
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {currentMappings.map((mapping, index) => (
+                        <tr key={mapping.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
+                          <td className="name-cell">
+                            <div className="page-name">
+                              <IonIcon icon={swapVerticalOutline} className="page-icon" />
+                              <span>{mapping.status}</span>
                             </div>
-                          </th>
-                          <th>
-                            <div className="table-header">
-                              <span>Role</span>
-                              <IonIcon icon={searchOutline} className="filter-icon" />
+                          </td>
+                          <td className="url-cell">
+                            <span className="role-text">{mapping.role}</span>
+                          </td>
+                          <td className="url-cell">
+                            <div className="visible-fields">
+                              {mapping.visibleFields.slice(0, 2).map((field, idx) => (
+                                <span key={idx} className="visible-field">
+                                  {field}
+                                  {idx < Math.min(mapping.visibleFields.length, 2) - 1 && ', '}
+                                </span>
+                              ))}
+                              {mapping.visibleFields.length > 2 && (
+                                <span className="visible-field">+{mapping.visibleFields.length - 2} more</span>
+                              )}
                             </div>
-                          </th>
-                          <th>
-                            <div className="table-header">
-                              <span>Visible Fields</span>
+                          </td>
+                          <td className="url-cell">
+                            <code className="url-code">MAP-{mapping.id.slice(-3)}</code>
+                          </td>
+                          <td className="icon-cell">
+                            <div className="icon-display">
+                              <IonIcon icon={swapVerticalOutline} className="display-icon" />
+                              <span className="icon-name">swapVerticalOutline</span>
                             </div>
-                          </th>
-                          <th>
-                            <div className="table-header">
-                              <span>Mapping Code</span>
+                          </td>
+                          <td className="actions-cell">
+                            <div className="action-buttons">
+                              <ActionDropdown
+                                itemId={mapping.id}
+                                onView={() => handleView(mapping)}
+                                onEdit={() => handleEdit(mapping.id)}
+                                onDelete={() => handleDelete(mapping.id)}
+                                size="small"
+                              />
                             </div>
-                          </th>
-                          <th>
-                            <div className="table-header">
-                              <span>Icon</span>
-                            </div>
-                          </th>
-                          <th>
-                            <div className="table-header">
-                              <span>Actions</span>
-                            </div>
-                          </th>
+                          </td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {currentMappings.map((mapping, index) => (
-                          <tr key={mapping.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
-                            <td className="name-cell">
-                              <div className="page-name">
-                                <IonIcon icon={swapVerticalOutline} className="page-icon" />
-                                <span>{mapping.status}</span>
-                              </div>
-                            </td>
-                            <td className="url-cell">
-                              <span className="role-text">{mapping.role}</span>
-                            </td>
-                            <td className="url-cell">
-                              <div className="visible-fields">
-                                {mapping.visibleFields.slice(0, 2).map((field, idx) => (
-                                  <span key={idx} className="visible-field">
-                                    {field}
-                                    {idx < Math.min(mapping.visibleFields.length, 2) - 1 && ', '}
-                                  </span>
-                                ))}
-                                {mapping.visibleFields.length > 2 && (
-                                  <span className="visible-field">+{mapping.visibleFields.length - 2} more</span>
-                                )}
-                              </div>
-                            </td>
-                            <td className="url-cell">
-                              <code className="url-code">MAP-{mapping.id.slice(-3)}</code>
-                            </td>
-                            <td className="icon-cell">
-                              <div className="icon-display">
-                                <IonIcon icon={swapVerticalOutline} className="display-icon" />
-                                <span className="icon-name">swapVerticalOutline</span>
-                              </div>
-                            </td>
-                            <td className="actions-cell">
-                              <div className="action-buttons">
-                                <ActionDropdown
-                                  itemId={mapping.id}
-                                  onView={() => handleView(mapping)}
-                                  onEdit={() => handleEdit(mapping.id)}
-                                  onDelete={() => handleDelete(mapping.id)}
-                                  size="small"
-                                />
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </IonCardContent>
-                </IonCard>
+                      ))}
+                    </tbody>
+                  </table>
+                </ScrollableTableContainer>
               )}
 
               {/* Pagination */}
