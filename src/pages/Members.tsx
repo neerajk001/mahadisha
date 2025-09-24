@@ -16,7 +16,7 @@ import DashboardHeader from '../admin/components/header/DashboardHeader';
 import { mockDataService } from '../services/api';
 import type { MembersData } from '../types';
 import { Pagination } from '../admin/components/shared';
-import { RBACControls, RBACHeader } from '../components/shared';
+import { RBACControls, RBACHeader, ScrollableTableContainer } from '../components/shared';
 import './Members.css';
 
 const Members: React.FC = () => {
@@ -491,9 +491,8 @@ const Members: React.FC = () => {
                 </IonPopover>
 
               {/* Members Table */}
-              <IonCard className="members-table-card">
-                <IonCardContent className="table-container">
-                  <table className="members-table">
+              <ScrollableTableContainer cardClassName="members-table-card">
+                <table className="members-table">
                     <thead>
                       <tr>
                         <th>
@@ -618,8 +617,7 @@ const Members: React.FC = () => {
                       ))}
                     </tbody>
                   </table>
-                </IonCardContent>
-              </IonCard>
+              </ScrollableTableContainer>
 
               {/* Pagination */}
               <Pagination

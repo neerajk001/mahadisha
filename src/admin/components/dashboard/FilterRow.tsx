@@ -88,34 +88,33 @@ const FilterRow: React.FC<FilterRowProps> = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="filter-row-compact">
+    <div className="filter-row-mobile">
       {/* District Filter */}
-      <button
-        className="filter-button-compact"
+      <div
+        className="filter-chip"
         onClick={(e) => setDistrictPopover({ open: true, event: e.nativeEvent })}
       >
-        <IonIcon icon={locationOutline} className="filter-icon-compact" />
+        <IonIcon icon={locationOutline} className="filter-icon" />
         <span>{districtOptions.find(o => o.value === district)?.label}</span>
         <IonIcon icon={chevronDownOutline} className="filter-chevron" />
-      </button>
+      </div>
       <IonPopover
         isOpen={districtPopover.open}
         event={districtPopover.event}
         onDidDismiss={() => setDistrictPopover({ open: false })}
-        cssClass="dashboard-filter-popover"
+        cssClass="filter-popover-mobile"
       >
         <IonContent>
           <IonSearchbar
             value={districtSearch}
             onIonInput={(e) => setDistrictSearch(e.detail.value!)}
             placeholder="Search districts"
-            className="popover-searchbar-compact"
           />
           <IonList>
             {districtOptions
               .filter(o => o.label.toLowerCase().includes(districtSearch.toLowerCase()))
               .map(option => (
-                <IonItem button key={option.value} onClick={() => handleDistrictChange(option.value)} className="popover-item-compact">
+                <IonItem button key={option.value} onClick={() => handleDistrictChange(option.value)}>
                   <IonLabel>{option.label}</IonLabel>
                 </IonItem>
               ))}
@@ -124,32 +123,31 @@ const FilterRow: React.FC<FilterRowProps> = ({ onFilterChange }) => {
       </IonPopover>
 
       {/* Month Filter */}
-      <button
-        className="filter-button-compact"
+      <div
+        className="filter-chip"
         onClick={(e) => setMonthPopover({ open: true, event: e.nativeEvent })}
       >
-        <IonIcon icon={calendarOutline} className="filter-icon-compact" />
+        <IonIcon icon={calendarOutline} className="filter-icon" />
         <span>{monthOptions.find(o => o.value === month)?.label}</span>
         <IonIcon icon={chevronDownOutline} className="filter-chevron" />
-      </button>
+      </div>
       <IonPopover
         isOpen={monthPopover.open}
         event={monthPopover.event}
         onDidDismiss={() => setMonthPopover({ open: false })}
-        cssClass="dashboard-filter-popover"
+        cssClass="filter-popover-mobile"
       >
         <IonContent>
           <IonSearchbar
             value={monthSearch}
             onIonInput={(e) => setMonthSearch(e.detail.value!)}
             placeholder="Search months"
-            className="popover-searchbar-compact"
           />
           <IonList>
             {monthOptions
               .filter(o => o.label.toLowerCase().includes(monthSearch.toLowerCase()))
               .map(option => (
-                <IonItem button key={option.value} onClick={() => handleMonthChange(option.value)} className="popover-item-compact">
+                <IonItem button key={option.value} onClick={() => handleMonthChange(option.value)}>
                   <IonLabel>{option.label}</IonLabel>
                 </IonItem>
               ))}
@@ -158,24 +156,24 @@ const FilterRow: React.FC<FilterRowProps> = ({ onFilterChange }) => {
       </IonPopover>
 
       {/* Date Range Filter */}
-      <button
-        className="filter-button-compact"
+      <div
+        className="filter-chip"
         onClick={(e) => setDatePopover({ open: true, event: e.nativeEvent })}
       >
-        <IonIcon icon={calendarOutline} className="filter-icon-compact" />
+        <IonIcon icon={calendarOutline} className="filter-icon" />
         <span>{dateOptions.find(o => o.value === dateRange)?.label}</span>
         <IonIcon icon={chevronDownOutline} className="filter-chevron" />
-      </button>
+      </div>
       <IonPopover
         isOpen={datePopover.open}
         event={datePopover.event}
         onDidDismiss={() => setDatePopover({ open: false })}
-        cssClass="dashboard-filter-popover"
+        cssClass="filter-popover-mobile"
       >
         <IonContent>
           <IonList>
             {dateOptions.map(option => (
-              <IonItem button key={option.value} onClick={() => handleDateRangeChange(option.value)} className="popover-item-compact">
+              <IonItem button key={option.value} onClick={() => handleDateRangeChange(option.value)}>
                 <IonLabel>{option.label}</IonLabel>
               </IonItem>
             ))}

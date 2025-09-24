@@ -416,9 +416,7 @@ ion-card-header ion-card-title ion-icon {
 
 /* Extra Small Devices */
 @media (max-width: 360px) {
-  .main-content {
-    padding: 0.5rem;
-  }
+  
   
   .welcome-text h1 {
     font-size: 1.1rem;

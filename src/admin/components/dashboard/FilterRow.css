@@ -1,65 +1,35 @@
-.filter-row-compact {
-  width: 100%;
+.filter-row-mobile {
   display: flex;
-  gap: 10px;
-  padding: 10px;
-  flex-wrap: nowrap; /* always keep in one line */
-  overflow-x: auto;  /* scroll if screen too small */
+  /* gap: 10px; */
+  /* padding: 10px; */
+  overflow-x: auto;
 }
 
-/* Filter buttons */
-.filter-button-compact {
-  flex: 1; /* share space equally */
-  min-width: 120px;
+.filter-chip {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-
-  padding: 12px 14px;
-  border: none;
-  border-radius: 10px;
-
-  background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-
+  gap: 6px;
+  background: #f1f1f1;
+  padding: 8px 14px;
+  border-radius: 20px;
   font-size: 14px;
-  font-weight: 500;
-  color: #333;
+  min-width: max-content;
   cursor: pointer;
-
-  transition: background 0.2s;
-  white-space: nowrap;
 }
 
-.filter-button-compact:hover {
-  background: #f5f5f5;
-}
-
-.filter-icon-compact {
+.filter-icon {
   font-size: 18px;
-  color: #666;
-  margin-right: 6px;
+  color: #555;
 }
 
 .filter-chevron {
   font-size: 16px;
-  color: #888;
-  margin-left: 8px;
+  color: #777;
 }
 
-/* Popover styling */
-.dashboard-filter-popover {
-  --width: 90vw;
-  --max-width: 400px;
-  border-radius: 12px;
-}
-
-.popover-searchbar-compact {
-  --background: #f9f9f9;
-  --border-radius: 8px;
-}
-
-.popover-item-compact {
-  font-size: 15px;
-  padding: 14px 18px; /* extra padding inside dropdown */
+.filter-popover-mobile {
+  --width: 100% !important;
+  --max-width: 100% !important;
+  --height: 60% !important; /* like bottom sheet */
+  --border-radius: 16px 16px 0 0;
 }

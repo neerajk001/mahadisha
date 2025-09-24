@@ -8,3 +8,5 @@ export type { MasterHeaderProps } from './MasterHeader';
 export { default as RBACControls } from './RBACControls';
 export type { RBACControlsProps } from './RBACControls';
 export { default as RBACHeader } from './RBACHeader';
+export { default as ScrollableTableContainer } from './ScrollableTableContainer';
+export type { ScrollableTableContainerProps } from './ScrollableTableContainer';

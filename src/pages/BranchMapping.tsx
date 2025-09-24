@@ -14,7 +14,7 @@ import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import ActionDropdown from '../admin/components/common/ActionDropdown';
 import { Pagination } from '../admin/components/shared';
-import { MasterCard, MasterHeader, MasterControls } from '../components/shared';
+import { MasterCard, MasterHeader, MasterControls, ScrollableTableContainer } from '../components/shared';
 import '../components/shared/MasterCard.css';
 import { mockDataService } from '../services/api';
 import type { BranchMappingData } from '../types';
@@ -332,8 +332,7 @@ const BranchMapping: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <IonCard className="mappings-table-card">
-                <IonCardContent className="table-container">
+                <ScrollableTableContainer cardClassName="mappings-table-card">
                   <table className="mappings-table">
                     <thead>
                       <tr>
@@ -381,8 +380,7 @@ const BranchMapping: React.FC = () => {
                       ))}
                     </tbody>
                   </table>
-                </IonCardContent>
-              </IonCard>
+                </ScrollableTableContainer>
               )}
 
               {/* Pagination */}

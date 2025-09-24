@@ -655,6 +655,17 @@ ion-split-pane {
     flex: 1;
   }
 
+  /* Hide text in action buttons on mobile, show only icons */
+  .admin-actions ion-button span {
+    display: none !important;
+  }
+  .admin-actions ion-button {
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+    min-width: 44px;
+    width: 44px;
+  }
+
   /* Force Apply button to be centered on mobile */
   .scheme-card .scheme-content .scheme-actions .apply-button {
     width: 100% !important;
@@ -1254,7 +1265,7 @@ ion-card-content.scheme-content {
 } */
 
 ion-row {
-  --ion-grid-column-padding: 1rem;
+  /* --ion-grid-column-padding: 1rem; */
 }
 
 /* Card hover effects */

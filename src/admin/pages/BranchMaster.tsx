@@ -19,7 +19,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
 import ActionDropdown from '../components/common/ActionDropdown';
 import { Pagination } from '../components/shared';
-import { MasterCard, MasterControls, MasterHeader } from '../../components/shared';
+import { MasterCard, MasterControls, MasterHeader, ScrollableTableContainer } from '../../components/shared';
 import { mockDataService } from '../../services/api';
 import type { BranchData } from '../../types';
 import './BranchMaster.css';  // original 
@@ -270,108 +270,112 @@ const BranchMaster: React.FC = () => {
             />
 
             {/* Branches Display */}
-            <IonCard className="branches-table-card">
-              <IonCardContent>
-                {isLoading ? (
+            {isLoading ? (
+              <IonCard className="branches-table-card">
+                <IonCardContent>
                   <div className="loading-container">
                     <IonSpinner name="crescent" />
                     <p>Loading branches...</p>
                   </div>
-                ) : currentBranches.length === 0 ? (
+                </IonCardContent>
+              </IonCard>
+            ) : currentBranches.length === 0 ? (
+              <IonCard className="branches-table-card">
+                <IonCardContent>
                   <div className="no-data-container">
                     <p>No branches found. Add a new branch to get started.</p>
                   </div>
-                ) : viewMode === 'grid' ? (
-                  // Grid View
-                  <div className="master-cards-grid" style={{ padding: '1rem' }}>
-                    {currentBranches.map(branch => (
-                      <MasterCard
-                        key={branch.id}
-                        id={branch.id}
-                        title={branch.officeName}
-                        subtitle={branch.officeType}
-                        icon={businessOutline}
-                        metaItems={[
-                          {
-                            icon: locationOutline,
-                            label: "Path",
-                            value: `/${branch.officeName.toLowerCase().replace(/\s+/g, '-')}`
-                          },
-                          {
-                            icon: timeOutline,
-                            label: "Created",
-                            value: new Date(branch.createdAt).toLocaleDateString()
-                          }
-                        ]}
-                        onView={() => handleView(branch)}
-                        onEdit={() => handleEdit(branch)}
-                        onDelete={() => handleDelete(branch.id)}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  // Table View
-                  <div className="table-container">
-                    <table className="branches-table">
-                      <thead>
-                        <tr>
-                          <th onClick={() => handleSort('officeName')}>
-                            Office Name
-                            {sortBy === 'officeName' && (
-                              <IonIcon icon={sortOrder === 'asc' ? chevronBackOutline : chevronForwardOutline} />
-                            )}
-                          </th>
-                          <th onClick={() => handleSort('officeType')}>
-                            Office Type
-                            {sortBy === 'officeType' && (
-                              <IonIcon icon={sortOrder === 'asc' ? chevronBackOutline : chevronForwardOutline} />
-                            )}
-                          </th>
-                          <th onClick={() => handleSort('createdAt')}>
-                            Created Date
-                            {sortBy === 'createdAt' && (
-                              <IonIcon icon={sortOrder === 'asc' ? chevronBackOutline : chevronForwardOutline} />
-                            )}
-                          </th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {currentBranches.map(branch => (
-                          <tr key={branch.id}>
-                            <td>{branch.officeName}</td>
-                            <td>{branch.officeType}</td>
-                            <td>{new Date(branch.createdAt).toLocaleDateString()}</td>
-                            <td>
-                            <div className="table-actions">
-                              <ActionDropdown
-                                itemId={branch.id}
-                                onView={() => handleView(branch)}
-                                onEdit={() => handleEdit(branch)}
-                                onDelete={() => handleDelete(branch.id)}
-                                showView={true}
-                                size="small"
-                              />
-                            </div>
-                          </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-
-                {/* Pagination */}
-                {filteredAndSortedBranches.length > 0 && (
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPreviousPage={handlePreviousPage}
-                    onNextPage={handleNextPage}
+                </IonCardContent>
+              </IonCard>
+            ) : viewMode === 'grid' ? (
+              // Grid View
+              <div className="master-cards-grid" style={{ padding: '1rem' }}>
+                {currentBranches.map(branch => (
+                  <MasterCard
+                    key={branch.id}
+                    id={branch.id}
+                    title={branch.officeName}
+                    subtitle={branch.officeType}
+                    icon={businessOutline}
+                    metaItems={[
+                      {
+                        icon: locationOutline,
+                        label: "Path",
+                        value: `/${branch.officeName.toLowerCase().replace(/\s+/g, '-')}`
+                      },
+                      {
+                        icon: timeOutline,
+                        label: "Created",
+                        value: new Date(branch.createdAt).toLocaleDateString()
+                      }
+                    ]}
+                    onView={() => handleView(branch)}
+                    onEdit={() => handleEdit(branch)}
+                    onDelete={() => handleDelete(branch.id)}
                   />
-                )}
-              </IonCardContent>
-            </IonCard>
+                ))}
+              </div>
+            ) : (
+              // Table View
+              <ScrollableTableContainer cardClassName="branches-table-card">
+                <table className="branches-table">
+                  <thead>
+                    <tr>
+                      <th onClick={() => handleSort('officeName')}>
+                        Office Name
+                        {sortBy === 'officeName' && (
+                          <IonIcon icon={sortOrder === 'asc' ? chevronBackOutline : chevronForwardOutline} />
+                        )}
+                      </th>
+                      <th onClick={() => handleSort('officeType')}>
+                        Office Type
+                        {sortBy === 'officeType' && (
+                          <IonIcon icon={sortOrder === 'asc' ? chevronBackOutline : chevronForwardOutline} />
+                        )}
+                      </th>
+                      <th onClick={() => handleSort('createdAt')}>
+                        Created Date
+                        {sortBy === 'createdAt' && (
+                          <IonIcon icon={sortOrder === 'asc' ? chevronBackOutline : chevronForwardOutline} />
+                        )}
+                      </th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentBranches.map(branch => (
+                      <tr key={branch.id}>
+                        <td>{branch.officeName}</td>
+                        <td>{branch.officeType}</td>
+                        <td>{new Date(branch.createdAt).toLocaleDateString()}</td>
+                        <td>
+                        <div className="table-actions">
+                          <ActionDropdown
+                            itemId={branch.id}
+                            onView={() => handleView(branch)}
+                            onEdit={() => handleEdit(branch)}
+                            onDelete={() => handleDelete(branch.id)}
+                            showView={true}
+                            size="small"
+                          />
+                        </div>
+                      </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </ScrollableTableContainer>
+            )}
+
+            {/* Pagination */}
+            {filteredAndSortedBranches.length > 0 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPreviousPage={handlePreviousPage}
+                onNextPage={handleNextPage}
+              />
+            )}
           </div>
 
           {/* Add Branch Modal */}

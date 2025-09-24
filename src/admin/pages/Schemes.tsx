@@ -44,6 +44,8 @@ const Schemes: React.FC = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingScheme, setEditingScheme] = useState<Scheme | null>(null);
   const [editFormData, setEditFormData] = useState<Partial<Scheme>>({});
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [addFormData, setAddFormData] = useState<Partial<Scheme>>({});
 
   // Search states for filter dropdowns
   const [typeSearchQuery, setTypeSearchQuery] = useState('');
@@ -167,8 +169,23 @@ const Schemes: React.FC = () => {
   };
 
   const handleAddNew = () => {
-    console.log('Add new scheme');
-    // TODO: Implement add functionality
+    setAddFormData({
+      name: '',
+      marathiName: '',
+      type: 'agricultural',
+      description: '',
+      minimumLoanLimit: 0,
+      maximumLoanLimit: 0,
+      subsidyLimit: 0,
+      maximumSubsidyAmount: 0,
+      downPaymentPercent: 0,
+      vendorInterestYearly: 0,
+      minimumTenure: 0,
+      maximumTenure: 0,
+      status: 'active',
+      priority: 'medium'
+    });
+    setShowAddModal(true);
   };
 
   const handleEdit = (schemeId: string) => {
@@ -202,7 +219,10 @@ const Schemes: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedSchemeId) {
-      setToastMessage('Delete functionality will be implemented');
+      // TODO: Replace with actual API call to delete scheme
+      const schemeToDelete = allSchemes.find(scheme => scheme.id === selectedSchemeId);
+      console.log('Deleting scheme:', schemeToDelete);
+      setToastMessage(`Scheme "${schemeToDelete?.name || 'Unknown'}" deleted successfully`);
       setShowToast(true);
       setSelectedSchemeId(null);
     }
@@ -281,7 +301,12 @@ const Schemes: React.FC = () => {
   const handleSaveEdit = () => {
     if (editingScheme && editFormData) {
       // TODO: Replace with actual API call to update scheme
-      console.log('Saving scheme:', { ...editingScheme, ...editFormData });
+      const updatedScheme = {
+        ...editingScheme,
+        ...editFormData,
+        updatedAt: new Date().toISOString()
+      };
+      console.log('Updating scheme:', updatedScheme);
       setToastMessage(`Scheme "${editFormData.name || editingScheme.name}" updated successfully`);
       setShowToast(true);
       setShowEditModal(false);
@@ -294,6 +319,55 @@ const Schemes: React.FC = () => {
     setShowEditModal(false);
     setEditingScheme(null);
     setEditFormData({});
+  };
+
+  const handleSaveAdd = () => {
+    if (addFormData.name && addFormData.marathiName) {
+      // TODO: Replace with actual API call to create scheme
+      const newScheme: Scheme = {
+        id: `scheme_${Date.now()}`, // Generate unique ID
+        name: addFormData.name,
+        marathiName: addFormData.marathiName,
+        type: addFormData.type || 'agricultural',
+        description: addFormData.description || '',
+        minimumLoanLimit: addFormData.minimumLoanLimit || 0,
+        maximumLoanLimit: addFormData.maximumLoanLimit || 0,
+        subsidyLimit: addFormData.subsidyLimit || 0,
+        maximumSubsidyAmount: addFormData.maximumSubsidyAmount || 0,
+        downPaymentPercent: addFormData.downPaymentPercent || 0,
+        vendorInterestYearly: addFormData.vendorInterestYearly || 0,
+        minimumTenure: addFormData.minimumTenure || 0,
+        maximumTenure: addFormData.maximumTenure || 0,
+        status: addFormData.status || 'active',
+        priority: addFormData.priority || 'medium',
+        interestType: 'fixed',
+        loanPercentByPartner: 80,
+        partnerInvolvement: true,
+        recoveryByPartner: true,
+        usageCount: 0,
+        lastUsed: null,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        eligibilityCriteria: [],
+        requiredDocuments: [],
+        faq: [],
+        tags: []
+      };
+      
+      console.log('Creating new scheme:', newScheme);
+      setToastMessage(`Scheme "${newScheme.name}" created successfully`);
+      setShowToast(true);
+      setShowAddModal(false);
+      setAddFormData({});
+    } else {
+      setToastMessage('Please fill in all required fields');
+      setShowToast(true);
+    }
+  };
+
+  const handleCancelAdd = () => {
+    setShowAddModal(false);
+    setAddFormData({});
   };
 
   // Scheme details handler
@@ -1068,6 +1142,174 @@ const Schemes: React.FC = () => {
                 <IonButton fill="solid" onClick={handleSaveEdit}>
                   <IonIcon icon={checkmarkOutline} slot="start" />
                   Save Changes
+                </IonButton>
+              </div>
+            </div>
+          )}
+        </IonContent>
+      </IonModal>
+
+      {/* Add Scheme Modal */}
+      <IonModal isOpen={showAddModal} onDidDismiss={handleCancelAdd}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Add New Scheme</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={handleCancelAdd}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="edit-form-container">
+          {showAddModal && (
+            <div className="edit-form">
+              <div className="edit-section">
+                <h3>Basic Information</h3>
+                <IonItem>
+                  <IonLabel position="stacked">Scheme Name *</IonLabel>
+                  <IonInput
+                    value={addFormData.name || ''}
+                    onIonChange={(e) => setAddFormData(prev => ({ ...prev, name: e.detail.value! }))}
+                    placeholder="Enter scheme name"
+                  />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Marathi Name *</IonLabel>
+                  <IonInput
+                    value={addFormData.marathiName || ''}
+                    onIonChange={(e) => setAddFormData(prev => ({ ...prev, marathiName: e.detail.value! }))}
+                    placeholder="Enter Marathi name"
+                  />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Type</IonLabel>
+                  <IonSelect
+                    value={addFormData.type || 'agricultural'}
+                    onIonChange={(e) => setAddFormData(prev => ({ ...prev, type: e.detail.value }))}
+                    placeholder="Select type"
+                  >
+                    {uniqueTypes.map(type => (
+                      <IonSelectOption key={type} value={type}>{type}</IonSelectOption>
+                    ))}
+                  </IonSelect>
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Description</IonLabel>
+                  <IonTextarea
+                    value={addFormData.description || ''}
+                    onIonChange={(e) => setAddFormData(prev => ({ ...prev, description: e.detail.value! }))}
+                    placeholder="Enter description"
+                    rows={3}
+                  />
+                </IonItem>
+              </div>
+
+              <div className="edit-section">
+                <h3>Financial Details</h3>
+                <IonItem>
+                  <IonLabel position="stacked">Minimum Loan Limit (₹)</IonLabel>
+                  <IonInput
+                    type="number"
+                    value={addFormData.minimumLoanLimit?.toString() || ''}
+                    onIonChange={(e) => setAddFormData(prev => ({ ...prev, minimumLoanLimit: parseInt(e.detail.value!) || 0 }))}
+                    placeholder="0"
+                  />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Maximum Loan Limit (₹)</IonLabel>
+                  <IonInput
+                    type="number"
+                    value={addFormData.maximumLoanLimit?.toString() || ''}
+                    onIonChange={(e) => setAddFormData(prev => ({ ...prev, maximumLoanLimit: parseInt(e.detail.value!) || 0 }))}
+                    placeholder="0"
+                  />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Subsidy Limit (%)</IonLabel>
+                  <IonInput
+                    type="number"
+                    value={addFormData.subsidyLimit?.toString() || ''}
+                    onIonChange={(e) => setAddFormData(prev => ({ ...prev, subsidyLimit: parseFloat(e.detail.value!) || 0 }))}
+                    placeholder="0"
+                  />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Maximum Subsidy Amount (₹)</IonLabel>
+                  <IonInput
+                    type="number"
+                    value={addFormData.maximumSubsidyAmount?.toString() || ''}
+                    onIonChange={(e) => setAddFormData(prev => ({ ...prev, maximumSubsidyAmount: parseInt(e.detail.value!) || 0 }))}
+                    placeholder="0"
+                  />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Interest Rate (% yearly)</IonLabel>
+                  <IonInput
+                    type="number"
+                    value={addFormData.vendorInterestYearly?.toString() || ''}
+                    onIonChange={(e) => setAddFormData(prev => ({ ...prev, vendorInterestYearly: parseFloat(e.detail.value!) || 0 }))}
+                    placeholder="0"
+                  />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Minimum Tenure (years)</IonLabel>
+                  <IonInput
+                    type="number"
+                    value={addFormData.minimumTenure?.toString() || ''}
+                    onIonChange={(e) => setAddFormData(prev => ({ ...prev, minimumTenure: parseInt(e.detail.value!) || 0 }))}
+                    placeholder="0"
+                  />
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Maximum Tenure (years)</IonLabel>
+                  <IonInput
+                    type="number"
+                    value={addFormData.maximumTenure?.toString() || ''}
+                    onIonChange={(e) => setAddFormData(prev => ({ ...prev, maximumTenure: parseInt(e.detail.value!) || 0 }))}
+                    placeholder="0"
+                  />
+                </IonItem>
+              </div>
+
+              <div className="edit-section">
+                <h3>Status & Priority</h3>
+                <IonItem>
+                  <IonLabel position="stacked">Status</IonLabel>
+                  <IonSelect
+                    value={addFormData.status || 'active'}
+                    onIonChange={(e) => setAddFormData(prev => ({ ...prev, status: e.detail.value }))}
+                    placeholder="Select status"
+                  >
+                    {uniqueStatuses.map(status => (
+                      <IonSelectOption key={status} value={status}>
+                        {status.replace('_', ' ')}
+                      </IonSelectOption>
+                    ))}
+                  </IonSelect>
+                </IonItem>
+                <IonItem>
+                  <IonLabel position="stacked">Priority</IonLabel>
+                  <IonSelect
+                    value={addFormData.priority || 'medium'}
+                    onIonChange={(e) => setAddFormData(prev => ({ ...prev, priority: e.detail.value }))}
+                    placeholder="Select priority"
+                  >
+                    {uniquePriorities.map(priority => (
+                      <IonSelectOption key={priority} value={priority}>{priority}</IonSelectOption>
+                    ))}
+                  </IonSelect>
+                </IonItem>
+              </div>
+
+              <div className="edit-actions">
+                <IonButton fill="outline" onClick={handleCancelAdd}>
+                  <IonIcon icon={closeOutline} slot="start" />
+                  Cancel
+                </IonButton>
+                <IonButton fill="solid" onClick={handleSaveAdd}>
+                  <IonIcon icon={checkmarkOutline} slot="start" />
+                  Add Scheme
                 </IonButton>
               </div>
             </div>

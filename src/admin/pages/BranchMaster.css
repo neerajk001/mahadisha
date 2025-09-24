@@ -24,7 +24,6 @@
   background: 
     radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
     radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
 }
@@ -159,8 +158,8 @@
 }
 
 .branches-table th {
-  background: var(--color-bg-secondary);
-  color: var(--color-text-primary);
+  background: #f1f3f4 !important;
+  color: #374151 !important;
   font-weight: 600;
   font-size: 0.9rem;
   padding: 1rem;
