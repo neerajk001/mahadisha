@@ -4,7 +4,7 @@ import {
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
   IonModal, IonInput, IonTextarea, IonChip, IonLabel, IonItem, IonList,
-  IonSelect, IonSelectOption, IonPopover
+  IonSelect, IonSelectOption, IonPopover, IonButtons
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
@@ -30,13 +30,24 @@ const AccessMapping: React.FC = () => {
   
   // Add Access Modal States
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [viewingMapping, setViewingMapping] = useState<AccessMappingData | null>(null);
+  const [editingMapping, setEditingMapping] = useState<AccessMappingData | null>(null);
   const [newAccess, setNewAccess] = useState({
     role: '',
     pageAccess: '',
     navbarAccess: [] as string[]
   });
+  const [editAccess, setEditAccess] = useState({
+    role: '',
+    pageAccess: '',
+    navbarAccess: [] as string[]
+  });
   const [navbarAccessInput, setNavbarAccessInput] = useState('');
+  const [editNavbarAccessInput, setEditNavbarAccessInput] = useState('');
   const [showNavbarPopover, setShowNavbarPopover] = useState(false);
+  const [showEditNavbarPopover, setShowEditNavbarPopover] = useState(false);
 
   const itemsPerPage = 5;
 
@@ -169,9 +180,102 @@ const AccessMapping: React.FC = () => {
     handleCloseAddModal();
   };
 
-  const handleEdit = (mappingId: string) => {
-    setToastMessage('Edit functionality will be implemented');
-    setShowToast(true);
+  const handleView = (mapping: AccessMappingData) => {
+    setViewingMapping(mapping);
+    setShowViewModal(true);
+  };
+
+  const handleEdit = (mapping: AccessMappingData) => {
+    setEditingMapping(mapping);
+    setEditAccess({
+      role: mapping.role,
+      pageAccess: mapping.pageAccess,
+      navbarAccess: [...mapping.navbarAccess]
+    });
+    setEditNavbarAccessInput('');
+    setShowEditModal(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setShowEditModal(false);
+    setEditingMapping(null);
+    setEditAccess({
+      role: '',
+      pageAccess: '',
+      navbarAccess: []
+    });
+    setEditNavbarAccessInput('');
+  };
+
+  const handleAddEditNavbarAccess = () => {
+    if (editNavbarAccessInput.trim() && !editAccess.navbarAccess.includes(editNavbarAccessInput.trim())) {
+      setEditAccess(prev => ({
+        ...prev,
+        navbarAccess: [...prev.navbarAccess, editNavbarAccessInput.trim()]
+      }));
+      setEditNavbarAccessInput('');
+    }
+  };
+
+  const handleRemoveEditNavbarAccess = (accessToRemove: string) => {
+    setEditAccess(prev => ({
+      ...prev,
+      navbarAccess: prev.navbarAccess.filter(access => access !== accessToRemove)
+    }));
+  };
+
+  const handleSelectEditNavbarOption = (option: string) => {
+    if (!editAccess.navbarAccess.includes(option)) {
+      setEditAccess(prev => ({
+        ...prev,
+        navbarAccess: [...prev.navbarAccess, option]
+      }));
+    }
+    setShowEditNavbarPopover(false);
+  };
+
+  const handleUpdateAccess = () => {
+    if (!editAccess.role.trim()) {
+      setToastMessage('Please enter a role name');
+      setShowToast(true);
+      return;
+    }
+
+    if (editAccess.navbarAccess.length === 0) {
+      setToastMessage('Please add at least one navbar access item');
+      setShowToast(true);
+      return;
+    }
+
+    // Check if role already exists (excluding current mapping)
+    if (allMappings.some(mapping => 
+      mapping.id !== editingMapping?.id && 
+      mapping.role.toLowerCase() === editAccess.role.toLowerCase()
+    )) {
+      setToastMessage('Role already exists. Please choose a different role name.');
+      setShowToast(true);
+      return;
+    }
+
+    if (editingMapping) {
+      // Update the mapping in the state
+      setAllMappings(prevMappings => 
+        prevMappings.map(mapping => 
+          mapping.id === editingMapping.id 
+            ? {
+                ...mapping,
+                role: editAccess.role.trim(),
+                pageAccess: editAccess.pageAccess.trim(),
+                navbarAccess: editAccess.navbarAccess,
+                updatedAt: new Date().toISOString()
+              }
+            : mapping
+        )
+      );
+      setToastMessage(`Access mapping for "${editAccess.role}" updated successfully`);
+      setShowToast(true);
+      handleCloseEditModal();
+    }
   };
 
   const handleDelete = (mappingId: string) => {
@@ -295,9 +399,10 @@ const AccessMapping: React.FC = () => {
                           <td className="actions-cell">
                             <ActionDropdown
                               itemId={mapping.id}
-                              onEdit={() => handleEdit(mapping.id)}
+                              onView={() => handleView(mapping)}
+                              onEdit={() => handleEdit(mapping)}
                               onDelete={() => handleDelete(mapping.id)}
-                              showView={false}
+                              showView={true}
                             />
                           </td>
                         </tr>
@@ -446,6 +551,238 @@ const AccessMapping: React.FC = () => {
               >
                 <IonLabel>{option}</IonLabel>
                 {newAccess.navbarAccess.includes(option) && (
+                  <IonIcon icon={checkmarkOutline} slot="end" color="success" />
+                )}
+              </IonItem>
+            ))}
+          </IonList>
+        </IonContent>
+      </IonPopover>
+
+      {/* View Access Mapping Modal */}
+      <IonModal isOpen={showViewModal} onDidDismiss={() => setShowViewModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>View Access Mapping Details</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowViewModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="view-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>
+              Access Mapping Details: {viewingMapping?.role}
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div className="view-field">
+                <h3 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>Role Name</h3>
+                <div style={{ 
+                  padding: '1rem', 
+                  background: 'rgba(255, 255, 255, 0.9)', 
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0'
+                }}>
+                  {viewingMapping?.role}
+                </div>
+              </div>
+              
+              <div className="view-field">
+                <h3 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>Page Access</h3>
+                <div style={{ 
+                  padding: '1rem', 
+                  background: 'rgba(255, 255, 255, 0.9)', 
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0'
+                }}>
+                  {viewingMapping?.pageAccess || 'No specific page access defined'}
+                </div>
+              </div>
+              
+              <div className="view-field">
+                <h3 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>Navbar Access Permissions</h3>
+                <div style={{ 
+                  padding: '1rem', 
+                  background: 'rgba(255, 255, 255, 0.9)', 
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0'
+                }}>
+                  {viewingMapping?.navbarAccess && viewingMapping.navbarAccess.length > 0 ? (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                      {viewingMapping.navbarAccess.map((access, index) => (
+                        <IonChip key={index} style={{ 
+                          '--background': '#667eea', 
+                          '--color': 'white',
+                          fontSize: '0.9rem'
+                        }}>
+                          <IonLabel>{access}</IonLabel>
+                        </IonChip>
+                      ))}
+                    </div>
+                  ) : (
+                    <span style={{ color: '#999', fontStyle: 'italic' }}>No navbar access permissions</span>
+                  )}
+                </div>
+              </div>
+              
+              <div className="view-field">
+                <h3 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>Created At</h3>
+                <div style={{ 
+                  padding: '1rem', 
+                  background: 'rgba(255, 255, 255, 0.9)', 
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0',
+                  fontFamily: 'monospace'
+                }}>
+                  {viewingMapping?.createdAt ? new Date(viewingMapping.createdAt).toLocaleString() : 'N/A'}
+                </div>
+              </div>
+              
+              <div className="view-field">
+                <h3 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>Last Updated</h3>
+                <div style={{ 
+                  padding: '1rem', 
+                  background: 'rgba(255, 255, 255, 0.9)', 
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0',
+                  fontFamily: 'monospace'
+                }}>
+                  {viewingMapping?.updatedAt ? new Date(viewingMapping.updatedAt).toLocaleString() : 'N/A'}
+                </div>
+              </div>
+              
+              <IonButton 
+                expand="block" 
+                fill="outline"
+                style={{ 
+                  '--border-color': '#667eea',
+                  '--color': '#667eea',
+                  '--border-radius': '12px',
+                  marginTop: '1rem'
+                }}
+                onClick={() => setShowViewModal(false)}
+              >
+                <IonIcon icon={closeOutline} slot="start" />
+                Close
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* Edit Access Modal */}
+      <IonModal isOpen={showEditModal} onDidDismiss={handleCloseEditModal}>
+        <IonContent className="edit-access-modal">
+          <div className="modal-header">
+            <h2>Edit Access Mapping</h2>
+            <IonButton fill="clear" onClick={handleCloseEditModal}>
+              <IonIcon icon={closeOutline} />
+            </IonButton>
+          </div>
+          
+          <div className="modal-content">
+            <IonList>
+              <IonItem>
+                <IonLabel position="stacked">Role Name *</IonLabel>
+                <IonInput
+                  value={editAccess.role}
+                  onIonInput={(e) => setEditAccess(prev => ({ ...prev, role: e.detail.value! }))}
+                  placeholder="Enter role name (e.g., Admin, User, Manager)"
+                  className="role-input"
+                />
+              </IonItem>
+              
+              <IonItem>
+                <IonLabel position="stacked">Page Access</IonLabel>
+                <IonTextarea
+                  value={editAccess.pageAccess}
+                  onIonInput={(e) => setEditAccess(prev => ({ ...prev, pageAccess: e.detail.value! }))}
+                  placeholder="Enter page access permissions (optional)"
+                  rows={3}
+                  className="page-access-input"
+                />
+              </IonItem>
+              
+              <IonItem>
+                <IonLabel position="stacked">Navbar Access *</IonLabel>
+                <div className="navbar-access-section">
+                  <div className="navbar-access-input">
+                    <IonInput
+                      value={editNavbarAccessInput}
+                      onIonInput={(e) => setEditNavbarAccessInput(e.detail.value!)}
+                      placeholder="Enter navbar access item"
+                      onKeyPress={(e) => e.key === 'Enter' && handleAddEditNavbarAccess()}
+                    />
+                    <IonButton fill="outline" onClick={handleAddEditNavbarAccess}>
+                      <IonIcon icon={addOutline} />
+                    </IonButton>
+                    <IonButton 
+                      fill="outline" 
+                      id="edit-navbar-options-trigger"
+                      onClick={() => setShowEditNavbarPopover(true)}
+                    >
+                      <IonIcon icon={chevronDownOutline} />
+                    </IonButton>
+                  </div>
+                  
+                  <div className="navbar-access-chips">
+                    {editAccess.navbarAccess.map((access, index) => (
+                      <IonChip key={index} className="access-chip">
+                        <IonLabel>{access}</IonLabel>
+                        <IonButton
+                          fill="clear"
+                          size="small"
+                          onClick={() => handleRemoveEditNavbarAccess(access)}
+                        >
+                          <IonIcon icon={closeOutline} />
+                        </IonButton>
+                      </IonChip>
+                    ))}
+                  </div>
+                </div>
+              </IonItem>
+            </IonList>
+          </div>
+          
+          <div className="modal-actions">
+            <IonButton fill="outline" onClick={handleCloseEditModal}>
+              CANCEL
+            </IonButton>
+            <IonButton fill="solid" onClick={handleUpdateAccess}>
+              <IonIcon icon={checkmarkOutline} slot="start" />
+              UPDATE ACCESS MAPPING
+            </IonButton>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* Edit Navbar Options Popover */}
+      <IonPopover
+        isOpen={showEditNavbarPopover}
+        onDidDismiss={() => setShowEditNavbarPopover(false)}
+        trigger="edit-navbar-options-trigger"
+        side="bottom"
+        alignment="start"
+      >
+        <IonContent>
+          <IonList>
+            <IonItem>
+              <IonLabel>
+                <h3>Select Navbar Access Options</h3>
+                <p>Choose from available sidebar options</p>
+              </IonLabel>
+            </IonItem>
+            {sidebarOptions.map((option, index) => (
+              <IonItem 
+                key={index} 
+                button 
+                onClick={() => handleSelectEditNavbarOption(option)}
+                disabled={editAccess.navbarAccess.includes(option)}
+              >
+                <IonLabel>{option}</IonLabel>
+                {editAccess.navbarAccess.includes(option) && (
                   <IonIcon icon={checkmarkOutline} slot="end" color="success" />
                 )}
               </IonItem>

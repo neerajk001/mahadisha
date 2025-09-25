@@ -299,7 +299,363 @@
 
 .pagination-button:disabled {
   --color: var(--color-text-disabled);
-  opacity: 0.5;
+  --background: var(--color-bg-disabled);
+}
+
+/* View Modal Styles */
+.view-modal-content {
+  --background: linear-gradient(135deg, #F9F6F2 0%, #FFF7F0 100%);
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+}
+
+.view-field {
+  margin-bottom: 1.5rem;
+}
+
+.view-field h3 {
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.view-field > div {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.view-field > div:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+/* View Modal Header */
+.view-modal-content ion-header ion-toolbar {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --color: white;
+}
+
+.view-modal-content ion-header ion-title {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+/* View Modal Close Button */
+.view-modal-content ion-header ion-button {
+  --color: white;
+  --background: rgba(255, 255, 255, 0.1);
+  --border-radius: 8px;
+  --padding: 0.5rem;
+}
+
+.view-modal-content ion-header ion-button:hover {
+  --background: rgba(255, 255, 255, 0.2);
+}
+
+/* View Modal Content Styling */
+.view-modal-content .view-field h2 {
+  color: #667eea;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Navbar Access Chips in View Modal */
+.view-modal-content .view-field .navbar-access-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.view-modal-content .view-field ion-chip {
+  --background: #667eea;
+  --color: white;
+  font-size: 0.9rem;
+  height: 32px;
+  transition: all 0.2s ease;
+}
+
+.view-modal-content .view-field ion-chip:hover {
+  --background: #5a6fd8;
+  transform: scale(1.05);
+}
+
+/* Date Fields Styling */
+.view-modal-content .view-field div[style*="font-family: monospace"] {
+  font-family: 'Courier New', monospace !important;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Close Button Styling */
+.view-modal-content ion-button[fill="outline"] {
+  --border-color: #667eea;
+  --color: #667eea;
+  --border-radius: 12px;
+  --padding-start: 2rem;
+  --padding-end: 2rem;
+  --padding-top: 1rem;
+  --padding-bottom: 1rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+}
+
+.view-modal-content ion-button[fill="outline"]:hover {
+  --background: rgba(102, 126, 234, 0.1);
+  --border-color: #5a6fd8;
+  --color: #5a6fd8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+}
+
+/* Responsive Design for View Modal */
+@media (max-width: 768px) {
+  .view-modal-content {
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+  }
+  
+  .view-modal-content .view-field h2 {
+    font-size: 1.3rem;
+  }
+  
+  .view-modal-content .view-field > div {
+    padding: 0.75rem;
+  }
+  
+  .view-modal-content .view-field ion-chip {
+    font-size: 0.8rem;
+    height: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .view-modal-content .view-field h2 {
+    font-size: 1.2rem;
+  }
+  
+  .view-modal-content .view-field > div {
+    padding: 0.5rem;
+  }
+  
+  .view-modal-content .view-field ion-chip {
+    font-size: 0.75rem;
+    height: 26px;
+  }
+}
+
+/* Edit Modal Styles */
+.edit-access-modal {
+  --background: linear-gradient(135deg, #F9F6F2 0%, #FFF7F0 100%);
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+}
+
+.edit-access-modal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.edit-access-modal .modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.edit-access-modal .modal-header ion-button {
+  --color: white;
+  --background: rgba(255, 255, 255, 0.1);
+  --border-radius: 8px;
+  --padding: 0.5rem;
+}
+
+.edit-access-modal .modal-header ion-button:hover {
+  --background: rgba(255, 255, 255, 0.2);
+}
+
+.edit-access-modal .modal-content {
+  padding: 2rem;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.edit-access-modal .modal-content ion-item {
+  --background: transparent;
+  --border-color: #e0e0e0;
+  --border-radius: 8px;
+  --padding-start: 0;
+  --padding-end: 0;
+  margin-bottom: 1rem;
+}
+
+.edit-access-modal .modal-content ion-label {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.edit-access-modal .modal-content ion-input,
+.edit-access-modal .modal-content ion-textarea {
+  --background: rgba(255, 255, 255, 0.9);
+  --border-radius: 8px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  border: 1px solid #e0e0e0;
+  font-size: 1rem;
+}
+
+.edit-access-modal .navbar-access-section {
+  width: 100%;
+}
+
+.edit-access-modal .navbar-access-input {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.edit-access-modal .navbar-access-input ion-input {
+  flex: 1;
+}
+
+.edit-access-modal .navbar-access-input ion-button {
+  --border-radius: 8px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  min-width: 50px;
+  height: 48px;
+}
+
+.edit-access-modal .navbar-access-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.edit-access-modal .access-chip {
+  --background: var(--color-primary, #3182ce);
+  --color: white;
+  font-size: 0.8rem;
+  height: 32px;
+}
+
+.edit-access-modal .access-chip ion-button {
+  --color: white;
+  --background: transparent;
+  --padding: 0.25rem;
+  width: 24px;
+  height: 24px;
+  font-size: 0.8rem;
+}
+
+.edit-access-modal .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid var(--color-border, #e2e8f0);
+  background: var(--color-bg-primary, #ffffff);
+}
+
+.edit-access-modal .modal-actions ion-button {
+  --border-radius: 8px;
+  --padding-start: 1.5rem;
+  --padding-end: 1.5rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  font-weight: 600;
+  min-width: 140px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.edit-access-modal .modal-actions ion-button[fill="solid"] {
+  --background: var(--color-primary, #3182ce);
+  --color: white;
+}
+
+.edit-access-modal .modal-actions ion-button[fill="solid"]:hover {
+  --background: var(--color-primary-dark, #2c5aa0);
+}
+
+.edit-access-modal .modal-actions ion-button[fill="outline"] {
+  --background: transparent;
+  --color: var(--color-text-primary, #2d3748);
+  --border-color: var(--color-border, #e2e8f0);
+}
+
+.edit-access-modal .modal-actions ion-button[fill="outline"]:hover {
+  --background: var(--color-bg-secondary, #f8fafc);
+  --border-color: var(--color-text-secondary, #718096);
+}
+
+/* Responsive Design for Edit Modal */
+@media (max-width: 768px) {
+  .edit-access-modal .modal-content {
+    padding: 1rem;
+  }
+  
+  .edit-access-modal .modal-header {
+    padding: 1rem;
+  }
+  
+  .edit-access-modal .modal-header h2 {
+    font-size: 1.3rem;
+  }
+  
+  .edit-access-modal .modal-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .edit-access-modal .modal-actions ion-button {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .edit-access-modal .modal-content {
+    padding: 0.75rem;
+  }
+  
+  .edit-access-modal .modal-header {
+    padding: 0.75rem;
+  }
+  
+  .edit-access-modal .modal-header h2 {
+    font-size: 1.2rem;
+  }
+  
+  .edit-access-modal .navbar-access-input {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .edit-access-modal .navbar-access-input ion-button {
+    width: 100%;
+  }
 }
 
 .page-info {

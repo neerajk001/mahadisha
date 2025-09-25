@@ -29,6 +29,8 @@ import {
 import { createOutline, trashOutline, filterOutline, addOutline, closeOutline, checkmarkOutline, eyeOutline } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
+import ScrollableTableContainer from '../../components/shared/ScrollableTableContainer';
+import MasterControls from '../../components/shared/MasterControls';
 import { useApplicationTypes } from '../hooks/useApplicationTypes';
 import type { ApplicationType } from '../../types';
 import './ApplicationType.css';
@@ -172,34 +174,31 @@ const ApplicationType: React.FC = () => {
             <div className="application-type-container">
               {/* Page Header */}
               <div className="page-header">
-                <h1 className="page-title">Application Types</h1>
-                <div className="page-actions">
-                  <IonButton fill="outline" size="small" onClick={handleAddNew}>
-                    <IonIcon icon={addOutline} slot="start" />
-                    Add New
-                  </IonButton>
-                </div>
+                <h1 className="page-title">
+                  <span className="title-line">Application</span>
+                  <span className="title-line">Types</span>
+                </h1>
               </div>
 
-              {/* Search and Filter Bar */}
-              <div className="search-filter-container">
-                <IonSearchbar
-                  value={searchTerm}
-                  onIonInput={(e) => setSearchTerm(e.detail.value!)}
-                  placeholder="Search by name, description, or status..."
-                  className="admin-search"
-                />
-                <IonSelect
-                  value={statusFilter}
-                  onIonChange={(e) => setStatusFilter(e.detail.value)}
-                  placeholder="Filter by status"
-                  className="status-filter"
-                >
-                  <IonSelectOption value="all">All Status</IonSelectOption>
-                  <IonSelectOption value="active">Active Only</IonSelectOption>
-                  <IonSelectOption value="inactive">Inactive Only</IonSelectOption>
-                </IonSelect>
-              </div>
+              {/* Master Controls */}
+              <MasterControls
+                searchQuery={searchTerm}
+                onSearchChange={setSearchTerm}
+                searchPlaceholder="Search by name, description, or status..."
+                onAddNew={handleAddNew}
+                addButtonText="Add New"
+                showFilterButton={true}
+                onFilterClick={() => {
+                  // Toggle between filter options
+                  const options = ['all', 'active', 'inactive'];
+                  const currentIndex = options.indexOf(statusFilter);
+                  const nextIndex = (currentIndex + 1) % options.length;
+                  setStatusFilter(options[nextIndex]);
+                }}
+                filterButtonText={statusFilter === 'all' ? 'All Status' : 
+                                 statusFilter === 'active' ? 'Active Only' : 'Inactive Only'}
+                className="application-type-controls"
+              />
 
               {/* Results Counter */}
               {filteredApplicationTypes.length !== applicationTypes?.length && (
@@ -213,25 +212,8 @@ const ApplicationType: React.FC = () => {
                 </div>
               )}
 
-              {/* Application Types List */}
-              <div className="list-container">
-                <div className="list-header">
-                  <div className="header-row">
-                    <div className="header-column name-column">
-                      <span>Name</span>
-                    </div>
-                    <div className="header-column description-column">
-                      <span>Description</span>
-                    </div>
-                    <div className="header-column status-column">
-                      <span>Status</span>
-                    </div>
-                    <div className="header-column actions-column">
-                      <span>Actions</span>
-                    </div>
-                  </div>
-                </div>
-
+              {/* Application Types Table */}
+              <ScrollableTableContainer className="application-types-table">
                 {isLoading ? (
                   <div className="loading-container">
                     <IonSpinner name="crescent" />
@@ -251,6 +233,7 @@ const ApplicationType: React.FC = () => {
                   </div>
                 ) : filteredApplicationTypes.length === 0 ? (
                   <div className="no-results-container">
+                    <IonIcon icon={documentTextOutline} />
                     <p>No application types found</p>
                     {searchTerm || statusFilter !== 'all' ? (
                       <p className="no-results-suggestion">
@@ -259,33 +242,43 @@ const ApplicationType: React.FC = () => {
                     ) : null}
                   </div>
                 ) : (
-                  <IonList className="application-types-list">
-                    {filteredApplicationTypes.map((type) => (
-                      <IonItem key={type.id} className="application-type-item">
-                        <div className="item-content">
-                          <div className="item-column name-column">
+                  <table className="application-types-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredApplicationTypes.map((type) => (
+                        <tr key={type.id} className="application-type-row">
+                          <td className="name-column">
                             <span className="application-type-name">{type.name}</span>
-                          </div>
-                          <div className="item-column description-column">
+                          </td>
+                          <td className="description-column">
                             <span className="application-type-description">
                               {type.description || 'No description'}
                             </span>
-                          </div>
-                          <div className="item-column status-column">
-                            <IonBadge 
-                              color={type.isActive ? 'success' : 'medium'}
-                              className="status-badge"
-                            >
-                              {type.isActive ? 'Active' : 'Inactive'}
-                            </IonBadge>
-                            <IonToggle
-                              checked={type.isActive}
-                              onIonChange={() => handleToggleStatus(type)}
-                              className="status-toggle"
-                            />
-                          </div>
-                          <div className="item-column actions-column">
-                            <div className="app-type-actions">
+                          </td>
+                          <td className="status-column">
+                            <div className="status-controls">
+                              <IonBadge 
+                                color={type.isActive ? 'success' : 'medium'}
+                                className="status-badge"
+                              >
+                                {type.isActive ? 'Active' : 'Inactive'}
+                              </IonBadge>
+                              <IonToggle
+                                checked={type.isActive}
+                                onIonChange={() => handleToggleStatus(type)}
+                                className="status-toggle"
+                              />
+                            </div>
+                          </td>
+                          <td className="actions-column">
+                            <div className="action-buttons">
                               <IonButton 
                                 fill="clear" 
                                 size="small" 
@@ -303,13 +296,13 @@ const ApplicationType: React.FC = () => {
                                 <IonIcon icon={trashOutline} />
                               </IonButton>
                             </div>
-                          </div>
-                        </div>
-                      </IonItem>
-                    ))}
-                  </IonList>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 )}
-              </div>
+              </ScrollableTableContainer>
             </div>
           </IonContent>
         </div>

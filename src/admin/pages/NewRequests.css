@@ -7,7 +7,7 @@
 }
 
 .new-requests-container {
-  padding: 2rem;
+  padding: 1rem 1rem 4rem 1rem;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -332,42 +332,47 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .new-requests-container {
-    padding: 1rem;
+    padding: 0.75rem 0.75rem 5rem 0.75rem;
   }
   
   .search-filter-bar {
     padding: 0.75rem;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.25rem;
-    flex-wrap: nowrap;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
   }
   
   .request-searchbar {
-    flex: 1;
+    width: 100%;
     max-width: none;
-    min-width: 100px;
+    min-width: 0;
+    order: 1;
+  }
+  
+  .filter-controls-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    order: 2;
   }
   
   .filter-select-dropdown {
-    width: auto;
-    max-width: 100px;
-    min-width: 80px;
-    flex-shrink: 0;
+    flex: 1;
+    max-width: none;
+    min-width: 0;
   }
   
   .filter-select-trigger {
-    width: auto;
-    max-width: 100px;
-    min-width: 80px;
-    flex-shrink: 0;
+    flex: 1;
+    max-width: none;
+    min-width: 0;
   }
   
   .refresh-btn {
-    width: auto;
+    flex-shrink: 0;
     min-width: 60px;
     justify-content: center;
-    flex-shrink: 0;
   }
   
   .results-header {
@@ -379,11 +384,15 @@
 
 @media (max-width: 480px) {
   .new-requests-container {
-    padding: 0.75rem;
+    padding: 0.5rem;
   }
   
   .search-filter-bar {
     padding: 0.5rem;
+    gap: 0.5rem;
+  }
+  
+  .filter-controls-row {
     gap: 0.25rem;
   }
   
@@ -393,10 +402,16 @@
     --padding-end: 1.5rem;
   }
   
+  .filter-select-trigger {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+  }
+  
   .refresh-btn {
     font-size: 0.8rem;
     --padding-start: 0.75rem;
     --padding-end: 0.75rem;
+    min-width: 50px;
   }
   
   .refresh-text {

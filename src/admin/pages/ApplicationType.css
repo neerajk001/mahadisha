@@ -49,11 +49,131 @@ ion-split-pane {
   font-weight: 700;
   color: #2d3748;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.page-title .title-line {
+  display: block;
 }
 
 .page-actions {
   display: flex;
   gap: 1rem;
+}
+
+.add-new-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.add-new-text {
+  display: inline;
+}
+
+/* Master Controls Styling */
+.application-type-controls {
+  margin-bottom: 1.5rem;
+}
+
+.application-type-controls .master-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.application-type-controls .master-controls-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.application-type-controls .master-controls-search {
+  --background: white;
+  --background-rgb: 255, 255, 255;
+  --border-radius: 12px;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --color: #2d3748;
+  --placeholder-color: #718096;
+  --icon-color: #5CA8A3;
+  --clear-button-color: #5CA8A3;
+  border: 1px solid black;
+  height: 48px;
+}
+
+.application-type-controls .master-controls-filter-button {
+  --background: white;
+  --background-rgb: 255, 255, 255;
+  --border-radius: 12px;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --color: #2d3748;
+  border: 1px solid black;
+  height: 48px;
+  font-weight: 500;
+}
+
+.application-type-controls .master-controls-add-button {
+  --background: #5CA8A3;
+  --background-rgb: 92, 168, 163;
+  --border-radius: 12px;
+  --color: white;
+  height: 48px;
+  font-weight: 500;
+}
+
+/* Responsive styles for small screens */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 1.5rem;
+  }
+  
+  .application-type-controls .button-text {
+    display: none;
+  }
+  
+  .application-type-controls .master-controls-add-button,
+  .application-type-controls .master-controls-filter-button {
+    min-width: auto;
+    padding: 0.5rem;
+    height: 48px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .application-type-controls .master-controls-add-button ion-icon,
+  .application-type-controls .master-controls-filter-button ion-icon {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+  
+  /* Ensure consistent button heights */
+  .application-type-controls .master-controls-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .application-type-controls .master-controls-actions ion-button {
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+  }
+  
+  /* Ensure search bar height matches buttons */
+  .application-type-controls .master-controls-search {
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+  }
+  
+  /* Overall container alignment */
+  .application-type-controls .master-controls {
+    align-items: center;
+    height: 48px;
+  }
 }
 
 /* Search and Filter Container */
@@ -68,7 +188,8 @@ ion-split-pane {
 
 .admin-search {
   flex: 4;
-  --background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+  --background: white;
+  --background-rgb: 255, 255, 255;
   --border-radius: 12px;
   --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   --color: #2d3748;
@@ -76,6 +197,28 @@ ion-split-pane {
   --icon-color: #5CA8A3;
   --clear-button-color: #5CA8A3;
   transition: all 0.3s ease;
+  border: 1px solid black;
+  height: 48px; /* Match the status filter height */
+  background: white !important;
+  background-color: white !important;
+}
+
+/* Override Ionic searchbar styling */
+.admin-search ion-searchbar {
+  --background: white !important;
+  --background-rgb: 255, 255, 255 !important;
+  background: white !important;
+  background-color: white !important;
+}
+
+.admin-search ion-searchbar .searchbar-input {
+  background: white !important;
+  background-color: white !important;
+}
+
+.admin-search ion-searchbar .searchbar-input-container {
+  background: white !important;
+  background-color: white !important;
 }
 
 .admin-search:hover {
@@ -87,13 +230,59 @@ ion-split-pane {
   flex: 1;
   min-width: 140px;
   max-width: 200px;
-  --background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+  --background: white;
+  --background-rgb: 255, 255, 255;
   --border-radius: 12px;
   --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   --color: #2d3748;
   --placeholder-color: #718096;
   font-weight: 500;
   transition: all 0.3s ease;
+  border: 1px solid black;
+  height: 48px; /* Match the search bar height */
+  background: white !important;
+}
+
+.status-filter .select-text {
+  background: white !important;
+}
+
+.status-filter .select-icon {
+  background: white !important;
+}
+
+/* Override Ionic default select styling */
+.status-filter ion-select {
+  --background: white !important;
+  --background-rgb: 255, 255, 255 !important;
+  background: white !important;
+  background-color: white !important;
+}
+
+.status-filter ion-select .select-text {
+  background: white !important;
+  background-color: white !important;
+}
+
+.status-filter ion-select .select-icon {
+  background: white !important;
+  background-color: white !important;
+}
+
+/* Additional overrides for any nested elements */
+.status-filter * {
+  background: white !important;
+  background-color: white !important;
+}
+
+.status-filter ion-select::part(text) {
+  background: white !important;
+  background-color: white !important;
+}
+
+.status-filter ion-select::part(icon) {
+  background: white !important;
+  background-color: white !important;
 }
 
 .status-filter:hover {
@@ -125,8 +314,8 @@ ion-split-pane {
   color: #718096;
 }
 
-/* List Container */
-.list-container {
+/* Application Types Table */
+.application-types-table {
   background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
   border-radius: 16px;
   box-shadow: 
@@ -143,6 +332,42 @@ ion-split-pane {
   min-height: 0;
 }
 
+/* Table specific styles */
+.application-types-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+}
+
+.application-types-table thead {
+  background: #f8fafc;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.application-types-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.application-types-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.application-types-table tr:hover {
+  background: #f8fafc;
+}
+
+.application-types-table tr:last-child td {
+  border-bottom: none;
+}
 
 .list-header {
   background: linear-gradient(135deg, #e6f3ff 0%, #d6ebff 100%);
@@ -416,7 +641,8 @@ ion-split-pane {
 .form-container ion-label {
   --color: #2d3748;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  display: block;
 }
 
 .form-container ion-input,
@@ -432,6 +658,7 @@ ion-split-pane {
   box-shadow: 
     0 2px 4px rgba(0, 0, 0, 0.03),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  margin-top: 0.5rem;
 }
 
 .modal-actions {

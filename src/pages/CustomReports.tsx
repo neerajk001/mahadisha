@@ -15,6 +15,7 @@ import {
   checkmarkCircleOutline, alertCircleOutline, timeOutline, starOutline,
   documentTextOutline, closeOutline, cloudDownloadOutline
 } from 'ionicons/icons';
+// Using a more reliable Excel export approach
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
 import { ScrollableTableContainer } from '../components/shared';
@@ -39,11 +40,205 @@ const CustomReports: React.FC = () => {
   // Get report data from mock service
   const reportData = mockDataService.getReportData();
 
-  const handleExport = (format: 'pdf' | 'excel' | 'csv') => {
-    setToastMessage(`${format.toUpperCase()} export started successfully`);
-    setShowToast(true);
-    setShowExportModal(false);
+  const handleExport = (format: 'excel' | 'csv') => {
+    try {
+      const currentData = mockDataService.getReportData();
+      const timestamp = new Date().toISOString().split('T')[0];
+      
+      if (format === 'excel') {
+        exportToExcel(currentData, timestamp);
+      } else if (format === 'csv') {
+        exportToCSV(currentData, timestamp);
+      }
+      
+      setToastMessage(`${format.toUpperCase()} export completed successfully`);
+      setShowToast(true);
+      setShowExportModal(false);
+    } catch (error) {
+      console.error('Export error:', error);
+      setToastMessage(`Error exporting ${format.toUpperCase()}`);
+      setShowToast(true);
+    }
   };
+
+  const exportToExcel = (data: ReportData, timestamp: string) => {
+    // Create HTML table for Excel export (more reliable than xlsx library)
+    const htmlContent = `
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: Arial, sans-serif; }
+            table { border-collapse: collapse; width: 100%; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #5CA8A3; color: white; font-weight: bold; }
+            .summary { background-color: #f0f8ff; padding: 15px; margin: 20px 0; }
+          </style>
+        </head>
+        <body>
+          <h1>Custom Report - ${timestamp}</h1>
+          
+          <div class="summary">
+            <h2>Summary</h2>
+            <table>
+              <tr><td><strong>Total Loan Amount</strong></td><td>${formatCurrency(data.summary.totalLoanAmount)}</td></tr>
+              <tr><td><strong>Average per Group</strong></td><td>${formatCurrency(data.summary.averagePerGroup)}</td></tr>
+              <tr><td><strong>Total Loans</strong></td><td>${data.summary.totalLoans}</td></tr>
+              <tr><td><strong>Max Group Amount</strong></td><td>${formatCurrency(data.summary.maxGroupAmount)}</td></tr>
+              <tr><td><strong>Min Group Amount</strong></td><td>${formatCurrency(data.summary.minGroupAmount)}</td></tr>
+              <tr><td><strong>Generated on</strong></td><td>${new Date().toLocaleString()}</td></tr>
+            </table>
+          </div>
+          
+          <h2>Detailed Report Data</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Loan Count</th>
+                <th>Total Amount (₹)</th>
+                <th>Scheme</th>
+                <th>User</th>
+                <th>Total Disbursed</th>
+                <th>Amount To Be Disbursed</th>
+                <th>Subsidy Amount</th>
+                <th>Own Contribution (%)</th>
+                <th>Subsidy Limit (%)</th>
+                <th>Loan % By MPBCDC</th>
+                <th>Loan % By Partner</th>
+                <th>Partner Recovery</th>
+                <th>Principle Amount</th>
+                <th>Loan Term (Years)</th>
+                <th>Total Interest</th>
+                <th>Interest Type</th>
+                <th>Interest (%)</th>
+                <th>Waived Count</th>
+                <th>Waived Off Principle</th>
+                <th>Waived Off Interest</th>
+                <th>Waived Off Both</th>
+                <th>Split Count</th>
+                <th>Settled Count</th>
+                <th>Total Recovered</th>
+                <th>Total Pending Recovery</th>
+                <th>Total Penalty</th>
+                <th>EMI Paid</th>
+                <th>EMI Unpaid</th>
+                <th>EMI Overdue</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${data.tableData.map(row => `
+                <tr>
+                  <td>${row.loanCount}</td>
+                  <td>${formatNumber(row.totalAmount)}</td>
+                  <td>${row.scheme}</td>
+                  <td>${row.user}</td>
+                  <td>${formatNumber(row.totalDisbursed)}</td>
+                  <td>${formatNumber(row.amountToBeDisbursed)}</td>
+                  <td>${formatNumber(row.subsidyAmount)}</td>
+                  <td>${row.ownContribution}%</td>
+                  <td>${row.subsidyLimit}%</td>
+                  <td>${row.loanPercentByMPBCDC}%</td>
+                  <td>${row.loanPercentByPartner}%</td>
+                  <td>${row.partnerRecovery ? 'Yes' : 'No'}</td>
+                  <td>${formatNumber(row.principleAmount)}</td>
+                  <td>${row.loanTerm} years</td>
+                  <td>${formatNumber(row.totalInterest)}</td>
+                  <td>${row.interestType}</td>
+                  <td>${row.interest}%</td>
+                  <td>${row.waivedCount}</td>
+                  <td>${formatNumber(row.waivedOffPrinciple)}</td>
+                  <td>${formatNumber(row.waivedOffInterest)}</td>
+                  <td>${row.waivedOffBoth ? 'Yes' : 'No'}</td>
+                  <td>${row.splitCount}</td>
+                  <td>${row.settledCount}</td>
+                  <td>${formatNumber(row.totalRecovered)}</td>
+                  <td>${formatNumber(row.totalPendingRecovery)}</td>
+                  <td>${formatNumber(row.totalPenalty)}</td>
+                  <td>${row.emiPaid}</td>
+                  <td>${row.emiUnpaid}</td>
+                  <td>${row.emiOverdue}</td>
+                  <td>${row.pending ? 'Pending' : 'Completed'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `;
+    
+    // Create blob and download
+    const blob = new Blob([htmlContent], { type: 'application/vnd.ms-excel' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Custom_Report_${timestamp}.xls`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportToCSV = (data: ReportData, timestamp: string) => {
+    const headers = [
+      'Loan Count', 'Total Amount (₹)', 'Scheme', 'User', 'Total Disbursed',
+      'Amount To Be Disbursed', 'Subsidy Amount', 'Own Contribution (%)',
+      'Subsidy Limit (%)', 'Loan % By MPBCDC', 'Loan % By Partner',
+      'Partner Recovery', 'Principle Amount', 'Loan Term (Years)',
+      'Total Interest', 'Interest Type', 'Interest (%)', 'Waived Count',
+      'Waived Off Principle', 'Waived Off Interest', 'Waived Off Both',
+      'Split Count', 'Settled Count', 'Total Recovered', 'Total Pending Recovery',
+      'Total Penalty', 'EMI Paid', 'EMI Unpaid', 'EMI Overdue', 'Status'
+    ];
+    
+    const csvData = data.tableData.map(row => [
+      row.loanCount,
+      formatNumber(row.totalAmount),
+      row.scheme,
+      row.user,
+      formatNumber(row.totalDisbursed),
+      formatNumber(row.amountToBeDisbursed),
+      formatNumber(row.subsidyAmount),
+      `${row.ownContribution}%`,
+      `${row.subsidyLimit}%`,
+      `${row.loanPercentByMPBCDC}%`,
+      `${row.loanPercentByPartner}%`,
+      row.partnerRecovery ? 'Yes' : 'No',
+      formatNumber(row.principleAmount),
+      `${row.loanTerm} years`,
+      formatNumber(row.totalInterest),
+      row.interestType,
+      `${row.interest}%`,
+      row.waivedCount,
+      formatNumber(row.waivedOffPrinciple),
+      formatNumber(row.waivedOffInterest),
+      row.waivedOffBoth ? 'Yes' : 'No',
+      row.splitCount,
+      row.settledCount,
+      formatNumber(row.totalRecovered),
+      formatNumber(row.totalPendingRecovery),
+      formatNumber(row.totalPenalty),
+      row.emiPaid,
+      row.emiUnpaid,
+      row.emiOverdue,
+      row.pending ? 'Pending' : 'Completed'
+    ]);
+    
+    const csvContent = [headers, ...csvData]
+      .map(row => row.map(cell => `"${cell}"`).join(','))
+      .join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Custom_Report_${timestamp}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
 
   const handleRefresh = () => {
     setToastMessage('Data refreshed successfully');
@@ -425,16 +620,7 @@ const CustomReports: React.FC = () => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <IonButton 
                 expand="block" 
-                fill="outline" 
-                onClick={() => handleExport('pdf')}
-                style={{ '--background': 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)', '--color': 'white' }}
-              >
-                <IonIcon icon={documentTextOutline} slot="start" />
-                Export as PDF
-              </IonButton>
-              <IonButton 
-                expand="block" 
-                fill="outline" 
+                fill="solid" 
                 onClick={() => handleExport('excel')}
                 style={{ '--background': 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)', '--color': 'white' }}
               >
@@ -443,7 +629,7 @@ const CustomReports: React.FC = () => {
               </IonButton>
               <IonButton 
                 expand="block" 
-                fill="outline" 
+                fill="solid" 
                 onClick={() => handleExport('csv')}
                 style={{ '--background': 'linear-gradient(135deg, #45b7d1 0%, #96ceb4 100%)', '--color': 'white' }}
               >

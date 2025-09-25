@@ -244,69 +244,71 @@ const NewRequests: React.FC = () => {
                   className="request-searchbar"
                 />
                 
-                <IonSelect
-                  value={filters.status}
-                  onIonChange={(e) => setFilters((prev: RequestFilters) => ({ ...prev, status: e.detail.value }))}
-                  placeholder="All Status"
-                  className="filter-select-dropdown"
-                  interface="popover"
-                  interfaceOptions={{ cssClass: 'newreq-select-popover' }}
-                >
-                  {statusOptions.map(option => (
-                    <IonSelectOption key={option.value} value={option.value}>
-                      {option.label}
-                    </IonSelectOption>
-                  ))}
-                </IonSelect>
-                
-                {/* Searchable District Dropdown (Popover) */}
-                <button
-                  type="button"
-                  className="filter-select-trigger"
-                  onClick={(e) => {
-                    setDistrictPopoverEvent(e.nativeEvent);
-                    setDistrictPopoverOpen(true);
-                  }}
-                >
-                  <span>{districtOptions.find(o => o.value === filters.district)?.label || 'All Districts'}</span>
-                  <IonIcon icon={chevronDownOutline} />
-                </button>
-                <IonPopover
-                  isOpen={districtPopoverOpen}
-                  event={districtPopoverEvent}
-                  onDidDismiss={() => setDistrictPopoverOpen(false)}
-                  cssClass="newreq-select-popover"
-                >
-                  <IonContent>
-                    <IonSearchbar
-                      value={districtSearch}
-                      onIonInput={(e) => setDistrictSearch(e.detail.value!)}
-                      placeholder="Search districts"
-                      className="popover-searchbar"
-                    />
-                    <IonList>
-                      {districtOptions
-                        .filter(o => o.label.toLowerCase().includes(districtSearch.toLowerCase()))
-                        .map(option => (
-                          <IonItem button key={option.value} onClick={() => {
-                            setFilters((prev: RequestFilters) => ({ ...prev, district: option.value }));
-                            setDistrictPopoverOpen(false);
-                          }}>
-                            <IonLabel>{option.label}</IonLabel>
-                          </IonItem>
-                        ))}
-                    </IonList>
-                  </IonContent>
-                </IonPopover>
-                
-                <IonButton
-                  fill="clear"
-                  onClick={() => refetch()}
-                  className="refresh-btn"
-                >
-                  <IonIcon slot="icon-only" icon={refreshOutline} />
-                  <span className="refresh-text">REFRESH</span>
-                </IonButton>
+                <div className="filter-controls-row">
+                  <IonSelect
+                    value={filters.status}
+                    onIonChange={(e) => setFilters((prev: RequestFilters) => ({ ...prev, status: e.detail.value }))}
+                    placeholder="All Status"
+                    className="filter-select-dropdown"
+                    interface="popover"
+                    interfaceOptions={{ cssClass: 'newreq-select-popover' }}
+                  >
+                    {statusOptions.map(option => (
+                      <IonSelectOption key={option.value} value={option.value}>
+                        {option.label}
+                      </IonSelectOption>
+                    ))}
+                  </IonSelect>
+                  
+                  {/* Searchable District Dropdown (Popover) */}
+                  <button
+                    type="button"
+                    className="filter-select-trigger"
+                    onClick={(e) => {
+                      setDistrictPopoverEvent(e.nativeEvent);
+                      setDistrictPopoverOpen(true);
+                    }}
+                  >
+                    <span>{districtOptions.find(o => o.value === filters.district)?.label || 'All Districts'}</span>
+                    <IonIcon icon={chevronDownOutline} />
+                  </button>
+                  <IonPopover
+                    isOpen={districtPopoverOpen}
+                    event={districtPopoverEvent}
+                    onDidDismiss={() => setDistrictPopoverOpen(false)}
+                    cssClass="newreq-select-popover"
+                  >
+                    <IonContent>
+                      <IonSearchbar
+                        value={districtSearch}
+                        onIonInput={(e) => setDistrictSearch(e.detail.value!)}
+                        placeholder="Search districts"
+                        className="popover-searchbar"
+                      />
+                      <IonList>
+                        {districtOptions
+                          .filter(o => o.label.toLowerCase().includes(districtSearch.toLowerCase()))
+                          .map(option => (
+                            <IonItem button key={option.value} onClick={() => {
+                              setFilters((prev: RequestFilters) => ({ ...prev, district: option.value }));
+                              setDistrictPopoverOpen(false);
+                            }}>
+                              <IonLabel>{option.label}</IonLabel>
+                            </IonItem>
+                          ))}
+                      </IonList>
+                    </IonContent>
+                  </IonPopover>
+                  
+                  <IonButton
+                    fill="clear"
+                    onClick={() => refetch()}
+                    className="refresh-btn"
+                  >
+                    <IonIcon slot="icon-only" icon={refreshOutline} />
+                    <span className="refresh-text">REFRESH</span>
+                  </IonButton>
+                </div>
               </div>
 
               {/* Results Section */}

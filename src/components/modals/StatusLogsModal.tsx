@@ -118,8 +118,9 @@ const StatusLogsModal: React.FC<StatusLogsModalProps> = ({
         </IonToolbar>
       </IonHeader>
       <IonContent className="status-logs-content">
-        <IonList>
-          {statusLogs.map((log, index) => (
+        {statusLogs && statusLogs.length > 0 ? (
+          <IonList>
+            {statusLogs.map((log, index) => (
             <div key={index} className="status-log-item">
               <div className="status-log-bullet"></div>
               <div className="status-log-content">
@@ -133,29 +134,21 @@ const StatusLogsModal: React.FC<StatusLogsModalProps> = ({
                   </div>
                 </div>
                 
-                {/* Display status-specific fields from the function */}
+                {/* Display fields from the data if available, otherwise use status-specific fields */}
                 <div className="status-log-fields">
-                  {getStatusSpecificFields(log.status).map((field, i) => (
-                    <div key={i} className="status-log-field-item">
-                      <span className="field-label">{field.label}:</span> {field.value}
-                    </div>
-                  ))}
+                  {(log.fields && Object.keys(log.fields).length > 0
+                    ? Object.entries(log.fields).map(([key, value]) => (
+                        <div key={key} className="status-log-field-item">
+                          <span className="field-label">{key}:</span> {value}
+                        </div>
+                      ))
+                    : getStatusSpecificFields(log.status).map((field, i) => (
+                        <div key={i} className="status-log-field-item">
+                          <span className="field-label">{field.label}:</span> {field.value}
+                        </div>
+                      ))
+                  )}
                 </div>
-                
-                {/* Display fields from the data if available */}
-                {/* Show fields from log.fields if available, otherwise use getStatusSpecificFields */}
-                {(log.fields && Object.keys(log.fields).length > 0
-                ? Object.entries(log.fields).map(([key, value]) => (
-                    <div key={key} className="status-log-field-item">
-                      <span className="field-label">{key}:</span> {value}
-                    </div>
-                  ))
-                : getStatusSpecificFields(log.status).map((field, i) => (
-                    <div key={i} className="status-log-field-item">
-                      <span className="field-label">{field.label}:</span> {field.value}
-                    </div>
-                  ))
-                )}
                 
                 <div className="status-log-document">
                   {log.document ? log.document : 'No Document'}
@@ -163,7 +156,12 @@ const StatusLogsModal: React.FC<StatusLogsModalProps> = ({
               </div>
             </div>
           ))}
-        </IonList>
+          </IonList>
+        ) : (
+          <div className="no-status-logs">
+            <p>No status logs available for this request.</p>
+          </div>
+        )}
         <div className="status-logs-actions">
           <IonButton 
             expand="block" 

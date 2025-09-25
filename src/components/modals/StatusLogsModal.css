@@ -1,13 +1,16 @@
 .status-logs-modal {
   --width: 90%;
-  --max-width: 500px;
-  --height: auto;
+  --max-width: 600px;
+  --height: 80%;
+  --min-height: 400px;
   --border-radius: 10px;
   --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .status-logs-content {
   padding: 16px;
+  min-height: 200px;
+  overflow-y: auto;
 }
 
 .status-log-item {
@@ -111,6 +114,31 @@
   margin-top: 24px;
   padding: 16px 0;
   border-top: 1px solid #eee;
+}
+
+.no-status-logs {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.no-status-logs p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Desktop styles */
+@media (min-width: 769px) {
+  .status-logs-modal {
+    --width: 70%;
+    --max-width: 800px;
+    --height: 70%;
+    --min-height: 500px;
+  }
+  
+  .status-logs-content {
+    padding: 24px;
+  }
 }
 
 @media (max-width: 576px) {
