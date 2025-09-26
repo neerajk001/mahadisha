@@ -346,12 +346,18 @@ const OrganizationMasters: React.FC = () => {
       </IonSplitPane>
 
       {/* Add Organization Modal */}
-      <IonModal isOpen={showAddModal} onDidDismiss={() => setShowAddModal(false)}>
+      <IonModal isOpen={showAddModal} onDidDismiss={() => {
+        setShowAddModal(false);
+        setAddForm({ name: '' });
+      }}>
         <IonHeader>
           <IonToolbar>
             <IonTitle>Add New Organization</IonTitle>
             <IonButtons slot="end">
-              <IonButton onClick={() => setShowAddModal(false)}>
+              <IonButton onClick={() => {
+                setShowAddModal(false);
+                setAddForm({ name: '' });
+              }}>
                 <IonIcon icon={closeOutline} />
               </IonButton>
             </IonButtons>
@@ -372,6 +378,8 @@ const OrganizationMasters: React.FC = () => {
                   Organization Name
                 </IonLabel>
                 <IonInput
+                  value={addForm.name}
+                  onIonChange={(e) => setAddForm({...addForm, name: e.detail.value!})}
                   placeholder="Enter organization name"
                   style={{ 
                     '--background': '#e8e8e8',

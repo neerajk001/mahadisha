@@ -13,7 +13,8 @@ import {
   swapVerticalOutline, eyeOutline, settingsOutline, copyOutline, linkOutline, timeOutline,
   peopleOutline, globeOutline, locationOutline, mapOutline, businessOutline, 
   barChartOutline, fileTrayOutline, accessibilityOutline, keyOutline, homeOutline, 
-  gitBranchOutline, shieldOutline, shuffleOutline, checkmark
+  gitBranchOutline, shieldOutline, shuffleOutline, checkmark,
+  chevronDownOutline, chevronUpOutline
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -926,16 +927,26 @@ const StatusMapping: React.FC = () => {
                     onClick={() => setShowStatusDropdown(!showStatusDropdown)}
                     style={{ 
                       '--background': '#e8e8e8',
-                      '--border-radius': '12px',
+                      '--border-radius': showStatusDropdown ? '12px 12px 0 0' : '12px',
                       '--padding-start': '16px',
-                      '--padding-end': '16px',
+                      '--padding-end': '50px',
                       '--padding-top': '12px',
                       '--padding-bottom': '12px',
                       '--color': '#333',
                       '--placeholder-color': '#666',
                       cursor: 'pointer'
                     }}
-                  />
+                  >
+                    <IonIcon 
+                      icon={showStatusDropdown ? chevronUpOutline : chevronDownOutline} 
+                      slot="end" 
+                      style={{ 
+                        color: '#666', 
+                        fontSize: '20px',
+                        cursor: 'pointer'
+                      }} 
+                    />
+                  </IonInput>
                   {showStatusDropdown && (
                     <div 
                       style={{
@@ -945,13 +956,14 @@ const StatusMapping: React.FC = () => {
                         right: 0,
                         backgroundColor: 'white',
                         border: '1px solid #e0e0e0',
-                        borderRadius: '12px',
+                        borderTop: 'none',
+                        borderRadius: '0 0 12px 12px',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                         zIndex: 1000,
                         maxHeight: '300px',
                         overflow: 'hidden'
                       }}>
-                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                      <div style={{ padding: '12px' }}>
               <IonInput
                           value={statusSearchQuery}
                           onIonChange={(e) => setStatusSearchQuery(e.detail.value!)}
@@ -1044,16 +1056,26 @@ const StatusMapping: React.FC = () => {
                     onClick={() => setShowRoleDropdown(!showRoleDropdown)}
                     style={{ 
                       '--background': '#e8e8e8',
-                      '--border-radius': '12px',
+                      '--border-radius': showRoleDropdown ? '12px 12px 0 0' : '12px',
                       '--padding-start': '16px',
-                      '--padding-end': '16px',
+                      '--padding-end': '50px',
                       '--padding-top': '12px',
                       '--padding-bottom': '12px',
                       '--color': '#333',
                       '--placeholder-color': '#666',
                       cursor: 'pointer'
                     }}
-                  />
+                  >
+                    <IonIcon 
+                      icon={showRoleDropdown ? chevronUpOutline : chevronDownOutline} 
+                      slot="end" 
+                      style={{ 
+                        color: '#666', 
+                        fontSize: '20px',
+                        cursor: 'pointer'
+                      }} 
+                    />
+                  </IonInput>
                   {showRoleDropdown && (
                     <div 
                       style={{
@@ -1063,13 +1085,14 @@ const StatusMapping: React.FC = () => {
                         right: 0,
                         backgroundColor: 'white',
                         border: '1px solid #e0e0e0',
-                        borderRadius: '12px',
+                        borderTop: 'none',
+                        borderRadius: '0 0 12px 12px',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                         zIndex: 1000,
                         maxHeight: '300px',
                         overflow: 'hidden'
                       }}>
-                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                      <div style={{ padding: '12px' }}>
                         <IonInput
                           value={roleSearchQuery}
                           onIonChange={(e) => setRoleSearchQuery(e.detail.value!)}
@@ -1162,16 +1185,26 @@ const StatusMapping: React.FC = () => {
                     onClick={() => setShowVisibleFieldsDropdown(!showVisibleFieldsDropdown)}
                     style={{ 
                       '--background': '#e8e8e8',
-                      '--border-radius': '12px',
+                      '--border-radius': showVisibleFieldsDropdown ? '12px 12px 0 0' : '12px',
                       '--padding-start': '16px',
-                      '--padding-end': '16px',
+                      '--padding-end': '50px',
                       '--padding-top': '12px',
                       '--padding-bottom': '12px',
                       '--color': '#333',
                       '--placeholder-color': '#666',
                       cursor: 'pointer'
                     }}
-                  />
+                  >
+                    <IonIcon 
+                      icon={showVisibleFieldsDropdown ? chevronUpOutline : chevronDownOutline} 
+                      slot="end" 
+                      style={{ 
+                        color: '#666', 
+                        fontSize: '20px',
+                        cursor: 'pointer'
+                      }} 
+                    />
+                  </IonInput>
                   {showVisibleFieldsDropdown && (
                     <div 
                       style={{
@@ -1181,13 +1214,14 @@ const StatusMapping: React.FC = () => {
                         right: 0,
                         backgroundColor: 'white',
                         border: '1px solid #e0e0e0',
-                        borderRadius: '12px',
+                        borderTop: 'none',
+                        borderRadius: '0 0 12px 12px',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                         zIndex: 1000,
                         maxHeight: '300px',
                         overflow: 'hidden'
                       }}>
-                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                      <div style={{ padding: '12px' }}>
                         <IonInput
                           value={visibleFieldsSearchQuery}
                           onIonChange={(e) => setVisibleFieldsSearchQuery(e.detail.value!)}
@@ -1277,19 +1311,21 @@ const StatusMapping: React.FC = () => {
                     onClick={() => setShowNextStatusDropdown(!showNextStatusDropdown)}
                     style={{ 
                       background: '#e8e8e8',
-                      borderRadius: '12px',
+                      borderRadius: showNextStatusDropdown ? '12px 12px 0 0' : '12px',
                       padding: '12px 16px',
                       minHeight: '48px',
                       cursor: 'pointer',
                       display: 'flex',
-                      flexWrap: 'wrap',
+                      flexWrap: 'nowrap',
                       alignItems: 'center',
                       gap: '8px',
+                      justifyContent: 'space-between',
                       border: '1px solid transparent'
                     }}
                   >
-                    {formData.nextPossibleStatuses.length > 0 ? (
-                      formData.nextPossibleStatuses.map((status, index) => (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', flex: 1, alignItems: 'center', minHeight: '24px' }}>
+                      {formData.nextPossibleStatuses.length > 0 ? (
+                        formData.nextPossibleStatuses.map((status, index) => (
                         <div
                           key={index}
                           style={{
@@ -1325,6 +1361,17 @@ const StatusMapping: React.FC = () => {
                         Search and select next possible statuses
                       </span>
                     )}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '24px', width: '24px', marginRight: '30px' }}>
+                      <IonIcon 
+                        icon={showNextStatusDropdown ? chevronUpOutline : chevronDownOutline} 
+                        style={{ 
+                          color: '#666', 
+                          fontSize: '20px',
+                          cursor: 'pointer'
+                        }} 
+                      />
+                    </div>
                   </div>
                   {showNextStatusDropdown && (
                     <div style={{
@@ -1349,7 +1396,7 @@ const StatusMapping: React.FC = () => {
                           '--border': 'none',
                           '--border-radius': '8px',
                           '--padding-start': '16px',
-                          '--padding-end': '16px',
+                          '--padding-end': '50px',
                           '--padding-top': '12px',
                           '--padding-bottom': '12px',
                           '--color': '#333',
@@ -1494,9 +1541,9 @@ const StatusMapping: React.FC = () => {
                     onClick={() => setShowStatusDropdown(!showStatusDropdown)}
                     style={{ 
                       '--background': '#e8e8e8',
-                      '--border-radius': '12px',
+                      '--border-radius': showStatusDropdown ? '12px 12px 0 0' : '12px',
                       '--padding-start': '16px',
-                      '--padding-end': '16px',
+                      '--padding-end': '50px',
                       '--padding-top': '12px',
                       '--padding-bottom': '12px',
                       '--color': '#333',
@@ -1513,13 +1560,14 @@ const StatusMapping: React.FC = () => {
                         right: 0,
                         backgroundColor: 'white',
                         border: '1px solid #e0e0e0',
-                        borderRadius: '12px',
+                        borderTop: 'none',
+                        borderRadius: '0 0 12px 12px',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                         zIndex: 1000,
                         maxHeight: '300px',
                         overflow: 'hidden'
                       }}>
-                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                      <div style={{ padding: '12px' }}>
               <IonInput
                           value={statusSearchQuery}
                           onIonChange={(e) => setStatusSearchQuery(e.detail.value!)}
@@ -1612,9 +1660,9 @@ const StatusMapping: React.FC = () => {
                     onClick={() => setShowRoleDropdown(!showRoleDropdown)}
                     style={{ 
                       '--background': '#e8e8e8',
-                      '--border-radius': '12px',
+                      '--border-radius': showRoleDropdown ? '12px 12px 0 0' : '12px',
                       '--padding-start': '16px',
-                      '--padding-end': '16px',
+                      '--padding-end': '50px',
                       '--padding-top': '12px',
                       '--padding-bottom': '12px',
                       '--color': '#333',
@@ -1631,13 +1679,14 @@ const StatusMapping: React.FC = () => {
                         right: 0,
                         backgroundColor: 'white',
                         border: '1px solid #e0e0e0',
-                        borderRadius: '12px',
+                        borderTop: 'none',
+                        borderRadius: '0 0 12px 12px',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                         zIndex: 1000,
                         maxHeight: '300px',
                         overflow: 'hidden'
                       }}>
-                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                      <div style={{ padding: '12px' }}>
                         <IonInput
                           value={roleSearchQuery}
                           onIonChange={(e) => setRoleSearchQuery(e.detail.value!)}
@@ -1730,16 +1779,26 @@ const StatusMapping: React.FC = () => {
                     onClick={() => setShowVisibleFieldsDropdown(!showVisibleFieldsDropdown)}
                     style={{ 
                       '--background': '#e8e8e8',
-                      '--border-radius': '12px',
+                      '--border-radius': showVisibleFieldsDropdown ? '12px 12px 0 0' : '12px',
                       '--padding-start': '16px',
-                      '--padding-end': '16px',
+                      '--padding-end': '50px',
                       '--padding-top': '12px',
                       '--padding-bottom': '12px',
                       '--color': '#333',
                       '--placeholder-color': '#666',
                       cursor: 'pointer'
                     }}
-                  />
+                  >
+                    <IonIcon 
+                      icon={showVisibleFieldsDropdown ? chevronUpOutline : chevronDownOutline} 
+                      slot="end" 
+                      style={{ 
+                        color: '#666', 
+                        fontSize: '20px',
+                        cursor: 'pointer'
+                      }} 
+                    />
+                  </IonInput>
                   {showVisibleFieldsDropdown && (
                     <div 
                       style={{
@@ -1749,13 +1808,14 @@ const StatusMapping: React.FC = () => {
                         right: 0,
                         backgroundColor: 'white',
                         border: '1px solid #e0e0e0',
-                        borderRadius: '12px',
+                        borderTop: 'none',
+                        borderRadius: '0 0 12px 12px',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                         zIndex: 1000,
                         maxHeight: '300px',
                         overflow: 'hidden'
                       }}>
-                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                      <div style={{ padding: '12px' }}>
                         <IonInput
                           value={visibleFieldsSearchQuery}
                           onIonChange={(e) => setVisibleFieldsSearchQuery(e.detail.value!)}
@@ -1845,19 +1905,21 @@ const StatusMapping: React.FC = () => {
                     onClick={() => setShowNextStatusDropdown(!showNextStatusDropdown)}
                     style={{ 
                       background: '#e8e8e8',
-                      borderRadius: '12px',
+                      borderRadius: showNextStatusDropdown ? '12px 12px 0 0' : '12px',
                       padding: '12px 16px',
                       minHeight: '48px',
                       cursor: 'pointer',
                       display: 'flex',
-                      flexWrap: 'wrap',
+                      flexWrap: 'nowrap',
                       alignItems: 'center',
                       gap: '8px',
+                      justifyContent: 'space-between',
                       border: '1px solid transparent'
                     }}
                   >
-                    {formData.nextPossibleStatuses.length > 0 ? (
-                      formData.nextPossibleStatuses.map((status, index) => (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', flex: 1, alignItems: 'center', minHeight: '24px' }}>
+                      {formData.nextPossibleStatuses.length > 0 ? (
+                        formData.nextPossibleStatuses.map((status, index) => (
                         <div
                           key={index}
                           style={{
@@ -1893,6 +1955,17 @@ const StatusMapping: React.FC = () => {
                         Search and select next possible statuses
                       </span>
                     )}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '24px', width: '24px', marginRight: '12px' }}>
+                      <IonIcon 
+                        icon={showNextStatusDropdown ? chevronUpOutline : chevronDownOutline} 
+                        style={{ 
+                          color: '#666', 
+                          fontSize: '20px',
+                          cursor: 'pointer'
+                        }} 
+                      />
+                    </div>
                   </div>
                   {showNextStatusDropdown && (
                     <div style={{
@@ -1917,7 +1990,7 @@ const StatusMapping: React.FC = () => {
                           '--border': 'none',
                           '--border-radius': '8px',
                           '--padding-start': '16px',
-                          '--padding-end': '16px',
+                          '--padding-end': '50px',
                           '--padding-top': '12px',
                           '--padding-bottom': '12px',
                           '--color': '#333',

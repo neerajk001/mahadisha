@@ -9,7 +9,7 @@ import {
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
   chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
-  eyeOutline, checkmark, closeOutline as closeOutlineIcon
+  eyeOutline, checkmark, closeOutline as closeOutlineIcon, chevronDownOutline, chevronUpOutline
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -432,15 +432,21 @@ const DatabaseAccess: React.FC = () => {
                   onClick={() => setShowNameDropdown(!showNameDropdown)}
                   style={{ 
                     '--background': '#e8e8e8',
-                    '--border-radius': '12px',
+                    '--border-radius': showNameDropdown ? '12px 12px 0 0' : '12px',
                     '--padding-start': '16px',
-                    '--padding-end': '16px',
+                    '--padding-end': '50px',
                     '--padding-top': '12px',
                     '--padding-bottom': '12px',
                     '--color': '#333',
                     '--placeholder-color': '#666'
                   }}
-                />
+                >
+                  <IonIcon 
+                    icon={showNameDropdown ? chevronUpOutline : chevronDownOutline} 
+                    slot="end" 
+                    style={{ color: '#666', fontSize: '20px', cursor: 'pointer' }} 
+                  />
+                </IonInput>
                 {showNameDropdown && (
                   <div style={{
                     position: 'absolute',
@@ -449,7 +455,8 @@ const DatabaseAccess: React.FC = () => {
                     right: 0,
                     backgroundColor: 'white',
                     border: '1px solid #ddd',
-                    borderRadius: '8px',
+                    borderRadius: '0 0 12px 12px',
+                    borderTop: 'none',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                     zIndex: 1000,
                     maxHeight: '300px',
@@ -462,7 +469,7 @@ const DatabaseAccess: React.FC = () => {
                       style={{
                         '--background': '#f5f5f5',
                         '--border': 'none',
-                        '--border-radius': '8px',
+                        '--border-radius': '0',
                         '--padding-start': '16px',
                         '--padding-end': '16px',
                         '--padding-top': '12px',
@@ -536,54 +543,67 @@ const DatabaseAccess: React.FC = () => {
                   onClick={() => setShowPermissionsDropdown(!showPermissionsDropdown)}
                   style={{ 
                     background: '#e8e8e8',
-                    borderRadius: '12px',
+                    borderRadius: showPermissionsDropdown ? '12px 12px 0 0' : '12px',
                     padding: '12px 16px',
                     minHeight: '48px',
                     cursor: 'pointer',
                     display: 'flex',
-                    flexWrap: 'wrap',
+                    flexWrap: 'nowrap',
                     alignItems: 'center',
                     gap: '8px',
+                    justifyContent: 'space-between',
                     border: '1px solid transparent'
                   }}
                 >
-                  {addForm.permissions.length > 0 ? (
-                    addForm.permissions.map((permission, index) => (
-                      <div
-                        key={index}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          background: '#2196f3',
-                          color: 'white',
-                          padding: '6px 12px',
-                          borderRadius: '20px',
-                          fontSize: '14px',
-                          fontWeight: '500'
-                        }}
-                      >
-                        <span>{permission}</span>
-                        <IonIcon
-                          icon={closeOutline}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', flex: 1, alignItems: 'center', minHeight: '24px' }}>
+                    {addForm.permissions.length > 0 ? (
+                      addForm.permissions.map((permission, index) => (
+                        <div
+                          key={index}
                           style={{
-                            fontSize: '16px',
-                            cursor: 'pointer',
-                            color: 'white'
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            background: '#2196f3',
+                            color: 'white',
+                            padding: '6px 12px',
+                            borderRadius: '20px',
+                            fontSize: '14px',
+                            fontWeight: '500'
                           }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const newPermissions = addForm.permissions.filter((_, i) => i !== index);
-                            setAddForm({...addForm, permissions: newPermissions});
-                          }}
-                        />
-                      </div>
-                    ))
-                  ) : (
-                    <span style={{ color: '#666', fontSize: '16px' }}>
-                      Search and select permissions
-                    </span>
-                  )}
+                        >
+                          <span>{permission}</span>
+                          <IonIcon
+                            icon={closeOutline}
+                            style={{
+                              fontSize: '16px',
+                              cursor: 'pointer',
+                              color: 'white'
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const newPermissions = addForm.permissions.filter((_, i) => i !== index);
+                              setAddForm({...addForm, permissions: newPermissions});
+                            }}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <span style={{ color: '#666', fontSize: '16px' }}>
+                        Search and select permissions
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '24px', width: '24px', marginRight: '30px' }}>
+                    <IonIcon 
+                      icon={showPermissionsDropdown ? chevronUpOutline : chevronDownOutline} 
+                      style={{ 
+                        color: '#666', 
+                        fontSize: '20px',
+                        cursor: 'pointer'
+                      }} 
+                    />
+                  </div>
                 </div>
                 {showPermissionsDropdown && (
                   <div style={{
@@ -593,7 +613,8 @@ const DatabaseAccess: React.FC = () => {
                     right: 0,
                     backgroundColor: 'white',
                     border: '1px solid #ddd',
-                    borderRadius: '8px',
+                    borderRadius: '0 0 12px 12px',
+                    borderTop: 'none',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                     zIndex: 1000,
                     maxHeight: '300px',
@@ -606,7 +627,7 @@ const DatabaseAccess: React.FC = () => {
                       style={{
                         '--background': '#f5f5f5',
                         '--border': 'none',
-                        '--border-radius': '8px',
+                        '--border-radius': '0',
                         '--padding-start': '16px',
                         '--padding-end': '16px',
                         '--padding-top': '12px',
@@ -767,15 +788,21 @@ const DatabaseAccess: React.FC = () => {
                 onClick={() => setShowEditNameDropdown(!showEditNameDropdown)}
                 style={{ 
                   '--background': '#e8e8e8',
-                  '--border-radius': '12px',
+                  '--border-radius': showEditNameDropdown ? '12px 12px 0 0' : '12px',
                   '--padding-start': '16px',
-                  '--padding-end': '16px',
+                  '--padding-end': '50px',
                   '--padding-top': '12px',
                   '--padding-bottom': '12px',
                   '--color': '#333',
                   '--placeholder-color': '#666'
                 }}
-              />
+              >
+                <IonIcon 
+                  icon={showEditNameDropdown ? chevronUpOutline : chevronDownOutline} 
+                  slot="end" 
+                  style={{ color: '#666', fontSize: '20px', cursor: 'pointer' }} 
+                />
+              </IonInput>
               {showEditNameDropdown && (
                 <div style={{
                   position: 'absolute',
@@ -784,7 +811,8 @@ const DatabaseAccess: React.FC = () => {
                   right: 0,
                   backgroundColor: 'white',
                   border: '1px solid #ddd',
-                  borderRadius: '8px',
+                  borderRadius: '0 0 12px 12px',
+                  borderTop: 'none',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                   zIndex: 1000,
                   maxHeight: '300px',
@@ -797,7 +825,7 @@ const DatabaseAccess: React.FC = () => {
                     style={{
                       '--background': '#f5f5f5',
                       '--border': 'none',
-                      '--border-radius': '8px',
+                      '--border-radius': '0',
                       '--padding-start': '16px',
                       '--padding-end': '16px',
                       '--padding-top': '12px',
@@ -871,54 +899,67 @@ const DatabaseAccess: React.FC = () => {
                 onClick={() => setShowEditPermissionsDropdown(!showEditPermissionsDropdown)}
                 style={{ 
                   background: '#e8e8e8',
-                  borderRadius: '12px',
+                  borderRadius: showEditPermissionsDropdown ? '12px 12px 0 0' : '12px',
                   padding: '12px 16px',
                   minHeight: '48px',
                   cursor: 'pointer',
                   display: 'flex',
-                  flexWrap: 'wrap',
+                  flexWrap: 'nowrap',
                   alignItems: 'center',
                   gap: '8px',
+                  justifyContent: 'space-between',
                   border: '1px solid transparent'
                 }}
               >
-                {editForm.permissions.length > 0 ? (
-                  editForm.permissions.map((permission, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        background: '#2196f3',
-                        color: 'white',
-                        padding: '6px 12px',
-                        borderRadius: '20px',
-                        fontSize: '14px',
-                        fontWeight: '500'
-                      }}
-                    >
-                      <span>{permission}</span>
-                      <IonIcon
-                        icon={closeOutline}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', flex: 1, alignItems: 'center', minHeight: '24px' }}>
+                  {editForm.permissions.length > 0 ? (
+                    editForm.permissions.map((permission, index) => (
+                      <div
+                        key={index}
                         style={{
-                          fontSize: '16px',
-                          cursor: 'pointer',
-                          color: 'white'
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          background: '#2196f3',
+                          color: 'white',
+                          padding: '6px 12px',
+                          borderRadius: '20px',
+                          fontSize: '14px',
+                          fontWeight: '500'
                         }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const newPermissions = editForm.permissions.filter((_, i) => i !== index);
-                          setEditForm({...editForm, permissions: newPermissions});
-                        }}
-                      />
-                    </div>
-                  ))
-                ) : (
-                  <span style={{ color: '#666', fontSize: '16px' }}>
-                    Search and select permissions
-                  </span>
-                )}
+                      >
+                        <span>{permission}</span>
+                        <IonIcon
+                          icon={closeOutline}
+                          style={{
+                            fontSize: '16px',
+                            cursor: 'pointer',
+                            color: 'white'
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const newPermissions = editForm.permissions.filter((_, i) => i !== index);
+                            setEditForm({...editForm, permissions: newPermissions});
+                          }}
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <span style={{ color: '#666', fontSize: '16px' }}>
+                      Search and select permissions
+                    </span>
+                  )}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '24px', width: '24px', marginRight: '30px' }}>
+                  <IonIcon 
+                    icon={showEditPermissionsDropdown ? chevronUpOutline : chevronDownOutline} 
+                    style={{ 
+                      color: '#666', 
+                      fontSize: '20px',
+                      cursor: 'pointer'
+                    }} 
+                  />
+                </div>
               </div>
               {showEditPermissionsDropdown && (
                 <div style={{
@@ -928,7 +969,8 @@ const DatabaseAccess: React.FC = () => {
                   right: 0,
                   backgroundColor: 'white',
                   border: '1px solid #ddd',
-                  borderRadius: '8px',
+                  borderRadius: '0 0 12px 12px',
+                  borderTop: 'none',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                   zIndex: 1000,
                   maxHeight: '300px',
@@ -941,7 +983,7 @@ const DatabaseAccess: React.FC = () => {
                     style={{
                       '--background': '#f5f5f5',
                       '--border': 'none',
-                      '--border-radius': '8px',
+                      '--border-radius': '0',
                       '--padding-start': '16px',
                       '--padding-end': '16px',
                       '--padding-top': '12px',

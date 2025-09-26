@@ -72,8 +72,8 @@
 
 /* View Toggle Button */
 .master-controls-view-toggle {
-  --border-color: #4ecdc4;
-  --color: #4ecdc4;
+  --border-color: #000000;
+  --color: #000000;
   --border-radius: 10px;
   --border-width: 2px;
   --padding-start: 1rem;
@@ -90,9 +90,9 @@
 }
 
 .master-controls-view-toggle:hover {
-  --background: rgba(78, 205, 196, 0.1);
+  --background: rgba(0, 0, 0, 0.1);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .master-controls-view-toggle ion-icon {

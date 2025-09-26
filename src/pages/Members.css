@@ -590,6 +590,12 @@
   padding: 1rem;
 }
 
+/* Ensure modal content allows dropdowns to be visible */
+.page-modal-content {
+  overflow: visible !important;
+  position: relative;
+}
+
 .form-container {
   max-width: 600px;
   margin: 0 auto;
@@ -689,6 +695,16 @@
     flex-direction: column;
     gap: 0.5rem;
   }
+
+  /* Ensure dropdowns are visible on mobile */
+  .page-modal-content {
+    overflow: visible !important;
+  }
+
+  /* Mobile dropdown positioning */
+  .page-modal-content div[style*="position: absolute"] {
+    z-index: 9999 !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -710,5 +726,17 @@
 
   .role-info p {
     font-size: 0.8rem;
+  }
+
+  /* Extra small mobile dropdown fixes */
+  .page-modal-content {
+    overflow: visible !important;
+    position: relative;
+  }
+
+  /* Ensure dropdowns don't get clipped on very small screens */
+  .page-modal-content div[style*="position: absolute"] {
+    z-index: 9999 !important;
+    max-height: 250px !important;
   }
 }

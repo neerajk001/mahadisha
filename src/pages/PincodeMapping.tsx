@@ -8,7 +8,7 @@ import {
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
   chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
-  filterOutline, checkmark, closeOutline as closeOutlineIcon
+  filterOutline, checkmark, closeOutline as closeOutlineIcon, chevronDownOutline, chevronUpOutline
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -602,16 +602,22 @@ const PincodeMapping: React.FC = () => {
                     onClick={() => setShowDistrictDropdown(!showDistrictDropdown)}
                     style={{ 
                       '--background': '#e8e8e8',
-                      '--border-radius': '12px',
+                      '--border-radius': showDistrictDropdown ? '12px 12px 0 0' : '12px',
                       '--padding-start': '16px',
-                      '--padding-end': '16px',
+                      '--padding-end': '50px',
                       '--padding-top': '12px',
                       '--padding-bottom': '12px',
                       '--color': '#333',
                       '--placeholder-color': '#666',
                       cursor: 'pointer'
                     }}
-                  />
+                  >
+                    <IonIcon 
+                      icon={showDistrictDropdown ? chevronUpOutline : chevronDownOutline} 
+                      slot="end" 
+                      style={{ color: '#666', fontSize: '20px', cursor: 'pointer' }} 
+                    />
+                  </IonInput>
                   {showDistrictDropdown && (
                     <div 
                       style={{
@@ -620,28 +626,30 @@ const PincodeMapping: React.FC = () => {
                         left: 0,
                         right: 0,
                         backgroundColor: 'white',
-                        border: '1px solid #e0e0e0',
-                        borderRadius: '12px',
+                        border: '1px solid #ddd',
+                        borderRadius: '0 0 12px 12px',
+                        borderTop: 'none',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                        zIndex: 1000,
+                        zIndex: 9999,
                         maxHeight: '300px',
                         overflow: 'hidden'
                       }}>
-                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
-                        <IonInput
-                          value={districtSearchQuery}
-                          onIonChange={(e) => setDistrictSearchQuery(e.detail.value!)}
-                          placeholder="Search districts..."
-                          style={{
-                            '--background': '#f8f9fa',
-                            '--border-radius': '8px',
-                            '--padding-start': '12px',
-                            '--padding-end': '12px',
-                            '--padding-top': '8px',
-                            '--padding-bottom': '8px'
-                          }}
-                        />
-                      </div>
+                      <IonInput
+                        value={districtSearchQuery}
+                        onIonInput={(e) => setDistrictSearchQuery(e.detail.value!)}
+                        placeholder="Search districts..."
+                        style={{
+                          '--background': '#f5f5f5',
+                          '--border': 'none',
+                          '--border-radius': '0',
+                          '--padding-start': '16px',
+                          '--padding-end': '16px',
+                          '--padding-top': '12px',
+                          '--padding-bottom': '12px',
+                          '--color': '#333',
+                          '--placeholder-color': '#666'
+                        }}
+                      />
                       <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
                         {filteredDistrictOptions.map((option) => (
                           <div
@@ -830,16 +838,22 @@ const PincodeMapping: React.FC = () => {
                     onClick={() => setShowEditDistrictDropdown(!showEditDistrictDropdown)}
                     style={{ 
                       '--background': '#e8e8e8',
-                      '--border-radius': '12px',
+                      '--border-radius': showEditDistrictDropdown ? '12px 12px 0 0' : '12px',
                       '--padding-start': '16px',
-                      '--padding-end': '16px',
+                      '--padding-end': '50px',
                       '--padding-top': '12px',
                       '--padding-bottom': '12px',
                       '--color': '#333',
                       '--placeholder-color': '#666',
                       cursor: 'pointer'
                     }}
-                  />
+                  >
+                    <IonIcon 
+                      icon={showEditDistrictDropdown ? chevronUpOutline : chevronDownOutline} 
+                      slot="end" 
+                      style={{ color: '#666', fontSize: '20px', cursor: 'pointer' }} 
+                    />
+                  </IonInput>
                   {showEditDistrictDropdown && (
                     <div 
                       style={{
@@ -848,28 +862,30 @@ const PincodeMapping: React.FC = () => {
                         left: 0,
                         right: 0,
                         backgroundColor: 'white',
-                        border: '1px solid #e0e0e0',
-                        borderRadius: '12px',
+                        border: '1px solid #ddd',
+                        borderRadius: '0 0 12px 12px',
+                        borderTop: 'none',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                        zIndex: 1000,
+                        zIndex: 9999,
                         maxHeight: '300px',
                         overflow: 'hidden'
                       }}>
-                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
-                        <IonInput
-                          value={editDistrictSearchQuery}
-                          onIonChange={(e) => setEditDistrictSearchQuery(e.detail.value!)}
-                          placeholder="Search districts..."
-                          style={{
-                            '--background': '#f8f9fa',
-                            '--border-radius': '8px',
-                            '--padding-start': '12px',
-                            '--padding-end': '12px',
-                            '--padding-top': '8px',
-                            '--padding-bottom': '8px'
-                          }}
-                        />
-                      </div>
+                      <IonInput
+                        value={editDistrictSearchQuery}
+                        onIonInput={(e) => setEditDistrictSearchQuery(e.detail.value!)}
+                        placeholder="Search districts..."
+                        style={{
+                          '--background': '#f5f5f5',
+                          '--border': 'none',
+                          '--border-radius': '0',
+                          '--padding-start': '16px',
+                          '--padding-end': '16px',
+                          '--padding-top': '12px',
+                          '--padding-bottom': '12px',
+                          '--color': '#333',
+                          '--placeholder-color': '#666'
+                        }}
+                      />
                       <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
                         {filteredEditDistrictOptions.map((option) => (
                           <div

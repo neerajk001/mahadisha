@@ -9,7 +9,7 @@ import {
   addOutline, createOutline, trashOutline, searchOutline,
   chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
   eyeOutline, gridOutline, listOutline, locationOutline, documentTextOutline, timeOutline,
-  checkmark, closeOutline as closeOutlineIcon
+  checkmark, closeOutline as closeOutlineIcon, chevronDownOutline, chevronUpOutline
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -506,16 +506,22 @@ const BranchMapping: React.FC = () => {
                     onClick={() => setShowRegionDropdown(!showRegionDropdown)}
                     style={{ 
                       '--background': '#e8e8e8',
-                      '--border-radius': '12px',
+                      '--border-radius': showRegionDropdown ? '12px 12px 0 0' : '12px',
                       '--padding-start': '16px',
-                      '--padding-end': '16px',
+                      '--padding-end': '50px',
                       '--padding-top': '12px',
                       '--padding-bottom': '12px',
                       '--color': '#333',
                       '--placeholder-color': '#666',
                       cursor: 'pointer'
                     }}
-                  />
+                  >
+                    <IonIcon 
+                      icon={showRegionDropdown ? chevronUpOutline : chevronDownOutline} 
+                      slot="end" 
+                      style={{ color: '#666', fontSize: '20px', cursor: 'pointer' }} 
+                    />
+                  </IonInput>
                   {showRegionDropdown && (
                     <div 
                       style={{
@@ -524,10 +530,11 @@ const BranchMapping: React.FC = () => {
                         left: 0,
                         right: 0,
                         backgroundColor: 'white',
-                        border: '1px solid #e0e0e0',
-                        borderRadius: '12px',
+                        border: '1px solid #ddd',
+                        borderRadius: '0 0 12px 12px',
+                        borderTop: 'none',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                        zIndex: 1000,
+                        zIndex: 9999,
                         maxHeight: '300px',
                         overflow: 'hidden'
                       }}>
@@ -596,48 +603,66 @@ const BranchMapping: React.FC = () => {
                     style={{
                       background: '#e8e8e8',
                       border: '1px solid #ddd',
-                      borderRadius: '12px',
+                      borderRadius: showDistrictDropdown ? '12px 12px 0 0' : '12px',
                       padding: '12px 16px',
                       cursor: 'pointer',
                       minHeight: '48px',
                       display: 'flex',
                       alignItems: 'center',
-                      flexWrap: 'wrap',
-                      gap: '8px'
+                      flexWrap: 'nowrap',
+                      gap: '8px',
+                      justifyContent: 'space-between'
                     }}
                   >
-                    {addForm.districts.length === 0 ? (
-                      <span style={{ color: '#666', fontSize: '14px' }}>Select districts</span>
-                    ) : (
-                      addForm.districts.map((district, index) => (
-                        <span
-                          key={index}
-                          style={{
-                            background: '#4ecdc4',
-                            color: 'white',
-                            padding: '4px 8px',
-                            borderRadius: '16px',
-                            fontSize: '12px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px'
-                          }}
-                        >
-                          {district}
-                          <IonIcon
-                            icon={closeOutlineIcon}
-                            style={{ fontSize: '14px', cursor: 'pointer' }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setAddForm(prev => ({
-                                ...prev,
-                                districts: prev.districts.filter(item => item !== district)
-                              }));
-                            }}
-                          />
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', flex: 1, alignItems: 'center', minHeight: '24px' }}>
+                      {addForm.districts.length === 0 ? (
+                        <span style={{ color: '#666', fontSize: '16px' }}>
+                          Search and select districts
                         </span>
-                      ))
-                    )}
+                      ) : (
+                        addForm.districts.map((district, index) => (
+                          <div
+                            key={index}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              background: '#2196f3',
+                              color: 'white',
+                              padding: '6px 12px',
+                              borderRadius: '20px',
+                              fontSize: '14px',
+                              fontWeight: '500'
+                            }}
+                          >
+                            <span>{district}</span>
+                            <IonIcon
+                              icon={closeOutline}
+                              style={{
+                                fontSize: '16px',
+                                cursor: 'pointer',
+                                color: 'white'
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const newDistricts = addForm.districts.filter((_, i) => i !== index);
+                                setAddForm({...addForm, districts: newDistricts});
+                              }}
+                            />
+                          </div>
+                        ))
+                      )}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '24px', width: '24px', marginRight: '30px' }}>
+                      <IonIcon 
+                        icon={showDistrictDropdown ? chevronUpOutline : chevronDownOutline} 
+                        style={{ 
+                          color: '#666', 
+                          fontSize: '20px',
+                          cursor: 'pointer'
+                        }} 
+                      />
+                    </div>
                   </div>
                   {showDistrictDropdown && (
                     <div 
@@ -647,28 +672,30 @@ const BranchMapping: React.FC = () => {
                         left: 0,
                         right: 0,
                         backgroundColor: 'white',
-                        border: '1px solid #e0e0e0',
-                        borderRadius: '12px',
+                        border: '1px solid #ddd',
+                        borderRadius: '0 0 12px 12px',
+                        borderTop: 'none',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                        zIndex: 1000,
+                        zIndex: 9999,
                         maxHeight: '300px',
                         overflow: 'hidden'
                       }}>
-                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
-                        <IonInput
-                          value={districtSearchQuery}
-                          onIonChange={(e) => setDistrictSearchQuery(e.detail.value!)}
-                          placeholder="Search districts..."
-                          style={{
-                            '--background': '#f8f9fa',
-                            '--border-radius': '8px',
-                            '--padding-start': '12px',
-                            '--padding-end': '12px',
-                            '--padding-top': '8px',
-                            '--padding-bottom': '8px'
-                          }}
-                        />
-                      </div>
+                      <IonInput
+                        value={districtSearchQuery}
+                        onIonInput={(e) => setDistrictSearchQuery(e.detail.value!)}
+                        placeholder="Search districts..."
+                        style={{
+                          '--background': '#f5f5f5',
+                          '--border': 'none',
+                          '--border-radius': '0',
+                          '--padding-start': '16px',
+                          '--padding-end': '16px',
+                          '--padding-top': '12px',
+                          '--padding-bottom': '12px',
+                          '--color': '#333',
+                          '--placeholder-color': '#666'
+                        }}
+                      />
                       <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
                         {filteredDistrictOptions.map((option) => (
                           <div
@@ -704,7 +731,29 @@ const BranchMapping: React.FC = () => {
                               }
                             }}
                           >
-                            <span style={{ color: addForm.districts.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                              <div style={{
+                                width: '18px',
+                                height: '18px',
+                                borderRadius: '50%',
+                                border: `2px solid ${addForm.districts.includes(option.value) ? 'white' : '#ddd'}`,
+                                backgroundColor: addForm.districts.includes(option.value) ? 'white' : 'transparent',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                position: 'relative'
+                              }}>
+                                {addForm.districts.includes(option.value) && (
+                                  <div style={{
+                                    width: '8px',
+                                    height: '8px',
+                                    borderRadius: '50%',
+                                    backgroundColor: '#2196f3'
+                                  }} />
+                                )}
+                              </div>
+                              <span style={{ color: addForm.districts.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            </div>
                             {option.hasCheckmark && (
                               <IonIcon 
                                 icon={checkmark} 
@@ -799,16 +848,22 @@ const BranchMapping: React.FC = () => {
                     onClick={() => setShowEditRegionDropdown(!showEditRegionDropdown)}
                     style={{ 
                       '--background': '#e8e8e8',
-                      '--border-radius': '12px',
+                      '--border-radius': showEditRegionDropdown ? '12px 12px 0 0' : '12px',
                       '--padding-start': '16px',
-                      '--padding-end': '16px',
+                      '--padding-end': '50px',
                       '--padding-top': '12px',
                       '--padding-bottom': '12px',
                       '--color': '#333',
                       '--placeholder-color': '#666',
                       cursor: 'pointer'
                     }}
-                  />
+                  >
+                    <IonIcon 
+                      icon={showEditRegionDropdown ? chevronUpOutline : chevronDownOutline} 
+                      slot="end" 
+                      style={{ color: '#666', fontSize: '20px', cursor: 'pointer' }} 
+                    />
+                  </IonInput>
                   {showEditRegionDropdown && (
                     <div 
                       style={{
@@ -817,10 +872,11 @@ const BranchMapping: React.FC = () => {
                         left: 0,
                         right: 0,
                         backgroundColor: 'white',
-                        border: '1px solid #e0e0e0',
-                        borderRadius: '12px',
+                        border: '1px solid #ddd',
+                        borderRadius: '0 0 12px 12px',
+                        borderTop: 'none',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                        zIndex: 1000,
+                        zIndex: 9999,
                         maxHeight: '300px',
                         overflow: 'hidden'
                       }}>
@@ -889,48 +945,66 @@ const BranchMapping: React.FC = () => {
                     style={{
                       background: '#e8e8e8',
                       border: '1px solid #ddd',
-                      borderRadius: '12px',
+                      borderRadius: showEditDistrictDropdown ? '12px 12px 0 0' : '12px',
                       padding: '12px 16px',
                       cursor: 'pointer',
                       minHeight: '48px',
                       display: 'flex',
                       alignItems: 'center',
-                      flexWrap: 'wrap',
-                      gap: '8px'
+                      flexWrap: 'nowrap',
+                      gap: '8px',
+                      justifyContent: 'space-between'
                     }}
                   >
-                    {editForm.districts.length === 0 ? (
-                      <span style={{ color: '#666', fontSize: '14px' }}>Select districts</span>
-                    ) : (
-                      editForm.districts.map((district, index) => (
-                        <span
-                          key={index}
-                          style={{
-                            background: '#4ecdc4',
-                            color: 'white',
-                            padding: '4px 8px',
-                            borderRadius: '16px',
-                            fontSize: '12px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px'
-                          }}
-                        >
-                          {district}
-                          <IonIcon
-                            icon={closeOutlineIcon}
-                            style={{ fontSize: '14px', cursor: 'pointer' }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditForm(prev => ({
-                                ...prev,
-                                districts: prev.districts.filter(item => item !== district)
-                              }));
-                            }}
-                          />
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', flex: 1, alignItems: 'center', minHeight: '24px' }}>
+                      {editForm.districts.length === 0 ? (
+                        <span style={{ color: '#666', fontSize: '16px' }}>
+                          Search and select districts
                         </span>
-                      ))
-                    )}
+                      ) : (
+                        editForm.districts.map((district, index) => (
+                          <div
+                            key={index}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              background: '#2196f3',
+                              color: 'white',
+                              padding: '6px 12px',
+                              borderRadius: '20px',
+                              fontSize: '14px',
+                              fontWeight: '500'
+                            }}
+                          >
+                            <span>{district}</span>
+                            <IonIcon
+                              icon={closeOutline}
+                              style={{
+                                fontSize: '16px',
+                                cursor: 'pointer',
+                                color: 'white'
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const newDistricts = editForm.districts.filter((_, i) => i !== index);
+                                setEditForm({...editForm, districts: newDistricts});
+                              }}
+                            />
+                          </div>
+                        ))
+                      )}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '24px', width: '24px', marginRight: '30px' }}>
+                      <IonIcon 
+                        icon={showEditDistrictDropdown ? chevronUpOutline : chevronDownOutline} 
+                        style={{ 
+                          color: '#666', 
+                          fontSize: '20px',
+                          cursor: 'pointer'
+                        }} 
+                      />
+                    </div>
                   </div>
                   {showEditDistrictDropdown && (
                     <div 
@@ -940,28 +1014,30 @@ const BranchMapping: React.FC = () => {
                         left: 0,
                         right: 0,
                         backgroundColor: 'white',
-                        border: '1px solid #e0e0e0',
-                        borderRadius: '12px',
+                        border: '1px solid #ddd',
+                        borderRadius: '0 0 12px 12px',
+                        borderTop: 'none',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                        zIndex: 1000,
+                        zIndex: 9999,
                         maxHeight: '300px',
                         overflow: 'hidden'
                       }}>
-                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
-                        <IonInput
-                          value={editDistrictSearchQuery}
-                          onIonChange={(e) => setEditDistrictSearchQuery(e.detail.value!)}
-                          placeholder="Search districts..."
-                          style={{
-                            '--background': '#f8f9fa',
-                            '--border-radius': '8px',
-                            '--padding-start': '12px',
-                            '--padding-end': '12px',
-                            '--padding-top': '8px',
-                            '--padding-bottom': '8px'
-                          }}
-                        />
-                      </div>
+                      <IonInput
+                        value={editDistrictSearchQuery}
+                        onIonInput={(e) => setEditDistrictSearchQuery(e.detail.value!)}
+                        placeholder="Search districts..."
+                        style={{
+                          '--background': '#f5f5f5',
+                          '--border': 'none',
+                          '--border-radius': '0',
+                          '--padding-start': '16px',
+                          '--padding-end': '16px',
+                          '--padding-top': '12px',
+                          '--padding-bottom': '12px',
+                          '--color': '#333',
+                          '--placeholder-color': '#666'
+                        }}
+                      />
                       <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
                         {filteredEditDistrictOptions.map((option) => (
                           <div
@@ -997,7 +1073,29 @@ const BranchMapping: React.FC = () => {
                               }
                             }}
                           >
-                            <span style={{ color: editForm.districts.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                              <div style={{
+                                width: '18px',
+                                height: '18px',
+                                borderRadius: '50%',
+                                border: `2px solid ${editForm.districts.includes(option.value) ? 'white' : '#ddd'}`,
+                                backgroundColor: editForm.districts.includes(option.value) ? 'white' : 'transparent',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                position: 'relative'
+                              }}>
+                                {editForm.districts.includes(option.value) && (
+                                  <div style={{
+                                    width: '8px',
+                                    height: '8px',
+                                    borderRadius: '50%',
+                                    backgroundColor: '#2196f3'
+                                  }} />
+                                )}
+                              </div>
+                              <span style={{ color: editForm.districts.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            </div>
                             {option.hasCheckmark && (
                               <IonIcon 
                                 icon={checkmark} 

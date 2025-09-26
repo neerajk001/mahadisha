@@ -10,7 +10,7 @@ import {
   createOutline, trashOutline, checkmarkOutline, pauseOutline,
   ellipsisVerticalOutline, chevronDownOutline, addOutline, closeOutline, saveOutline,
   personOutline, mailOutline, callOutline, locationOutline, shieldOutline,
-  checkmark, closeOutline as closeOutlineIcon
+  checkmark, closeOutline as closeOutlineIcon, chevronUpOutline
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -912,10 +912,11 @@ const Members: React.FC = () => {
                         left: 0,
                         right: 0,
                         backgroundColor: 'white',
-                        border: '1px solid #e0e0e0',
-                        borderRadius: '12px',
+                        border: '1px solid #ddd',
+                        borderRadius: '0 0 12px 12px',
+                        borderTop: 'none',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                        zIndex: 1000,
+                        zIndex: 9999,
                         maxHeight: '300px',
                         overflow: 'hidden'
                       }}>
@@ -1056,32 +1057,41 @@ const Members: React.FC = () => {
                       minHeight: '48px',
                       padding: '12px 16px',
                       backgroundColor: '#e8e8e8',
-                      borderRadius: '12px',
+                      borderRadius: showUsersDropdown ? '12px 12px 0 0' : '12px',
                       border: '1px solid #e0e0e0',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      flexWrap: 'wrap',
+                      flexWrap: 'nowrap',
+                      justifyContent: 'space-between',
                       gap: '8px'
                     }}
                   >
-                    {formData.selectedUsers.length > 0 ? (
-                      formData.selectedUsers.map((user, index) => (
-                        <IonChip key={index} color="primary" style={{ margin: '2px' }}>
-                          <IonLabel>{user}</IonLabel>
-                          <IonIcon 
-                            icon={closeOutlineIcon} 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeUser(user);
-                            }}
-                            style={{ cursor: 'pointer', marginLeft: '4px' }}
-                          />
-                        </IonChip>
-                      ))
-                    ) : (
-                      <span style={{ color: '#666', fontSize: '14px' }}>Select users</span>
-                    )}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', flex: 1, alignItems: 'center', minHeight: '24px' }}>
+                      {formData.selectedUsers.length > 0 ? (
+                        formData.selectedUsers.map((user, index) => (
+                          <IonChip key={index} color="primary" style={{ margin: '2px' }}>
+                            <IonLabel>{user}</IonLabel>
+                            <IonIcon 
+                              icon={closeOutlineIcon} 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeUser(user);
+                              }}
+                              style={{ cursor: 'pointer', marginLeft: '4px' }}
+                            />
+                          </IonChip>
+                        ))
+                      ) : (
+                        <span style={{ color: '#666', fontSize: '14px' }}>Select users</span>
+                      )}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '24px', width: '24px', marginRight: '30px' }}>
+                      <IonIcon 
+                        icon={showUsersDropdown ? chevronUpOutline : chevronDownOutline} 
+                        style={{ color: '#666', fontSize: '20px', cursor: 'pointer' }} 
+                      />
+                    </div>
                   </div>
                   {showUsersDropdown && (
                     <div 
@@ -1091,28 +1101,30 @@ const Members: React.FC = () => {
                         left: 0,
                         right: 0,
                         backgroundColor: 'white',
-                        border: '1px solid #e0e0e0',
-                        borderRadius: '12px',
+                        border: '1px solid #ddd',
+                        borderRadius: '0 0 12px 12px',
+                        borderTop: 'none',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                        zIndex: 1000,
+                        zIndex: 9999,
                         maxHeight: '300px',
                         overflow: 'hidden'
                       }}>
-                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
-                        <IonInput
-                          value={usersSearchQuery}
-                          onIonChange={(e) => setUsersSearchQuery(e.detail.value!)}
-                          placeholder="Search users..."
-                          style={{
-                            '--background': '#f8f9fa',
-                            '--border-radius': '8px',
-                            '--padding-start': '12px',
-                            '--padding-end': '12px',
-                            '--padding-top': '8px',
-                            '--padding-bottom': '8px'
-                          }}
-                        />
-                      </div>
+                      <IonInput
+                        value={usersSearchQuery}
+                        onIonInput={(e) => setUsersSearchQuery(e.detail.value!)}
+                        placeholder="Search users..."
+                        style={{
+                          '--background': '#f5f5f5',
+                          '--border': 'none',
+                          '--border-radius': '0',
+                          '--padding-start': '16px',
+                          '--padding-end': '16px',
+                          '--padding-top': '12px',
+                          '--padding-bottom': '12px',
+                          '--color': '#333',
+                          '--placeholder-color': '#666'
+                        }}
+                      />
                       <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
                         {filteredUsersOptions.map((option) => (
                           <div
@@ -1335,10 +1347,11 @@ const Members: React.FC = () => {
                         left: 0,
                         right: 0,
                         backgroundColor: 'white',
-                        border: '1px solid #e0e0e0',
-                        borderRadius: '12px',
+                        border: '1px solid #ddd',
+                        borderRadius: '0 0 12px 12px',
+                        borderTop: 'none',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                        zIndex: 1000,
+                        zIndex: 9999,
                         maxHeight: '300px',
                         overflow: 'hidden'
                       }}>
@@ -1479,32 +1492,41 @@ const Members: React.FC = () => {
                       minHeight: '48px',
                       padding: '12px 16px',
                       backgroundColor: '#e8e8e8',
-                      borderRadius: '12px',
+                      borderRadius: showUsersDropdown ? '12px 12px 0 0' : '12px',
                       border: '1px solid #e0e0e0',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      flexWrap: 'wrap',
+                      flexWrap: 'nowrap',
+                      justifyContent: 'space-between',
                       gap: '8px'
                     }}
                   >
-                    {formData.selectedUsers.length > 0 ? (
-                      formData.selectedUsers.map((user, index) => (
-                        <IonChip key={index} color="primary" style={{ margin: '2px' }}>
-                          <IonLabel>{user}</IonLabel>
-                          <IonIcon 
-                            icon={closeOutlineIcon} 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeUser(user);
-                            }}
-                            style={{ cursor: 'pointer', marginLeft: '4px' }}
-                          />
-                        </IonChip>
-                      ))
-                    ) : (
-                      <span style={{ color: '#666', fontSize: '14px' }}>Select users</span>
-                    )}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', flex: 1, alignItems: 'center', minHeight: '24px' }}>
+                      {formData.selectedUsers.length > 0 ? (
+                        formData.selectedUsers.map((user, index) => (
+                          <IonChip key={index} color="primary" style={{ margin: '2px' }}>
+                            <IonLabel>{user}</IonLabel>
+                            <IonIcon 
+                              icon={closeOutlineIcon} 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeUser(user);
+                              }}
+                              style={{ cursor: 'pointer', marginLeft: '4px' }}
+                            />
+                          </IonChip>
+                        ))
+                      ) : (
+                        <span style={{ color: '#666', fontSize: '14px' }}>Select users</span>
+                      )}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '24px', width: '24px', marginRight: '30px' }}>
+                      <IonIcon 
+                        icon={showUsersDropdown ? chevronUpOutline : chevronDownOutline} 
+                        style={{ color: '#666', fontSize: '20px', cursor: 'pointer' }} 
+                      />
+                    </div>
                   </div>
                   {showUsersDropdown && (
                     <div 
@@ -1514,28 +1536,30 @@ const Members: React.FC = () => {
                         left: 0,
                         right: 0,
                         backgroundColor: 'white',
-                        border: '1px solid #e0e0e0',
-                        borderRadius: '12px',
+                        border: '1px solid #ddd',
+                        borderRadius: '0 0 12px 12px',
+                        borderTop: 'none',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                        zIndex: 1000,
+                        zIndex: 9999,
                         maxHeight: '300px',
                         overflow: 'hidden'
                       }}>
-                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
-                        <IonInput
-                          value={usersSearchQuery}
-                          onIonChange={(e) => setUsersSearchQuery(e.detail.value!)}
-                          placeholder="Search users..."
-                          style={{
-                            '--background': '#f8f9fa',
-                            '--border-radius': '8px',
-                            '--padding-start': '12px',
-                            '--padding-end': '12px',
-                            '--padding-top': '8px',
-                            '--padding-bottom': '8px'
-                          }}
-                        />
-                      </div>
+                      <IonInput
+                        value={usersSearchQuery}
+                        onIonInput={(e) => setUsersSearchQuery(e.detail.value!)}
+                        placeholder="Search users..."
+                        style={{
+                          '--background': '#f5f5f5',
+                          '--border': 'none',
+                          '--border-radius': '0',
+                          '--padding-start': '16px',
+                          '--padding-end': '16px',
+                          '--padding-top': '12px',
+                          '--padding-bottom': '12px',
+                          '--color': '#333',
+                          '--placeholder-color': '#666'
+                        }}
+                      />
                       <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
                         {filteredUsersOptions.map((option) => (
                           <div

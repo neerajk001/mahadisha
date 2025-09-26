@@ -368,12 +368,18 @@ const ActionMasters: React.FC = () => {
       </IonSplitPane>
 
       {/* Add Action Modal */}
-      <IonModal isOpen={showAddModal} onDidDismiss={() => setShowAddModal(false)}>
+      <IonModal isOpen={showAddModal} onDidDismiss={() => {
+        setShowAddModal(false);
+        setAddForm({ name: '', functionName: '', priority: '' });
+      }}>
         <IonHeader>
           <IonToolbar>
             <IonTitle>Add New Action</IonTitle>
             <IonButtons slot="end">
-              <IonButton onClick={() => setShowAddModal(false)}>
+              <IonButton onClick={() => {
+                setShowAddModal(false);
+                setAddForm({ name: '', functionName: '', priority: '' });
+              }}>
                 <IonIcon icon={closeOutline} />
               </IonButton>
             </IonButtons>
@@ -394,6 +400,8 @@ const ActionMasters: React.FC = () => {
                   Action Name
                 </IonLabel>
                 <IonInput
+                  value={addForm.name}
+                  onIonChange={(e) => setAddForm({...addForm, name: e.detail.value!})}
                   placeholder="Enter action name"
                   style={{ 
                     '--background': '#e8e8e8',
@@ -418,6 +426,8 @@ const ActionMasters: React.FC = () => {
                   Function Name
                 </IonLabel>
                 <IonInput
+                  value={addForm.functionName}
+                  onIonChange={(e) => setAddForm({...addForm, functionName: e.detail.value!})}
                   placeholder="Enter function name"
                   style={{ 
                     '--background': '#e8e8e8',
@@ -442,6 +452,8 @@ const ActionMasters: React.FC = () => {
                   Priority
                 </IonLabel>
                 <IonSelect
+                  value={addForm.priority}
+                  onIonChange={(e) => setAddForm({...addForm, priority: e.detail.value})}
                   placeholder="Select priority"
                   style={{ 
                     '--background': '#e8e8e8',

@@ -9,7 +9,7 @@ import {
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
   chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
-  chevronDownOutline, checkmark, closeOutline as closeOutlineIcon
+  chevronDownOutline, chevronUpOutline, checkmark, closeOutline as closeOutlineIcon
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -470,7 +470,7 @@ const AccessMapping: React.FC = () => {
 
       {/* Add Access Modal */}
       <IonModal isOpen={showAddModal} onDidDismiss={handleCloseAddModal}>
-        <IonContent className="add-access-modal">
+        <IonContent className="add-role-modal">
           <div className="modal-header">
             <h2>Add New Access Mapping</h2>
             <IonButton fill="clear" onClick={handleCloseAddModal}>
@@ -479,305 +479,395 @@ const AccessMapping: React.FC = () => {
           </div>
           
           <div className="modal-content">
-            <IonList>
-              <div className="form-group">
-                <IonLabel className="form-label">Role Name *</IonLabel>
-                <IonInput
-                  value={newAccess.role}
-                  onIonInput={(e) => setNewAccess(prev => ({ ...prev, role: e.detail.value! }))}
-                  placeholder="Enter role name (e.g., Admin, User, Manager)"
+            <div className="form-group">
+              <IonLabel className="form-label">Role Name *</IonLabel>
+              <IonInput
+                value={newAccess.role}
+                onIonInput={(e) => setNewAccess(prev => ({ ...prev, role: e.detail.value! }))}
+                placeholder="Enter role name (e.g., Admin, User, Manager)"
+                style={{
+                  '--background': '#e8e8e8',
+                  '--border-radius': '12px',
+                  '--padding-start': '16px',
+                  '--padding-end': '16px',
+                  '--padding-top': '12px',
+                  '--padding-bottom': '12px',
+                  '--color': '#333',
+                  '--placeholder-color': '#666'
+                }}
+              />
+            </div>
+
+            <div className="form-group">
+              <IonLabel className="form-label">Navbar Access *</IonLabel>
+              <div style={{ position: 'relative' }} ref={navAccessDropdownRef}>
+                <div
+                  onClick={() => setShowNavAccessDropdown(!showNavAccessDropdown)}
                   style={{
-                    '--background': '#e8e8e8',
-                    '--border-radius': '12px',
-                    '--padding-start': '16px',
-                    '--padding-end': '16px',
-                    '--padding-top': '12px',
-                    '--padding-bottom': '12px',
-                    '--color': '#333',
-                    '--placeholder-color': '#666'
+                    background: '#e8e8e8',
+                    border: '1px solid #ddd',
+                    borderRadius: showNavAccessDropdown ? '12px 12px 0 0' : '12px',
+                    padding: '12px 16px',
+                    cursor: 'pointer',
+                    minHeight: '48px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexWrap: 'nowrap',
+                    gap: '8px',
+                    justifyContent: 'space-between'
                   }}
-                />
-              </div>
-              
-              <div className="form-group">
-                <IonLabel className="form-label">Navbar Access *</IonLabel>
-                <div style={{ position: 'relative' }} ref={navAccessDropdownRef}>
-                  <div
-                    onClick={() => setShowNavAccessDropdown(!showNavAccessDropdown)}
-                    style={{
-                      background: '#e8e8e8',
-                      border: '1px solid #ddd',
-                      borderRadius: '12px',
-                      padding: '12px 16px',
-                      cursor: 'pointer',
-                      minHeight: '48px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      flexWrap: 'wrap',
-                      gap: '8px'
-                    }}
-                  >
+                >
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', flex: 1, alignItems: 'center', minHeight: '24px' }}>
                     {newAccess.navbarAccess.length === 0 ? (
-                      <span style={{ color: '#666', fontSize: '14px' }}>Select navbar access items</span>
+                      <span style={{ color: '#666', fontSize: '16px' }}>
+                        Search and select navbar access
+                      </span>
                     ) : (
                       newAccess.navbarAccess.map((access, index) => (
-                        <span
+                        <div
                           key={index}
                           style={{
-                            background: '#4ecdc4',
-                            color: 'white',
-                            padding: '4px 8px',
-                            borderRadius: '16px',
-                            fontSize: '12px',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '4px'
+                            gap: '6px',
+                            background: '#2196f3',
+                            color: 'white',
+                            padding: '6px 12px',
+                            borderRadius: '20px',
+                            fontSize: '14px',
+                            fontWeight: '500'
                           }}
                         >
-                          {access}
+                          <span>{access}</span>
                           <IonIcon
-                            icon={closeOutlineIcon}
-                            style={{ fontSize: '14px', cursor: 'pointer' }}
+                            icon={closeOutline}
+                            style={{
+                              fontSize: '16px',
+                              cursor: 'pointer',
+                              color: 'white'
+                            }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setNewAccess(prev => ({
-                                ...prev,
-                                navbarAccess: prev.navbarAccess.filter(item => item !== access)
-                              }));
+                              const newNavAccess = newAccess.navbarAccess.filter((_, i) => i !== index);
+                              setNewAccess({...newAccess, navbarAccess: newNavAccess});
                             }}
                           />
-                        </span>
+                        </div>
                       ))
                     )}
                   </div>
-                  {showNavAccessDropdown && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: 0,
-                      right: 0,
-                      backgroundColor: 'white',
-                      border: '1px solid #e0e0e0',
-                      borderRadius: '12px',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                      zIndex: 1000,
-                      maxHeight: '500px',
-                      overflow: 'hidden'
-                    }}>
-                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '24px', width: '24px', marginRight: '30px' }}>
+                    <IonIcon 
+                      icon={showNavAccessDropdown ? chevronUpOutline : chevronDownOutline} 
+                      style={{ 
+                        color: '#666', 
+                        fontSize: '20px',
+                        cursor: 'pointer'
+                      }} 
+                    />
+                  </div>
+                </div>
+                {showNavAccessDropdown && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    right: 0,
+                    backgroundColor: 'white',
+                    border: '1px solid #ddd',
+                    borderRadius: '0 0 12px 12px',
+                    borderTop: 'none',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                    zIndex: 9999,
+                    maxHeight: '300px',
+                    overflow: 'hidden'
+                  }}>
                     <IonInput
-                          value={navAccessSearchQuery}
-                          onIonInput={(e) => setNavAccessSearchQuery(e.detail.value!)}
-                          placeholder="Search navbar access..."
-                          style={{
-                            '--background': '#f8f9fa',
-                            '--border-radius': '8px',
-                            '--padding-start': '12px',
-                            '--padding-end': '12px',
-                            '--padding-top': '8px',
-                            '--padding-bottom': '8px'
+                      value={navAccessSearchQuery}
+                      onIonInput={(e) => setNavAccessSearchQuery(e.detail.value!)}
+                      placeholder="Search navbar access..."
+                      style={{
+                        '--background': '#f5f5f5',
+                        '--border': 'none',
+                        '--border-radius': '0',
+                        '--padding-start': '16px',
+                        '--padding-end': '16px',
+                        '--padding-top': '12px',
+                        '--padding-bottom': '12px',
+                        '--color': '#333',
+                        '--placeholder-color': '#666'
+                      }}
+                    />
+                    <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
+                      {filteredNavAccessOptions.map((option) => (
+                        <div
+                          key={option.value}
+                          onClick={() => {
+                            const isSelected = newAccess.navbarAccess.includes(option.value);
+                            let newNavAccess;
+                            if (isSelected) {
+                              newNavAccess = newAccess.navbarAccess.filter(item => item !== option.value);
+                            } else {
+                              newNavAccess = [...newAccess.navbarAccess, option.value];
+                            }
+                            setNewAccess(prev => ({ ...prev, navbarAccess: newNavAccess }));
                           }}
-                        />
-                      </div>
-                      <div style={{ maxHeight: '450px', overflowY: 'auto', paddingBottom: '12px' }}>
-                        {filteredNavAccessOptions.map((option) => (
-                          <div
-                            key={option.value}
-                            onClick={() => {
-                              const isSelected = newAccess.navbarAccess.includes(option.value);
-                              let newNavAccess;
-                              if (isSelected) {
-                                newNavAccess = newAccess.navbarAccess.filter(item => item !== option.value);
-                              } else {
-                                newNavAccess = [...newAccess.navbarAccess, option.value];
-                              }
-                              setNewAccess(prev => ({ ...prev, navbarAccess: newNavAccess }));
-                            }}
-                            style={{
-                              padding: '12px 16px',
-                              cursor: 'pointer',
+                          style={{
+                            padding: '12px 16px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            borderBottom: '1px solid #f0f0f0',
+                            backgroundColor: newAccess.navbarAccess.includes(option.value) ? '#2196f3' : 'white',
+                            color: newAccess.navbarAccess.includes(option.value) ? 'white' : '#333'
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!newAccess.navbarAccess.includes(option.value)) {
+                              e.currentTarget.style.backgroundColor = '#f5f5f5';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!newAccess.navbarAccess.includes(option.value)) {
+                              e.currentTarget.style.backgroundColor = 'white';
+                            }
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{
+                              width: '18px',
+                              height: '18px',
+                              borderRadius: '50%',
+                              border: `2px solid ${newAccess.navbarAccess.includes(option.value) ? 'white' : '#ddd'}`,
+                              backgroundColor: newAccess.navbarAccess.includes(option.value) ? 'white' : 'transparent',
                               display: 'flex',
                               alignItems: 'center',
-                              justifyContent: 'space-between',
-                              borderBottom: '1px solid #f0f0f0',
-                              backgroundColor: newAccess.navbarAccess.includes(option.value) ? '#2196f3' : 'white',
-                              color: newAccess.navbarAccess.includes(option.value) ? 'white' : '#333'
-                            }}
-                            onMouseEnter={(e) => {
-                              if (!newAccess.navbarAccess.includes(option.value)) {
-                                e.currentTarget.style.backgroundColor = '#f5f5f5';
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              if (!newAccess.navbarAccess.includes(option.value)) {
-                                e.currentTarget.style.backgroundColor = 'white';
-                              }
-                            }}
-                          >
+                              justifyContent: 'center',
+                              position: 'relative'
+                            }}>
+                              {newAccess.navbarAccess.includes(option.value) && (
+                                <div style={{
+                                  width: '8px',
+                                  height: '8px',
+                                  borderRadius: '50%',
+                                  backgroundColor: '#2196f3'
+                                }} />
+                              )}
+                            </div>
                             <span style={{ color: newAccess.navbarAccess.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
-                            {option.hasCheckmark && (
-                              <IonIcon 
-                                icon={checkmark} 
-                                style={{ 
-                                  color: newAccess.navbarAccess.includes(option.value) ? 'white' : '#00C851', 
-                                  fontSize: '18px',
-                                  fontWeight: 'bold',
-                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
-                                }} 
-                              />
-                            )}
                           </div>
-                        ))}
-                      </div>
+                          {option.hasCheckmark && (
+                            <IonIcon 
+                              icon={checkmark} 
+                              style={{ 
+                                color: newAccess.navbarAccess.includes(option.value) ? 'white' : '#00C851', 
+                                fontSize: '18px',
+                                fontWeight: 'bold',
+                                filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                              }} 
+                            />
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  )}
-                </div>
                   </div>
-                  
-              <div className="form-group">
-                <IonLabel className="form-label">Master Access *</IonLabel>
-                <div style={{ position: 'relative' }} ref={masterAccessDropdownRef}>
-                  <div
-                    onClick={() => setShowMasterAccessDropdown(!showMasterAccessDropdown)}
-                    style={{
-                      background: '#e8e8e8',
-                      border: '1px solid #ddd',
-                      borderRadius: '12px',
-                      padding: '12px 16px',
-                      cursor: 'pointer',
-                      minHeight: '48px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      flexWrap: 'wrap',
-                      gap: '8px'
-                    }}
-                  >
+                )}
+              </div>
+            </div>
+
+            <div className="form-group">
+              <IonLabel className="form-label">Master Access *</IonLabel>
+              <div style={{ position: 'relative' }} ref={masterAccessDropdownRef}>
+                <div
+                  onClick={() => setShowMasterAccessDropdown(!showMasterAccessDropdown)}
+                  style={{
+                    background: '#e8e8e8',
+                    border: '1px solid #ddd',
+                    borderRadius: showMasterAccessDropdown ? '12px 12px 0 0' : '12px',
+                    padding: '12px 16px',
+                    cursor: 'pointer',
+                    minHeight: '48px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexWrap: 'nowrap',
+                    gap: '8px',
+                    justifyContent: 'space-between'
+                  }}
+                >
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', flex: 1, alignItems: 'center', minHeight: '24px' }}>
                     {newAccess.masterAccess.length === 0 ? (
-                      <span style={{ color: '#666', fontSize: '14px' }}>Select master access permissions</span>
+                      <span style={{ color: '#666', fontSize: '16px' }}>
+                        Search and select master access
+                      </span>
                     ) : (
                       newAccess.masterAccess.map((access, index) => (
-                        <span
+                        <div
                           key={index}
                           style={{
-                            background: '#4ecdc4',
-                            color: 'white',
-                            padding: '4px 8px',
-                            borderRadius: '16px',
-                            fontSize: '12px',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '4px'
+                            gap: '6px',
+                            background: '#2196f3',
+                            color: 'white',
+                            padding: '6px 12px',
+                            borderRadius: '20px',
+                            fontSize: '14px',
+                            fontWeight: '500'
                           }}
                         >
-                          {access}
+                          <span>{access}</span>
                           <IonIcon
-                            icon={closeOutlineIcon}
-                            style={{ fontSize: '14px', cursor: 'pointer' }}
+                            icon={closeOutline}
+                            style={{
+                              fontSize: '16px',
+                              cursor: 'pointer',
+                              color: 'white'
+                            }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setNewAccess(prev => ({
-                                ...prev,
-                                masterAccess: prev.masterAccess.filter(item => item !== access)
-                              }));
+                              const newMasterAccess = newAccess.masterAccess.filter((_, i) => i !== index);
+                              setNewAccess({...newAccess, masterAccess: newMasterAccess});
                             }}
                           />
-                        </span>
+                        </div>
                       ))
                     )}
                   </div>
-                  {showMasterAccessDropdown && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: 0,
-                      right: 0,
-                      backgroundColor: 'white',
-                      border: '1px solid #e0e0e0',
-                      borderRadius: '12px',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                      zIndex: 1000,
-                      maxHeight: '500px',
-                      overflow: 'hidden'
-                    }}>
-                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
-                        <IonInput
-                          value={masterAccessSearchQuery}
-                          onIonInput={(e) => setMasterAccessSearchQuery(e.detail.value!)}
-                          placeholder="Search master access..."
-                          style={{
-                            '--background': '#f8f9fa',
-                            '--border-radius': '8px',
-                            '--padding-start': '12px',
-                            '--padding-end': '12px',
-                            '--padding-top': '8px',
-                            '--padding-bottom': '8px'
-                          }}
-                        />
-                      </div>
-                      <div style={{ maxHeight: '450px', overflowY: 'auto', paddingBottom: '12px' }}>
-                        {filteredMasterAccessOptions.map((option) => (
-                          <div
-                            key={option.value}
-                            onClick={() => {
-                              const isSelected = newAccess.masterAccess.includes(option.value);
-                              let newMasterAccess;
-                              if (isSelected) {
-                                newMasterAccess = newAccess.masterAccess.filter(item => item !== option.value);
-                              } else {
-                                newMasterAccess = [...newAccess.masterAccess, option.value];
-                              }
-                              setNewAccess(prev => ({ ...prev, masterAccess: newMasterAccess }));
-                            }}
-                            style={{
-                              padding: '12px 16px',
-                              cursor: 'pointer',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'space-between',
-                              borderBottom: '1px solid #f0f0f0',
-                              backgroundColor: newAccess.masterAccess.includes(option.value) ? '#2196f3' : 'white',
-                              color: newAccess.masterAccess.includes(option.value) ? 'white' : '#333'
-                            }}
-                            onMouseEnter={(e) => {
-                              if (!newAccess.masterAccess.includes(option.value)) {
-                                e.currentTarget.style.backgroundColor = '#f5f5f5';
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              if (!newAccess.masterAccess.includes(option.value)) {
-                                e.currentTarget.style.backgroundColor = 'white';
-                              }
-                            }}
-                          >
-                            <span style={{ color: newAccess.masterAccess.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
-                            {option.hasCheckmark && (
-                              <IonIcon 
-                                icon={checkmark} 
-                                style={{ 
-                                  color: newAccess.masterAccess.includes(option.value) ? 'white' : '#00C851', 
-                                  fontSize: '18px',
-                                  fontWeight: 'bold',
-                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
-                                }} 
-                              />
-                            )}
-                          </div>
-                    ))}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '24px', width: '24px', marginRight: '30px' }}>
+                    <IonIcon 
+                      icon={showMasterAccessDropdown ? chevronUpOutline : chevronDownOutline} 
+                      style={{ 
+                        color: '#666', 
+                        fontSize: '20px',
+                        cursor: 'pointer'
+                      }} 
+                    />
                   </div>
                 </div>
-                  )}
-                </div>
+                {showMasterAccessDropdown && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    right: 0,
+                    backgroundColor: 'white',
+                    border: '1px solid #ddd',
+                    borderRadius: '0 0 12px 12px',
+                    borderTop: 'none',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                    zIndex: 9999,
+                    maxHeight: '300px',
+                    overflow: 'hidden'
+                  }}>
+                    <IonInput
+                      value={masterAccessSearchQuery}
+                      onIonInput={(e) => setMasterAccessSearchQuery(e.detail.value!)}
+                      placeholder="Search master access..."
+                      style={{
+                        '--background': '#f5f5f5',
+                        '--border': 'none',
+                        '--border-radius': '0',
+                        '--padding-start': '16px',
+                        '--padding-end': '16px',
+                        '--padding-top': '12px',
+                        '--padding-bottom': '12px',
+                        '--color': '#333',
+                        '--placeholder-color': '#666'
+                      }}
+                    />
+                    <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
+                      {filteredMasterAccessOptions.map((option) => (
+                        <div
+                          key={option.value}
+                          onClick={() => {
+                            const isSelected = newAccess.masterAccess.includes(option.value);
+                            let newMasterAccess;
+                            if (isSelected) {
+                              newMasterAccess = newAccess.masterAccess.filter(item => item !== option.value);
+                            } else {
+                              newMasterAccess = [...newAccess.masterAccess, option.value];
+                            }
+                            setNewAccess(prev => ({ ...prev, masterAccess: newMasterAccess }));
+                          }}
+                          style={{
+                            padding: '12px 16px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            borderBottom: '1px solid #f0f0f0',
+                            backgroundColor: newAccess.masterAccess.includes(option.value) ? '#2196f3' : 'white',
+                            color: newAccess.masterAccess.includes(option.value) ? 'white' : '#333'
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!newAccess.masterAccess.includes(option.value)) {
+                              e.currentTarget.style.backgroundColor = '#f5f5f5';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!newAccess.masterAccess.includes(option.value)) {
+                              e.currentTarget.style.backgroundColor = 'white';
+                            }
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{
+                              width: '18px',
+                              height: '18px',
+                              borderRadius: '50%',
+                              border: `2px solid ${newAccess.masterAccess.includes(option.value) ? 'white' : '#ddd'}`,
+                              backgroundColor: newAccess.masterAccess.includes(option.value) ? 'white' : 'transparent',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              position: 'relative'
+                            }}>
+                              {newAccess.masterAccess.includes(option.value) && (
+                                <div style={{
+                                  width: '8px',
+                                  height: '8px',
+                                  borderRadius: '50%',
+                                  backgroundColor: '#2196f3'
+                                }} />
+                              )}
+                            </div>
+                            <span style={{ color: newAccess.masterAccess.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                          </div>
+                          {option.hasCheckmark && (
+                            <IonIcon 
+                              icon={checkmark} 
+                              style={{ 
+                                color: newAccess.masterAccess.includes(option.value) ? 'white' : '#00C851', 
+                                fontSize: '18px',
+                                fontWeight: 'bold',
+                                filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                              }} 
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            </IonList>
+            </div>
           </div>
           
           <div className="modal-actions">
-            <IonButton fill="outline" onClick={handleCloseAddModal}>
-              CANCEL
-            </IonButton>
-            <IonButton fill="solid" onClick={handleSaveNewAccess}>
+            <IonButton 
+              fill="solid"
+              onClick={handleSaveNewAccess}
+              className="add-button"
+            >
               <IonIcon icon={checkmarkOutline} slot="start" />
-              SAVE ACCESS MAPPING
+              ADD ACCESS MAPPING
+            </IonButton>
+            <IonButton 
+              fill="outline"
+              onClick={handleCloseAddModal}
+              className="cancel-button"
+            >
+              CANCEL
             </IonButton>
           </div>
         </IonContent>
@@ -899,7 +989,7 @@ const AccessMapping: React.FC = () => {
 
       {/* Edit Access Modal */}
       <IonModal isOpen={showEditModal} onDidDismiss={handleCloseEditModal}>
-        <IonContent className="edit-access-modal">
+        <IonContent className="add-role-modal">
           <div className="modal-header">
             <h2>Edit Access Mapping</h2>
             <IonButton fill="clear" onClick={handleCloseEditModal}>
@@ -908,305 +998,395 @@ const AccessMapping: React.FC = () => {
           </div>
           
           <div className="modal-content">
-            <IonList>
-              <div className="form-group">
-                <IonLabel className="form-label">Role Name *</IonLabel>
-                <IonInput
-                  value={editAccess.role}
-                  onIonInput={(e) => setEditAccess(prev => ({ ...prev, role: e.detail.value! }))}
-                  placeholder="Enter role name (e.g., Admin, User, Manager)"
+            <div className="form-group">
+              <IonLabel className="form-label">Role Name *</IonLabel>
+              <IonInput
+                value={editAccess.role}
+                onIonInput={(e) => setEditAccess(prev => ({ ...prev, role: e.detail.value! }))}
+                placeholder="Enter role name (e.g., Admin, User, Manager)"
+                style={{
+                  '--background': '#e8e8e8',
+                  '--border-radius': '12px',
+                  '--padding-start': '16px',
+                  '--padding-end': '16px',
+                  '--padding-top': '12px',
+                  '--padding-bottom': '12px',
+                  '--color': '#333',
+                  '--placeholder-color': '#666'
+                }}
+              />
+            </div>
+
+            <div className="form-group">
+              <IonLabel className="form-label">Navbar Access *</IonLabel>
+              <div style={{ position: 'relative' }} ref={editNavAccessDropdownRef}>
+                <div
+                  onClick={() => setShowEditNavAccessDropdown(!showEditNavAccessDropdown)}
                   style={{
-                    '--background': '#e8e8e8',
-                    '--border-radius': '12px',
-                    '--padding-start': '16px',
-                    '--padding-end': '16px',
-                    '--padding-top': '12px',
-                    '--padding-bottom': '12px',
-                    '--color': '#333',
-                    '--placeholder-color': '#666'
+                    background: '#e8e8e8',
+                    border: '1px solid #ddd',
+                    borderRadius: showEditNavAccessDropdown ? '12px 12px 0 0' : '12px',
+                    padding: '12px 16px',
+                    cursor: 'pointer',
+                    minHeight: '48px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexWrap: 'nowrap',
+                    gap: '8px',
+                    justifyContent: 'space-between'
                   }}
-                />
-              </div>
-              
-              <div className="form-group">
-                <IonLabel className="form-label">Navbar Access *</IonLabel>
-                <div style={{ position: 'relative' }} ref={editNavAccessDropdownRef}>
-                  <div
-                    onClick={() => setShowEditNavAccessDropdown(!showEditNavAccessDropdown)}
-                    style={{
-                      background: '#e8e8e8',
-                      border: '1px solid #ddd',
-                      borderRadius: '12px',
-                      padding: '12px 16px',
-                      cursor: 'pointer',
-                      minHeight: '48px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      flexWrap: 'wrap',
-                      gap: '8px'
-                    }}
-                  >
+                >
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', flex: 1, alignItems: 'center', minHeight: '24px' }}>
                     {editAccess.navbarAccess.length === 0 ? (
-                      <span style={{ color: '#666', fontSize: '14px' }}>Select navbar access items</span>
+                      <span style={{ color: '#666', fontSize: '16px' }}>
+                        Search and select navbar access
+                      </span>
                     ) : (
                       editAccess.navbarAccess.map((access, index) => (
-                        <span
+                        <div
                           key={index}
                           style={{
-                            background: '#4ecdc4',
-                            color: 'white',
-                            padding: '4px 8px',
-                            borderRadius: '16px',
-                            fontSize: '12px',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '4px'
+                            gap: '6px',
+                            background: '#2196f3',
+                            color: 'white',
+                            padding: '6px 12px',
+                            borderRadius: '20px',
+                            fontSize: '14px',
+                            fontWeight: '500'
                           }}
                         >
-                          {access}
+                          <span>{access}</span>
                           <IonIcon
-                            icon={closeOutlineIcon}
-                            style={{ fontSize: '14px', cursor: 'pointer' }}
+                            icon={closeOutline}
+                            style={{
+                              fontSize: '16px',
+                              cursor: 'pointer',
+                              color: 'white'
+                            }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setEditAccess(prev => ({
-                                ...prev,
-                                navbarAccess: prev.navbarAccess.filter(item => item !== access)
-                              }));
+                              const newNavAccess = editAccess.navbarAccess.filter((_, i) => i !== index);
+                              setEditAccess({...editAccess, navbarAccess: newNavAccess});
                             }}
                           />
-                        </span>
+                        </div>
                       ))
                     )}
                   </div>
-                  {showEditNavAccessDropdown && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: 0,
-                      right: 0,
-                      backgroundColor: 'white',
-                      border: '1px solid #e0e0e0',
-                      borderRadius: '12px',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                      zIndex: 1000,
-                      maxHeight: '500px',
-                      overflow: 'hidden'
-                    }}>
-                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '24px', width: '24px', marginRight: '30px' }}>
+                    <IonIcon 
+                      icon={showEditNavAccessDropdown ? chevronUpOutline : chevronDownOutline} 
+                      style={{ 
+                        color: '#666', 
+                        fontSize: '20px',
+                        cursor: 'pointer'
+                      }} 
+                    />
+                  </div>
+                </div>
+                {showEditNavAccessDropdown && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    right: 0,
+                    backgroundColor: 'white',
+                    border: '1px solid #ddd',
+                    borderRadius: '0 0 12px 12px',
+                    borderTop: 'none',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                    zIndex: 9999,
+                    maxHeight: '300px',
+                    overflow: 'hidden'
+                  }}>
                     <IonInput
-                          value={editNavAccessSearchQuery}
-                          onIonInput={(e) => setEditNavAccessSearchQuery(e.detail.value!)}
-                          placeholder="Search navbar access..."
-                          style={{
-                            '--background': '#f8f9fa',
-                            '--border-radius': '8px',
-                            '--padding-start': '12px',
-                            '--padding-end': '12px',
-                            '--padding-top': '8px',
-                            '--padding-bottom': '8px'
+                      value={editNavAccessSearchQuery}
+                      onIonInput={(e) => setEditNavAccessSearchQuery(e.detail.value!)}
+                      placeholder="Search navbar access..."
+                      style={{
+                        '--background': '#f5f5f5',
+                        '--border': 'none',
+                        '--border-radius': '0',
+                        '--padding-start': '16px',
+                        '--padding-end': '16px',
+                        '--padding-top': '12px',
+                        '--padding-bottom': '12px',
+                        '--color': '#333',
+                        '--placeholder-color': '#666'
+                      }}
+                    />
+                    <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
+                      {filteredEditNavAccessOptions.map((option) => (
+                        <div
+                          key={option.value}
+                          onClick={() => {
+                            const isSelected = editAccess.navbarAccess.includes(option.value);
+                            let newNavAccess;
+                            if (isSelected) {
+                              newNavAccess = editAccess.navbarAccess.filter(item => item !== option.value);
+                            } else {
+                              newNavAccess = [...editAccess.navbarAccess, option.value];
+                            }
+                            setEditAccess(prev => ({ ...prev, navbarAccess: newNavAccess }));
                           }}
-                        />
-                      </div>
-                      <div style={{ maxHeight: '450px', overflowY: 'auto', paddingBottom: '12px' }}>
-                        {filteredEditNavAccessOptions.map((option) => (
-                          <div
-                            key={option.value}
-                            onClick={() => {
-                              const isSelected = editAccess.navbarAccess.includes(option.value);
-                              let newNavAccess;
-                              if (isSelected) {
-                                newNavAccess = editAccess.navbarAccess.filter(item => item !== option.value);
-                              } else {
-                                newNavAccess = [...editAccess.navbarAccess, option.value];
-                              }
-                              setEditAccess(prev => ({ ...prev, navbarAccess: newNavAccess }));
-                            }}
-                            style={{
-                              padding: '12px 16px',
-                              cursor: 'pointer',
+                          style={{
+                            padding: '12px 16px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            borderBottom: '1px solid #f0f0f0',
+                            backgroundColor: editAccess.navbarAccess.includes(option.value) ? '#2196f3' : 'white',
+                            color: editAccess.navbarAccess.includes(option.value) ? 'white' : '#333'
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!editAccess.navbarAccess.includes(option.value)) {
+                              e.currentTarget.style.backgroundColor = '#f5f5f5';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!editAccess.navbarAccess.includes(option.value)) {
+                              e.currentTarget.style.backgroundColor = 'white';
+                            }
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{
+                              width: '18px',
+                              height: '18px',
+                              borderRadius: '50%',
+                              border: `2px solid ${editAccess.navbarAccess.includes(option.value) ? 'white' : '#ddd'}`,
+                              backgroundColor: editAccess.navbarAccess.includes(option.value) ? 'white' : 'transparent',
                               display: 'flex',
                               alignItems: 'center',
-                              justifyContent: 'space-between',
-                              borderBottom: '1px solid #f0f0f0',
-                              backgroundColor: editAccess.navbarAccess.includes(option.value) ? '#2196f3' : 'white',
-                              color: editAccess.navbarAccess.includes(option.value) ? 'white' : '#333'
-                            }}
-                            onMouseEnter={(e) => {
-                              if (!editAccess.navbarAccess.includes(option.value)) {
-                                e.currentTarget.style.backgroundColor = '#f5f5f5';
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              if (!editAccess.navbarAccess.includes(option.value)) {
-                                e.currentTarget.style.backgroundColor = 'white';
-                              }
-                            }}
-                          >
+                              justifyContent: 'center',
+                              position: 'relative'
+                            }}>
+                              {editAccess.navbarAccess.includes(option.value) && (
+                                <div style={{
+                                  width: '8px',
+                                  height: '8px',
+                                  borderRadius: '50%',
+                                  backgroundColor: '#2196f3'
+                                }} />
+                              )}
+                            </div>
                             <span style={{ color: editAccess.navbarAccess.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
-                            {option.hasCheckmark && (
-                              <IonIcon 
-                                icon={checkmark} 
-                                style={{ 
-                                  color: editAccess.navbarAccess.includes(option.value) ? 'white' : '#00C851', 
-                                  fontSize: '18px',
-                                  fontWeight: 'bold',
-                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
-                                }} 
-                              />
-                            )}
                           </div>
-                        ))}
-                      </div>
+                          {option.hasCheckmark && (
+                            <IonIcon 
+                              icon={checkmark} 
+                              style={{ 
+                                color: editAccess.navbarAccess.includes(option.value) ? 'white' : '#00C851', 
+                                fontSize: '18px',
+                                fontWeight: 'bold',
+                                filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                              }} 
+                            />
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  )}
-                </div>
                   </div>
-                  
-              <div className="form-group">
-                <IonLabel className="form-label">Master Access *</IonLabel>
-                <div style={{ position: 'relative' }} ref={editMasterAccessDropdownRef}>
-                  <div
-                    onClick={() => setShowEditMasterAccessDropdown(!showEditMasterAccessDropdown)}
-                    style={{
-                      background: '#e8e8e8',
-                      border: '1px solid #ddd',
-                      borderRadius: '12px',
-                      padding: '12px 16px',
-                      cursor: 'pointer',
-                      minHeight: '48px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      flexWrap: 'wrap',
-                      gap: '8px'
-                    }}
-                  >
+                )}
+              </div>
+            </div>
+
+            <div className="form-group">
+              <IonLabel className="form-label">Master Access *</IonLabel>
+              <div style={{ position: 'relative' }} ref={editMasterAccessDropdownRef}>
+                <div
+                  onClick={() => setShowEditMasterAccessDropdown(!showEditMasterAccessDropdown)}
+                  style={{
+                    background: '#e8e8e8',
+                    border: '1px solid #ddd',
+                    borderRadius: showEditMasterAccessDropdown ? '12px 12px 0 0' : '12px',
+                    padding: '12px 16px',
+                    cursor: 'pointer',
+                    minHeight: '48px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexWrap: 'nowrap',
+                    gap: '8px',
+                    justifyContent: 'space-between'
+                  }}
+                >
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', flex: 1, alignItems: 'center', minHeight: '24px' }}>
                     {editAccess.masterAccess.length === 0 ? (
-                      <span style={{ color: '#666', fontSize: '14px' }}>Select master access permissions</span>
+                      <span style={{ color: '#666', fontSize: '16px' }}>
+                        Search and select master access
+                      </span>
                     ) : (
                       editAccess.masterAccess.map((access, index) => (
-                        <span
+                        <div
                           key={index}
                           style={{
-                            background: '#4ecdc4',
-                            color: 'white',
-                            padding: '4px 8px',
-                            borderRadius: '16px',
-                            fontSize: '12px',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '4px'
+                            gap: '6px',
+                            background: '#2196f3',
+                            color: 'white',
+                            padding: '6px 12px',
+                            borderRadius: '20px',
+                            fontSize: '14px',
+                            fontWeight: '500'
                           }}
                         >
-                          {access}
+                          <span>{access}</span>
                           <IonIcon
-                            icon={closeOutlineIcon}
-                            style={{ fontSize: '14px', cursor: 'pointer' }}
+                            icon={closeOutline}
+                            style={{
+                              fontSize: '16px',
+                              cursor: 'pointer',
+                              color: 'white'
+                            }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setEditAccess(prev => ({
-                                ...prev,
-                                masterAccess: prev.masterAccess.filter(item => item !== access)
-                              }));
+                              const newMasterAccess = editAccess.masterAccess.filter((_, i) => i !== index);
+                              setEditAccess({...editAccess, masterAccess: newMasterAccess});
                             }}
                           />
-                        </span>
+                        </div>
                       ))
                     )}
                   </div>
-                  {showEditMasterAccessDropdown && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: 0,
-                      right: 0,
-                      backgroundColor: 'white',
-                      border: '1px solid #e0e0e0',
-                      borderRadius: '12px',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                      zIndex: 1000,
-                      maxHeight: '500px',
-                      overflow: 'hidden'
-                    }}>
-                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
-                        <IonInput
-                          value={editMasterAccessSearchQuery}
-                          onIonInput={(e) => setEditMasterAccessSearchQuery(e.detail.value!)}
-                          placeholder="Search master access..."
-                          style={{
-                            '--background': '#f8f9fa',
-                            '--border-radius': '8px',
-                            '--padding-start': '12px',
-                            '--padding-end': '12px',
-                            '--padding-top': '8px',
-                            '--padding-bottom': '8px'
-                          }}
-                        />
-                      </div>
-                      <div style={{ maxHeight: '450px', overflowY: 'auto', paddingBottom: '12px' }}>
-                        {filteredEditMasterAccessOptions.map((option) => (
-                          <div
-                            key={option.value}
-                            onClick={() => {
-                              const isSelected = editAccess.masterAccess.includes(option.value);
-                              let newMasterAccess;
-                              if (isSelected) {
-                                newMasterAccess = editAccess.masterAccess.filter(item => item !== option.value);
-                              } else {
-                                newMasterAccess = [...editAccess.masterAccess, option.value];
-                              }
-                              setEditAccess(prev => ({ ...prev, masterAccess: newMasterAccess }));
-                            }}
-                            style={{
-                              padding: '12px 16px',
-                              cursor: 'pointer',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'space-between',
-                              borderBottom: '1px solid #f0f0f0',
-                              backgroundColor: editAccess.masterAccess.includes(option.value) ? '#2196f3' : 'white',
-                              color: editAccess.masterAccess.includes(option.value) ? 'white' : '#333'
-                            }}
-                            onMouseEnter={(e) => {
-                              if (!editAccess.masterAccess.includes(option.value)) {
-                                e.currentTarget.style.backgroundColor = '#f5f5f5';
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              if (!editAccess.masterAccess.includes(option.value)) {
-                                e.currentTarget.style.backgroundColor = 'white';
-                              }
-                            }}
-                          >
-                            <span style={{ color: editAccess.masterAccess.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
-                            {option.hasCheckmark && (
-                              <IonIcon 
-                                icon={checkmark} 
-                                style={{ 
-                                  color: editAccess.masterAccess.includes(option.value) ? 'white' : '#00C851', 
-                                  fontSize: '18px',
-                                  fontWeight: 'bold',
-                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
-                                }} 
-                              />
-                            )}
-                          </div>
-                    ))}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '24px', width: '24px', marginRight: '30px' }}>
+                    <IonIcon 
+                      icon={showEditMasterAccessDropdown ? chevronUpOutline : chevronDownOutline} 
+                      style={{ 
+                        color: '#666', 
+                        fontSize: '20px',
+                        cursor: 'pointer'
+                      }} 
+                    />
                   </div>
                 </div>
-                  )}
-                </div>
+                {showEditMasterAccessDropdown && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    right: 0,
+                    backgroundColor: 'white',
+                    border: '1px solid #ddd',
+                    borderRadius: '0 0 12px 12px',
+                    borderTop: 'none',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                    zIndex: 9999,
+                    maxHeight: '300px',
+                    overflow: 'hidden'
+                  }}>
+                    <IonInput
+                      value={editMasterAccessSearchQuery}
+                      onIonInput={(e) => setEditMasterAccessSearchQuery(e.detail.value!)}
+                      placeholder="Search master access..."
+                      style={{
+                        '--background': '#f5f5f5',
+                        '--border': 'none',
+                        '--border-radius': '0',
+                        '--padding-start': '16px',
+                        '--padding-end': '16px',
+                        '--padding-top': '12px',
+                        '--padding-bottom': '12px',
+                        '--color': '#333',
+                        '--placeholder-color': '#666'
+                      }}
+                    />
+                    <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
+                      {filteredEditMasterAccessOptions.map((option) => (
+                        <div
+                          key={option.value}
+                          onClick={() => {
+                            const isSelected = editAccess.masterAccess.includes(option.value);
+                            let newMasterAccess;
+                            if (isSelected) {
+                              newMasterAccess = editAccess.masterAccess.filter(item => item !== option.value);
+                            } else {
+                              newMasterAccess = [...editAccess.masterAccess, option.value];
+                            }
+                            setEditAccess(prev => ({ ...prev, masterAccess: newMasterAccess }));
+                          }}
+                          style={{
+                            padding: '12px 16px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            borderBottom: '1px solid #f0f0f0',
+                            backgroundColor: editAccess.masterAccess.includes(option.value) ? '#2196f3' : 'white',
+                            color: editAccess.masterAccess.includes(option.value) ? 'white' : '#333'
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!editAccess.masterAccess.includes(option.value)) {
+                              e.currentTarget.style.backgroundColor = '#f5f5f5';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!editAccess.masterAccess.includes(option.value)) {
+                              e.currentTarget.style.backgroundColor = 'white';
+                            }
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{
+                              width: '18px',
+                              height: '18px',
+                              borderRadius: '50%',
+                              border: `2px solid ${editAccess.masterAccess.includes(option.value) ? 'white' : '#ddd'}`,
+                              backgroundColor: editAccess.masterAccess.includes(option.value) ? 'white' : 'transparent',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              position: 'relative'
+                            }}>
+                              {editAccess.masterAccess.includes(option.value) && (
+                                <div style={{
+                                  width: '8px',
+                                  height: '8px',
+                                  borderRadius: '50%',
+                                  backgroundColor: '#2196f3'
+                                }} />
+                              )}
+                            </div>
+                            <span style={{ color: editAccess.masterAccess.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                          </div>
+                          {option.hasCheckmark && (
+                            <IonIcon 
+                              icon={checkmark} 
+                              style={{ 
+                                color: editAccess.masterAccess.includes(option.value) ? 'white' : '#00C851', 
+                                fontSize: '18px',
+                                fontWeight: 'bold',
+                                filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                              }} 
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            </IonList>
+            </div>
           </div>
           
           <div className="modal-actions">
-            <IonButton fill="outline" onClick={handleCloseEditModal}>
-              CANCEL
-            </IonButton>
-            <IonButton fill="solid" onClick={handleUpdateAccess}>
+            <IonButton 
+              fill="solid"
+              onClick={handleUpdateAccess}
+              className="add-button"
+            >
               <IonIcon icon={checkmarkOutline} slot="start" />
               UPDATE ACCESS MAPPING
+            </IonButton>
+            <IonButton 
+              fill="outline"
+              onClick={handleCloseEditModal}
+              className="cancel-button"
+            >
+              CANCEL
             </IonButton>
           </div>
         </IonContent>

@@ -4,7 +4,7 @@
   align-items: center;
   gap: 1rem;
   padding: 1.5rem;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+  background: linear-gradient(145deg, rgba(248, 250, 252, 0.15) 0%, rgba(241, 245, 249, 0.1) 100%);
   border-radius: 20px;
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.1),
@@ -17,6 +17,7 @@
   overflow: hidden;
   box-sizing: border-box;
 }
+
 
 .rbac-controls::before {
   content: '';
@@ -61,10 +62,40 @@
   font-size: 1.2rem;
 }
 
+/* View Toggle Button */
+.rbac-controls-view-toggle {
+  --border-color: #000000;
+  --color: #000000;
+  --border-radius: 10px;
+  --border-width: 2px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 0.5rem;
+  --padding-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  min-width: auto;
+}
+
+.rbac-controls-view-toggle:hover {
+  --background: rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.rbac-controls-view-toggle ion-icon {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+}
+
 /* Filter Button */
 .rbac-controls-filter-button {
-  --border-color: #4ecdc4;
-  --color: #4ecdc4;
+  --border-color: #f093fb;
+  --color: #f093fb;
   --border-radius: 10px;
   --border-width: 2px;
   --padding-start: 1rem;
@@ -81,13 +112,38 @@
 }
 
 .rbac-controls-filter-button:hover {
-  --background: rgba(78, 205, 196, 0.1);
+  --background: rgba(240, 147, 251, 0.1);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
+  box-shadow: 0 4px 12px rgba(240, 147, 251, 0.3);
 }
 
 .rbac-controls-filter-button ion-icon {
   margin-right: 0.5rem;
+  font-size: 1rem;
+}
+
+/* Refresh Button */
+.rbac-controls-refresh-button {
+  --color: #667eea;
+  --border-radius: 10px;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  --padding-top: 0.5rem;
+  --padding-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  min-width: auto;
+}
+
+.rbac-controls-refresh-button:hover {
+  --background: rgba(102, 126, 234, 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.rbac-controls-refresh-button ion-icon {
   font-size: 1rem;
 }
 
@@ -136,6 +192,8 @@
   }
   
   .rbac-controls-filter-button,
+  .rbac-controls-view-toggle,
+  .rbac-controls-refresh-button,
   .rbac-controls-add-button {
     flex-shrink: 0;
     width: auto;
@@ -150,11 +208,19 @@
   
   /* Hide text on mobile, show only icons */
   .rbac-controls-filter-button .button-text,
+  .rbac-controls-view-toggle .button-text,
   .rbac-controls-add-button .button-text {
     display: none;
   }
   
+  /* Hide refresh button text on mobile, keep icon */
+  .rbac-controls-refresh-button .button-text {
+    display: none;
+  }
+  
   .rbac-controls-filter-button ion-icon,
+  .rbac-controls-view-toggle ion-icon,
+  .rbac-controls-refresh-button ion-icon,
   .rbac-controls-add-button ion-icon {
     margin-right: 0;
     font-size: 1.2rem;
@@ -180,6 +246,8 @@
   }
   
   .rbac-controls-filter-button,
+  .rbac-controls-view-toggle,
+  .rbac-controls-refresh-button,
   .rbac-controls-add-button {
     min-width: 44px;
     height: 44px;
@@ -190,6 +258,8 @@
   }
   
   .rbac-controls-filter-button ion-icon,
+  .rbac-controls-view-toggle ion-icon,
+  .rbac-controls-refresh-button ion-icon,
   .rbac-controls-add-button ion-icon {
     font-size: 1.1rem;
   }

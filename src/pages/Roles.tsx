@@ -9,7 +9,7 @@ import {
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
   chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
-  eyeOutline, checkmark, closeOutline as closeOutlineIcon
+  eyeOutline, checkmark, closeOutline as closeOutlineIcon, chevronDownOutline, chevronUpOutline
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -752,15 +752,21 @@ const Roles: React.FC = () => {
                   onClick={() => setShowOrganizationDropdown(!showOrganizationDropdown)}
                   style={{ 
                     '--background': '#e8e8e8',
-                    '--border-radius': '12px',
+                    '--border-radius': showOrganizationDropdown ? '12px 12px 0 0' : '12px',
                     '--padding-start': '16px',
-                    '--padding-end': '16px',
+                    '--padding-end': '50px',
                     '--padding-top': '12px',
                     '--padding-bottom': '12px',
                     '--color': '#333',
                     '--placeholder-color': '#666'
                   }}
-                />
+                >
+                  <IonIcon 
+                    icon={showOrganizationDropdown ? chevronUpOutline : chevronDownOutline} 
+                    slot="end" 
+                    style={{ color: '#666', fontSize: '20px', cursor: 'pointer' }} 
+                  />
+                </IonInput>
                 {showOrganizationDropdown && (
                   <div style={{
                     position: 'absolute',
@@ -769,9 +775,10 @@ const Roles: React.FC = () => {
                     right: 0,
                     backgroundColor: 'white',
                     border: '1px solid #ddd',
-                    borderRadius: '8px',
+                    borderRadius: '0 0 12px 12px',
+                    borderTop: 'none',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                    zIndex: 1000,
+                    zIndex: 9999,
                     maxHeight: '300px',
                     overflow: 'hidden'
                   }}>
@@ -782,7 +789,7 @@ const Roles: React.FC = () => {
                       style={{
                         '--background': '#f5f5f5',
                         '--border': 'none',
-                        '--border-radius': '8px',
+                        '--border-radius': '0',
                         '--padding-start': '16px',
                         '--padding-end': '16px',
                         '--padding-top': '12px',
@@ -851,15 +858,21 @@ const Roles: React.FC = () => {
                   onClick={() => setShowBranchDropdown(!showBranchDropdown)}
                   style={{ 
                     '--background': '#e8e8e8',
-                    '--border-radius': '12px',
+                    '--border-radius': showBranchDropdown ? '12px 12px 0 0' : '12px',
                     '--padding-start': '16px',
-                    '--padding-end': '16px',
+                    '--padding-end': '50px',
                     '--padding-top': '12px',
                     '--padding-bottom': '12px',
                     '--color': '#333',
                     '--placeholder-color': '#666'
                   }}
-                />
+                >
+                  <IonIcon 
+                    icon={showBranchDropdown ? chevronUpOutline : chevronDownOutline} 
+                    slot="end" 
+                    style={{ color: '#666', fontSize: '20px', cursor: 'pointer' }} 
+                  />
+                </IonInput>
                 {showBranchDropdown && (
                   <div style={{
                     position: 'absolute',
@@ -868,9 +881,10 @@ const Roles: React.FC = () => {
                     right: 0,
                     backgroundColor: 'white',
                     border: '1px solid #ddd',
-                    borderRadius: '8px',
+                    borderRadius: '0 0 12px 12px',
+                    borderTop: 'none',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                    zIndex: 1000,
+                    zIndex: 9999,
                     maxHeight: '300px',
                     overflow: 'hidden'
                   }}>
@@ -881,7 +895,7 @@ const Roles: React.FC = () => {
                       style={{
                         '--background': '#f5f5f5',
                         '--border': 'none',
-                        '--border-radius': '8px',
+                        '--border-radius': '0',
                         '--padding-start': '16px',
                         '--padding-end': '16px',
                         '--padding-top': '12px',
@@ -950,15 +964,21 @@ const Roles: React.FC = () => {
                   onClick={() => setNameDropdown(!showNameDropdown)}
                   style={{ 
                     '--background': '#e8e8e8',
-                    '--border-radius': '12px',
+                    '--border-radius': showNameDropdown ? '12px 12px 0 0' : '12px',
                     '--padding-start': '16px',
-                    '--padding-end': '16px',
+                    '--padding-end': '50px',
                     '--padding-top': '12px',
                     '--padding-bottom': '12px',
                     '--color': '#333',
                     '--placeholder-color': '#666'
                   }}
-                />
+                >
+                  <IonIcon 
+                    icon={showNameDropdown ? chevronUpOutline : chevronDownOutline} 
+                    slot="end" 
+                    style={{ color: '#666', fontSize: '20px', cursor: 'pointer' }} 
+                  />
+                </IonInput>
                 {showNameDropdown && (
                   <div style={{
                     position: 'absolute',
@@ -967,9 +987,10 @@ const Roles: React.FC = () => {
                     right: 0,
                     backgroundColor: 'white',
                     border: '1px solid #ddd',
-                    borderRadius: '8px',
+                    borderRadius: '0 0 12px 12px',
+                    borderTop: 'none',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                    zIndex: 1000,
+                    zIndex: 9999,
                     maxHeight: '300px',
                     overflow: 'hidden'
                   }}>
@@ -980,7 +1001,7 @@ const Roles: React.FC = () => {
                       style={{
                         '--background': '#f5f5f5',
                         '--border': 'none',
-                        '--border-radius': '8px',
+                        '--border-radius': '0',
                         '--padding-start': '16px',
                         '--padding-end': '16px',
                         '--padding-top': '12px',
@@ -1047,54 +1068,67 @@ const Roles: React.FC = () => {
                   onClick={() => setShowStatusesDropdown(!showStatusesDropdown)}
                   style={{ 
                     background: '#e8e8e8',
-                    borderRadius: '12px',
+                    borderRadius: showStatusesDropdown ? '12px 12px 0 0' : '12px',
                     padding: '12px 16px',
                     minHeight: '48px',
                     cursor: 'pointer',
                     display: 'flex',
-                    flexWrap: 'wrap',
+                    flexWrap: 'nowrap',
                     alignItems: 'center',
                     gap: '8px',
+                    justifyContent: 'space-between',
                     border: '1px solid transparent'
                   }}
                 >
-                  {addForm.statuses.length > 0 ? (
-                    addForm.statuses.map((status, index) => (
-                      <div
-                        key={index}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          background: '#2196f3',
-                          color: 'white',
-                          padding: '6px 12px',
-                          borderRadius: '20px',
-                          fontSize: '14px',
-                          fontWeight: '500'
-                        }}
-                      >
-                        <span>{status}</span>
-                        <IonIcon
-                          icon={closeOutline}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', flex: 1, alignItems: 'center', minHeight: '24px' }}>
+                    {addForm.statuses.length > 0 ? (
+                      addForm.statuses.map((status, index) => (
+                        <div
+                          key={index}
                           style={{
-                            fontSize: '16px',
-                            cursor: 'pointer',
-                            color: 'white'
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            background: '#2196f3',
+                            color: 'white',
+                            padding: '6px 12px',
+                            borderRadius: '20px',
+                            fontSize: '14px',
+                            fontWeight: '500'
                           }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const newStatuses = addForm.statuses.filter((_, i) => i !== index);
-                            setAddForm({...addForm, statuses: newStatuses});
-                          }}
-                        />
-                      </div>
-                    ))
-                  ) : (
-                    <span style={{ color: '#666', fontSize: '16px' }}>
-                      Search and select statuses
-                    </span>
-                  )}
+                        >
+                          <span>{status}</span>
+                          <IonIcon
+                            icon={closeOutline}
+                            style={{
+                              fontSize: '16px',
+                              cursor: 'pointer',
+                              color: 'white'
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const newStatuses = addForm.statuses.filter((_, i) => i !== index);
+                              setAddForm({...addForm, statuses: newStatuses});
+                            }}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <span style={{ color: '#666', fontSize: '16px' }}>
+                        Search and select statuses
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '24px', width: '24px', marginRight: '30px' }}>
+                    <IonIcon 
+                      icon={showStatusesDropdown ? chevronUpOutline : chevronDownOutline} 
+                      style={{ 
+                        color: '#666', 
+                        fontSize: '20px',
+                        cursor: 'pointer'
+                      }} 
+                    />
+                  </div>
                 </div>
                 {showStatusesDropdown && (
                   <div style={{
@@ -1104,9 +1138,10 @@ const Roles: React.FC = () => {
                     right: 0,
                     backgroundColor: 'white',
                     border: '1px solid #ddd',
-                    borderRadius: '8px',
+                    borderRadius: '0 0 12px 12px',
+                    borderTop: 'none',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                    zIndex: 1000,
+                    zIndex: 9999,
                     maxHeight: '300px',
                     overflow: 'hidden'
                   }}>
@@ -1117,7 +1152,7 @@ const Roles: React.FC = () => {
                       style={{
                         '--background': '#f5f5f5',
                         '--border': 'none',
-                        '--border-radius': '8px',
+                        '--border-radius': '0',
                         '--padding-start': '16px',
                         '--padding-end': '16px',
                         '--padding-top': '12px',
@@ -1245,15 +1280,21 @@ const Roles: React.FC = () => {
                   onClick={() => setShowEditOrganizationDropdown(!showEditOrganizationDropdown)}
                   style={{ 
                     '--background': '#e8e8e8',
-                    '--border-radius': '12px',
+                    '--border-radius': showEditOrganizationDropdown ? '12px 12px 0 0' : '12px',
                     '--padding-start': '16px',
-                    '--padding-end': '16px',
+                    '--padding-end': '50px',
                     '--padding-top': '12px',
                     '--padding-bottom': '12px',
                     '--color': '#333',
                     '--placeholder-color': '#666'
                   }}
-                />
+                >
+                  <IonIcon 
+                    icon={showEditOrganizationDropdown ? chevronUpOutline : chevronDownOutline} 
+                    slot="end" 
+                    style={{ color: '#666', fontSize: '20px', cursor: 'pointer' }} 
+                  />
+                </IonInput>
                 {showEditOrganizationDropdown && (
                   <div style={{
                     position: 'absolute',
@@ -1262,9 +1303,10 @@ const Roles: React.FC = () => {
                     right: 0,
                     backgroundColor: 'white',
                     border: '1px solid #ddd',
-                    borderRadius: '8px',
+                    borderRadius: '0 0 12px 12px',
+                    borderTop: 'none',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                    zIndex: 1000,
+                    zIndex: 9999,
                     maxHeight: '300px',
                     overflow: 'hidden'
                   }}>
@@ -1275,7 +1317,7 @@ const Roles: React.FC = () => {
                       style={{
                         '--background': '#f5f5f5',
                         '--border': 'none',
-                        '--border-radius': '8px',
+                        '--border-radius': '0',
                         '--padding-start': '16px',
                         '--padding-end': '16px',
                         '--padding-top': '12px',
@@ -1344,15 +1386,21 @@ const Roles: React.FC = () => {
                   onClick={() => setShowEditBranchDropdown(!showEditBranchDropdown)}
                   style={{ 
                     '--background': '#e8e8e8',
-                    '--border-radius': '12px',
+                    '--border-radius': showEditBranchDropdown ? '12px 12px 0 0' : '12px',
                     '--padding-start': '16px',
-                    '--padding-end': '16px',
+                    '--padding-end': '50px',
                     '--padding-top': '12px',
                     '--padding-bottom': '12px',
                     '--color': '#333',
                     '--placeholder-color': '#666'
                   }}
-                />
+                >
+                  <IonIcon 
+                    icon={showEditBranchDropdown ? chevronUpOutline : chevronDownOutline} 
+                    slot="end" 
+                    style={{ color: '#666', fontSize: '20px', cursor: 'pointer' }} 
+                  />
+                </IonInput>
                 {showEditBranchDropdown && (
                   <div style={{
                     position: 'absolute',
@@ -1361,9 +1409,10 @@ const Roles: React.FC = () => {
                     right: 0,
                     backgroundColor: 'white',
                     border: '1px solid #ddd',
-                    borderRadius: '8px',
+                    borderRadius: '0 0 12px 12px',
+                    borderTop: 'none',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                    zIndex: 1000,
+                    zIndex: 9999,
                     maxHeight: '300px',
                     overflow: 'hidden'
                   }}>
@@ -1374,7 +1423,7 @@ const Roles: React.FC = () => {
                       style={{
                         '--background': '#f5f5f5',
                         '--border': 'none',
-                        '--border-radius': '8px',
+                        '--border-radius': '0',
                         '--padding-start': '16px',
                         '--padding-end': '16px',
                         '--padding-top': '12px',
@@ -1443,15 +1492,21 @@ const Roles: React.FC = () => {
                   onClick={() => setShowEditNameDropdown(!showEditNameDropdown)}
                   style={{ 
                     '--background': '#e8e8e8',
-                    '--border-radius': '12px',
+                    '--border-radius': showEditNameDropdown ? '12px 12px 0 0' : '12px',
                     '--padding-start': '16px',
-                    '--padding-end': '16px',
+                    '--padding-end': '50px',
                     '--padding-top': '12px',
                     '--padding-bottom': '12px',
                     '--color': '#333',
                     '--placeholder-color': '#666'
                   }}
-                />
+                >
+                  <IonIcon 
+                    icon={showEditNameDropdown ? chevronUpOutline : chevronDownOutline} 
+                    slot="end" 
+                    style={{ color: '#666', fontSize: '20px', cursor: 'pointer' }} 
+                  />
+                </IonInput>
                 {showEditNameDropdown && (
                   <div style={{
                     position: 'absolute',
@@ -1460,9 +1515,10 @@ const Roles: React.FC = () => {
                     right: 0,
                     backgroundColor: 'white',
                     border: '1px solid #ddd',
-                    borderRadius: '8px',
+                    borderRadius: '0 0 12px 12px',
+                    borderTop: 'none',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                    zIndex: 1000,
+                        zIndex: 9999,
                     maxHeight: '300px',
                     overflow: 'hidden'
                   }}>
@@ -1473,7 +1529,7 @@ const Roles: React.FC = () => {
                       style={{
                         '--background': '#f5f5f5',
                         '--border': 'none',
-                        '--border-radius': '8px',
+                        '--border-radius': '0',
                         '--padding-start': '16px',
                         '--padding-end': '16px',
                         '--padding-top': '12px',
@@ -1540,54 +1596,67 @@ const Roles: React.FC = () => {
                   onClick={() => setShowEditStatusesDropdown(!showEditStatusesDropdown)}
                   style={{ 
                     background: '#e8e8e8',
-                    borderRadius: '12px',
+                    borderRadius: showEditStatusesDropdown ? '12px 12px 0 0' : '12px',
                     padding: '12px 16px',
                     minHeight: '48px',
                     cursor: 'pointer',
                     display: 'flex',
-                    flexWrap: 'wrap',
+                    flexWrap: 'nowrap',
                     alignItems: 'center',
                     gap: '8px',
+                    justifyContent: 'space-between',
                     border: '1px solid transparent'
                   }}
                 >
-                  {editForm.statuses.length > 0 ? (
-                    editForm.statuses.map((status, index) => (
-                      <div
-                        key={index}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          background: '#2196f3',
-                          color: 'white',
-                          padding: '6px 12px',
-                          borderRadius: '20px',
-                          fontSize: '14px',
-                          fontWeight: '500'
-                        }}
-                      >
-                        <span>{status}</span>
-                        <IonIcon
-                          icon={closeOutline}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', flex: 1, alignItems: 'center', minHeight: '24px' }}>
+                    {editForm.statuses.length > 0 ? (
+                      editForm.statuses.map((status, index) => (
+                        <div
+                          key={index}
                           style={{
-                            fontSize: '16px',
-                            cursor: 'pointer',
-                            color: 'white'
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            background: '#2196f3',
+                            color: 'white',
+                            padding: '6px 12px',
+                            borderRadius: '20px',
+                            fontSize: '14px',
+                            fontWeight: '500'
                           }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const newStatuses = editForm.statuses.filter((_, i) => i !== index);
-                            setEditForm({...editForm, statuses: newStatuses});
-                          }}
-                        />
-                      </div>
-                    ))
-                  ) : (
-                    <span style={{ color: '#666', fontSize: '16px' }}>
-                      Search and select statuses
-                    </span>
-                  )}
+                        >
+                          <span>{status}</span>
+                          <IonIcon
+                            icon={closeOutline}
+                            style={{
+                              fontSize: '16px',
+                              cursor: 'pointer',
+                              color: 'white'
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const newStatuses = editForm.statuses.filter((_, i) => i !== index);
+                              setEditForm({...editForm, statuses: newStatuses});
+                            }}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <span style={{ color: '#666', fontSize: '16px' }}>
+                        Search and select statuses
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '24px', width: '24px', marginRight: '30px' }}>
+                    <IonIcon 
+                      icon={showEditStatusesDropdown ? chevronUpOutline : chevronDownOutline} 
+                      style={{ 
+                        color: '#666', 
+                        fontSize: '20px',
+                        cursor: 'pointer'
+                      }} 
+                    />
+                  </div>
                 </div>
                 {showEditStatusesDropdown && (
                   <div style={{
@@ -1597,9 +1666,10 @@ const Roles: React.FC = () => {
                     right: 0,
                     backgroundColor: 'white',
                     border: '1px solid #ddd',
-                    borderRadius: '8px',
+                    borderRadius: '0 0 12px 12px',
+                    borderTop: 'none',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                    zIndex: 1000,
+                        zIndex: 9999,
                     maxHeight: '300px',
                     overflow: 'hidden'
                   }}>
@@ -1610,7 +1680,7 @@ const Roles: React.FC = () => {
                       style={{
                         '--background': '#f5f5f5',
                         '--border': 'none',
-                        '--border-radius': '8px',
+                        '--border-radius': '0',
                         '--padding-start': '16px',
                         '--padding-end': '16px',
                         '--padding-top': '12px',

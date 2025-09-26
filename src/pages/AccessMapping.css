@@ -716,6 +716,12 @@
 
 .modal-content {
   padding: 1.5rem;
+  overflow: visible !important;
+}
+
+/* Ensure dropdown containers don't clip content */
+.modal-content div[style*="overflow: 'hidden'"] {
+  overflow: visible !important;
 }
 
 .modal-content ion-list {
