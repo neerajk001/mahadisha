@@ -4,7 +4,7 @@ import {
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
   IonModal, IonButtons, IonInput, IonTextarea, IonSelect, IonSelectOption,
-  IonBadge, IonChip
+  IonBadge, IonChip, IonLabel
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
@@ -33,7 +33,9 @@ const RejectionMaster: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [editingRejection, setEditingRejection] = useState<RejectionMasterData | null>(null);
+  const [viewingRejection, setViewingRejection] = useState<RejectionMasterData | null>(null);
   const [editForm, setEditForm] = useState({
     name: ''
   });
@@ -100,12 +102,8 @@ const RejectionMaster: React.FC = () => {
   };
 
   const handleView = (rejection: RejectionMasterData) => {
-    setEditingRejection(rejection);
-    setEditForm({
-      name: rejection.name
-    });
-    // Set view-only mode by showing the edit modal but disabling edits
-    setShowEditModal(true);
+    setViewingRejection(rejection);
+    setShowViewModal(true);
   };
 
   const handleCopyName = (rejectionName: string) => {
@@ -177,6 +175,11 @@ const RejectionMaster: React.FC = () => {
     setShowEditModal(false);
     setEditingRejection(null);
     setEditForm({ name: '' });
+  };
+
+  const handleCloseView = () => {
+    setShowViewModal(false);
+    setViewingRejection(null);
   };
 
   const handleDelete = (rejectionId: string) => {
@@ -365,23 +368,34 @@ const RejectionMaster: React.FC = () => {
         </IonHeader>
         <IonContent className="page-modal-content">
           <div style={{ padding: '2rem' }}>
-            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Create New Rejection</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <IonInput
-                label="Rejection Name"
-                labelPlacement="stacked"
-                placeholder="Enter rejection reason name"
-                value={newRejection.name}
-                onIonChange={(e) => setNewRejection({...newRejection, name: e.detail.value!})}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonTextarea
-                label="Description (Optional)"
-                labelPlacement="stacked"
-                placeholder="Enter description"
-                rows={3}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea', textAlign: 'center' }}>Create New Rejection</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Rejection Name
+                </IonLabel>
+                <IonInput
+                  placeholder="Enter rejection reason name"
+                  value={newRejection.name}
+                  onIonChange={(e) => setNewRejection({...newRejection, name: e.detail.value!})}
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
               <IonButton 
                 expand="block" 
                 style={{ 
@@ -414,22 +428,33 @@ const RejectionMaster: React.FC = () => {
         </IonHeader>
         <IonContent className="page-modal-content">
           <div style={{ padding: '2rem' }}>
-            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Edit Rejection: {editingRejection?.name}</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <IonInput
-                label="Rejection Name"
-                labelPlacement="stacked"
-                value={editForm.name}
-                onIonChange={(e) => setEditForm({...editForm, name: e.detail.value!})}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonTextarea
-                label="Description (Optional)"
-                labelPlacement="stacked"
-                placeholder="Enter description"
-                rows={3}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea', textAlign: 'center' }}>Edit Rejection: {editingRejection?.name}</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Rejection Name
+                </IonLabel>
+                <IonInput
+                  value={editForm.name}
+                  onIonChange={(e) => setEditForm({...editForm, name: e.detail.value!})}
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
               <IonButton 
                 expand="block" 
                 style={{ 
@@ -443,6 +468,183 @@ const RejectionMaster: React.FC = () => {
                 <IonIcon icon={checkmarkOutline} slot="start" />
                 Update Rejection
               </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* View Rejection Modal */}
+      <IonModal isOpen={showViewModal} onDidDismiss={() => setShowViewModal(false)}>
+        <IonHeader>
+          <IonToolbar style={{ '--background': '#4ecdc4', '--color': 'white' }}>
+            <IonTitle>View Rejection Details</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={handleCloseView}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <div style={{ 
+              background: 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
+              borderRadius: '16px',
+              padding: '2rem',
+              marginBottom: '2rem',
+              color: 'white',
+              textAlign: 'center'
+            }}>
+              <IonIcon 
+                icon={closeCircleOutline} 
+                style={{ fontSize: '3rem', marginBottom: '1rem' }} 
+              />
+              <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: '600' }}>
+                {viewingRejection?.name}
+              </h1>
+              <p style={{ margin: '0.5rem 0 0 0', opacity: 0.9 }}>
+                Rejection Reason Details
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div style={{
+                background: 'white',
+                borderRadius: '12px',
+                padding: '1.5rem',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+              }}>
+                <h3 style={{ 
+                  margin: '0 0 1rem 0', 
+                  color: '#333', 
+                  fontSize: '1.1rem',
+                  fontWeight: '600'
+                }}>
+                  Rejection Information
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div>
+                    <IonLabel style={{ 
+                      display: 'block', 
+                      marginBottom: '0.5rem', 
+                      fontWeight: '600', 
+                      color: '#666',
+                      fontSize: '0.9rem'
+                    }}>
+                      Rejection Name
+                    </IonLabel>
+                    <div style={{
+                      background: '#f8f9fa',
+                      padding: '12px 16px',
+                      borderRadius: '8px',
+                      border: '1px solid #e9ecef',
+                      fontSize: '1rem',
+                      color: '#333'
+                    }}>
+                      {viewingRejection?.name}
+                    </div>
+                  </div>
+                  <div>
+                    <IonLabel style={{ 
+                      display: 'block', 
+                      marginBottom: '0.5rem', 
+                      fontWeight: '600', 
+                      color: '#666',
+                      fontSize: '0.9rem'
+                    }}>
+                      Rejection Code
+                    </IonLabel>
+                    <div style={{
+                      background: '#f8f9fa',
+                      padding: '12px 16px',
+                      borderRadius: '8px',
+                      border: '1px solid #e9ecef',
+                      fontSize: '1rem',
+                      color: '#333',
+                      fontFamily: 'monospace'
+                    }}>
+                      REJ-{viewingRejection?.id.slice(-3)}
+                    </div>
+                  </div>
+                  <div>
+                    <IonLabel style={{ 
+                      display: 'block', 
+                      marginBottom: '0.5rem', 
+                      fontWeight: '600', 
+                      color: '#666',
+                      fontSize: '0.9rem'
+                    }}>
+                      Created Date
+                    </IonLabel>
+                    <div style={{
+                      background: '#f8f9fa',
+                      padding: '12px 16px',
+                      borderRadius: '8px',
+                      border: '1px solid #e9ecef',
+                      fontSize: '1rem',
+                      color: '#333'
+                    }}>
+                      {viewingRejection?.createdAt ? new Date(viewingRejection.createdAt).toLocaleDateString() : 'N/A'}
+                    </div>
+                  </div>
+                  <div>
+                    <IonLabel style={{ 
+                      display: 'block', 
+                      marginBottom: '0.5rem', 
+                      fontWeight: '600', 
+                      color: '#666',
+                      fontSize: '0.9rem'
+                    }}>
+                      Last Updated
+                    </IonLabel>
+                    <div style={{
+                      background: '#f8f9fa',
+                      padding: '12px 16px',
+                      borderRadius: '8px',
+                      border: '1px solid #e9ecef',
+                      fontSize: '1rem',
+                      color: '#333'
+                    }}>
+                      {viewingRejection?.updatedAt ? new Date(viewingRejection.updatedAt).toLocaleDateString() : 'N/A'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                <IonButton 
+                  expand="block" 
+                  fill="outline"
+                  style={{ 
+                    '--color': '#4ecdc4',
+                    '--border-color': '#4ecdc4',
+                    '--border-radius': '12px',
+                    flex: 1
+                  }}
+                  onClick={() => {
+                    handleCopyName(viewingRejection?.name || '');
+                  }}
+                >
+                  <IonIcon icon={copyOutline} slot="start" />
+                  Copy Name
+                </IonButton>
+                <IonButton 
+                  expand="block" 
+                  style={{ 
+                    '--background': 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
+                    '--color': 'white',
+                    '--border-radius': '12px',
+                    flex: 1
+                  }}
+                  onClick={() => {
+                    handleCloseView();
+                    handleEdit(viewingRejection?.id || '');
+                  }}
+                >
+                  <IonIcon icon={createOutline} slot="start" />
+                  Edit Rejection
+                </IonButton>
+              </div>
             </div>
           </div>
         </IonContent>

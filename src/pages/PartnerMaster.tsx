@@ -4,7 +4,7 @@ import {
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
   IonModal, IonButtons, IonInput, IonTextarea, IonSelect, IonSelectOption,
-  IonBadge, IonChip, IonFab, IonFabButton
+  IonBadge, IonChip, IonFab, IonFabButton, IonLabel
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
@@ -412,39 +412,86 @@ const PartnerMaster: React.FC = () => {
         </IonHeader>
         <IonContent className="page-modal-content">
           <div style={{ padding: '2rem' }}>
-            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Create New Partner</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <IonInput
-                label="Partner Name"
-                labelPlacement="stacked"
-                placeholder="Enter partner name"
-                value={addForm.name}
-                onIonChange={(e) => setAddForm(f => ({ ...f, name: e.detail.value ?? '' }))}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonInput
-                label="Address"
-                labelPlacement="stacked"
-                placeholder="Enter address"
-                value={addForm.address}
-                onIonChange={(e) => setAddForm(f => ({ ...f, address: e.detail.value ?? '' }))}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonInput
-                label="Contact Number"
-                labelPlacement="stacked"
-                placeholder="Enter contact number"
-                value={addForm.contact}
-                onIonChange={(e) => setAddForm(f => ({ ...f, contact: e.detail.value ?? '' }))}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonTextarea
-                label="Description (Optional)"
-                labelPlacement="stacked"
-                placeholder="Enter description"
-                rows={3}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea', textAlign: 'center' }}>Create New Partner</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Partner Name
+                </IonLabel>
+                <IonInput
+                  placeholder="Enter partner name"
+                  value={addForm.name}
+                  onIonChange={(e) => setAddForm(f => ({ ...f, name: e.detail.value ?? '' }))}
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Partner Address
+                </IonLabel>
+                <IonInput
+                  placeholder="Enter partner address"
+                  value={addForm.address}
+                  onIonChange={(e) => setAddForm(f => ({ ...f, address: e.detail.value ?? '' }))}
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Partner Contact
+                </IonLabel>
+                <IonInput
+                  placeholder="Enter partner contact"
+                  value={addForm.contact}
+                  onIonChange={(e) => setAddForm(f => ({ ...f, contact: e.detail.value ?? '' }))}
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
               <IonButton 
                 expand="block" 
                 style={{ 
@@ -477,36 +524,86 @@ const PartnerMaster: React.FC = () => {
         </IonHeader>
         <IonContent className="page-modal-content">
           <div style={{ padding: '2rem' }}>
-            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Edit Partner: {editingPartner?.name}</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <IonInput
-                label="Partner Name"
-                labelPlacement="stacked"
-                value={editForm.name}
-                onIonChange={(e) => setEditForm({...editForm, name: e.detail.value ?? ''})}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonInput
-                label="Address"
-                labelPlacement="stacked"
-                value={editForm.address}
-                onIonChange={(e) => setEditForm({...editForm, address: e.detail.value ?? ''})}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonInput
-                label="Contact Number"
-                labelPlacement="stacked"
-                value={editForm.contact}
-                onIonChange={(e) => setEditForm({...editForm, contact: e.detail.value ?? ''})}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonTextarea
-                label="Description (Optional)"
-                labelPlacement="stacked"
-                placeholder="Enter description"
-                rows={3}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea', textAlign: 'center' }}>Edit Partner: {editingPartner?.name}</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Partner Name
+                </IonLabel>
+                <IonInput
+                  value={editForm.name}
+                  onIonChange={(e) => setEditForm({...editForm, name: e.detail.value ?? ''})}
+                  placeholder="Enter partner name"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Partner Address
+                </IonLabel>
+                <IonInput
+                  value={editForm.address}
+                  onIonChange={(e) => setEditForm({...editForm, address: e.detail.value ?? ''})}
+                  placeholder="Enter partner address"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Partner Contact
+                </IonLabel>
+                <IonInput
+                  value={editForm.contact}
+                  onIonChange={(e) => setEditForm({...editForm, contact: e.detail.value ?? ''})}
+                  placeholder="Enter partner contact"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
               <IonButton 
                 expand="block" 
                 style={{ 

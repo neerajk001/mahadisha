@@ -1,14 +1,15 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
-  IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
+  IonButton, IonButtons, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
-  IonModal, IonInput, IonChip, IonLabel, IonItem, IonList, IonTextarea
+  IonModal, IonInput, IonSelect, IonSelectOption, IonChip, IonLabel, IonItem, IonList, IonTextarea
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
   chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
-  eyeOutline, gridOutline, listOutline, locationOutline, documentTextOutline, timeOutline
+  eyeOutline, gridOutline, listOutline, locationOutline, documentTextOutline, timeOutline,
+  checkmark, closeOutline as closeOutlineIcon
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -43,8 +44,21 @@ const BranchMapping: React.FC = () => {
     region: '',
     districts: [] as string[]
   });
-  const [districtInput, setDistrictInput] = useState('');
-  const [editDistrictInput, setEditDistrictInput] = useState('');
+  // Searchable dropdown states for Region
+  const [showRegionDropdown, setShowRegionDropdown] = useState(false);
+  const [showEditRegionDropdown, setShowEditRegionDropdown] = useState(false);
+  // Searchable dropdown states for Districts
+  const [showDistrictDropdown, setShowDistrictDropdown] = useState(false);
+  const [districtSearchQuery, setDistrictSearchQuery] = useState('');
+  const [showEditDistrictDropdown, setShowEditDistrictDropdown] = useState(false);
+  const [editDistrictSearchQuery, setEditDistrictSearchQuery] = useState('');
+  
+  // Refs for click outside detection
+  const regionDropdownRef = useRef<HTMLDivElement>(null);
+  const editRegionDropdownRef = useRef<HTMLDivElement>(null);
+  const districtDropdownRef = useRef<HTMLDivElement>(null);
+  const editDistrictDropdownRef = useRef<HTMLDivElement>(null);
+  
   const itemsPerPage = 5;
 
   // State for managing branch mapping data - EXACTLY LIKE MANAGEPAGES
@@ -64,12 +78,98 @@ const BranchMapping: React.FC = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentMappings = filteredMappings.slice(startIndex, endIndex);
 
+  // Region options from the images provided
+  const regionOptions = [
+    { value: "Nashik Region", label: "Nashik Region", hasCheckmark: true },
+    { value: "Aurangabad (Chh.Sambhaji Nagar) Region", label: "Aurangabad (Chh.Sambhaji Nagar) Region", hasCheckmark: true },
+    { value: "Nagpur Region", label: "Nagpur Region", hasCheckmark: true },
+    { value: "Pune Region", label: "Pune Region", hasCheckmark: true },
+    { value: "Ghatkopar Region", label: "Ghatkopar Region", hasCheckmark: true },
+    { value: "Amravati Region", label: "Amravati Region", hasCheckmark: true },
+    { value: "Mumbai Region", label: "Mumbai Region", hasCheckmark: true }
+  ];
+
+  // District options from the images provided
+  const districtOptions = [
+    { value: "Gadchiroli", label: "Gadchiroli", hasCheckmark: true },
+    { value: "Jalgaon", label: "Jalgaon", hasCheckmark: true },
+    { value: "Nagpur", label: "Nagpur", hasCheckmark: true },
+    { value: "Dharashiv", label: "Dharashiv", hasCheckmark: true },
+    { value: "Nanded", label: "Nanded", hasCheckmark: true },
+    { value: "Amrut Nagar", label: "Amrut Nagar", hasCheckmark: true },
+    { value: "Ratnagiri", label: "Ratnagiri", hasCheckmark: true },
+    { value: "Jalna", label: "Jalna", hasCheckmark: true },
+    { value: "Yavatmal", label: "Yavatmal", hasCheckmark: true },
+    { value: "Kolhapur", label: "Kolhapur", hasCheckmark: true },
+    { value: "Nandurbar", label: "Nandurbar", hasCheckmark: true },
+    { value: "Pune", label: "Pune", hasCheckmark: true },
+    { value: "Nashik", label: "Nashik", hasCheckmark: true },
+    { value: "Sindhudurg", label: "Sindhudurg", hasCheckmark: true },
+    { value: "Raigad", label: "Raigad", hasCheckmark: true },
+    { value: "Hingoli", label: "Hingoli", hasCheckmark: true },
+    { value: "Beed", label: "Beed", hasCheckmark: true },
+    { value: "Akola", label: "Akola", hasCheckmark: true },
+    { value: "Gondia", label: "Gondia", hasCheckmark: true },
+    { value: "Solapur", label: "Solapur", hasCheckmark: true },
+    { value: "Dhule", label: "Dhule", hasCheckmark: true },
+    { value: "Latur", label: "Latur", hasCheckmark: true },
+    { value: "Sangli", label: "Sangli", hasCheckmark: true },
+    { value: "Bhandara", label: "Bhandara", hasCheckmark: true },
+    { value: "Chandrapur", label: "Chandrapur", hasCheckmark: true },
+    { value: "Wardha", label: "Wardha", hasCheckmark: true },
+    { value: "Satara", label: "Satara", hasCheckmark: true },
+    { value: "Amravati", label: "Amravati", hasCheckmark: true },
+    { value: "Mumbai Suburban", label: "Mumbai Suburban", hasCheckmark: true },
+    { value: "Parbhani", label: "Parbhani", hasCheckmark: true },
+    { value: "Mumbai City", label: "Mumbai City", hasCheckmark: true },
+    { value: "Palghar", label: "Palghar", hasCheckmark: true },
+    { value: "Aurangabad (Chh. Sambhaji Nagar)", label: "Aurangabad (Chh. Sambhaji Nagar)", hasCheckmark: true },
+    { value: "Buldhana", label: "Buldhana", hasCheckmark: true },
+    { value: "Washim", label: "Washim", hasCheckmark: true },
+    { value: "Ahilyanagar", label: "Ahilyanagar", hasCheckmark: true }
+  ];
+
+  // Filter district options based on search query
+  const filteredDistrictOptions = districtOptions.filter(option =>
+    option.label.toLowerCase().includes(districtSearchQuery.toLowerCase())
+  );
+  const filteredEditDistrictOptions = districtOptions.filter(option =>
+    option.label.toLowerCase().includes(editDistrictSearchQuery.toLowerCase())
+  );
+
+  // Click outside detection for dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showRegionDropdown && regionDropdownRef.current && !regionDropdownRef.current.contains(event.target as Node)) {
+        setShowRegionDropdown(false);
+      }
+      if (showEditRegionDropdown && editRegionDropdownRef.current && !editRegionDropdownRef.current.contains(event.target as Node)) {
+        setShowEditRegionDropdown(false);
+      }
+      if (showDistrictDropdown && districtDropdownRef.current && !districtDropdownRef.current.contains(event.target as Node)) {
+        setShowDistrictDropdown(false);
+        setDistrictSearchQuery('');
+      }
+      if (showEditDistrictDropdown && editDistrictDropdownRef.current && !editDistrictDropdownRef.current.contains(event.target as Node)) {
+        setShowEditDistrictDropdown(false);
+        setEditDistrictSearchQuery('');
+      }
+    };
+
+    if (showRegionDropdown || showEditRegionDropdown || showDistrictDropdown || showEditDistrictDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showRegionDropdown, showEditRegionDropdown, showDistrictDropdown, showEditDistrictDropdown]);
+
   const handleAddMapping = () => {
     setAddForm({
       region: '',
       districts: []
     });
-    setDistrictInput('');
     setShowAddModal(true);
   };
 
@@ -114,7 +214,6 @@ const BranchMapping: React.FC = () => {
       region: '',
       districts: []
     });
-    setDistrictInput('');
   };
 
   const handleEdit = (mappingId: string) => {
@@ -125,7 +224,6 @@ const BranchMapping: React.FC = () => {
         region: mapping.region,
         districts: [...mapping.districts]
       });
-      setEditDistrictInput('');
       setShowEditModal(true);
     }
   };
@@ -175,7 +273,6 @@ const BranchMapping: React.FC = () => {
       region: '',
       districts: []
     });
-    setEditDistrictInput('');
   };
 
   const handleView = (mappingId: string) => {
@@ -191,39 +288,6 @@ const BranchMapping: React.FC = () => {
     setViewingMapping(null);
   };
 
-  const handleAddDistrict = () => {
-    if (districtInput.trim() && !addForm.districts.includes(districtInput.trim())) {
-      setAddForm(prev => ({
-        ...prev,
-        districts: [...prev.districts, districtInput.trim()]
-      }));
-      setDistrictInput('');
-    }
-  };
-
-  const handleRemoveDistrict = (districtToRemove: string) => {
-    setAddForm(prev => ({
-      ...prev,
-      districts: prev.districts.filter(district => district !== districtToRemove)
-    }));
-  };
-
-  const handleAddEditDistrict = () => {
-    if (editDistrictInput.trim() && !editForm.districts.includes(editDistrictInput.trim())) {
-      setEditForm(prev => ({
-        ...prev,
-        districts: [...prev.districts, editDistrictInput.trim()]
-      }));
-      setEditDistrictInput('');
-    }
-  };
-
-  const handleRemoveEditDistrict = (districtToRemove: string) => {
-    setEditForm(prev => ({
-      ...prev,
-      districts: prev.districts.filter(district => district !== districtToRemove)
-    }));
-  };
 
   const handleDelete = (mappingId: string) => {
     setSelectedMappingId(mappingId);
@@ -411,136 +475,586 @@ const BranchMapping: React.FC = () => {
 
       {/* Add Mapping Modal */}
       <IonModal isOpen={showAddModal} onDidDismiss={handleCloseAdd}>
-        <IonContent className="add-mapping-modal">
-          <div className="modal-header">
-            <h2>Add New Branch Mapping</h2>
-            <IonButton fill="clear" onClick={handleCloseAdd}>
-              <IonIcon icon={closeOutline} />
-            </IonButton>
-          </div>
-          
-          <div className="modal-content">
-            <IonList>
-              <IonItem>
-                <IonLabel position="stacked">Region Name *</IonLabel>
-                <IonInput
-                  value={addForm.region}
-                  onIonInput={(e) => setAddForm(prev => ({ ...prev, region: e.detail.value! }))}
-                  placeholder="Enter region name (e.g., Mumbai, Pune, Nagpur)"
-                  className="region-input"
-                />
-              </IonItem>
-              
-              <IonItem>
-                <IonLabel position="stacked">Districts *</IonLabel>
-                <div className="districts-section">
-                  <div className="district-input">
-                    <IonInput
-                      value={districtInput}
-                      onIonInput={(e) => setDistrictInput(e.detail.value!)}
-                      placeholder="Enter district name"
-                      onKeyPress={(e) => e.key === 'Enter' && handleAddDistrict()}
-                    />
-                    <IonButton fill="outline" onClick={handleAddDistrict}>
-                      <IonIcon icon={addOutline} />
-                    </IonButton>
-                  </div>
-                  
-                  <div className="district-chips">
-                    {addForm.districts.map((district, index) => (
-                      <IonChip key={index} className="district-chip">
-                        <IonLabel>{district}</IonLabel>
-                        <IonButton
-                          fill="clear"
-                          size="small"
-                          onClick={() => handleRemoveDistrict(district)}
-                        >
-                          <IonIcon icon={closeOutline} />
-                        </IonButton>
-                      </IonChip>
-                    ))}
-                  </div>
+        <IonHeader>
+          <IonToolbar style={{ '--background': '#4ecdc4', '--color': 'white' }}>
+            <IonTitle>Add Branch Mapping</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={handleCloseAdd} style={{ '--color': 'white' }}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Region Name *
+                </IonLabel>
+                <div style={{ position: 'relative' }} ref={regionDropdownRef}>
+                  <IonInput
+                    value={addForm.region || ''}
+                    placeholder="Select region"
+                    readonly
+                    onClick={() => setShowRegionDropdown(!showRegionDropdown)}
+                    style={{ 
+                      '--background': '#e8e8e8',
+                      '--border-radius': '12px',
+                      '--padding-start': '16px',
+                      '--padding-end': '16px',
+                      '--padding-top': '12px',
+                      '--padding-bottom': '12px',
+                      '--color': '#333',
+                      '--placeholder-color': '#666',
+                      cursor: 'pointer'
+                    }}
+                  />
+                  {showRegionDropdown && (
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        backgroundColor: 'white',
+                        border: '1px solid #e0e0e0',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        zIndex: 1000,
+                        maxHeight: '300px',
+                        overflow: 'hidden'
+                      }}>
+                      <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
+                        {regionOptions.map((option) => (
+                          <div
+                            key={option.value}
+                            onClick={() => {
+                              setAddForm(prev => ({ ...prev, region: option.value }));
+                              setShowRegionDropdown(false);
+                            }}
+                            style={{
+                              padding: '12px 16px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              borderBottom: '1px solid #f0f0f0',
+                              backgroundColor: addForm.region === option.value ? '#2196f3' : 'white',
+                              color: addForm.region === option.value ? 'white' : '#333'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (addForm.region !== option.value) {
+                                e.currentTarget.style.backgroundColor = '#f5f5f5';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (addForm.region !== option.value) {
+                                e.currentTarget.style.backgroundColor = 'white';
+                              }
+                            }}
+                          >
+                            <span style={{ color: addForm.region === option.value ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            {option.hasCheckmark && (
+                              <IonIcon 
+                                icon={checkmark} 
+                                style={{ 
+                                  color: addForm.region === option.value ? 'white' : '#00C851', 
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                                }} 
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </IonItem>
-            </IonList>
-          </div>
-          
-          <div className="modal-actions">
-            <IonButton fill="outline" onClick={handleCloseAdd}>
-              CANCEL
-            </IonButton>
-            <IonButton fill="solid" onClick={handleSaveAdd}>
-              <IonIcon icon={checkmarkOutline} slot="start" />
-              SAVE MAPPING
-            </IonButton>
+              </div>
+              
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Districts *
+                </IonLabel>
+                <div style={{ position: 'relative' }} ref={districtDropdownRef}>
+                  <div
+                    onClick={() => setShowDistrictDropdown(!showDistrictDropdown)}
+                    style={{
+                      background: '#e8e8e8',
+                      border: '1px solid #ddd',
+                      borderRadius: '12px',
+                      padding: '12px 16px',
+                      cursor: 'pointer',
+                      minHeight: '48px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '8px'
+                    }}
+                  >
+                    {addForm.districts.length === 0 ? (
+                      <span style={{ color: '#666', fontSize: '14px' }}>Select districts</span>
+                    ) : (
+                      addForm.districts.map((district, index) => (
+                        <span
+                          key={index}
+                          style={{
+                            background: '#4ecdc4',
+                            color: 'white',
+                            padding: '4px 8px',
+                            borderRadius: '16px',
+                            fontSize: '12px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          {district}
+                          <IonIcon
+                            icon={closeOutlineIcon}
+                            style={{ fontSize: '14px', cursor: 'pointer' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setAddForm(prev => ({
+                                ...prev,
+                                districts: prev.districts.filter(item => item !== district)
+                              }));
+                            }}
+                          />
+                        </span>
+                      ))
+                    )}
+                  </div>
+                  {showDistrictDropdown && (
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        backgroundColor: 'white',
+                        border: '1px solid #e0e0e0',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        zIndex: 1000,
+                        maxHeight: '300px',
+                        overflow: 'hidden'
+                      }}>
+                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                        <IonInput
+                          value={districtSearchQuery}
+                          onIonChange={(e) => setDistrictSearchQuery(e.detail.value!)}
+                          placeholder="Search districts..."
+                          style={{
+                            '--background': '#f8f9fa',
+                            '--border-radius': '8px',
+                            '--padding-start': '12px',
+                            '--padding-end': '12px',
+                            '--padding-top': '8px',
+                            '--padding-bottom': '8px'
+                          }}
+                        />
+                      </div>
+                      <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
+                        {filteredDistrictOptions.map((option) => (
+                          <div
+                            key={option.value}
+                            onClick={() => {
+                              const isSelected = addForm.districts.includes(option.value);
+                              let newDistricts;
+                              if (isSelected) {
+                                newDistricts = addForm.districts.filter(item => item !== option.value);
+                              } else {
+                                newDistricts = [...addForm.districts, option.value];
+                              }
+                              setAddForm(prev => ({ ...prev, districts: newDistricts }));
+                            }}
+                            style={{
+                              padding: '12px 16px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              borderBottom: '1px solid #f0f0f0',
+                              backgroundColor: addForm.districts.includes(option.value) ? '#2196f3' : 'white',
+                              color: addForm.districts.includes(option.value) ? 'white' : '#333'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!addForm.districts.includes(option.value)) {
+                                e.currentTarget.style.backgroundColor = '#f5f5f5';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!addForm.districts.includes(option.value)) {
+                                e.currentTarget.style.backgroundColor = 'white';
+                              }
+                            }}
+                          >
+                            <span style={{ color: addForm.districts.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            {option.hasCheckmark && (
+                              <IonIcon 
+                                icon={checkmark} 
+                                style={{ 
+                                  color: addForm.districts.includes(option.value) ? 'white' : '#00C851', 
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                                }} 
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div style={{ 
+              display: 'flex', 
+              gap: '1rem', 
+              justifyContent: 'center', 
+              marginTop: '2rem',
+              paddingTop: '1.5rem',
+              borderTop: '1px solid #e0e0e0'
+            }}>
+              <IonButton 
+                fill="outline" 
+                onClick={handleCloseAdd}
+                style={{
+                  '--border-color': '#4ecdc4',
+                  '--color': '#4ecdc4',
+                  '--border-radius': '8px',
+                  '--padding-start': '1.5rem',
+                  '--padding-end': '1.5rem'
+                }}
+              >
+                CANCEL
+              </IonButton>
+              <IonButton 
+                fill="solid" 
+                onClick={handleSaveAdd}
+                style={{
+                  '--background': '#4ecdc4',
+                  '--color': 'white',
+                  '--border-radius': '8px',
+                  '--padding-start': '1.5rem',
+                  '--padding-end': '1.5rem'
+                }}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                SAVE MAPPING
+              </IonButton>
+            </div>
           </div>
         </IonContent>
       </IonModal>
 
       {/* Edit Mapping Modal */}
       <IonModal isOpen={showEditModal} onDidDismiss={handleCloseEdit}>
-        <IonContent className="add-mapping-modal">
-          <div className="modal-header">
-            <h2>Edit Branch Mapping</h2>
-            <IonButton fill="clear" onClick={handleCloseEdit}>
-              <IonIcon icon={closeOutline} />
-            </IonButton>
-          </div>
-          
-          <div className="modal-content">
-            <IonList>
-              <IonItem>
-                <IonLabel position="stacked">Region Name *</IonLabel>
-                <IonInput
-                  value={editForm.region}
-                  onIonInput={(e) => setEditForm(prev => ({ ...prev, region: e.detail.value! }))}
-                  placeholder="Enter region name"
-                  className="region-input"
-                />
-              </IonItem>
-              
-              <IonItem>
-                <IonLabel position="stacked">Districts *</IonLabel>
-                <div className="districts-section">
-                  <div className="district-input">
-                    <IonInput
-                      value={editDistrictInput}
-                      onIonInput={(e) => setEditDistrictInput(e.detail.value!)}
-                      placeholder="Enter district name"
-                      onKeyPress={(e) => e.key === 'Enter' && handleAddEditDistrict()}
-                    />
-                    <IonButton fill="outline" onClick={handleAddEditDistrict}>
-                      <IonIcon icon={addOutline} />
-                    </IonButton>
-                  </div>
-                  
-                  <div className="district-chips">
-                    {editForm.districts.map((district, index) => (
-                      <IonChip key={index} className="district-chip">
-                        <IonLabel>{district}</IonLabel>
-                        <IonButton
-                          fill="clear"
-                          size="small"
-                          onClick={() => handleRemoveEditDistrict(district)}
-                        >
-                          <IonIcon icon={closeOutline} />
-                        </IonButton>
-                      </IonChip>
-                    ))}
-                  </div>
+        <IonHeader>
+          <IonToolbar style={{ '--background': '#4ecdc4', '--color': 'white' }}>
+            <IonTitle>Edit Branch Mapping</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={handleCloseEdit} style={{ '--color': 'white' }}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Region Name *
+                </IonLabel>
+                <div style={{ position: 'relative' }} ref={editRegionDropdownRef}>
+                  <IonInput
+                    value={editForm.region || ''}
+                    placeholder="Select region"
+                    readonly
+                    onClick={() => setShowEditRegionDropdown(!showEditRegionDropdown)}
+                    style={{ 
+                      '--background': '#e8e8e8',
+                      '--border-radius': '12px',
+                      '--padding-start': '16px',
+                      '--padding-end': '16px',
+                      '--padding-top': '12px',
+                      '--padding-bottom': '12px',
+                      '--color': '#333',
+                      '--placeholder-color': '#666',
+                      cursor: 'pointer'
+                    }}
+                  />
+                  {showEditRegionDropdown && (
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        backgroundColor: 'white',
+                        border: '1px solid #e0e0e0',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        zIndex: 1000,
+                        maxHeight: '300px',
+                        overflow: 'hidden'
+                      }}>
+                      <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
+                        {regionOptions.map((option) => (
+                          <div
+                            key={option.value}
+                            onClick={() => {
+                              setEditForm(prev => ({ ...prev, region: option.value }));
+                              setShowEditRegionDropdown(false);
+                            }}
+                            style={{
+                              padding: '12px 16px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              borderBottom: '1px solid #f0f0f0',
+                              backgroundColor: editForm.region === option.value ? '#2196f3' : 'white',
+                              color: editForm.region === option.value ? 'white' : '#333'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (editForm.region !== option.value) {
+                                e.currentTarget.style.backgroundColor = '#f5f5f5';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (editForm.region !== option.value) {
+                                e.currentTarget.style.backgroundColor = 'white';
+                              }
+                            }}
+                          >
+                            <span style={{ color: editForm.region === option.value ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            {option.hasCheckmark && (
+                              <IonIcon 
+                                icon={checkmark} 
+                                style={{ 
+                                  color: editForm.region === option.value ? 'white' : '#00C851', 
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                                }} 
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </IonItem>
-            </IonList>
-          </div>
-          
-          <div className="modal-actions">
-            <IonButton fill="outline" onClick={handleCloseEdit}>
-              CANCEL
-            </IonButton>
-            <IonButton fill="solid" onClick={handleSaveEdit}>
-              <IonIcon icon={checkmarkOutline} slot="start" />
-              UPDATE MAPPING
-            </IonButton>
+              </div>
+              
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Districts *
+                </IonLabel>
+                <div style={{ position: 'relative' }} ref={editDistrictDropdownRef}>
+                  <div
+                    onClick={() => setShowEditDistrictDropdown(!showEditDistrictDropdown)}
+                    style={{
+                      background: '#e8e8e8',
+                      border: '1px solid #ddd',
+                      borderRadius: '12px',
+                      padding: '12px 16px',
+                      cursor: 'pointer',
+                      minHeight: '48px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '8px'
+                    }}
+                  >
+                    {editForm.districts.length === 0 ? (
+                      <span style={{ color: '#666', fontSize: '14px' }}>Select districts</span>
+                    ) : (
+                      editForm.districts.map((district, index) => (
+                        <span
+                          key={index}
+                          style={{
+                            background: '#4ecdc4',
+                            color: 'white',
+                            padding: '4px 8px',
+                            borderRadius: '16px',
+                            fontSize: '12px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          {district}
+                          <IonIcon
+                            icon={closeOutlineIcon}
+                            style={{ fontSize: '14px', cursor: 'pointer' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditForm(prev => ({
+                                ...prev,
+                                districts: prev.districts.filter(item => item !== district)
+                              }));
+                            }}
+                          />
+                        </span>
+                      ))
+                    )}
+                  </div>
+                  {showEditDistrictDropdown && (
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        backgroundColor: 'white',
+                        border: '1px solid #e0e0e0',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        zIndex: 1000,
+                        maxHeight: '300px',
+                        overflow: 'hidden'
+                      }}>
+                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                        <IonInput
+                          value={editDistrictSearchQuery}
+                          onIonChange={(e) => setEditDistrictSearchQuery(e.detail.value!)}
+                          placeholder="Search districts..."
+                          style={{
+                            '--background': '#f8f9fa',
+                            '--border-radius': '8px',
+                            '--padding-start': '12px',
+                            '--padding-end': '12px',
+                            '--padding-top': '8px',
+                            '--padding-bottom': '8px'
+                          }}
+                        />
+                      </div>
+                      <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
+                        {filteredEditDistrictOptions.map((option) => (
+                          <div
+                            key={option.value}
+                            onClick={() => {
+                              const isSelected = editForm.districts.includes(option.value);
+                              let newDistricts;
+                              if (isSelected) {
+                                newDistricts = editForm.districts.filter(item => item !== option.value);
+                              } else {
+                                newDistricts = [...editForm.districts, option.value];
+                              }
+                              setEditForm(prev => ({ ...prev, districts: newDistricts }));
+                            }}
+                            style={{
+                              padding: '12px 16px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              borderBottom: '1px solid #f0f0f0',
+                              backgroundColor: editForm.districts.includes(option.value) ? '#2196f3' : 'white',
+                              color: editForm.districts.includes(option.value) ? 'white' : '#333'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!editForm.districts.includes(option.value)) {
+                                e.currentTarget.style.backgroundColor = '#f5f5f5';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!editForm.districts.includes(option.value)) {
+                                e.currentTarget.style.backgroundColor = 'white';
+                              }
+                            }}
+                          >
+                            <span style={{ color: editForm.districts.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            {option.hasCheckmark && (
+                              <IonIcon 
+                                icon={checkmark} 
+                                style={{ 
+                                  color: editForm.districts.includes(option.value) ? 'white' : '#00C851', 
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                                }} 
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div style={{ 
+              display: 'flex', 
+              gap: '1rem', 
+              justifyContent: 'center', 
+              marginTop: '2rem',
+              paddingTop: '1.5rem',
+              borderTop: '1px solid #e0e0e0'
+            }}>
+              <IonButton 
+                fill="outline" 
+                onClick={handleCloseEdit}
+                style={{
+                  '--border-color': '#4ecdc4',
+                  '--color': '#4ecdc4',
+                  '--border-radius': '8px',
+                  '--padding-start': '1.5rem',
+                  '--padding-end': '1.5rem'
+                }}
+              >
+                CANCEL
+              </IonButton>
+              <IonButton 
+                fill="solid" 
+                onClick={handleSaveEdit}
+                style={{
+                  '--background': '#4ecdc4',
+                  '--color': 'white',
+                  '--border-radius': '8px',
+                  '--padding-start': '1.5rem',
+                  '--padding-end': '1.5rem'
+                }}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                UPDATE MAPPING
+              </IonButton>
+            </div>
           </div>
         </IonContent>
       </IonModal>

@@ -248,7 +248,7 @@ const BranchMaster: React.FC = () => {
       <IonSplitPane contentId="branch-master-content">
         <Sidebar />
         <IonContent id="branch-master-content" className="branch-master-content">
-          <DashboardHeader title="Branch Master" />
+          <DashboardHeader />
           
           {/* Main Content */}
           <div className="branches-container">
@@ -391,28 +391,80 @@ const BranchMaster: React.FC = () => {
               </IonToolbar>
             </IonHeader>
             <IonContent className="ion-padding">
-              <IonItem>
-                <IonLabel position="floating">Office Name</IonLabel>
+              <div style={{ padding: '1rem 0' }}>
+                <h2 style={{ marginBottom: '1.5rem', color: '#667eea', textAlign: 'center' }}>Create New Branch</h2>
+                
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <IonLabel style={{ 
+                    display: 'block', 
+                    marginBottom: '0.5rem', 
+                    fontWeight: '600', 
+                    color: '#333',
+                    fontSize: '1rem'
+                  }}>
+                    Office Name
+                  </IonLabel>
                 <IonInput
                   value={addFormData.officeName}
                   onIonChange={e => setAddFormData({...addFormData, officeName: e.detail.value!})}
+                    placeholder="Enter office name"
+                    style={{ 
+                      '--background': '#f5f5f5',
+                      '--border-radius': '12px',
+                      '--padding-start': '16px',
+                      '--padding-end': '16px',
+                      '--padding-top': '12px',
+                      '--padding-bottom': '12px',
+                      '--color': '#333',
+                      '--placeholder-color': '#666'
+                    }}
                   required
                 />
-              </IonItem>
-              <IonItem>
-                <IonLabel position="floating">Office Type</IonLabel>
+                </div>
+
+                <div style={{ marginBottom: '2rem' }}>
+                  <IonLabel style={{ 
+                    display: 'block', 
+                    marginBottom: '0.5rem', 
+                    fontWeight: '600', 
+                    color: '#333',
+                    fontSize: '1rem'
+                  }}>
+                    Office Type
+                  </IonLabel>
                 <IonSelect
                   value={addFormData.officeType}
                   onIonChange={e => setAddFormData({...addFormData, officeType: e.detail.value})}
+                    placeholder="Select office type"
+                    style={{ 
+                      '--background': '#f5f5f5',
+                      '--border-radius': '12px',
+                      '--padding-start': '16px',
+                      '--padding-end': '16px',
+                      '--padding-top': '12px',
+                      '--padding-bottom': '12px',
+                      '--color': '#333'
+                    }}
                 >
                   <IonSelectOption value="Head Office">Head Office</IonSelectOption>
                   <IonSelectOption value="Regional Office">Regional Office</IonSelectOption>
                   <IonSelectOption value="District Office">District Office</IonSelectOption>
                   <IonSelectOption value="Branch Office">Branch Office</IonSelectOption>
                 </IonSelect>
-              </IonItem>
-              <div className="ion-padding">
-                <IonButton expand="block" onClick={handleSaveNewBranch}>
+                </div>
+
+                <IonButton 
+                  expand="block" 
+                  onClick={handleSaveNewBranch}
+                  style={{ 
+                    '--background': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    '--color': 'white',
+                    '--border-radius': '12px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    marginTop: '1rem'
+                  }}
+                >
                   <IonIcon slot="start" icon={checkmarkOutline} />
                   Save Branch
                 </IonButton>
@@ -433,28 +485,82 @@ const BranchMaster: React.FC = () => {
               </IonToolbar>
             </IonHeader>
             <IonContent className="ion-padding">
-              <IonItem>
-                <IonLabel position="floating">Office Name</IonLabel>
+              <div style={{ padding: '1rem 0' }}>
+                <h2 style={{ marginBottom: '1.5rem', color: '#667eea', textAlign: 'center' }}>
+                  Edit Branch: {editingBranch?.officeName}
+                </h2>
+                
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <IonLabel style={{ 
+                    display: 'block', 
+                    marginBottom: '0.5rem', 
+                    fontWeight: '600', 
+                    color: '#333',
+                    fontSize: '1rem'
+                  }}>
+                    Office Name
+                  </IonLabel>
                 <IonInput
                   value={editFormData.officeName}
                   onIonChange={e => setEditFormData({...editFormData, officeName: e.detail.value!})}
+                    placeholder="Enter office name"
+                    style={{ 
+                      '--background': '#f5f5f5',
+                      '--border-radius': '12px',
+                      '--padding-start': '16px',
+                      '--padding-end': '16px',
+                      '--padding-top': '12px',
+                      '--padding-bottom': '12px',
+                      '--color': '#333',
+                      '--placeholder-color': '#666'
+                    }}
                   required
                 />
-              </IonItem>
-              <IonItem>
-                <IonLabel position="floating">Office Type</IonLabel>
+                </div>
+
+                <div style={{ marginBottom: '2rem' }}>
+                  <IonLabel style={{ 
+                    display: 'block', 
+                    marginBottom: '0.5rem', 
+                    fontWeight: '600', 
+                    color: '#333',
+                    fontSize: '1rem'
+                  }}>
+                    Office Type
+                  </IonLabel>
                 <IonSelect
                   value={editFormData.officeType}
                   onIonChange={e => setEditFormData({...editFormData, officeType: e.detail.value})}
+                    placeholder="Select office type"
+                    style={{ 
+                      '--background': '#f5f5f5',
+                      '--border-radius': '12px',
+                      '--padding-start': '16px',
+                      '--padding-end': '16px',
+                      '--padding-top': '12px',
+                      '--padding-bottom': '12px',
+                      '--color': '#333'
+                    }}
                 >
                   <IonSelectOption value="Head Office">Head Office</IonSelectOption>
                   <IonSelectOption value="Regional Office">Regional Office</IonSelectOption>
                   <IonSelectOption value="District Office">District Office</IonSelectOption>
                   <IonSelectOption value="Branch Office">Branch Office</IonSelectOption>
                 </IonSelect>
-              </IonItem>
-              <div className="ion-padding">
-                <IonButton expand="block" onClick={handleUpdateBranch}>
+                </div>
+
+                <IonButton 
+                  expand="block" 
+                  onClick={handleUpdateBranch}
+                  style={{ 
+                    '--background': 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
+                    '--color': 'white',
+                    '--border-radius': '12px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    marginTop: '1rem'
+                  }}
+                >
                   <IonIcon slot="start" icon={checkmarkOutline} />
                   Update Branch
                 </IonButton>
@@ -476,38 +582,180 @@ const BranchMaster: React.FC = () => {
             </IonHeader>
             <IonContent className="ion-padding">
               {viewingBranch && (
-                <IonList>
-                  <IonItem>
-                    <IonLabel>
-                      <h2>Office Name</h2>
-                      <p>{viewingBranch.officeName}</p>
-                    </IonLabel>
-                  </IonItem>
-                  <IonItem>
-                    <IonLabel>
-                      <h2>Office Type</h2>
-                      <p>{viewingBranch.officeType}</p>
-                    </IonLabel>
-                  </IonItem>
-                  <IonItem>
-                    <IonLabel>
-                      <h2>Created Date</h2>
-                      <p>{new Date(viewingBranch.createdAt).toLocaleString()}</p>
-                    </IonLabel>
-                  </IonItem>
-                  <IonItem>
-                    <IonLabel>
-                      <h2>Last Updated</h2>
-                      <p>{new Date(viewingBranch.updatedAt).toLocaleString()}</p>
-                    </IonLabel>
-                  </IonItem>
-                </IonList>
+                <div style={{ padding: '1rem 0' }}>
+                  {/* Header Section */}
+                  <div style={{ 
+                    textAlign: 'center', 
+                    marginBottom: '2rem',
+                    padding: '1.5rem',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    borderRadius: '16px',
+                    color: 'white'
+                  }}>
+                    <IonIcon 
+                      icon={businessOutline} 
+                      style={{ fontSize: '3rem', marginBottom: '1rem' }} 
+                    />
+                    <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 'bold' }}>
+                      {viewingBranch.officeName}
+                    </h1>
+                    <p style={{ margin: '0.5rem 0 0 0', opacity: 0.9 }}>
+                      {viewingBranch.officeType}
+                    </p>
+                  </div>
+
+                  {/* Information Cards */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    {/* Basic Information Card */}
+                    <IonCard style={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                      <IonCardHeader>
+                        <IonCardTitle style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '0.5rem',
+                          color: '#667eea'
+                        }}>
+                          <IonIcon icon={documentTextOutline} />
+                          Basic Information
+                        </IonCardTitle>
+                      </IonCardHeader>
+                      <IonCardContent>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '600', color: '#555' }}>Office Name:</span>
+                            <span style={{ 
+                              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                              color: 'white',
+                              padding: '0.5rem 1rem',
+                              borderRadius: '20px',
+                              fontSize: '0.9rem',
+                              fontWeight: '500'
+                            }}>
+                              {viewingBranch.officeName}
+                            </span>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '600', color: '#555' }}>Office Type:</span>
+                            <span style={{ 
+                              background: 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
+                              color: 'white',
+                              padding: '0.5rem 1rem',
+                              borderRadius: '20px',
+                              fontSize: '0.9rem',
+                              fontWeight: '500'
+                            }}>
+                              {viewingBranch.officeType}
+                            </span>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '600', color: '#555' }}>Branch ID:</span>
+                            <code style={{ 
+                              background: '#f5f5f5',
+                              padding: '0.5rem 1rem',
+                              borderRadius: '8px',
+                              fontSize: '0.85rem',
+                              color: '#666'
+                            }}>
+                              {viewingBranch.id}
+                            </code>
+                          </div>
+                        </div>
+                      </IonCardContent>
+                    </IonCard>
+
+                    {/* Status and Metadata Card */}
+                    <IonCard style={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                      <IonCardHeader>
+                        <IonCardTitle style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '0.5rem',
+                          color: '#667eea'
+                        }}>
+                          <IonIcon icon={timeOutline} />
+                          Status & Metadata
+                        </IonCardTitle>
+                      </IonCardHeader>
+                      <IonCardContent>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '600', color: '#555' }}>Status:</span>
+                            <IonBadge color="success" style={{ fontSize: '0.8rem' }}>
+                              Active
+                            </IonBadge>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '600', color: '#555' }}>Created:</span>
+                            <span style={{ color: '#666', fontSize: '0.9rem' }}>
+                              {new Date(viewingBranch.createdAt).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '600', color: '#555' }}>Last Updated:</span>
+                            <span style={{ color: '#666', fontSize: '0.9rem' }}>
+                              {new Date(viewingBranch.updatedAt).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+                          </div>
+                        </div>
+                      </IonCardContent>
+                    </IonCard>
+
+                    {/* Action Buttons */}
+                    <div style={{ 
+                      display: 'flex', 
+                      gap: '1rem', 
+                      marginTop: '1rem',
+                      justifyContent: 'center'
+                    }}>
+                      <IonButton 
+                        fill="outline"
+                        style={{ 
+                          '--border-color': '#667eea',
+                          '--color': '#667eea',
+                          '--border-radius': '12px',
+                          flex: 1
+                        }}
+                        onClick={() => {
+                          setShowViewModal(false);
+                          handleEdit(viewingBranch);
+                        }}
+                      >
+                        <IonIcon icon={createOutline} slot="start" />
+                        Edit
+                      </IonButton>
+                      <IonButton 
+                        fill="outline"
+                        style={{ 
+                          '--border-color': '#4ecdc4',
+                          '--color': '#4ecdc4',
+                          '--border-radius': '12px',
+                          flex: 1
+                        }}
+                        onClick={() => {
+                          navigator.clipboard.writeText(viewingBranch.officeName);
+                          setToastMessage('Office name copied to clipboard');
+                          setShowToast(true);
+                        }}
+                      >
+                        <IonIcon icon={copyOutline} slot="start" />
+                        Copy Name
+                      </IonButton>
+                    </div>
+                  </div>
+                </div>
               )}
-              <div className="ion-padding">
-                <IonButton expand="block" onClick={() => setShowViewModal(false)}>
-                  Close
-                </IonButton>
-              </div>
             </IonContent>
           </IonModal>
 

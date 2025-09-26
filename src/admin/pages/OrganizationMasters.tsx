@@ -4,7 +4,7 @@ import {
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
   IonModal, IonButtons, IonInput, IonTextarea, IonSelect, IonSelectOption,
-  IonBadge, IonChip
+  IonBadge, IonChip, IonLabel
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
@@ -359,27 +359,32 @@ const OrganizationMasters: React.FC = () => {
         </IonHeader>
         <IonContent className="page-modal-content">
           <div style={{ padding: '2rem' }}>
-            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Create New Organization</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <IonInput
-                label="Organization Name"
-                labelPlacement="stacked"
-                placeholder="Enter organization name"
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonInput
-                label="Organization Code"
-                labelPlacement="stacked"
-                placeholder="Enter organization code"
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonTextarea
-                label="Description (Optional)"
-                labelPlacement="stacked"
-                placeholder="Enter description"
-                rows={3}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea', textAlign: 'center' }}>Create New Organization</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Organization Name
+                </IonLabel>
+                <IonInput
+                  placeholder="Enter organization name"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
               <IonButton 
                 expand="block" 
                 style={{ 
@@ -412,28 +417,34 @@ const OrganizationMasters: React.FC = () => {
         </IonHeader>
         <IonContent className="page-modal-content">
           <div style={{ padding: '2rem' }}>
-            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Edit Organization: {editingOrg?.name}</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <IonInput
-                label="Organization Name"
-                labelPlacement="stacked"
-                value={editForm.name}
-                onIonChange={(e) => setEditForm({...editForm, name: e.detail.value!})}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonInput
-                label="Organization Code"
-                labelPlacement="stacked"
-                placeholder="Enter organization code"
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonTextarea
-                label="Description (Optional)"
-                labelPlacement="stacked"
-                placeholder="Enter description"
-                rows={3}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea', textAlign: 'center' }}>Edit Organization: {editingOrg?.name}</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Organization Name
+                </IonLabel>
+                <IonInput
+                  value={editForm.name}
+                  onIonChange={(e) => setEditForm({...editForm, name: e.detail.value!})}
+                  placeholder="Enter organization name"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
               <IonButton 
                 expand="block" 
                 style={{ 

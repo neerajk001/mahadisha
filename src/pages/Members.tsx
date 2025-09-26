@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
@@ -9,7 +9,8 @@ import {
   searchOutline, accessibilityOutline,
   createOutline, trashOutline, checkmarkOutline, pauseOutline,
   ellipsisVerticalOutline, chevronDownOutline, addOutline, closeOutline, saveOutline,
-  personOutline, mailOutline, callOutline, locationOutline, shieldOutline
+  personOutline, mailOutline, callOutline, locationOutline, shieldOutline,
+  checkmark, closeOutline as closeOutlineIcon
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -46,10 +47,22 @@ const Members: React.FC = () => {
     name: '',
     email: '',
     phone: '',
-    district: '',
-    role: '',
+    officeType: '',
+    aadharNumber: '',
+    panNumber: '',
+    selectedUsers: [] as string[],
     status: 'Active' as 'Active' | 'Suspended' | 'Inactive' | 'Deleted'
   });
+
+  // Dropdown states for Office Type and Users
+  const [showOfficeTypeDropdown, setShowOfficeTypeDropdown] = useState(false);
+  const [officeTypeSearchQuery, setOfficeTypeSearchQuery] = useState('');
+  const [showUsersDropdown, setShowUsersDropdown] = useState(false);
+  const [usersSearchQuery, setUsersSearchQuery] = useState('');
+  
+  // Refs for click outside detection
+  const officeTypeDropdownRef = useRef<HTMLDivElement>(null);
+  const usersDropdownRef = useRef<HTMLDivElement>(null);
 
   // Role history state
   const [roleHistory, setRoleHistory] = useState<Array<{
@@ -62,6 +75,113 @@ const Members: React.FC = () => {
 
   // State for managing members data
   const [allMembers, setAllMembers] = useState<MembersData[]>(mockDataService.getMembersData());
+  
+  // Office Type options
+  const officeTypeOptions = [
+    { value: "Head Office", label: "Head Office", hasCheckmark: true },
+    { value: "Regional Office", label: "Regional Office", hasCheckmark: true },
+    { value: "District Office", label: "District Office", hasCheckmark: true },
+    { value: "Branch Office", label: "Branch Office", hasCheckmark: true },
+    { value: "Sub Office", label: "Sub Office", hasCheckmark: true }
+  ];
+
+  // Users options (district-based roles from StatusMapping)
+  const usersOptions = [
+    { value: "Wardha_District Accountant", label: "Wardha_District Accountant", hasCheckmark: true },
+    { value: "Thane_District Accountant", label: "Thane_District Accountant", hasCheckmark: true },
+    { value: "Thane_District Scrutiny Clerk", label: "Thane_District Scrutiny Clerk", hasCheckmark: true },
+    { value: "Nashik_District Assistant", label: "Nashik_District Assistant", hasCheckmark: true },
+    { value: "Nagpur_Scrutiny Clerk", label: "Nagpur_Scrutiny Clerk", hasCheckmark: true },
+    { value: "Aurangabad(Chh. Sambhaji Nagar)_District Accountant", label: "Aurangabad(Chh. Sambhaji Nagar)_District Accountant", hasCheckmark: true },
+    { value: "Buldhana_District Manager", label: "Buldhana_District Manager", hasCheckmark: true },
+    { value: "Nashik_District Manager", label: "Nashik_District Manager", hasCheckmark: true },
+    { value: "Aurangabad (Chh.Sambhaji Nagar) Region_Regional Accountant", label: "Aurangabad (Chh.Sambhaji Nagar) Region_Regional Accountant", hasCheckmark: true },
+    { value: "Nanded_District Assistant", label: "Nanded_District Assistant", hasCheckmark: true },
+    { value: "Wardha_Scrutiny Clerk", label: "Wardha_Scrutiny Clerk", hasCheckmark: true },
+    { value: "Solapur_District Assistant", label: "Solapur_District Assistant", hasCheckmark: true },
+    { value: "General Manager P2", label: "General Manager P2", hasCheckmark: true },
+    { value: "Amravati_District Manager", label: "Amravati_District Manager", hasCheckmark: true },
+    { value: "Hingoli_District Assistant", label: "Hingoli_District Assistant", hasCheckmark: true },
+    { value: "Ratnagiri_District Manager", label: "Ratnagiri_District Manager", hasCheckmark: true },
+    { value: "Sindhudurg_District Accountant", label: "Sindhudurg_District Accountant", hasCheckmark: true },
+    { value: "Sindhudurg_District Scrutiny Clerk", label: "Sindhudurg_District Scrutiny Clerk", hasCheckmark: true },
+    { value: "Mumbai Suburban_District Manager", label: "Mumbai Suburban_District Manager", hasCheckmark: true },
+    { value: "Aurangabad(Chh. Sambhaji Nagar)_District Assistant", label: "Aurangabad(Chh. Sambhaji Nagar)_District Assistant", hasCheckmark: true },
+    { value: "Chandrapur_District Accountant", label: "Chandrapur_District Accountant", hasCheckmark: true },
+    { value: "Satara_District_Selection Committee", label: "Satara_District_Selection Committee", hasCheckmark: true },
+    { value: "Beed_District_Selection Committee", label: "Beed_District_Selection Committee", hasCheckmark: true },
+    { value: "Nanded_District_Selection Committee", label: "Nanded_District_Selection Committee", hasCheckmark: true },
+    { value: "Nagpur_District_Selection Committee", label: "Nagpur_District_Selection Committee", hasCheckmark: true },
+    { value: "Nandurbar_District Assistant", label: "Nandurbar_District Assistant", hasCheckmark: true },
+    { value: "Dhule_District Assistant", label: "Dhule_District Assistant", hasCheckmark: true },
+    { value: "Raigad_District Manager", label: "Raigad_District Manager", hasCheckmark: true },
+    { value: "Raigad_District Assistant", label: "Raigad_District Assistant", hasCheckmark: true },
+    { value: "Latur_District Accountant", label: "Latur_District Accountant", hasCheckmark: true },
+    { value: "Jalgaon_District Assistant", label: "Jalgaon_District Assistant", hasCheckmark: true },
+    { value: "Amravati Region_Regional Manager", label: "Amravati Region_Regional Manager", hasCheckmark: true },
+    { value: "Solapur_Scrutiny Clerk", label: "Solapur_Scrutiny Clerk", hasCheckmark: true },
+    { value: "Managing Director", label: "Managing Director", hasCheckmark: true },
+    { value: "Gondia_District Scrutiny Clerk", label: "Gondia_District Scrutiny Clerk", hasCheckmark: true },
+    { value: "Assistant General Manager P2 / P3", label: "Assistant General Manager P2 / P3", hasCheckmark: true },
+    { value: "Mumbai Suburban_District Accountant", label: "Mumbai Suburban_District Accountant", hasCheckmark: true },
+    { value: "Parbhani_District_Selection Committee", label: "Parbhani_District_Selection Committee", hasCheckmark: true },
+    { value: "Latur_District_Selection Committee", label: "Latur_District_Selection Committee", hasCheckmark: true },
+    { value: "Dhule_District Assistant", label: "Dhule_District Assistant", hasCheckmark: true },
+    { value: "Kolhapur_District_Selection Committee", label: "Kolhapur_District_Selection Committee", hasCheckmark: true },
+    { value: "Solapur_District_Selection Committee", label: "Solapur_District_Selection Committee", hasCheckmark: true },
+    { value: "Mumbai City_District_Selection Committee", label: "Mumbai City_District_Selection Committee", hasCheckmark: true },
+    { value: "Hingoli_District_Selection Committee", label: "Hingoli_District_Selection Committee", hasCheckmark: true },
+    { value: "Jalgaon_District_Selection Committee", label: "Jalgaon_District_Selection Committee", hasCheckmark: true },
+    { value: "Latur_District Manager", label: "Latur_District Manager", hasCheckmark: true },
+    { value: "Parbhani_Scrutiny Clerk", label: "Parbhani_Scrutiny Clerk", hasCheckmark: true }
+  ];
+
+  // Filter options based on search query
+  const filteredOfficeTypeOptions = officeTypeOptions.filter(option =>
+    option.label.toLowerCase().includes(officeTypeSearchQuery.toLowerCase())
+  );
+  const filteredUsersOptions = usersOptions.filter(option =>
+    option.label.toLowerCase().includes(usersSearchQuery.toLowerCase())
+  );
+
+  // Click outside detection for dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showOfficeTypeDropdown && officeTypeDropdownRef.current && !officeTypeDropdownRef.current.contains(event.target as Node)) {
+        setShowOfficeTypeDropdown(false);
+        setOfficeTypeSearchQuery('');
+      }
+      if (showUsersDropdown && usersDropdownRef.current && !usersDropdownRef.current.contains(event.target as Node)) {
+        setShowUsersDropdown(false);
+        setUsersSearchQuery('');
+      }
+    };
+
+    if (showOfficeTypeDropdown || showUsersDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showOfficeTypeDropdown, showUsersDropdown]);
+
+  // Handle adding/removing users from multi-select
+  const toggleUser = (userValue: string) => {
+    setFormData(prev => ({
+      ...prev,
+      selectedUsers: prev.selectedUsers.includes(userValue)
+        ? prev.selectedUsers.filter(user => user !== userValue)
+        : [...prev.selectedUsers, userValue]
+    }));
+  };
+
+  const removeUser = (userValue: string) => {
+    setFormData(prev => ({
+      ...prev,
+      selectedUsers: prev.selectedUsers.filter(user => user !== userValue)
+    }));
+  };
   
   // Generate search suggestions for autocomplete
   const generateSearchSuggestions = useMemo(() => {
@@ -133,8 +253,10 @@ const Members: React.FC = () => {
       name: '',
       email: '',
       phone: '',
-      district: '',
-      role: '',
+      officeType: '',
+      aadharNumber: '',
+      panNumber: '',
+      selectedUsers: [],
       status: 'Active'
     });
   };
@@ -152,8 +274,10 @@ const Members: React.FC = () => {
         name: member.name,
         email: member.email,
         phone: member.phone,
-        district: member.district,
-        role: member.role,
+        officeType: member.officeType || '',
+        aadharNumber: member.aadharNumber || '',
+        panNumber: member.panNumber || '',
+        selectedUsers: member.selectedUsers || [],
         status: member.status
       });
       setShowEditModal(true);
@@ -166,8 +290,9 @@ const Members: React.FC = () => {
     if (!formData.name.trim()) errors.push('Name is required');
     if (!formData.email.trim()) errors.push('Email is required');
     if (!formData.phone.trim()) errors.push('Phone is required');
-    if (!formData.district.trim()) errors.push('District is required');
-    if (!formData.role.trim()) errors.push('Role is required');
+    if (!formData.officeType.trim()) errors.push('Office Type is required');
+    if (!formData.aadharNumber.trim()) errors.push('Aadhar Number is required');
+    if (!formData.panNumber.trim()) errors.push('PAN Number is required');
     
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -179,6 +304,18 @@ const Members: React.FC = () => {
     const phoneRegex = /^\d{10}$/;
     if (formData.phone && !phoneRegex.test(formData.phone)) {
       errors.push('Phone number must be exactly 10 digits');
+    }
+    
+    // Aadhar validation
+    const aadharRegex = /^\d{12}$/;
+    if (formData.aadharNumber && !aadharRegex.test(formData.aadharNumber)) {
+      errors.push('Aadhar number must be exactly 12 digits');
+    }
+    
+    // PAN validation
+    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+    if (formData.panNumber && !panRegex.test(formData.panNumber)) {
+      errors.push('PAN number must be in format: ABCDE1234F');
     }
     
     // Check for duplicate email (only for new members or when email is changed)
@@ -644,201 +781,847 @@ const Members: React.FC = () => {
       {/* Add Member Modal */}
       <IonModal isOpen={showAddModal} onDidDismiss={() => setShowAddModal(false)}>
         <IonHeader>
-          <IonToolbar>
-            <IonTitle>Add New Member</IonTitle>
+          <IonToolbar style={{ '--background': '#4ecdc4', '--color': 'white' }}>
+            <IonTitle>Add Member</IonTitle>
             <IonButtons slot="end">
-              <IonButton onClick={() => setShowAddModal(false)}>
+              <IonButton onClick={() => setShowAddModal(false)} style={{ '--color': 'white' }}>
                 <IonIcon icon={closeOutline} />
               </IonButton>
             </IonButtons>
           </IonToolbar>
         </IonHeader>
-        <IonContent className="modal-content">
-          <div className="form-container">
-            <div className="form-section">
-              <h3>Member Information</h3>
-              <IonItem>
-                <IonIcon icon={personOutline} slot="start" />
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Enter member's name *
+                </IonLabel>
                 <IonInput
-                  label="Name"
-                  labelPlacement="stacked"
                   value={formData.name}
                   onIonInput={(e) => setFormData({...formData, name: e.detail.value!})}
-                  placeholder="Enter member name"
+                  placeholder="Enter member's name"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
                 />
-              </IonItem>
+              </div>
               
-              <IonItem>
-                <IonIcon icon={mailOutline} slot="start" />
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Enter email address's *
+                </IonLabel>
                 <IonInput
-                  label="Email"
-                  labelPlacement="stacked"
                   type="email"
                   value={formData.email}
                   onIonInput={(e) => setFormData({...formData, email: e.detail.value!})}
                   placeholder="Enter email address"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
                 />
-              </IonItem>
+              </div>
               
-              <IonItem>
-                <IonIcon icon={callOutline} slot="start" />
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Enter phone number *
+                </IonLabel>
                 <IonInput
-                  label="Phone"
-                  labelPlacement="stacked"
                   type="tel"
                   value={formData.phone}
                   onIonInput={(e) => setFormData({...formData, phone: e.detail.value!})}
                   placeholder="Enter phone number"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
                 />
-              </IonItem>
+              </div>
               
-              <IonItem>
-                <IonIcon icon={locationOutline} slot="start" />
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Select Office Type *
+                </IonLabel>
+                <div style={{ position: 'relative' }} ref={officeTypeDropdownRef}>
+                  <IonInput
+                    value={formData.officeType || ''}
+                    placeholder="Select Office Type"
+                    readonly
+                    onClick={() => setShowOfficeTypeDropdown(!showOfficeTypeDropdown)}
+                    style={{ 
+                      '--background': '#e8e8e8',
+                      '--border-radius': '12px',
+                      '--padding-start': '16px',
+                      '--padding-end': '16px',
+                      '--padding-top': '12px',
+                      '--padding-bottom': '12px',
+                      '--color': '#333',
+                      '--placeholder-color': '#666',
+                      cursor: 'pointer'
+                    }}
+                  />
+                  {showOfficeTypeDropdown && (
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        backgroundColor: 'white',
+                        border: '1px solid #e0e0e0',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        zIndex: 1000,
+                        maxHeight: '300px',
+                        overflow: 'hidden'
+                      }}>
+                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                        <IonInput
+                          value={officeTypeSearchQuery}
+                          onIonChange={(e) => setOfficeTypeSearchQuery(e.detail.value!)}
+                          placeholder="Search office types..."
+                          style={{
+                            '--background': '#f8f9fa',
+                            '--border-radius': '8px',
+                            '--padding-start': '12px',
+                            '--padding-end': '12px',
+                            '--padding-top': '8px',
+                            '--padding-bottom': '8px'
+                          }}
+                        />
+                      </div>
+                      <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
+                        {filteredOfficeTypeOptions.map((option) => (
+                          <div
+                            key={option.value}
+                            onClick={() => {
+                              setFormData(prev => ({ ...prev, officeType: option.value }));
+                              setShowOfficeTypeDropdown(false);
+                            }}
+                            style={{
+                              padding: '12px 16px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              borderBottom: '1px solid #f0f0f0',
+                              backgroundColor: formData.officeType === option.value ? '#2196f3' : 'white',
+                              color: formData.officeType === option.value ? 'white' : '#333'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (formData.officeType !== option.value) {
+                                e.currentTarget.style.backgroundColor = '#f5f5f5';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (formData.officeType !== option.value) {
+                                e.currentTarget.style.backgroundColor = 'white';
+                              }
+                            }}
+                          >
+                            <span style={{ color: formData.officeType === option.value ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            {option.hasCheckmark && (
+                              <IonIcon 
+                                icon={checkmark} 
+                                style={{ 
+                                  color: formData.officeType === option.value ? 'white' : '#00C851', 
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                                }} 
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Enter aadhar number *
+                </IonLabel>
                 <IonInput
-                  label="District"
-                  labelPlacement="stacked"
-                  value={formData.district}
-                  onIonInput={(e) => setFormData({...formData, district: e.detail.value!})}
-                  placeholder="Enter district"
+                  value={formData.aadharNumber}
+                  onIonInput={(e) => setFormData({...formData, aadharNumber: e.detail.value!})}
+                  placeholder="Enter aadhar number"
+                  maxlength={12}
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
                 />
-              </IonItem>
+              </div>
               
-              <IonItem>
-                <IonIcon icon={shieldOutline} slot="start" />
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Enter PAN number *
+                </IonLabel>
                 <IonInput
-                  label="Role"
-                  labelPlacement="stacked"
-                  value={formData.role}
-                  onIonInput={(e) => setFormData({...formData, role: e.detail.value!})}
-                  placeholder="Enter role"
+                  value={formData.panNumber}
+                  onIonInput={(e) => setFormData({...formData, panNumber: e.detail.value!})}
+                  placeholder="Enter PAN number"
+                  maxlength={10}
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
                 />
-              </IonItem>
+              </div>
               
-              <IonItem>
-                <IonSelect
-                  label="Status"
-                  labelPlacement="stacked"
-                  value={formData.status}
-                  onSelectionChange={(e) => setFormData({...formData, status: e.detail.value})}
-                >
-                  <IonSelectOption value="Active">Active</IonSelectOption>
-                  <IonSelectOption value="Suspended">Suspended</IonSelectOption>
-                  <IonSelectOption value="Inactive">Inactive</IonSelectOption>
-                  <IonSelectOption value="Deleted">Deleted</IonSelectOption>
-                </IonSelect>
-              </IonItem>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Select users
+                </IonLabel>
+                <div style={{ position: 'relative' }} ref={usersDropdownRef}>
+                  <div
+                    onClick={() => setShowUsersDropdown(!showUsersDropdown)}
+                    style={{
+                      minHeight: '48px',
+                      padding: '12px 16px',
+                      backgroundColor: '#e8e8e8',
+                      borderRadius: '12px',
+                      border: '1px solid #e0e0e0',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '8px'
+                    }}
+                  >
+                    {formData.selectedUsers.length > 0 ? (
+                      formData.selectedUsers.map((user, index) => (
+                        <IonChip key={index} color="primary" style={{ margin: '2px' }}>
+                          <IonLabel>{user}</IonLabel>
+                          <IonIcon 
+                            icon={closeOutlineIcon} 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeUser(user);
+                            }}
+                            style={{ cursor: 'pointer', marginLeft: '4px' }}
+                          />
+                        </IonChip>
+                      ))
+                    ) : (
+                      <span style={{ color: '#666', fontSize: '14px' }}>Select users</span>
+                    )}
+                  </div>
+                  {showUsersDropdown && (
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        backgroundColor: 'white',
+                        border: '1px solid #e0e0e0',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        zIndex: 1000,
+                        maxHeight: '300px',
+                        overflow: 'hidden'
+                      }}>
+                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                        <IonInput
+                          value={usersSearchQuery}
+                          onIonChange={(e) => setUsersSearchQuery(e.detail.value!)}
+                          placeholder="Search users..."
+                          style={{
+                            '--background': '#f8f9fa',
+                            '--border-radius': '8px',
+                            '--padding-start': '12px',
+                            '--padding-end': '12px',
+                            '--padding-top': '8px',
+                            '--padding-bottom': '8px'
+                          }}
+                        />
+                      </div>
+                      <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
+                        {filteredUsersOptions.map((option) => (
+                          <div
+                            key={option.value}
+                            onClick={() => toggleUser(option.value)}
+                            style={{
+                              padding: '12px 16px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              borderBottom: '1px solid #f0f0f0',
+                              backgroundColor: formData.selectedUsers.includes(option.value) ? '#2196f3' : 'white',
+                              color: formData.selectedUsers.includes(option.value) ? 'white' : '#333'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!formData.selectedUsers.includes(option.value)) {
+                                e.currentTarget.style.backgroundColor = '#f5f5f5';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!formData.selectedUsers.includes(option.value)) {
+                                e.currentTarget.style.backgroundColor = 'white';
+                              }
+                            }}
+                          >
+                            <span style={{ color: formData.selectedUsers.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            {option.hasCheckmark && (
+                              <IonIcon 
+                                icon={checkmark} 
+                                style={{ 
+                                  color: formData.selectedUsers.includes(option.value) ? 'white' : '#00C851', 
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                                }} 
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div style={{ 
+              display: 'flex', 
+              gap: '1rem', 
+              justifyContent: 'center', 
+              marginTop: '2rem',
+              paddingTop: '1.5rem',
+              borderTop: '1px solid #e0e0e0'
+            }}>
+              <IonButton 
+                fill="outline" 
+                onClick={() => setShowAddModal(false)}
+                style={{
+                  '--border-color': '#4ecdc4',
+                  '--color': '#4ecdc4',
+                  '--border-radius': '8px',
+                  '--padding-start': '1.5rem',
+                  '--padding-end': '1.5rem'
+                }}
+              >
+                CANCEL
+              </IonButton>
+              <IonButton 
+                fill="solid" 
+                onClick={handleSaveMember}
+                style={{
+                  '--background': '#4ecdc4',
+                  '--color': 'white',
+                  '--border-radius': '8px',
+                  '--padding-start': '1.5rem',
+                  '--padding-end': '1.5rem'
+                }}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                SAVE CHANGES
+              </IonButton>
             </div>
           </div>
         </IonContent>
-        <div className="modal-actions">
-          <IonButton fill="outline" onClick={() => setShowAddModal(false)}>
-            Cancel
-          </IonButton>
-          <IonButton fill="solid" onClick={handleSaveMember}>
-            <IonIcon icon={saveOutline} />
-            Add Member
-          </IonButton>
-        </div>
       </IonModal>
 
       {/* Edit Member Modal */}
       <IonModal isOpen={showEditModal} onDidDismiss={() => setShowEditModal(false)}>
         <IonHeader>
-          <IonToolbar>
+          <IonToolbar style={{ '--background': '#4ecdc4', '--color': 'white' }}>
             <IonTitle>Edit Member</IonTitle>
             <IonButtons slot="end">
-              <IonButton onClick={() => setShowEditModal(false)}>
+              <IonButton onClick={() => setShowEditModal(false)} style={{ '--color': 'white' }}>
                 <IonIcon icon={closeOutline} />
               </IonButton>
             </IonButtons>
           </IonToolbar>
         </IonHeader>
-        <IonContent className="modal-content">
-          <div className="form-container">
-            <div className="form-section">
-              <h3>Member Information</h3>
-              <IonItem>
-                <IonIcon icon={personOutline} slot="start" />
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Enter member's name *
+                </IonLabel>
                 <IonInput
-                  label="Name"
-                  labelPlacement="stacked"
                   value={formData.name}
                   onIonInput={(e) => setFormData({...formData, name: e.detail.value!})}
-                  placeholder="Enter member name"
+                  placeholder="Enter member's name"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
                 />
-              </IonItem>
+              </div>
               
-              <IonItem>
-                <IonIcon icon={mailOutline} slot="start" />
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Enter email address's *
+                </IonLabel>
                 <IonInput
-                  label="Email"
-                  labelPlacement="stacked"
                   type="email"
                   value={formData.email}
                   onIonInput={(e) => setFormData({...formData, email: e.detail.value!})}
                   placeholder="Enter email address"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
                 />
-              </IonItem>
+              </div>
               
-              <IonItem>
-                <IonIcon icon={callOutline} slot="start" />
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Enter phone number *
+                </IonLabel>
                 <IonInput
-                  label="Phone"
-                  labelPlacement="stacked"
                   type="tel"
                   value={formData.phone}
                   onIonInput={(e) => setFormData({...formData, phone: e.detail.value!})}
                   placeholder="Enter phone number"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
                 />
-              </IonItem>
+              </div>
               
-              <IonItem>
-                <IonIcon icon={locationOutline} slot="start" />
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Select Office Type *
+                </IonLabel>
+                <div style={{ position: 'relative' }} ref={officeTypeDropdownRef}>
+                  <IonInput
+                    value={formData.officeType || ''}
+                    placeholder="Select Office Type"
+                    readonly
+                    onClick={() => setShowOfficeTypeDropdown(!showOfficeTypeDropdown)}
+                    style={{ 
+                      '--background': '#e8e8e8',
+                      '--border-radius': '12px',
+                      '--padding-start': '16px',
+                      '--padding-end': '16px',
+                      '--padding-top': '12px',
+                      '--padding-bottom': '12px',
+                      '--color': '#333',
+                      '--placeholder-color': '#666',
+                      cursor: 'pointer'
+                    }}
+                  />
+                  {showOfficeTypeDropdown && (
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        backgroundColor: 'white',
+                        border: '1px solid #e0e0e0',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        zIndex: 1000,
+                        maxHeight: '300px',
+                        overflow: 'hidden'
+                      }}>
+                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                        <IonInput
+                          value={officeTypeSearchQuery}
+                          onIonChange={(e) => setOfficeTypeSearchQuery(e.detail.value!)}
+                          placeholder="Search office types..."
+                          style={{
+                            '--background': '#f8f9fa',
+                            '--border-radius': '8px',
+                            '--padding-start': '12px',
+                            '--padding-end': '12px',
+                            '--padding-top': '8px',
+                            '--padding-bottom': '8px'
+                          }}
+                        />
+                      </div>
+                      <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
+                        {filteredOfficeTypeOptions.map((option) => (
+                          <div
+                            key={option.value}
+                            onClick={() => {
+                              setFormData(prev => ({ ...prev, officeType: option.value }));
+                              setShowOfficeTypeDropdown(false);
+                            }}
+                            style={{
+                              padding: '12px 16px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              borderBottom: '1px solid #f0f0f0',
+                              backgroundColor: formData.officeType === option.value ? '#2196f3' : 'white',
+                              color: formData.officeType === option.value ? 'white' : '#333'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (formData.officeType !== option.value) {
+                                e.currentTarget.style.backgroundColor = '#f5f5f5';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (formData.officeType !== option.value) {
+                                e.currentTarget.style.backgroundColor = 'white';
+                              }
+                            }}
+                          >
+                            <span style={{ color: formData.officeType === option.value ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            {option.hasCheckmark && (
+                              <IonIcon 
+                                icon={checkmark} 
+                                style={{ 
+                                  color: formData.officeType === option.value ? 'white' : '#00C851', 
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                                }} 
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Enter aadhar number *
+                </IonLabel>
                 <IonInput
-                  label="District"
-                  labelPlacement="stacked"
-                  value={formData.district}
-                  onIonInput={(e) => setFormData({...formData, district: e.detail.value!})}
-                  placeholder="Enter district"
+                  value={formData.aadharNumber}
+                  onIonInput={(e) => setFormData({...formData, aadharNumber: e.detail.value!})}
+                  placeholder="Enter aadhar number"
+                  maxlength={12}
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
                 />
-              </IonItem>
+              </div>
               
-              <IonItem>
-                <IonIcon icon={shieldOutline} slot="start" />
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Enter PAN number *
+                </IonLabel>
                 <IonInput
-                  label="Role"
-                  labelPlacement="stacked"
-                  value={formData.role}
-                  onIonInput={(e) => setFormData({...formData, role: e.detail.value!})}
-                  placeholder="Enter role"
+                  value={formData.panNumber}
+                  onIonInput={(e) => setFormData({...formData, panNumber: e.detail.value!})}
+                  placeholder="Enter PAN number"
+                  maxlength={10}
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
                 />
-              </IonItem>
+              </div>
               
-              <IonItem>
-                <IonSelect
-                  label="Status"
-                  labelPlacement="stacked"
-                  value={formData.status}
-                  onSelectionChange={(e) => setFormData({...formData, status: e.detail.value})}
-                >
-                  <IonSelectOption value="Active">Active</IonSelectOption>
-                  <IonSelectOption value="Suspended">Suspended</IonSelectOption>
-                  <IonSelectOption value="Inactive">Inactive</IonSelectOption>
-                  <IonSelectOption value="Deleted">Deleted</IonSelectOption>
-                </IonSelect>
-              </IonItem>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Select users
+                </IonLabel>
+                <div style={{ position: 'relative' }} ref={usersDropdownRef}>
+                  <div
+                    onClick={() => setShowUsersDropdown(!showUsersDropdown)}
+                    style={{
+                      minHeight: '48px',
+                      padding: '12px 16px',
+                      backgroundColor: '#e8e8e8',
+                      borderRadius: '12px',
+                      border: '1px solid #e0e0e0',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '8px'
+                    }}
+                  >
+                    {formData.selectedUsers.length > 0 ? (
+                      formData.selectedUsers.map((user, index) => (
+                        <IonChip key={index} color="primary" style={{ margin: '2px' }}>
+                          <IonLabel>{user}</IonLabel>
+                          <IonIcon 
+                            icon={closeOutlineIcon} 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeUser(user);
+                            }}
+                            style={{ cursor: 'pointer', marginLeft: '4px' }}
+                          />
+                        </IonChip>
+                      ))
+                    ) : (
+                      <span style={{ color: '#666', fontSize: '14px' }}>Select users</span>
+                    )}
+                  </div>
+                  {showUsersDropdown && (
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        backgroundColor: 'white',
+                        border: '1px solid #e0e0e0',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        zIndex: 1000,
+                        maxHeight: '300px',
+                        overflow: 'hidden'
+                      }}>
+                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                        <IonInput
+                          value={usersSearchQuery}
+                          onIonChange={(e) => setUsersSearchQuery(e.detail.value!)}
+                          placeholder="Search users..."
+                          style={{
+                            '--background': '#f8f9fa',
+                            '--border-radius': '8px',
+                            '--padding-start': '12px',
+                            '--padding-end': '12px',
+                            '--padding-top': '8px',
+                            '--padding-bottom': '8px'
+                          }}
+                        />
+                      </div>
+                      <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
+                        {filteredUsersOptions.map((option) => (
+                          <div
+                            key={option.value}
+                            onClick={() => toggleUser(option.value)}
+                            style={{
+                              padding: '12px 16px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              borderBottom: '1px solid #f0f0f0',
+                              backgroundColor: formData.selectedUsers.includes(option.value) ? '#2196f3' : 'white',
+                              color: formData.selectedUsers.includes(option.value) ? 'white' : '#333'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!formData.selectedUsers.includes(option.value)) {
+                                e.currentTarget.style.backgroundColor = '#f5f5f5';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!formData.selectedUsers.includes(option.value)) {
+                                e.currentTarget.style.backgroundColor = 'white';
+                              }
+                            }}
+                          >
+                            <span style={{ color: formData.selectedUsers.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            {option.hasCheckmark && (
+                              <IonIcon 
+                                icon={checkmark} 
+                                style={{ 
+                                  color: formData.selectedUsers.includes(option.value) ? 'white' : '#00C851', 
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                                }} 
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div style={{ 
+              display: 'flex', 
+              gap: '1rem', 
+              justifyContent: 'center', 
+              marginTop: '2rem',
+              paddingTop: '1.5rem',
+              borderTop: '1px solid #e0e0e0'
+            }}>
+              <IonButton 
+                fill="outline" 
+                onClick={() => setShowEditModal(false)}
+                style={{
+                  '--border-color': '#4ecdc4',
+                  '--color': '#4ecdc4',
+                  '--border-radius': '8px',
+                  '--padding-start': '1.5rem',
+                  '--padding-end': '1.5rem'
+                }}
+              >
+                CANCEL
+              </IonButton>
+              <IonButton 
+                fill="solid" 
+                onClick={handleSaveMember}
+                style={{
+                  '--background': '#4ecdc4',
+                  '--color': 'white',
+                  '--border-radius': '8px',
+                  '--padding-start': '1.5rem',
+                  '--padding-end': '1.5rem'
+                }}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                SAVE CHANGES
+              </IonButton>
             </div>
           </div>
         </IonContent>
-        <div className="modal-actions">
-          <IonButton fill="outline" onClick={() => setShowEditModal(false)}>
-            Cancel
-          </IonButton>
-          <IonButton fill="solid" onClick={handleSaveMember}>
-            <IonIcon icon={saveOutline} />
-            Update Member
-          </IonButton>
-        </div>
       </IonModal>
 
       {/* Role History Modal */}

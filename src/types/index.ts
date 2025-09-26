@@ -368,6 +368,9 @@ export interface DatabaseAccessData {
 export interface RolesData {
   id: string;
   name: string;
+  organization?: string;
+  branch?: string;
+  statuses?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -390,6 +393,7 @@ export interface AccessMappingData {
   role: string;
   pageAccess?: string;
   navbarAccess: string[];
+  masterAccess?: string[];
   createdAt: string;
   updatedAt: string;
 }

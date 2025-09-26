@@ -1,15 +1,14 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
-  IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
+  IonButton, IonButtons, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonAlert, IonToast, IonSearchbar,
-  IonModal, IonItem, IonLabel, IonInput, IonTextarea, IonSelect, IonSelectOption,
-  IonChip, IonBadge, IonButtons
+  IonModal, IonItem, IonLabel, IonInput, IonSelect, IonSelectOption, IonChip, IonBadge
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
   chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
-  filterOutline
+  filterOutline, checkmark, closeOutline as closeOutlineIcon
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -40,14 +39,29 @@ const PincodeMapping: React.FC = () => {
   const [showFiltersModal, setShowFiltersModal] = useState(false);
   const [editingMapping, setEditingMapping] = useState<PincodeMappingData | null>(null);
 
-  // Form state
-  const [formData, setFormData] = useState<PincodeMappingFormData>({
+  // Form state - simplified to only district and pincodes array
+  const [addForm, setAddForm] = useState({
     district: '',
-    pincodes: [],
-    state: '',
-    region: '',
-    description: ''
+    pincodes: [] as string[]
   });
+  const [editForm, setEditForm] = useState({
+    district: '',
+    pincodes: [] as string[]
+  });
+  
+  // Pincode input state
+  const [pincodeInput, setPincodeInput] = useState('');
+  const [editPincodeInput, setEditPincodeInput] = useState('');
+
+  // Dropdown states for District
+  const [showDistrictDropdown, setShowDistrictDropdown] = useState(false);
+  const [districtSearchQuery, setDistrictSearchQuery] = useState('');
+  const [showEditDistrictDropdown, setShowEditDistrictDropdown] = useState(false);
+  const [editDistrictSearchQuery, setEditDistrictSearchQuery] = useState('');
+  
+  // Refs for click outside detection
+  const districtDropdownRef = useRef<HTMLDivElement>(null);
+  const editDistrictDropdownRef = useRef<HTMLDivElement>(null);
 
   // Filters state
   const [filters, setFilters] = useState<PincodeFilters>({
@@ -60,13 +74,135 @@ const PincodeMapping: React.FC = () => {
 
   // Validation state
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
-  const [pincodeInput, setPincodeInput] = useState('');
 
   const itemsPerPage = 5;
 
   // State for managing mappings data
   const [allMappings, setAllMappings] = useState<PincodeMappingData[]>(mockDataService.getPincodeMappingData());
   
+  // District options from BranchMapping
+  const districtOptions = [
+    { value: "Gadchiroli", label: "Gadchiroli", hasCheckmark: true },
+    { value: "Jalgaon", label: "Jalgaon", hasCheckmark: true },
+    { value: "Nagpur", label: "Nagpur", hasCheckmark: true },
+    { value: "Dharashiv", label: "Dharashiv", hasCheckmark: true },
+    { value: "Nanded", label: "Nanded", hasCheckmark: true },
+    { value: "Amrut Nagar", label: "Amrut Nagar", hasCheckmark: true },
+    { value: "Ratnagiri", label: "Ratnagiri", hasCheckmark: true },
+    { value: "Jalna", label: "Jalna", hasCheckmark: true },
+    { value: "Yavatmal", label: "Yavatmal", hasCheckmark: true },
+    { value: "Kolhapur", label: "Kolhapur", hasCheckmark: true },
+    { value: "Nandurbar", label: "Nandurbar", hasCheckmark: true },
+    { value: "Pune", label: "Pune", hasCheckmark: true },
+    { value: "Nashik", label: "Nashik", hasCheckmark: true },
+    { value: "Sindhudurg", label: "Sindhudurg", hasCheckmark: true },
+    { value: "Raigad", label: "Raigad", hasCheckmark: true },
+    { value: "Hingoli", label: "Hingoli", hasCheckmark: true },
+    { value: "Beed", label: "Beed", hasCheckmark: true },
+    { value: "Akola", label: "Akola", hasCheckmark: true },
+    { value: "Gondia", label: "Gondia", hasCheckmark: true },
+    { value: "Solapur", label: "Solapur", hasCheckmark: true },
+    { value: "Dhule", label: "Dhule", hasCheckmark: true },
+    { value: "Latur", label: "Latur", hasCheckmark: true },
+    { value: "Sangli", label: "Sangli", hasCheckmark: true },
+    { value: "Bhandara", label: "Bhandara", hasCheckmark: true },
+    { value: "Chandrapur", label: "Chandrapur", hasCheckmark: true },
+    { value: "Wardha", label: "Wardha", hasCheckmark: true },
+    { value: "Satara", label: "Satara", hasCheckmark: true },
+    { value: "Amravati", label: "Amravati", hasCheckmark: true },
+    { value: "Mumbai Suburban", label: "Mumbai Suburban", hasCheckmark: true },
+    { value: "Parbhani", label: "Parbhani", hasCheckmark: true },
+    { value: "Mumbai City", label: "Mumbai City", hasCheckmark: true },
+    { value: "Palghar", label: "Palghar", hasCheckmark: true },
+    { value: "Aurangabad (Chh. Sambhaji Nagar)", label: "Aurangabad (Chh. Sambhaji Nagar)", hasCheckmark: true },
+    { value: "Buldhana", label: "Buldhana", hasCheckmark: true },
+    { value: "Washim", label: "Washim", hasCheckmark: true },
+    { value: "Ahilyanagar", label: "Ahilyanagar", hasCheckmark: true }
+  ];
+
+  // Filter district options based on search query
+  const filteredDistrictOptions = districtOptions.filter(option =>
+    option.label.toLowerCase().includes(districtSearchQuery.toLowerCase())
+  );
+  const filteredEditDistrictOptions = districtOptions.filter(option =>
+    option.label.toLowerCase().includes(editDistrictSearchQuery.toLowerCase())
+  );
+
+  // Click outside detection for dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showDistrictDropdown && districtDropdownRef.current && !districtDropdownRef.current.contains(event.target as Node)) {
+        setShowDistrictDropdown(false);
+        setDistrictSearchQuery('');
+      }
+      if (showEditDistrictDropdown && editDistrictDropdownRef.current && !editDistrictDropdownRef.current.contains(event.target as Node)) {
+        setShowEditDistrictDropdown(false);
+        setEditDistrictSearchQuery('');
+      }
+    };
+
+    if (showDistrictDropdown || showEditDistrictDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showDistrictDropdown, showEditDistrictDropdown]);
+
+  // Add pincode to form
+  const addPincode = () => {
+    const pincode = pincodeInput.trim();
+    if (pincode && /^\d{6}$/.test(pincode) && !addForm.pincodes.includes(pincode)) {
+      setAddForm(prev => ({
+        ...prev,
+        pincodes: [...prev.pincodes, pincode]
+      }));
+      setPincodeInput('');
+    }
+  };
+
+  const addEditPincode = () => {
+    const pincode = editPincodeInput.trim();
+    if (pincode && /^\d{6}$/.test(pincode) && !editForm.pincodes.includes(pincode)) {
+      setEditForm(prev => ({
+        ...prev,
+        pincodes: [...prev.pincodes, pincode]
+      }));
+      setEditPincodeInput('');
+    }
+  };
+
+  // Remove pincode from form
+  const removePincode = (pincodeToRemove: string) => {
+    setAddForm(prev => ({
+      ...prev,
+      pincodes: prev.pincodes.filter(pincode => pincode !== pincodeToRemove)
+    }));
+  };
+
+  const removeEditPincode = (pincodeToRemove: string) => {
+    setEditForm(prev => ({
+      ...prev,
+      pincodes: prev.pincodes.filter(pincode => pincode !== pincodeToRemove)
+    }));
+  };
+
+  // Handle Enter key press
+  const handlePincodeKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addPincode();
+    }
+  };
+
+  const handleEditPincodeKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addEditPincode();
+    }
+  };
+
   // Enhanced filtering with multiple criteria
   const filteredMappings = useMemo(() => {
     let filtered = allMappings;
@@ -151,149 +287,104 @@ const PincodeMapping: React.FC = () => {
     return suggestions;
   };
 
-  // Add pincode to form
-  const addPincode = () => {
-    const validation = validatePincode(pincodeInput);
-    
-    if (validation.isValid) {
-      const pincode = pincodeInput.trim();
-      if (!formData.pincodes.includes(pincode)) {
-        setFormData(prev => ({
-          ...prev,
-          pincodes: [...prev.pincodes, pincode]
-        }));
-        setPincodeInput('');
-        setValidationErrors([]);
-      } else {
-        setValidationErrors(['Pincode already exists in the list']);
-      }
-    } else {
-      setValidationErrors(validation.errors);
-    }
-  };
-
-  // Remove pincode from form
-  const removePincode = (pincodeToRemove: string) => {
-    setFormData(prev => ({
-      ...prev,
-      pincodes: prev.pincodes.filter(pincode => pincode !== pincodeToRemove)
-    }));
-  };
-
-  // Add pincode range
-  const addPincodeRange = (start: string, end: string) => {
-    const startNum = parseInt(start);
-    const endNum = parseInt(end);
-    const newPincodes: string[] = [];
-    
-    for (let i = startNum; i <= endNum; i++) {
-      const pincode = i.toString().padStart(6, '0');
-      if (validatePincode(pincode).isValid && !formData.pincodes.includes(pincode)) {
-        newPincodes.push(pincode);
-      }
-    }
-    
-    setFormData(prev => ({
-      ...prev,
-      pincodes: [...prev.pincodes, ...newPincodes]
-    }));
-  };
 
   // Handle form submission
-  const handleSaveMapping = () => {
+  const handleSaveAdd = () => {
     const errors: string[] = [];
     
-    if (!formData.district.trim()) errors.push('District is required');
-    if (!formData.state.trim()) errors.push('State is required');
-    if (!formData.region.trim()) errors.push('Region is required');
-    if (formData.pincodes.length === 0) errors.push('At least one pincode is required');
-    
-    // Check for duplicate district
-    const existingMapping = allMappings.find(mapping => 
-      mapping.district.toLowerCase() === formData.district.toLowerCase() && 
-      mapping.id !== editingMapping?.id
-    );
-    if (existingMapping) {
-      errors.push('District already exists');
-    }
+    if (!addForm.district.trim()) errors.push('District is required');
+    if (addForm.pincodes.length === 0) errors.push('At least one pincode is required');
     
     if (errors.length > 0) {
-      setValidationErrors(errors);
+      setToastMessage(errors.join(', '));
+      setShowToast(true);
       return;
     }
     
-    // Update mappings state
+    // Add new mapping
+    const newMapping: PincodeMappingData = {
+      id: Date.now().toString(),
+      district: addForm.district,
+      pincodes: addForm.pincodes,
+      state: '',
+      region: '',
+      description: '',
+      createdAt: new Date().toISOString().split('T')[0],
+      updatedAt: new Date().toISOString().split('T')[0]
+    };
+    setAllMappings(prevMappings => [...prevMappings, newMapping]);
+    setToastMessage('Pincode mapping added successfully');
+    setShowToast(true);
+    setShowAddModal(false);
+    setAddForm({ district: '', pincodes: [] });
+    setPincodeInput('');
+  };
+
+  const handleSaveEdit = () => {
+    const errors: string[] = [];
+    
+    if (!editForm.district.trim()) errors.push('District is required');
+    if (editForm.pincodes.length === 0) errors.push('At least one pincode is required');
+    
+    if (errors.length > 0) {
+      setToastMessage(errors.join(', '));
+      setShowToast(true);
+      return;
+    }
+    
+    // Update existing mapping
     if (editingMapping) {
-      // Update existing mapping
       setAllMappings(prevMappings => 
         prevMappings.map(mapping => 
           mapping.id === editingMapping.id 
             ? {
                 ...mapping,
-                district: formData.district,
-                pincodes: formData.pincodes,
-                state: formData.state,
-                region: formData.region,
-                description: formData.description,
+                district: editForm.district,
+                pincodes: editForm.pincodes,
                 updatedAt: new Date().toISOString().split('T')[0]
               }
             : mapping
         )
       );
-      setToastMessage('Mapping updated successfully');
-    } else {
-      // Add new mapping
-      const newMapping: PincodeMappingData = {
-        id: Date.now().toString(),
-        district: formData.district,
-        pincodes: formData.pincodes,
-        state: formData.state,
-        region: formData.region,
-        description: formData.description,
-        createdAt: new Date().toISOString().split('T')[0],
-        updatedAt: new Date().toISOString().split('T')[0]
-      };
-      setAllMappings(prevMappings => [...prevMappings, newMapping]);
-      setToastMessage('Mapping added successfully');
+      setToastMessage('Pincode mapping updated successfully');
+      setShowToast(true);
+      setShowEditModal(false);
+      setEditingMapping(null);
+      setEditForm({ district: '', pincodes: [] });
+      setEditPincodeInput('');
     }
-    
-    setShowToast(true);
-    setShowAddModal(false);
-    setShowEditModal(false);
-    setEditingMapping(null);
-    resetForm();
-  };
-
-  // Reset form
-  const resetForm = () => {
-    setFormData({
-      district: '',
-      pincodes: [],
-      state: '',
-      region: '',
-      description: ''
-    });
-    setPincodeInput('');
-    setValidationErrors([]);
   };
 
   // Handle add mapping
   const handleAddMapping = () => {
-    resetForm();
+    setAddForm({ district: '', pincodes: [] });
+    setPincodeInput('');
     setShowAddModal(true);
   };
 
   // Handle edit mapping
   const handleEdit = (mapping: PincodeMappingData) => {
     setEditingMapping(mapping);
-    setFormData({
+    setEditForm({
       district: mapping.district,
-      pincodes: [...mapping.pincodes],
-      state: mapping.state || '',
-      region: mapping.region || '',
-      description: mapping.description || ''
+      pincodes: [...mapping.pincodes]
     });
+    setEditPincodeInput('');
     setShowEditModal(true);
+  };
+
+  // Handle close modals
+  const handleCloseAdd = () => {
+    setShowAddModal(false);
+    setAddForm({ district: '', pincodes: [] });
+    setPincodeInput('');
+  };
+
+  const handleCloseEdit = () => {
+    setShowEditModal(false);
+    setEditingMapping(null);
+    setEditForm({ district: '', pincodes: [] });
+    setEditPincodeInput('');
   };
 
   // Handle delete
@@ -479,289 +570,459 @@ const PincodeMapping: React.FC = () => {
       </IonSplitPane>
 
       {/* Add Mapping Modal */}
-      <IonModal isOpen={showAddModal} onDidDismiss={() => setShowAddModal(false)}>
+      <IonModal isOpen={showAddModal} onDidDismiss={handleCloseAdd}>
         <IonHeader>
-          <IonToolbar>
-            <IonTitle>Add New Pincode Mapping</IonTitle>
+          <IonToolbar style={{ '--background': '#4ecdc4', '--color': 'white' }}>
+            <IonTitle>Add Pincode Mapping</IonTitle>
             <IonButtons slot="end">
-              <IonButton onClick={() => setShowAddModal(false)}>
+              <IonButton onClick={handleCloseAdd} style={{ '--color': 'white' }}>
                 <IonIcon icon={closeOutline} />
               </IonButton>
             </IonButtons>
           </IonToolbar>
         </IonHeader>
-        <IonContent className="modal-content">
-          <div className="form-container">
-            <div className="form-section">
-              <h3>Basic Information</h3>
-              <IonItem>
-                <IonLabel position="stacked">District *</IonLabel>
-                <IonInput
-                  value={formData.district}
-                  onIonChange={(e) => setFormData(prev => ({ ...prev, district: e.detail.value! }))}
-                  placeholder="Enter district name"
-                />
-              </IonItem>
-              
-              <IonItem>
-                <IonLabel position="stacked">State *</IonLabel>
-                <IonSelect
-                  value={formData.state}
-                  onIonChange={(e) => setFormData(prev => ({ ...prev, state: e.detail.value }))}
-                  placeholder="Select state"
-                >
-                  {uniqueStates.map(state => (
-                    <IonSelectOption key={state} value={state}>{state}</IonSelectOption>
-                  ))}
-                </IonSelect>
-              </IonItem>
-              
-              <IonItem>
-                <IonLabel position="stacked">Region *</IonLabel>
-                <IonSelect
-                  value={formData.region}
-                  onIonChange={(e) => setFormData(prev => ({ ...prev, region: e.detail.value }))}
-                  placeholder="Select region"
-                >
-                  {uniqueRegions.map(region => (
-                    <IonSelectOption key={region} value={region}>{region}</IonSelectOption>
-                  ))}
-                </IonSelect>
-              </IonItem>
-              
-              <IonItem>
-                <IonLabel position="stacked">Description</IonLabel>
-                <IonTextarea
-                  value={formData.description}
-                  onIonChange={(e) => setFormData(prev => ({ ...prev, description: e.detail.value! }))}
-                  placeholder="Enter description (optional)"
-                  rows={3}
-                />
-              </IonItem>
-            </div>
-
-            <div className="form-section">
-              <h3>Pincode Management</h3>
-              
-              <div className="pincode-input-section">
-                <IonItem>
-                  <IonLabel position="stacked">Add Pincode *</IonLabel>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  District *
+                </IonLabel>
+                <div style={{ position: 'relative' }} ref={districtDropdownRef}>
                   <IonInput
-                    value={pincodeInput}
-                    onIonChange={(e) => setPincodeInput(e.detail.value!)}
-                    placeholder="Enter 6-digit pincode"
-                    maxlength={6}
+                    value={addForm.district || ''}
+                    placeholder="Select district"
+                    readonly
+                    onClick={() => setShowDistrictDropdown(!showDistrictDropdown)}
+                    style={{ 
+                      '--background': '#e8e8e8',
+                      '--border-radius': '12px',
+                      '--padding-start': '16px',
+                      '--padding-end': '16px',
+                      '--padding-top': '12px',
+                      '--padding-bottom': '12px',
+                      '--color': '#333',
+                      '--placeholder-color': '#666',
+                      cursor: 'pointer'
+                    }}
                   />
-                </IonItem>
-                <IonButton 
-                  fill="outline" 
-                  onClick={addPincode}
-                  disabled={!pincodeInput.trim()}
-                >
-                  <IonIcon icon={addOutline} />
-                  Add
-                </IonButton>
+                  {showDistrictDropdown && (
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        backgroundColor: 'white',
+                        border: '1px solid #e0e0e0',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        zIndex: 1000,
+                        maxHeight: '300px',
+                        overflow: 'hidden'
+                      }}>
+                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                        <IonInput
+                          value={districtSearchQuery}
+                          onIonChange={(e) => setDistrictSearchQuery(e.detail.value!)}
+                          placeholder="Search districts..."
+                          style={{
+                            '--background': '#f8f9fa',
+                            '--border-radius': '8px',
+                            '--padding-start': '12px',
+                            '--padding-end': '12px',
+                            '--padding-top': '8px',
+                            '--padding-bottom': '8px'
+                          }}
+                        />
+                      </div>
+                      <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
+                        {filteredDistrictOptions.map((option) => (
+                          <div
+                            key={option.value}
+                            onClick={() => {
+                              setAddForm(prev => ({ ...prev, district: option.value }));
+                              setShowDistrictDropdown(false);
+                            }}
+                            style={{
+                              padding: '12px 16px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              borderBottom: '1px solid #f0f0f0',
+                              backgroundColor: addForm.district === option.value ? '#2196f3' : 'white',
+                              color: addForm.district === option.value ? 'white' : '#333'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (addForm.district !== option.value) {
+                                e.currentTarget.style.backgroundColor = '#f5f5f5';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (addForm.district !== option.value) {
+                                e.currentTarget.style.backgroundColor = 'white';
+                              }
+                            }}
+                          >
+                            <span style={{ color: addForm.district === option.value ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            {option.hasCheckmark && (
+                              <IonIcon 
+                                icon={checkmark} 
+                                style={{ 
+                                  color: addForm.district === option.value ? 'white' : '#00C851', 
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                                }} 
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-
-              {validationErrors.length > 0 && (
-                <div className="validation-errors">
-                  {validationErrors.map((error, index) => (
-                    <IonChip key={index} color="danger">
-                      <IonLabel>{error}</IonLabel>
-                    </IonChip>
-                  ))}
+              
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Add Pincode *
+                </IonLabel>
+                <IonInput
+                  value={pincodeInput}
+                  onIonInput={(e) => setPincodeInput(e.detail.value!)}
+                  onKeyPress={handlePincodeKeyPress}
+                  placeholder="Enter 6-digit pincode and press Enter"
+                  maxlength={6}
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
+              
+              {/* Display added pincodes */}
+              {addForm.pincodes.length > 0 && (
+                <div>
+                  <IonLabel style={{ 
+                    display: 'block', 
+                    marginBottom: '0.75rem', 
+                    fontWeight: '600', 
+                    color: '#333',
+                    fontSize: '1rem'
+                  }}>
+                    Added Pincodes ({addForm.pincodes.length})
+                  </IonLabel>
+                  <div style={{ 
+                    display: 'flex', 
+                    flexWrap: 'wrap', 
+                    gap: '0.5rem',
+                    padding: '12px',
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: '12px',
+                    border: '1px solid #e0e0e0'
+                  }}>
+                    {addForm.pincodes.map((pincode, index) => (
+                      <IonChip key={index} color="primary" style={{ margin: '2px' }}>
+                        <IonLabel>{pincode}</IonLabel>
+                        <IonIcon 
+                          icon={closeOutlineIcon} 
+                          onClick={() => removePincode(pincode)}
+                          style={{ cursor: 'pointer', marginLeft: '4px' }}
+                        />
+                      </IonChip>
+                    ))}
+                  </div>
                 </div>
               )}
-
-              <div className="pincode-range-section">
-                <h4>Add Pincode Range</h4>
-                <div className="range-inputs">
-                  <IonItem>
-                    <IonLabel position="stacked">Start Pincode</IonLabel>
-                    <IonInput
-                      placeholder="e.g., 413510"
-                      maxlength={6}
-                    />
-                  </IonItem>
-                  <IonItem>
-                    <IonLabel position="stacked">End Pincode</IonLabel>
-                    <IonInput
-                      placeholder="e.g., 413530"
-                      maxlength={6}
-                    />
-                  </IonItem>
-                  <IonButton fill="outline">
-                    <IonIcon icon={addOutline} />
-                    Add Range
-                  </IonButton>
-                </div>
-              </div>
-
-              <div className="pincodes-list-section">
-                <h4>Added Pincodes ({formData.pincodes.length})</h4>
-                <div className="pincodes-chips">
-                  {formData.pincodes.map((pincode, index) => (
-                    <IonChip key={index} color="primary">
-                      <IonLabel>{pincode}</IonLabel>
-                      <IonIcon 
-                        icon={closeOutline} 
-                        onClick={() => removePincode(pincode)}
-                        className="remove-chip-icon"
-                      />
-                    </IonChip>
-                  ))}
-                </div>
-              </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div style={{ 
+              display: 'flex', 
+              gap: '1rem', 
+              justifyContent: 'center', 
+              marginTop: '2rem',
+              paddingTop: '1.5rem',
+              borderTop: '1px solid #e0e0e0'
+            }}>
+              <IonButton 
+                fill="outline" 
+                onClick={handleCloseAdd}
+                style={{
+                  '--border-color': '#4ecdc4',
+                  '--color': '#4ecdc4',
+                  '--border-radius': '8px',
+                  '--padding-start': '1.5rem',
+                  '--padding-end': '1.5rem'
+                }}
+              >
+                CANCEL
+              </IonButton>
+              <IonButton 
+                fill="solid" 
+                onClick={handleSaveAdd}
+                style={{
+                  '--background': '#4ecdc4',
+                  '--color': 'white',
+                  '--border-radius': '8px',
+                  '--padding-start': '1.5rem',
+                  '--padding-end': '1.5rem'
+                }}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                SAVE MAPPING
+              </IonButton>
             </div>
           </div>
         </IonContent>
-        <div className="modal-actions">
-          <IonButton 
-            fill="outline" 
-            onClick={() => setShowAddModal(false)}
-          >
-            Cancel
-          </IonButton>
-          <IonButton 
-            fill="solid" 
-            onClick={handleSaveMapping}
-            disabled={formData.pincodes.length === 0}
-          >
-            <IonIcon icon={checkmarkOutline} />
-            Save Mapping
-          </IonButton>
-        </div>
       </IonModal>
 
       {/* Edit Mapping Modal */}
-      <IonModal isOpen={showEditModal} onDidDismiss={() => setShowEditModal(false)}>
+      <IonModal isOpen={showEditModal} onDidDismiss={handleCloseEdit}>
         <IonHeader>
-          <IonToolbar>
+          <IonToolbar style={{ '--background': '#4ecdc4', '--color': 'white' }}>
             <IonTitle>Edit Pincode Mapping</IonTitle>
             <IonButtons slot="end">
-              <IonButton onClick={() => setShowEditModal(false)}>
+              <IonButton onClick={handleCloseEdit} style={{ '--color': 'white' }}>
                 <IonIcon icon={closeOutline} />
               </IonButton>
             </IonButtons>
           </IonToolbar>
         </IonHeader>
-        <IonContent className="modal-content">
-          <div className="form-container">
-            <div className="form-section">
-              <h3>Basic Information</h3>
-              <IonItem>
-                <IonLabel position="stacked">District *</IonLabel>
-                <IonInput
-                  value={formData.district}
-                  onIonChange={(e) => setFormData(prev => ({ ...prev, district: e.detail.value! }))}
-                  placeholder="Enter district name"
-                />
-              </IonItem>
-              
-              <IonItem>
-                <IonLabel position="stacked">State *</IonLabel>
-                <IonSelect
-                  value={formData.state}
-                  onIonChange={(e) => setFormData(prev => ({ ...prev, state: e.detail.value }))}
-                  placeholder="Select state"
-                >
-                  {uniqueStates.map(state => (
-                    <IonSelectOption key={state} value={state}>{state}</IonSelectOption>
-                  ))}
-                </IonSelect>
-              </IonItem>
-              
-              <IonItem>
-                <IonLabel position="stacked">Region *</IonLabel>
-                <IonSelect
-                  value={formData.region}
-                  onIonChange={(e) => setFormData(prev => ({ ...prev, region: e.detail.value }))}
-                  placeholder="Select region"
-                >
-                  {uniqueRegions.map(region => (
-                    <IonSelectOption key={region} value={region}>{region}</IonSelectOption>
-                  ))}
-                </IonSelect>
-              </IonItem>
-              
-              <IonItem>
-                <IonLabel position="stacked">Description</IonLabel>
-                <IonTextarea
-                  value={formData.description}
-                  onIonChange={(e) => setFormData(prev => ({ ...prev, description: e.detail.value! }))}
-                  placeholder="Enter description (optional)"
-                  rows={3}
-                />
-              </IonItem>
-            </div>
-
-            <div className="form-section">
-              <h3>Pincode Management</h3>
-              
-              <div className="pincode-input-section">
-                <IonItem>
-                  <IonLabel position="stacked">Add Pincode *</IonLabel>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  District *
+                </IonLabel>
+                <div style={{ position: 'relative' }} ref={editDistrictDropdownRef}>
                   <IonInput
-                    value={pincodeInput}
-                    onIonChange={(e) => setPincodeInput(e.detail.value!)}
-                    placeholder="Enter 6-digit pincode"
-                    maxlength={6}
+                    value={editForm.district || ''}
+                    placeholder="Select district"
+                    readonly
+                    onClick={() => setShowEditDistrictDropdown(!showEditDistrictDropdown)}
+                    style={{ 
+                      '--background': '#e8e8e8',
+                      '--border-radius': '12px',
+                      '--padding-start': '16px',
+                      '--padding-end': '16px',
+                      '--padding-top': '12px',
+                      '--padding-bottom': '12px',
+                      '--color': '#333',
+                      '--placeholder-color': '#666',
+                      cursor: 'pointer'
+                    }}
                   />
-                </IonItem>
-                <IonButton 
-                  fill="outline" 
-                  onClick={addPincode}
-                  disabled={!pincodeInput.trim()}
-                >
-                  <IonIcon icon={addOutline} />
-                  Add
-                </IonButton>
+                  {showEditDistrictDropdown && (
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        backgroundColor: 'white',
+                        border: '1px solid #e0e0e0',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        zIndex: 1000,
+                        maxHeight: '300px',
+                        overflow: 'hidden'
+                      }}>
+                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                        <IonInput
+                          value={editDistrictSearchQuery}
+                          onIonChange={(e) => setEditDistrictSearchQuery(e.detail.value!)}
+                          placeholder="Search districts..."
+                          style={{
+                            '--background': '#f8f9fa',
+                            '--border-radius': '8px',
+                            '--padding-start': '12px',
+                            '--padding-end': '12px',
+                            '--padding-top': '8px',
+                            '--padding-bottom': '8px'
+                          }}
+                        />
+                      </div>
+                      <div style={{ maxHeight: '240px', overflowY: 'auto', paddingBottom: '12px' }}>
+                        {filteredEditDistrictOptions.map((option) => (
+                          <div
+                            key={option.value}
+                            onClick={() => {
+                              setEditForm(prev => ({ ...prev, district: option.value }));
+                              setShowEditDistrictDropdown(false);
+                            }}
+                            style={{
+                              padding: '12px 16px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              borderBottom: '1px solid #f0f0f0',
+                              backgroundColor: editForm.district === option.value ? '#2196f3' : 'white',
+                              color: editForm.district === option.value ? 'white' : '#333'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (editForm.district !== option.value) {
+                                e.currentTarget.style.backgroundColor = '#f5f5f5';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (editForm.district !== option.value) {
+                                e.currentTarget.style.backgroundColor = 'white';
+                              }
+                            }}
+                          >
+                            <span style={{ color: editForm.district === option.value ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            {option.hasCheckmark && (
+                              <IonIcon 
+                                icon={checkmark} 
+                                style={{ 
+                                  color: editForm.district === option.value ? 'white' : '#00C851', 
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                                }} 
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-
-              {validationErrors.length > 0 && (
-                <div className="validation-errors">
-                  {validationErrors.map((error, index) => (
-                    <IonChip key={index} color="danger">
-                      <IonLabel>{error}</IonLabel>
-                    </IonChip>
-                  ))}
+              
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Add Pincode *
+                </IonLabel>
+                <IonInput
+                  value={editPincodeInput}
+                  onIonInput={(e) => setEditPincodeInput(e.detail.value!)}
+                  onKeyPress={handleEditPincodeKeyPress}
+                  placeholder="Enter 6-digit pincode and press Enter"
+                  maxlength={6}
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
+              
+              {/* Display added pincodes */}
+              {editForm.pincodes.length > 0 && (
+                <div>
+                  <IonLabel style={{ 
+                    display: 'block', 
+                    marginBottom: '0.75rem', 
+                    fontWeight: '600', 
+                    color: '#333',
+                    fontSize: '1rem'
+                  }}>
+                    Added Pincodes ({editForm.pincodes.length})
+                  </IonLabel>
+                  <div style={{ 
+                    display: 'flex', 
+                    flexWrap: 'wrap', 
+                    gap: '0.5rem',
+                    padding: '12px',
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: '12px',
+                    border: '1px solid #e0e0e0'
+                  }}>
+                    {editForm.pincodes.map((pincode, index) => (
+                      <IonChip key={index} color="primary" style={{ margin: '2px' }}>
+                        <IonLabel>{pincode}</IonLabel>
+                        <IonIcon 
+                          icon={closeOutlineIcon} 
+                          onClick={() => removeEditPincode(pincode)}
+                          style={{ cursor: 'pointer', marginLeft: '4px' }}
+                        />
+                      </IonChip>
+                    ))}
+                  </div>
                 </div>
               )}
-
-              <div className="pincodes-list-section">
-                <h4>Current Pincodes ({formData.pincodes.length})</h4>
-                <div className="pincodes-chips">
-                  {formData.pincodes.map((pincode, index) => (
-                    <IonChip key={index} color="primary">
-                      <IonLabel>{pincode}</IonLabel>
-                      <IonIcon 
-                        icon={closeOutline} 
-                        onClick={() => removePincode(pincode)}
-                        className="remove-chip-icon"
-                      />
-                    </IonChip>
-                  ))}
-                </div>
-              </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div style={{ 
+              display: 'flex', 
+              gap: '1rem', 
+              justifyContent: 'center', 
+              marginTop: '2rem',
+              paddingTop: '1.5rem',
+              borderTop: '1px solid #e0e0e0'
+            }}>
+              <IonButton 
+                fill="outline" 
+                onClick={handleCloseEdit}
+                style={{
+                  '--border-color': '#4ecdc4',
+                  '--color': '#4ecdc4',
+                  '--border-radius': '8px',
+                  '--padding-start': '1.5rem',
+                  '--padding-end': '1.5rem'
+                }}
+              >
+                CANCEL
+              </IonButton>
+              <IonButton 
+                fill="solid" 
+                onClick={handleSaveEdit}
+                style={{
+                  '--background': '#4ecdc4',
+                  '--color': 'white',
+                  '--border-radius': '8px',
+                  '--padding-start': '1.5rem',
+                  '--padding-end': '1.5rem'
+                }}
+              >
+                <IonIcon icon={checkmarkOutline} slot="start" />
+                UPDATE MAPPING
+              </IonButton>
             </div>
           </div>
         </IonContent>
-        <div className="modal-actions">
-          <IonButton 
-            fill="outline" 
-            onClick={() => setShowEditModal(false)}
-          >
-            Cancel
-          </IonButton>
-          <IonButton 
-            fill="solid" 
-            onClick={handleSaveMapping}
-            disabled={formData.pincodes.length === 0}
-          >
-            <IonIcon icon={checkmarkOutline} />
-            Update Mapping
-          </IonButton>
-        </div>
       </IonModal>
 
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
   IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle,
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
@@ -9,7 +9,7 @@ import {
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
   chevronBackOutline, chevronForwardOutline, closeOutline, checkmarkOutline,
-  chevronDownOutline
+  chevronDownOutline, checkmark, closeOutline as closeOutlineIcon
 } from 'ionicons/icons';
 import Sidebar from '../admin/components/sidebar/Sidebar';
 import DashboardHeader from '../admin/components/header/DashboardHeader';
@@ -36,18 +36,32 @@ const AccessMapping: React.FC = () => {
   const [editingMapping, setEditingMapping] = useState<AccessMappingData | null>(null);
   const [newAccess, setNewAccess] = useState({
     role: '',
-    pageAccess: '',
-    navbarAccess: [] as string[]
+    navbarAccess: [] as string[],
+    masterAccess: [] as string[]
   });
   const [editAccess, setEditAccess] = useState({
     role: '',
-    pageAccess: '',
-    navbarAccess: [] as string[]
+    navbarAccess: [] as string[],
+    masterAccess: [] as string[]
   });
-  const [navbarAccessInput, setNavbarAccessInput] = useState('');
-  const [editNavbarAccessInput, setEditNavbarAccessInput] = useState('');
-  const [showNavbarPopover, setShowNavbarPopover] = useState(false);
-  const [showEditNavbarPopover, setShowEditNavbarPopover] = useState(false);
+  
+  // Searchable dropdown states for Nav Access
+  const [showNavAccessDropdown, setShowNavAccessDropdown] = useState(false);
+  const [navAccessSearchQuery, setNavAccessSearchQuery] = useState('');
+  const [showEditNavAccessDropdown, setShowEditNavAccessDropdown] = useState(false);
+  const [editNavAccessSearchQuery, setEditNavAccessSearchQuery] = useState('');
+  
+  // Searchable dropdown states for Master Access
+  const [showMasterAccessDropdown, setShowMasterAccessDropdown] = useState(false);
+  const [masterAccessSearchQuery, setMasterAccessSearchQuery] = useState('');
+  const [showEditMasterAccessDropdown, setShowEditMasterAccessDropdown] = useState(false);
+  const [editMasterAccessSearchQuery, setEditMasterAccessSearchQuery] = useState('');
+  
+  // Refs for click outside detection
+  const navAccessDropdownRef = useRef<HTMLDivElement>(null);
+  const editNavAccessDropdownRef = useRef<HTMLDivElement>(null);
+  const masterAccessDropdownRef = useRef<HTMLDivElement>(null);
+  const editMasterAccessDropdownRef = useRef<HTMLDivElement>(null);
 
   const itemsPerPage = 5;
 
@@ -68,42 +82,95 @@ const AccessMapping: React.FC = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentMappings = filteredMappings.slice(startIndex, endIndex);
 
-  // All sidebar options for navbar access
-  const sidebarOptions = [
-    'Dashboard',
-    'Application Type',
-    'New Requests', 
-    'Schemes',
-    'Custom Reports',
-    'Manage Pages',
-    'Branch Master',
-    'Caste Master',
-    'Taluka Master',
-    'Action Masters',
-    'Organization Masters',
-    'Status Master',
-    'Partner Master',
-    'Status Mapping',
-    'Rejection Masters',
-    'Database Access',
-    'Roles',
-    'Workflow',
-    'Access Mapping',
-    'Branch Mapping',
-    'Pincode Mapping',
-    'Members',
-    'Config',
-    'Reports',
-    'Others'
+  // Nav Access options (from the images provided)
+  const navAccessOptions = [
+    { value: "Dashboard", label: "Dashboard", hasCheckmark: true },
+    { value: "Reports", label: "Reports", hasCheckmark: true },
+    { value: "Roles", label: "Roles", hasCheckmark: false },
+    { value: "Database Access", label: "Database Access", hasCheckmark: false },
+    { value: "Pincode Mapping", label: "Pincode Mapping", hasCheckmark: false },
+    { value: "Access Mapping", label: "Access Mapping", hasCheckmark: false },
+    { value: "Branch Master", label: "Branch Master", hasCheckmark: false },
+    { value: "Status Master", label: "Status Master", hasCheckmark: false },
+    { value: "Caste Master", label: "Caste Master", hasCheckmark: false },
+    { value: "Status Mapping", label: "Status Mapping", hasCheckmark: false },
+    { value: "Workflow", label: "Workflow", hasCheckmark: false },
+    { value: "Organization Masters", label: "Organization Masters", hasCheckmark: false },
+    { value: "Application Type", label: "Application Type", hasCheckmark: false },
+    { value: "Partner Master", label: "Partner Master", hasCheckmark: false },
+    { value: "Manage Pages", label: "Manage Pages", hasCheckmark: false },
+    { value: "Partner Master", label: "Partner Master", hasCheckmark: false },
+    { value: "Manage Pages", label: "Manage Pages", hasCheckmark: false },
+    { value: "Action Masters", label: "Action Masters", hasCheckmark: false },
+    { value: "Taluka Master", label: "Taluka Master", hasCheckmark: false },
+    { value: "New Requests", label: "New Requests", hasCheckmark: false },
+    { value: "Schemes", label: "Schemes", hasCheckmark: false },
+    { value: "Members", label: "Members", hasCheckmark: false },
+    { value: "New Loan", label: "New Loan", hasCheckmark: false },
+    { value: "Branch Mapping", label: "Branch Mapping", hasCheckmark: false },
+    { value: "Rejection Masters", label: "Rejection Masters", hasCheckmark: false },
+    { value: "Dummy Page", label: "Dummy Page", hasCheckmark: false },
+    { value: "Custom Reports", label: "Custom Reports", hasCheckmark: false }
   ];
+
+  // Master Access options (CRUD operations)
+  const masterAccessOptions = [
+    { value: "Create", label: "Create", hasCheckmark: true },
+    { value: "Read", label: "Read", hasCheckmark: true },
+    { value: "Update", label: "Update", hasCheckmark: true },
+    { value: "Delete", label: "Delete", hasCheckmark: true }
+  ];
+
+  // Filter options based on search query
+  const filteredNavAccessOptions = navAccessOptions.filter(option =>
+    option.label.toLowerCase().includes(navAccessSearchQuery.toLowerCase())
+  );
+  const filteredEditNavAccessOptions = navAccessOptions.filter(option =>
+    option.label.toLowerCase().includes(editNavAccessSearchQuery.toLowerCase())
+  );
+  const filteredMasterAccessOptions = masterAccessOptions.filter(option =>
+    option.label.toLowerCase().includes(masterAccessSearchQuery.toLowerCase())
+  );
+  const filteredEditMasterAccessOptions = masterAccessOptions.filter(option =>
+    option.label.toLowerCase().includes(editMasterAccessSearchQuery.toLowerCase())
+  );
+
+  // Click outside detection for dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showNavAccessDropdown && navAccessDropdownRef.current && !navAccessDropdownRef.current.contains(event.target as Node)) {
+        setShowNavAccessDropdown(false);
+        setNavAccessSearchQuery('');
+      }
+      if (showEditNavAccessDropdown && editNavAccessDropdownRef.current && !editNavAccessDropdownRef.current.contains(event.target as Node)) {
+        setShowEditNavAccessDropdown(false);
+        setEditNavAccessSearchQuery('');
+      }
+      if (showMasterAccessDropdown && masterAccessDropdownRef.current && !masterAccessDropdownRef.current.contains(event.target as Node)) {
+        setShowMasterAccessDropdown(false);
+        setMasterAccessSearchQuery('');
+      }
+      if (showEditMasterAccessDropdown && editMasterAccessDropdownRef.current && !editMasterAccessDropdownRef.current.contains(event.target as Node)) {
+        setShowEditMasterAccessDropdown(false);
+        setEditMasterAccessSearchQuery('');
+      }
+    };
+
+    if (showNavAccessDropdown || showEditNavAccessDropdown || showMasterAccessDropdown || showEditMasterAccessDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showNavAccessDropdown, showEditNavAccessDropdown, showMasterAccessDropdown, showEditMasterAccessDropdown]);
 
   const handleAddMapping = () => {
     setNewAccess({
       role: '',
-      pageAccess: '',
-      navbarAccess: []
+      navbarAccess: [],
+      masterAccess: []
     });
-    setNavbarAccessInput('');
     setShowAddModal(true);
   };
 
@@ -111,38 +178,11 @@ const AccessMapping: React.FC = () => {
     setShowAddModal(false);
     setNewAccess({
       role: '',
-      pageAccess: '',
-      navbarAccess: []
+      navbarAccess: [],
+      masterAccess: []
     });
-    setNavbarAccessInput('');
   };
 
-  const handleAddNavbarAccess = () => {
-    if (navbarAccessInput.trim() && !newAccess.navbarAccess.includes(navbarAccessInput.trim())) {
-      setNewAccess(prev => ({
-        ...prev,
-        navbarAccess: [...prev.navbarAccess, navbarAccessInput.trim()]
-      }));
-      setNavbarAccessInput('');
-    }
-  };
-
-  const handleRemoveNavbarAccess = (accessToRemove: string) => {
-    setNewAccess(prev => ({
-      ...prev,
-      navbarAccess: prev.navbarAccess.filter(access => access !== accessToRemove)
-    }));
-  };
-
-  const handleSelectNavbarOption = (option: string) => {
-    if (!newAccess.navbarAccess.includes(option)) {
-      setNewAccess(prev => ({
-        ...prev,
-        navbarAccess: [...prev.navbarAccess, option]
-      }));
-    }
-    setShowNavbarPopover(false);
-  };
 
   const handleSaveNewAccess = () => {
     if (!newAccess.role.trim()) {
@@ -157,6 +197,12 @@ const AccessMapping: React.FC = () => {
       return;
     }
 
+    if (newAccess.masterAccess.length === 0) {
+      setToastMessage('Please add at least one master access permission');
+      setShowToast(true);
+      return;
+    }
+
     // Check if role already exists
     if (allMappings.some(mapping => mapping.role.toLowerCase() === newAccess.role.toLowerCase())) {
       setToastMessage('Role already exists. Please choose a different role name.');
@@ -167,8 +213,9 @@ const AccessMapping: React.FC = () => {
     const newMapping: AccessMappingData = {
       id: `mapping_${Date.now()}`,
       role: newAccess.role.trim(),
-      pageAccess: newAccess.pageAccess.trim(),
+      pageAccess: '', // Remove pageAccess
       navbarAccess: newAccess.navbarAccess,
+      masterAccess: newAccess.masterAccess, // Add masterAccess
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -189,10 +236,9 @@ const AccessMapping: React.FC = () => {
     setEditingMapping(mapping);
     setEditAccess({
       role: mapping.role,
-      pageAccess: mapping.pageAccess,
-      navbarAccess: [...mapping.navbarAccess]
+      navbarAccess: [...mapping.navbarAccess],
+      masterAccess: mapping.masterAccess ? [...mapping.masterAccess] : []
     });
-    setEditNavbarAccessInput('');
     setShowEditModal(true);
   };
 
@@ -201,38 +247,11 @@ const AccessMapping: React.FC = () => {
     setEditingMapping(null);
     setEditAccess({
       role: '',
-      pageAccess: '',
-      navbarAccess: []
+      navbarAccess: [],
+      masterAccess: []
     });
-    setEditNavbarAccessInput('');
   };
 
-  const handleAddEditNavbarAccess = () => {
-    if (editNavbarAccessInput.trim() && !editAccess.navbarAccess.includes(editNavbarAccessInput.trim())) {
-      setEditAccess(prev => ({
-        ...prev,
-        navbarAccess: [...prev.navbarAccess, editNavbarAccessInput.trim()]
-      }));
-      setEditNavbarAccessInput('');
-    }
-  };
-
-  const handleRemoveEditNavbarAccess = (accessToRemove: string) => {
-    setEditAccess(prev => ({
-      ...prev,
-      navbarAccess: prev.navbarAccess.filter(access => access !== accessToRemove)
-    }));
-  };
-
-  const handleSelectEditNavbarOption = (option: string) => {
-    if (!editAccess.navbarAccess.includes(option)) {
-      setEditAccess(prev => ({
-        ...prev,
-        navbarAccess: [...prev.navbarAccess, option]
-      }));
-    }
-    setShowEditNavbarPopover(false);
-  };
 
   const handleUpdateAccess = () => {
     if (!editAccess.role.trim()) {
@@ -243,6 +262,12 @@ const AccessMapping: React.FC = () => {
 
     if (editAccess.navbarAccess.length === 0) {
       setToastMessage('Please add at least one navbar access item');
+      setShowToast(true);
+      return;
+    }
+
+    if (editAccess.masterAccess.length === 0) {
+      setToastMessage('Please add at least one master access permission');
       setShowToast(true);
       return;
     }
@@ -265,8 +290,9 @@ const AccessMapping: React.FC = () => {
             ? {
                 ...mapping,
                 role: editAccess.role.trim(),
-                pageAccess: editAccess.pageAccess.trim(),
+                pageAccess: '', // Remove pageAccess
                 navbarAccess: editAccess.navbarAccess,
+                masterAccess: editAccess.masterAccess, // Add masterAccess
                 updatedAt: new Date().toISOString()
               }
             : mapping
@@ -367,12 +393,12 @@ const AccessMapping: React.FC = () => {
                         </th>
                         <th>
                           <div className="table-header">
-                            <span>Page Access</span>
+                            <span>Navbar Access</span>
                           </div>
                         </th>
                         <th>
                           <div className="table-header">
-                            <span>Navbar Access</span>
+                            <span>Master Access</span>
                           </div>
                         </th>
                         <th>
@@ -388,12 +414,14 @@ const AccessMapping: React.FC = () => {
                           <td className="role-cell">
                             <span className="role-name">{mapping.role}</span>
                           </td>
-                          <td className="page-access-cell">
-                            <span className="page-access-text">{mapping.pageAccess || 'N/A'}</span>
-                          </td>
                           <td className="navbar-access-cell">
                             <div className="navbar-access">
                               {renderNavbarAccess(mapping.navbarAccess)}
+                            </div>
+                          </td>
+                          <td className="master-access-cell">
+                            <div className="master-access">
+                              {renderNavbarAccess(mapping.masterAccess || [])}
                             </div>
                           </td>
                           <td className="actions-cell">
@@ -452,65 +480,294 @@ const AccessMapping: React.FC = () => {
           
           <div className="modal-content">
             <IonList>
-              <IonItem>
-                <IonLabel position="stacked">Role Name *</IonLabel>
+              <div className="form-group">
+                <IonLabel className="form-label">Role Name *</IonLabel>
                 <IonInput
                   value={newAccess.role}
                   onIonInput={(e) => setNewAccess(prev => ({ ...prev, role: e.detail.value! }))}
                   placeholder="Enter role name (e.g., Admin, User, Manager)"
-                  className="role-input"
+                  style={{
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
                 />
-              </IonItem>
+              </div>
               
-              <IonItem>
-                <IonLabel position="stacked">Page Access</IonLabel>
-                <IonTextarea
-                  value={newAccess.pageAccess}
-                  onIonInput={(e) => setNewAccess(prev => ({ ...prev, pageAccess: e.detail.value! }))}
-                  placeholder="Enter page access permissions (optional)"
-                  rows={3}
-                  className="page-access-input"
-                />
-              </IonItem>
-              
-              <IonItem>
-                <IonLabel position="stacked">Navbar Access *</IonLabel>
-                <div className="navbar-access-section">
-                  <div className="navbar-access-input">
+              <div className="form-group">
+                <IonLabel className="form-label">Navbar Access *</IonLabel>
+                <div style={{ position: 'relative' }} ref={navAccessDropdownRef}>
+                  <div
+                    onClick={() => setShowNavAccessDropdown(!showNavAccessDropdown)}
+                    style={{
+                      background: '#e8e8e8',
+                      border: '1px solid #ddd',
+                      borderRadius: '12px',
+                      padding: '12px 16px',
+                      cursor: 'pointer',
+                      minHeight: '48px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '8px'
+                    }}
+                  >
+                    {newAccess.navbarAccess.length === 0 ? (
+                      <span style={{ color: '#666', fontSize: '14px' }}>Select navbar access items</span>
+                    ) : (
+                      newAccess.navbarAccess.map((access, index) => (
+                        <span
+                          key={index}
+                          style={{
+                            background: '#4ecdc4',
+                            color: 'white',
+                            padding: '4px 8px',
+                            borderRadius: '16px',
+                            fontSize: '12px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          {access}
+                          <IonIcon
+                            icon={closeOutlineIcon}
+                            style={{ fontSize: '14px', cursor: 'pointer' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setNewAccess(prev => ({
+                                ...prev,
+                                navbarAccess: prev.navbarAccess.filter(item => item !== access)
+                              }));
+                            }}
+                          />
+                        </span>
+                      ))
+                    )}
+                  </div>
+                  {showNavAccessDropdown && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      right: 0,
+                      backgroundColor: 'white',
+                      border: '1px solid #e0e0e0',
+                      borderRadius: '12px',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                      zIndex: 1000,
+                      maxHeight: '500px',
+                      overflow: 'hidden'
+                    }}>
+                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
                     <IonInput
-                      value={navbarAccessInput}
-                      onIonInput={(e) => setNavbarAccessInput(e.detail.value!)}
-                      placeholder="Enter navbar access item"
-                      onKeyPress={(e) => e.key === 'Enter' && handleAddNavbarAccess()}
-                    />
-                    <IonButton fill="outline" onClick={handleAddNavbarAccess}>
-                      <IonIcon icon={addOutline} />
-                    </IonButton>
-                    <IonButton 
-                      fill="outline" 
-                      id="navbar-options-trigger"
-                      onClick={() => setShowNavbarPopover(true)}
-                    >
-                      <IonIcon icon={chevronDownOutline} />
-                    </IonButton>
+                          value={navAccessSearchQuery}
+                          onIonInput={(e) => setNavAccessSearchQuery(e.detail.value!)}
+                          placeholder="Search navbar access..."
+                          style={{
+                            '--background': '#f8f9fa',
+                            '--border-radius': '8px',
+                            '--padding-start': '12px',
+                            '--padding-end': '12px',
+                            '--padding-top': '8px',
+                            '--padding-bottom': '8px'
+                          }}
+                        />
+                      </div>
+                      <div style={{ maxHeight: '450px', overflowY: 'auto', paddingBottom: '12px' }}>
+                        {filteredNavAccessOptions.map((option) => (
+                          <div
+                            key={option.value}
+                            onClick={() => {
+                              const isSelected = newAccess.navbarAccess.includes(option.value);
+                              let newNavAccess;
+                              if (isSelected) {
+                                newNavAccess = newAccess.navbarAccess.filter(item => item !== option.value);
+                              } else {
+                                newNavAccess = [...newAccess.navbarAccess, option.value];
+                              }
+                              setNewAccess(prev => ({ ...prev, navbarAccess: newNavAccess }));
+                            }}
+                            style={{
+                              padding: '12px 16px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              borderBottom: '1px solid #f0f0f0',
+                              backgroundColor: newAccess.navbarAccess.includes(option.value) ? '#2196f3' : 'white',
+                              color: newAccess.navbarAccess.includes(option.value) ? 'white' : '#333'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!newAccess.navbarAccess.includes(option.value)) {
+                                e.currentTarget.style.backgroundColor = '#f5f5f5';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!newAccess.navbarAccess.includes(option.value)) {
+                                e.currentTarget.style.backgroundColor = 'white';
+                              }
+                            }}
+                          >
+                            <span style={{ color: newAccess.navbarAccess.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            {option.hasCheckmark && (
+                              <IonIcon 
+                                icon={checkmark} 
+                                style={{ 
+                                  color: newAccess.navbarAccess.includes(option.value) ? 'white' : '#00C851', 
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                                }} 
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
                   </div>
                   
-                  <div className="navbar-access-chips">
-                    {newAccess.navbarAccess.map((access, index) => (
-                      <IonChip key={index} className="access-chip">
-                        <IonLabel>{access}</IonLabel>
-                        <IonButton
-                          fill="clear"
-                          size="small"
-                          onClick={() => handleRemoveNavbarAccess(access)}
+              <div className="form-group">
+                <IonLabel className="form-label">Master Access *</IonLabel>
+                <div style={{ position: 'relative' }} ref={masterAccessDropdownRef}>
+                  <div
+                    onClick={() => setShowMasterAccessDropdown(!showMasterAccessDropdown)}
+                    style={{
+                      background: '#e8e8e8',
+                      border: '1px solid #ddd',
+                      borderRadius: '12px',
+                      padding: '12px 16px',
+                      cursor: 'pointer',
+                      minHeight: '48px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '8px'
+                    }}
+                  >
+                    {newAccess.masterAccess.length === 0 ? (
+                      <span style={{ color: '#666', fontSize: '14px' }}>Select master access permissions</span>
+                    ) : (
+                      newAccess.masterAccess.map((access, index) => (
+                        <span
+                          key={index}
+                          style={{
+                            background: '#4ecdc4',
+                            color: 'white',
+                            padding: '4px 8px',
+                            borderRadius: '16px',
+                            fontSize: '12px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
                         >
-                          <IonIcon icon={closeOutline} />
-                        </IonButton>
-                      </IonChip>
+                          {access}
+                          <IonIcon
+                            icon={closeOutlineIcon}
+                            style={{ fontSize: '14px', cursor: 'pointer' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setNewAccess(prev => ({
+                                ...prev,
+                                masterAccess: prev.masterAccess.filter(item => item !== access)
+                              }));
+                            }}
+                          />
+                        </span>
+                      ))
+                    )}
+                  </div>
+                  {showMasterAccessDropdown && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      right: 0,
+                      backgroundColor: 'white',
+                      border: '1px solid #e0e0e0',
+                      borderRadius: '12px',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                      zIndex: 1000,
+                      maxHeight: '500px',
+                      overflow: 'hidden'
+                    }}>
+                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                        <IonInput
+                          value={masterAccessSearchQuery}
+                          onIonInput={(e) => setMasterAccessSearchQuery(e.detail.value!)}
+                          placeholder="Search master access..."
+                          style={{
+                            '--background': '#f8f9fa',
+                            '--border-radius': '8px',
+                            '--padding-start': '12px',
+                            '--padding-end': '12px',
+                            '--padding-top': '8px',
+                            '--padding-bottom': '8px'
+                          }}
+                        />
+                      </div>
+                      <div style={{ maxHeight: '450px', overflowY: 'auto', paddingBottom: '12px' }}>
+                        {filteredMasterAccessOptions.map((option) => (
+                          <div
+                            key={option.value}
+                            onClick={() => {
+                              const isSelected = newAccess.masterAccess.includes(option.value);
+                              let newMasterAccess;
+                              if (isSelected) {
+                                newMasterAccess = newAccess.masterAccess.filter(item => item !== option.value);
+                              } else {
+                                newMasterAccess = [...newAccess.masterAccess, option.value];
+                              }
+                              setNewAccess(prev => ({ ...prev, masterAccess: newMasterAccess }));
+                            }}
+                            style={{
+                              padding: '12px 16px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              borderBottom: '1px solid #f0f0f0',
+                              backgroundColor: newAccess.masterAccess.includes(option.value) ? '#2196f3' : 'white',
+                              color: newAccess.masterAccess.includes(option.value) ? 'white' : '#333'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!newAccess.masterAccess.includes(option.value)) {
+                                e.currentTarget.style.backgroundColor = '#f5f5f5';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!newAccess.masterAccess.includes(option.value)) {
+                                e.currentTarget.style.backgroundColor = 'white';
+                              }
+                            }}
+                          >
+                            <span style={{ color: newAccess.masterAccess.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            {option.hasCheckmark && (
+                              <IonIcon 
+                                icon={checkmark} 
+                                style={{ 
+                                  color: newAccess.masterAccess.includes(option.value) ? 'white' : '#00C851', 
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                                }} 
+                              />
+                            )}
+                          </div>
                     ))}
                   </div>
                 </div>
-              </IonItem>
+                  )}
+                </div>
+              </div>
             </IonList>
           </div>
           
@@ -526,38 +783,6 @@ const AccessMapping: React.FC = () => {
         </IonContent>
       </IonModal>
 
-      {/* Navbar Options Popover */}
-      <IonPopover
-        isOpen={showNavbarPopover}
-        onDidDismiss={() => setShowNavbarPopover(false)}
-        trigger="navbar-options-trigger"
-        side="bottom"
-        alignment="start"
-      >
-        <IonContent>
-          <IonList>
-            <IonItem>
-              <IonLabel>
-                <h3>Select Navbar Access Options</h3>
-                <p>Choose from available sidebar options</p>
-              </IonLabel>
-            </IonItem>
-            {sidebarOptions.map((option, index) => (
-              <IonItem 
-                key={index} 
-                button 
-                onClick={() => handleSelectNavbarOption(option)}
-                disabled={newAccess.navbarAccess.includes(option)}
-              >
-                <IonLabel>{option}</IonLabel>
-                {newAccess.navbarAccess.includes(option) && (
-                  <IonIcon icon={checkmarkOutline} slot="end" color="success" />
-                )}
-              </IonItem>
-            ))}
-          </IonList>
-        </IonContent>
-      </IonPopover>
 
       {/* View Access Mapping Modal */}
       <IonModal isOpen={showViewModal} onDidDismiss={() => setShowViewModal(false)}>
@@ -684,65 +909,294 @@ const AccessMapping: React.FC = () => {
           
           <div className="modal-content">
             <IonList>
-              <IonItem>
-                <IonLabel position="stacked">Role Name *</IonLabel>
+              <div className="form-group">
+                <IonLabel className="form-label">Role Name *</IonLabel>
                 <IonInput
                   value={editAccess.role}
                   onIonInput={(e) => setEditAccess(prev => ({ ...prev, role: e.detail.value! }))}
                   placeholder="Enter role name (e.g., Admin, User, Manager)"
-                  className="role-input"
+                  style={{
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
                 />
-              </IonItem>
+              </div>
               
-              <IonItem>
-                <IonLabel position="stacked">Page Access</IonLabel>
-                <IonTextarea
-                  value={editAccess.pageAccess}
-                  onIonInput={(e) => setEditAccess(prev => ({ ...prev, pageAccess: e.detail.value! }))}
-                  placeholder="Enter page access permissions (optional)"
-                  rows={3}
-                  className="page-access-input"
-                />
-              </IonItem>
-              
-              <IonItem>
-                <IonLabel position="stacked">Navbar Access *</IonLabel>
-                <div className="navbar-access-section">
-                  <div className="navbar-access-input">
+              <div className="form-group">
+                <IonLabel className="form-label">Navbar Access *</IonLabel>
+                <div style={{ position: 'relative' }} ref={editNavAccessDropdownRef}>
+                  <div
+                    onClick={() => setShowEditNavAccessDropdown(!showEditNavAccessDropdown)}
+                    style={{
+                      background: '#e8e8e8',
+                      border: '1px solid #ddd',
+                      borderRadius: '12px',
+                      padding: '12px 16px',
+                      cursor: 'pointer',
+                      minHeight: '48px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '8px'
+                    }}
+                  >
+                    {editAccess.navbarAccess.length === 0 ? (
+                      <span style={{ color: '#666', fontSize: '14px' }}>Select navbar access items</span>
+                    ) : (
+                      editAccess.navbarAccess.map((access, index) => (
+                        <span
+                          key={index}
+                          style={{
+                            background: '#4ecdc4',
+                            color: 'white',
+                            padding: '4px 8px',
+                            borderRadius: '16px',
+                            fontSize: '12px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          {access}
+                          <IonIcon
+                            icon={closeOutlineIcon}
+                            style={{ fontSize: '14px', cursor: 'pointer' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditAccess(prev => ({
+                                ...prev,
+                                navbarAccess: prev.navbarAccess.filter(item => item !== access)
+                              }));
+                            }}
+                          />
+                        </span>
+                      ))
+                    )}
+                  </div>
+                  {showEditNavAccessDropdown && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      right: 0,
+                      backgroundColor: 'white',
+                      border: '1px solid #e0e0e0',
+                      borderRadius: '12px',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                      zIndex: 1000,
+                      maxHeight: '500px',
+                      overflow: 'hidden'
+                    }}>
+                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
                     <IonInput
-                      value={editNavbarAccessInput}
-                      onIonInput={(e) => setEditNavbarAccessInput(e.detail.value!)}
-                      placeholder="Enter navbar access item"
-                      onKeyPress={(e) => e.key === 'Enter' && handleAddEditNavbarAccess()}
-                    />
-                    <IonButton fill="outline" onClick={handleAddEditNavbarAccess}>
-                      <IonIcon icon={addOutline} />
-                    </IonButton>
-                    <IonButton 
-                      fill="outline" 
-                      id="edit-navbar-options-trigger"
-                      onClick={() => setShowEditNavbarPopover(true)}
-                    >
-                      <IonIcon icon={chevronDownOutline} />
-                    </IonButton>
+                          value={editNavAccessSearchQuery}
+                          onIonInput={(e) => setEditNavAccessSearchQuery(e.detail.value!)}
+                          placeholder="Search navbar access..."
+                          style={{
+                            '--background': '#f8f9fa',
+                            '--border-radius': '8px',
+                            '--padding-start': '12px',
+                            '--padding-end': '12px',
+                            '--padding-top': '8px',
+                            '--padding-bottom': '8px'
+                          }}
+                        />
+                      </div>
+                      <div style={{ maxHeight: '450px', overflowY: 'auto', paddingBottom: '12px' }}>
+                        {filteredEditNavAccessOptions.map((option) => (
+                          <div
+                            key={option.value}
+                            onClick={() => {
+                              const isSelected = editAccess.navbarAccess.includes(option.value);
+                              let newNavAccess;
+                              if (isSelected) {
+                                newNavAccess = editAccess.navbarAccess.filter(item => item !== option.value);
+                              } else {
+                                newNavAccess = [...editAccess.navbarAccess, option.value];
+                              }
+                              setEditAccess(prev => ({ ...prev, navbarAccess: newNavAccess }));
+                            }}
+                            style={{
+                              padding: '12px 16px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              borderBottom: '1px solid #f0f0f0',
+                              backgroundColor: editAccess.navbarAccess.includes(option.value) ? '#2196f3' : 'white',
+                              color: editAccess.navbarAccess.includes(option.value) ? 'white' : '#333'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!editAccess.navbarAccess.includes(option.value)) {
+                                e.currentTarget.style.backgroundColor = '#f5f5f5';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!editAccess.navbarAccess.includes(option.value)) {
+                                e.currentTarget.style.backgroundColor = 'white';
+                              }
+                            }}
+                          >
+                            <span style={{ color: editAccess.navbarAccess.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            {option.hasCheckmark && (
+                              <IonIcon 
+                                icon={checkmark} 
+                                style={{ 
+                                  color: editAccess.navbarAccess.includes(option.value) ? 'white' : '#00C851', 
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                                }} 
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
                   </div>
                   
-                  <div className="navbar-access-chips">
-                    {editAccess.navbarAccess.map((access, index) => (
-                      <IonChip key={index} className="access-chip">
-                        <IonLabel>{access}</IonLabel>
-                        <IonButton
-                          fill="clear"
-                          size="small"
-                          onClick={() => handleRemoveEditNavbarAccess(access)}
+              <div className="form-group">
+                <IonLabel className="form-label">Master Access *</IonLabel>
+                <div style={{ position: 'relative' }} ref={editMasterAccessDropdownRef}>
+                  <div
+                    onClick={() => setShowEditMasterAccessDropdown(!showEditMasterAccessDropdown)}
+                    style={{
+                      background: '#e8e8e8',
+                      border: '1px solid #ddd',
+                      borderRadius: '12px',
+                      padding: '12px 16px',
+                      cursor: 'pointer',
+                      minHeight: '48px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '8px'
+                    }}
+                  >
+                    {editAccess.masterAccess.length === 0 ? (
+                      <span style={{ color: '#666', fontSize: '14px' }}>Select master access permissions</span>
+                    ) : (
+                      editAccess.masterAccess.map((access, index) => (
+                        <span
+                          key={index}
+                          style={{
+                            background: '#4ecdc4',
+                            color: 'white',
+                            padding: '4px 8px',
+                            borderRadius: '16px',
+                            fontSize: '12px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
                         >
-                          <IonIcon icon={closeOutline} />
-                        </IonButton>
-                      </IonChip>
+                          {access}
+                          <IonIcon
+                            icon={closeOutlineIcon}
+                            style={{ fontSize: '14px', cursor: 'pointer' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditAccess(prev => ({
+                                ...prev,
+                                masterAccess: prev.masterAccess.filter(item => item !== access)
+                              }));
+                            }}
+                          />
+                        </span>
+                      ))
+                    )}
+                  </div>
+                  {showEditMasterAccessDropdown && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      right: 0,
+                      backgroundColor: 'white',
+                      border: '1px solid #e0e0e0',
+                      borderRadius: '12px',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                      zIndex: 1000,
+                      maxHeight: '500px',
+                      overflow: 'hidden'
+                    }}>
+                      <div style={{ padding: '12px', borderBottom: '1px solid #e0e0e0' }}>
+                        <IonInput
+                          value={editMasterAccessSearchQuery}
+                          onIonInput={(e) => setEditMasterAccessSearchQuery(e.detail.value!)}
+                          placeholder="Search master access..."
+                          style={{
+                            '--background': '#f8f9fa',
+                            '--border-radius': '8px',
+                            '--padding-start': '12px',
+                            '--padding-end': '12px',
+                            '--padding-top': '8px',
+                            '--padding-bottom': '8px'
+                          }}
+                        />
+                      </div>
+                      <div style={{ maxHeight: '450px', overflowY: 'auto', paddingBottom: '12px' }}>
+                        {filteredEditMasterAccessOptions.map((option) => (
+                          <div
+                            key={option.value}
+                            onClick={() => {
+                              const isSelected = editAccess.masterAccess.includes(option.value);
+                              let newMasterAccess;
+                              if (isSelected) {
+                                newMasterAccess = editAccess.masterAccess.filter(item => item !== option.value);
+                              } else {
+                                newMasterAccess = [...editAccess.masterAccess, option.value];
+                              }
+                              setEditAccess(prev => ({ ...prev, masterAccess: newMasterAccess }));
+                            }}
+                            style={{
+                              padding: '12px 16px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              borderBottom: '1px solid #f0f0f0',
+                              backgroundColor: editAccess.masterAccess.includes(option.value) ? '#2196f3' : 'white',
+                              color: editAccess.masterAccess.includes(option.value) ? 'white' : '#333'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!editAccess.masterAccess.includes(option.value)) {
+                                e.currentTarget.style.backgroundColor = '#f5f5f5';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!editAccess.masterAccess.includes(option.value)) {
+                                e.currentTarget.style.backgroundColor = 'white';
+                              }
+                            }}
+                          >
+                            <span style={{ color: editAccess.masterAccess.includes(option.value) ? 'white' : '#333', fontSize: '14px' }}>{option.label}</span>
+                            {option.hasCheckmark && (
+                              <IonIcon 
+                                icon={checkmark} 
+                                style={{ 
+                                  color: editAccess.masterAccess.includes(option.value) ? 'white' : '#00C851', 
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))'
+                                }} 
+                              />
+                            )}
+                          </div>
                     ))}
                   </div>
                 </div>
-              </IonItem>
+                  )}
+                </div>
+              </div>
             </IonList>
           </div>
           
@@ -758,38 +1212,6 @@ const AccessMapping: React.FC = () => {
         </IonContent>
       </IonModal>
 
-      {/* Edit Navbar Options Popover */}
-      <IonPopover
-        isOpen={showEditNavbarPopover}
-        onDidDismiss={() => setShowEditNavbarPopover(false)}
-        trigger="edit-navbar-options-trigger"
-        side="bottom"
-        alignment="start"
-      >
-        <IonContent>
-          <IonList>
-            <IonItem>
-              <IonLabel>
-                <h3>Select Navbar Access Options</h3>
-                <p>Choose from available sidebar options</p>
-              </IonLabel>
-            </IonItem>
-            {sidebarOptions.map((option, index) => (
-              <IonItem 
-                key={index} 
-                button 
-                onClick={() => handleSelectEditNavbarOption(option)}
-                disabled={editAccess.navbarAccess.includes(option)}
-              >
-                <IonLabel>{option}</IonLabel>
-                {editAccess.navbarAccess.includes(option) && (
-                  <IonIcon icon={checkmarkOutline} slot="end" color="success" />
-                )}
-              </IonItem>
-            ))}
-          </IonList>
-        </IonContent>
-      </IonPopover>
 
       {/* Toast for notifications */}
       <IonToast

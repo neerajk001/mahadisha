@@ -4,7 +4,7 @@ import {
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
   IonModal, IonButtons, IonInput, IonTextarea, IonSelect, IonSelectOption,
-  IonBadge, IonChip
+  IonBadge, IonChip, IonLabel
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
@@ -23,6 +23,7 @@ import { MasterCard, MasterControls, MasterHeader, ScrollableTableContainer } fr
 import { mockDataService } from '../../services/api';
 import type { TalukaData } from '../../types';
 import './TalukaMaster.css';
+// View functionality implementation
 
 const TalukaMaster: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -32,12 +33,11 @@ const TalukaMaster: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   
-  // Enhanced state for new functionality
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [editingTaluka, setEditingTaluka] = useState<TalukaData | null>(null);
-  const [editFormData, setEditFormData] = useState({ name: '', district: '', description: '' });
-  const [addFormData, setAddFormData] = useState({ name: '', district: '', description: '' });
+  // Enhanced state for unified modal functionality
+  const [showModal, setShowModal] = useState(false);
+  const [modalMode, setModalMode] = useState<'add' | 'edit' | 'view'>('add');
+  const [selectedTaluka, setSelectedTaluka] = useState<TalukaData | null>(null);
+  const [formData, setFormData] = useState({ name: '' });
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [sortBy, setSortBy] = useState<'name' | 'createdAt'>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
@@ -79,22 +79,28 @@ const TalukaMaster: React.FC = () => {
   const currentTalukas = filteredAndSortedTalukas.slice(startIndex, endIndex);
 
   const handleAddTaluka = () => {
-    setShowAddModal(true);
+    setModalMode('add');
+    setSelectedTaluka(null);
+    setFormData({ name: '' });
+    setShowModal(true);
   };
 
   const handleEdit = (taluka: TalukaData) => {
-    setEditingTaluka(taluka);
-    setEditFormData({
-      name: taluka.name,
-      district: taluka.district || '',
-      description: taluka.description || ''
+    setModalMode('edit');
+    setSelectedTaluka(taluka);
+    setFormData({
+      name: taluka.name
     });
-    setShowEditModal(true);
+    setShowModal(true);
   };
 
   const handleView = (taluka: TalukaData) => {
-    setToastMessage(`Viewing taluka: ${taluka.name}`);
-    setShowToast(true);
+    setModalMode('view');
+    setSelectedTaluka(taluka);
+    setFormData({
+      name: taluka.name
+    });
+    setShowModal(true);
   };
 
   const handleCopyName = (talukaName: string) => {
@@ -138,50 +144,42 @@ const TalukaMaster: React.FC = () => {
     }
   };
 
-  const handleSaveNewTaluka = () => {
-    if (addFormData.name) {
-      // Generate a new ID for the taluka
-      const newId = `taluka-${Date.now()}`;
+  const handleSaveTaluka = () => {
+    if (formData.name) {
+      if (modalMode === 'add') {
+        // Generate a new ID for the taluka
+        const newId = `taluka-${Date.now()}`;
+        
+        // Create the new taluka object
+        const newTaluka: TalukaData = {
+          id: newId,
+          name: formData.name,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        
+        // Add the new taluka to the state
+        setAllTalukas(prevTalukas => [...prevTalukas, newTaluka]);
+        
+        setToastMessage(`Taluka "${formData.name}" created successfully`);
+        setShowToast(true);
+      } else if (modalMode === 'edit' && selectedTaluka) {
+        // Update the taluka in the state
+        setAllTalukas(prevTalukas => 
+          prevTalukas.map(taluka => 
+            taluka.id === selectedTaluka.id 
+              ? { ...taluka, name: formData.name, updatedAt: new Date().toISOString() }
+              : taluka
+          )
+        );
+        
+        setToastMessage(`Taluka "${formData.name}" updated successfully`);
+        setShowToast(true);
+      }
       
-      // Create the new taluka object
-      const newTaluka: TalukaData = {
-        id: newId,
-        name: addFormData.name,
-        district: addFormData.district || '',
-        description: addFormData.description || '',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      
-      // Add the new taluka to the state
-      setAllTalukas(prevTalukas => [...prevTalukas, newTaluka]);
-      
-      setToastMessage(`Taluka "${addFormData.name}" created successfully`);
-      setShowToast(true);
-      setShowAddModal(false);
-      setAddFormData({ name: '', district: '', description: '' });
-    } else {
-      setToastMessage('Please fill in the taluka name');
-      setShowToast(true);
-    }
-  };
-
-  const handleUpdateTaluka = () => {
-    if (editingTaluka && editFormData.name) {
-      // Update the taluka in the state
-      setAllTalukas(prevTalukas => 
-        prevTalukas.map(taluka => 
-          taluka.id === editingTaluka.id 
-            ? { ...taluka, name: editFormData.name, district: editFormData.district, description: editFormData.description, updatedAt: new Date().toISOString() }
-            : taluka
-        )
-      );
-      
-      setToastMessage(`Taluka "${editFormData.name}" updated successfully`);
-      setShowToast(true);
-      setShowEditModal(false);
-      setEditingTaluka(null);
-      setEditFormData({ name: '', district: '', description: '' });
+      setShowModal(false);
+      setSelectedTaluka(null);
+      setFormData({ name: '' });
     } else {
       setToastMessage('Please fill in the taluka name');
       setShowToast(true);
@@ -338,13 +336,17 @@ const TalukaMaster: React.FC = () => {
         ]}
       />
 
-      {/* Add Taluka Modal */}
-      <IonModal isOpen={showAddModal} onDidDismiss={() => setShowAddModal(false)}>
+      {/* Unified Taluka Modal */}
+      <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
         <IonHeader>
           <IonToolbar>
-            <IonTitle>Add New Taluka</IonTitle>
+            <IonTitle>
+              {modalMode === 'add' ? 'Add New Taluka' : 
+               modalMode === 'edit' ? 'Edit Taluka' : 
+               'View Taluka Details'}
+            </IonTitle>
             <IonButtons slot="end">
-              <IonButton onClick={() => setShowAddModal(false)}>
+              <IonButton onClick={() => setShowModal(false)}>
                 <IonIcon icon={closeOutline} />
               </IonButton>
             </IonButtons>
@@ -352,109 +354,238 @@ const TalukaMaster: React.FC = () => {
         </IonHeader>
         <IonContent className="page-modal-content">
           <div style={{ padding: '2rem' }}>
-            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Create New Taluka</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <IonInput
-                label="Taluka Name"
-                labelPlacement="stacked"
-                value={addFormData.name}
-                onIonInput={(e) => setAddFormData({...addFormData, name: e.detail.value!})}
-                placeholder="Enter taluka name"
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonInput
-                label="District"
-                labelPlacement="stacked"
-                value={addFormData.district}
-                onIonInput={(e) => setAddFormData({...addFormData, district: e.detail.value!})}
-                placeholder="Enter district name"
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonTextarea
-                label="Description (Optional)"
-                labelPlacement="stacked"
-                value={addFormData.description}
-                onIonInput={(e) => setAddFormData({...addFormData, description: e.detail.value!})}
-                placeholder="Enter description"
-                rows={3}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonButton 
-                expand="block" 
-                style={{ 
-                  '--background': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  '--color': 'white',
-                  '--border-radius': '12px',
-                  marginTop: '1rem'
-                }}
-                onClick={handleSaveNewTaluka}
-              >
-                <IonIcon icon={checkmarkOutline} slot="start" />
-                Create Taluka
-              </IonButton>
-            </div>
+            {modalMode === 'view' ? (
+              // View Mode
+              <>
+                <div style={{ 
+                  textAlign: 'center', 
+                  marginBottom: '2rem',
+                  padding: '1.5rem',
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  borderRadius: '16px',
+                  color: 'white'
+                }}>
+                  <IonIcon 
+                    icon={locationOutline} 
+                    style={{ fontSize: '3rem', marginBottom: '1rem' }} 
+                  />
+                  <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 'bold' }}>
+                    {formData.name}
+                  </h1>
+                  <p style={{ margin: '0.5rem 0 0 0', opacity: 0.9 }}>
+                    Taluka Region Details
+                  </p>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  {/* Basic Information Card */}
+                  <IonCard style={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                    <IonCardHeader>
+                      <IonCardTitle style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '0.5rem',
+                        color: '#667eea'
+                      }}>
+                        <IonIcon icon={documentTextOutline} />
+                        Basic Information
+                      </IonCardTitle>
+                    </IonCardHeader>
+                    <IonCardContent>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontWeight: '600', color: '#555' }}>Taluka Name:</span>
+                          <span style={{ 
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            color: 'white',
+                            padding: '0.5rem 1rem',
+                            borderRadius: '20px',
+                            fontSize: '0.9rem',
+                            fontWeight: '500'
+                          }}>
+                            {formData.name}
+                          </span>
+                        </div>
+                        {selectedTaluka && (
+                          <>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <span style={{ fontWeight: '600', color: '#555' }}>Taluka ID:</span>
+                              <code style={{ 
+                                background: '#f5f5f5',
+                                padding: '0.5rem 1rem',
+                                borderRadius: '8px',
+                                fontSize: '0.85rem',
+                                color: '#666'
+                              }}>
+                                {selectedTaluka.id}
+                              </code>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <span style={{ fontWeight: '600', color: '#555' }}>Region Code:</span>
+                              <span style={{ 
+                                background: 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
+                                color: 'white',
+                                padding: '0.5rem 1rem',
+                                borderRadius: '20px',
+                                fontSize: '0.9rem',
+                                fontWeight: '500'
+                              }}>
+                                TLK-{selectedTaluka.id.slice(-3)}
+                              </span>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </IonCardContent>
+                  </IonCard>
+
+                  {/* Status and Metadata Card */}
+                  {selectedTaluka && (
+                    <IonCard style={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                      <IonCardHeader>
+                        <IonCardTitle style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '0.5rem',
+                          color: '#667eea'
+                        }}>
+                          <IonIcon icon={timeOutline} />
+                          Status & Metadata
+                        </IonCardTitle>
+                      </IonCardHeader>
+                      <IonCardContent>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '600', color: '#555' }}>Status:</span>
+                            <IonBadge color="success" style={{ fontSize: '0.8rem' }}>
+                              Active
+                            </IonBadge>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '600', color: '#555' }}>Created:</span>
+                            <span style={{ color: '#666', fontSize: '0.9rem' }}>
+                              {new Date(selectedTaluka.createdAt).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '600', color: '#555' }}>Last Updated:</span>
+                            <span style={{ color: '#666', fontSize: '0.9rem' }}>
+                              {new Date(selectedTaluka.updatedAt).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+                          </div>
+                        </div>
+                      </IonCardContent>
+                    </IonCard>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div style={{ 
+                    display: 'flex', 
+                    gap: '1rem', 
+                    marginTop: '1rem',
+                    justifyContent: 'center'
+                  }}>
+                    <IonButton 
+                      fill="outline"
+                      style={{ 
+                        '--border-color': '#667eea',
+                        '--color': '#667eea',
+                        '--border-radius': '12px',
+                        flex: 1
+                      }}
+                      onClick={() => {
+                        setModalMode('edit');
+                      }}
+                    >
+                      <IonIcon icon={createOutline} slot="start" />
+                      Edit
+                    </IonButton>
+                    <IonButton 
+                      fill="outline"
+                      style={{ 
+                        '--border-color': '#4ecdc4',
+                        '--color': '#4ecdc4',
+                        '--border-radius': '12px',
+                        flex: 1
+                      }}
+                      onClick={() => {
+                        handleCopyName(formData.name);
+                      }}
+                    >
+                      <IonIcon icon={copyOutline} slot="start" />
+                      Copy Name
+                    </IonButton>
+                  </div>
+                </div>
+              </>
+            ) : (
+              // Add/Edit Mode
+              <>
+                <h2 style={{ marginBottom: '1.5rem', color: '#667eea', textAlign: 'center' }}>
+                  {modalMode === 'add' ? 'Create New Taluka' : `Edit Taluka: ${selectedTaluka?.name}`}
+                </h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  <div>
+                    <IonLabel style={{ 
+                      display: 'block', 
+                      marginBottom: '0.75rem', 
+                      fontWeight: '600', 
+                      color: '#333',
+                      fontSize: '1rem'
+                    }}>
+                      Taluka Name
+                    </IonLabel>
+                    <IonInput
+                      value={formData.name}
+                      onIonInput={(e) => setFormData({...formData, name: e.detail.value!})}
+                      placeholder="Enter taluka name"
+                      style={{ 
+                        '--background': '#e8e8e8',
+                        '--border-radius': '12px',
+                        '--padding-start': '16px',
+                        '--padding-end': '16px',
+                        '--padding-top': '12px',
+                        '--padding-bottom': '12px',
+                        '--color': '#333',
+                        '--placeholder-color': '#666'
+                      }}
+                    />
+                  </div>
+                  <IonButton 
+                    expand="block" 
+                    style={{ 
+                      '--background': modalMode === 'add' 
+                        ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                        : 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
+                      '--color': 'white',
+                      '--border-radius': '12px',
+                      '--padding-top': '12px',
+                      '--padding-bottom': '12px',
+                      marginTop: '1rem'
+                    }}
+                    onClick={handleSaveTaluka}
+                  >
+                    <IonIcon icon={checkmarkOutline} slot="start" />
+                    {modalMode === 'add' ? 'Create Taluka' : 'Update Taluka'}
+                  </IonButton>
+                </div>
+              </>
+            )}
           </div>
         </IonContent>
       </IonModal>
-
-      {/* Edit Taluka Modal */}
-      <IonModal isOpen={showEditModal} onDidDismiss={() => setShowEditModal(false)}>
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Edit Taluka</IonTitle>
-            <IonButtons slot="end">
-              <IonButton onClick={() => setShowEditModal(false)}>
-                <IonIcon icon={closeOutline} />
-              </IonButton>
-            </IonButtons>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="page-modal-content">
-          <div style={{ padding: '2rem' }}>
-            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Edit Taluka: {editingTaluka?.name}</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <IonInput
-                label="Taluka Name"
-                labelPlacement="stacked"
-                value={editFormData.name}
-                onIonInput={(e) => setEditFormData({...editFormData, name: e.detail.value!})}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonInput
-                label="District"
-                labelPlacement="stacked"
-                value={editFormData.district}
-                onIonInput={(e) => setEditFormData({...editFormData, district: e.detail.value!})}
-                placeholder="Enter district name"
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonTextarea
-                label="Description (Optional)"
-                labelPlacement="stacked"
-                value={editFormData.description}
-                onIonInput={(e) => setEditFormData({...editFormData, description: e.detail.value!})}
-                placeholder="Enter description"
-                rows={3}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonButton 
-                expand="block" 
-                style={{ 
-                  '--background': 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
-                  '--color': 'white',
-                  '--border-radius': '12px',
-                  marginTop: '1rem'
-                }}
-                onClick={handleUpdateTaluka}
-              >
-                <IonIcon icon={checkmarkOutline} slot="start" />
-                Update Taluka
-              </IonButton>
-            </div>
-          </div>
-        </IonContent>
-      </IonModal>
-
 
       {/* Toast for notifications */}
       <IonToast

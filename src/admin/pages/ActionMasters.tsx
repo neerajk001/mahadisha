@@ -4,7 +4,7 @@ import {
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
   IonModal, IonButtons, IonInput, IonTextarea, IonSelect, IonSelectOption,
-  IonBadge, IonChip
+  IonBadge, IonChip, IonLabel
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
@@ -381,32 +381,85 @@ const ActionMasters: React.FC = () => {
         </IonHeader>
         <IonContent className="page-modal-content">
           <div style={{ padding: '2rem' }}>
-            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Create New Action</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <IonInput
-                label="Action Name"
-                labelPlacement="stacked"
-                placeholder="Enter action name"
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonInput
-                label="Function Name"
-                labelPlacement="stacked"
-                placeholder="Enter function name"
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonSelect
-                label="Priority"
-                labelPlacement="stacked"
-                placeholder="Select priority"
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              >
-                <IonSelectOption value="1">1</IonSelectOption>
-                <IonSelectOption value="2">2</IonSelectOption>
-                <IonSelectOption value="3">3</IonSelectOption>
-                <IonSelectOption value="4">4</IonSelectOption>
-                <IonSelectOption value="5">5</IonSelectOption>
-              </IonSelect>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea', textAlign: 'center' }}>Create New Action</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Action Name
+                </IonLabel>
+                <IonInput
+                  placeholder="Enter action name"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Function Name
+                </IonLabel>
+                <IonInput
+                  placeholder="Enter function name"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Priority
+                </IonLabel>
+                <IonSelect
+                  placeholder="Select priority"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333'
+                  }}
+                >
+                  <IonSelectOption value="1">1</IonSelectOption>
+                  <IonSelectOption value="2">2</IonSelectOption>
+                  <IonSelectOption value="3">3</IonSelectOption>
+                  <IonSelectOption value="4">4</IonSelectOption>
+                  <IonSelectOption value="5">5</IonSelectOption>
+                </IonSelect>
+              </div>
               <IonButton 
                 expand="block" 
                 style={{ 
@@ -439,35 +492,91 @@ const ActionMasters: React.FC = () => {
         </IonHeader>
         <IonContent className="page-modal-content">
           <div style={{ padding: '2rem' }}>
-            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Edit Action: {editingAction?.name}</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <IonInput
-                label="Action Name"
-                labelPlacement="stacked"
-                value={editForm.name}
-                onIonChange={(e) => setEditForm({...editForm, name: e.detail.value!})}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonInput
-                label="Function Name"
-                labelPlacement="stacked"
-                value={editForm.functionName}
-                onIonChange={(e) => setEditForm({...editForm, functionName: e.detail.value!})}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonSelect
-                label="Priority"
-                labelPlacement="stacked"
-                value={editForm.priority}
-                onIonChange={(e) => setEditForm({...editForm, priority: e.detail.value})}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              >
-                <IonSelectOption value="1">1</IonSelectOption>
-                <IonSelectOption value="2">2</IonSelectOption>
-                <IonSelectOption value="3">3</IonSelectOption>
-                <IonSelectOption value="4">4</IonSelectOption>
-                <IonSelectOption value="5">5</IonSelectOption>
-              </IonSelect>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea', textAlign: 'center' }}>Edit Action: {editingAction?.name}</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Action Name
+                </IonLabel>
+                <IonInput
+                  value={editForm.name}
+                  onIonChange={(e) => setEditForm({...editForm, name: e.detail.value!})}
+                  placeholder="Enter action name"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Function Name
+                </IonLabel>
+                <IonInput
+                  value={editForm.functionName}
+                  onIonChange={(e) => setEditForm({...editForm, functionName: e.detail.value!})}
+                  placeholder="Enter function name"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Priority
+                </IonLabel>
+                <IonSelect
+                  value={editForm.priority}
+                  onIonChange={(e) => setEditForm({...editForm, priority: e.detail.value})}
+                  placeholder="Select priority"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333'
+                  }}
+                >
+                  <IonSelectOption value="1">1</IonSelectOption>
+                  <IonSelectOption value="2">2</IonSelectOption>
+                  <IonSelectOption value="3">3</IonSelectOption>
+                  <IonSelectOption value="4">4</IonSelectOption>
+                  <IonSelectOption value="5">5</IonSelectOption>
+                </IonSelect>
+              </div>
               <IonButton 
                 expand="block" 
                 style={{ 

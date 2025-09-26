@@ -538,6 +538,19 @@
   text-align: center;
 }
 
+/* Form Group Styles */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
 /* Add/Edit Mapping Modal Styles */
 .add-mapping-modal {
   --background: var(--color-bg-primary, #ffffff);
@@ -561,9 +574,11 @@
 
 .modal-content {
   padding: 1.5rem;
+  overflow: visible;
 }
 
 .modal-content ion-list {
+  overflow: visible;
   background: transparent;
 }
 
@@ -1081,6 +1096,44 @@
 
 .table-container::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-secondary);
+}
+
+/* Dropdown Scrollbar Styling */
+.dropdown-scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown-scrollable::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.dropdown-scrollable::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+
+.dropdown-scrollable::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* General dropdown scrollbar styling for all dropdowns */
+div[style*="overflowY: 'auto'"]::-webkit-scrollbar {
+  width: 8px;
+}
+
+div[style*="overflowY: 'auto'"]::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+div[style*="overflowY: 'auto'"]::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+
+div[style*="overflowY: 'auto'"]::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 /* Animation for cards */

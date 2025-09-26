@@ -4,7 +4,7 @@ import {
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
   IonModal, IonButtons, IonInput, IonTextarea, IonSelect, IonSelectOption,
-  IonBadge, IonChip
+  IonBadge, IonChip, IonLabel
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
@@ -34,7 +34,9 @@ const CasteMaster: React.FC = () => {
   // Enhanced state for new functionality
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [editingCaste, setEditingCaste] = useState<CasteData | null>(null);
+  const [viewingCaste, setViewingCaste] = useState<CasteData | null>(null);
   const [editFormData, setEditFormData] = useState({ name: '', description: '' });
   const [addFormData, setAddFormData] = useState({ name: '', description: '' });
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
@@ -91,8 +93,8 @@ const CasteMaster: React.FC = () => {
   };
 
   const handleView = (caste: CasteData) => {
-    setToastMessage(`Viewing caste: ${caste.name}`);
-    setShowToast(true);
+    setViewingCaste(caste);
+    setShowViewModal(true);
   };
 
   const handleCopyName = (casteName: string) => {
@@ -337,31 +339,42 @@ const CasteMaster: React.FC = () => {
         </IonHeader>
         <IonContent className="page-modal-content">
           <div style={{ padding: '2rem' }}>
-            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Create New Caste</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <IonInput
-                label="Caste Name"
-                labelPlacement="stacked"
-                value={addFormData.name}
-                onIonInput={(e) => setAddFormData({...addFormData, name: e.detail.value!})}
-                placeholder="Enter caste name"
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonTextarea
-                label="Description (Optional)"
-                labelPlacement="stacked"
-                value={addFormData.description}
-                onIonInput={(e) => setAddFormData({...addFormData, description: e.detail.value!})}
-                placeholder="Enter description"
-                rows={3}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea', textAlign: 'center' }}>Create New Caste</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Caste Name
+                </IonLabel>
+                <IonInput
+                  value={addFormData.name}
+                  onIonInput={(e) => setAddFormData({...addFormData, name: e.detail.value!})}
+                  placeholder="Enter caste name"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
               <IonButton 
                 expand="block" 
                 style={{ 
                   '--background': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                   '--color': 'white',
                   '--border-radius': '12px',
+                  '--padding-top': '12px',
+                  '--padding-bottom': '12px',
                   marginTop: '1rem'
                 }}
                 onClick={handleSaveNewCaste}
@@ -388,30 +401,42 @@ const CasteMaster: React.FC = () => {
         </IonHeader>
         <IonContent className="page-modal-content">
           <div style={{ padding: '2rem' }}>
-            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Edit Caste: {editingCaste?.name}</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <IonInput
-                label="Caste Name"
-                labelPlacement="stacked"
-                value={editFormData.name}
-                onIonInput={(e) => setEditFormData({...editFormData, name: e.detail.value!})}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonTextarea
-                label="Description (Optional)"
-                labelPlacement="stacked"
-                value={editFormData.description}
-                onIonInput={(e) => setEditFormData({...editFormData, description: e.detail.value!})}
-                placeholder="Enter description"
-                rows={3}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea', textAlign: 'center' }}>Edit Caste: {editingCaste?.name}</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Caste Name
+                </IonLabel>
+                <IonInput
+                  value={editFormData.name}
+                  onIonInput={(e) => setEditFormData({...editFormData, name: e.detail.value!})}
+                  placeholder="Enter caste name"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
               <IonButton 
                 expand="block" 
                 style={{ 
                   '--background': 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
                   '--color': 'white',
                   '--border-radius': '12px',
+                  '--padding-top': '12px',
+                  '--padding-bottom': '12px',
                   marginTop: '1rem'
                 }}
                 onClick={handleUpdateCaste}
@@ -424,6 +449,198 @@ const CasteMaster: React.FC = () => {
         </IonContent>
       </IonModal>
 
+      {/* View Caste Modal */}
+      <IonModal isOpen={showViewModal} onDidDismiss={() => setShowViewModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>View Caste Details</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowViewModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            {viewingCaste && (
+              <>
+                <div style={{ 
+                  textAlign: 'center', 
+                  marginBottom: '2rem',
+                  padding: '1.5rem',
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  borderRadius: '16px',
+                  color: 'white'
+                }}>
+                  <IonIcon 
+                    icon={peopleOutline} 
+                    style={{ fontSize: '3rem', marginBottom: '1rem' }} 
+                  />
+                  <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 'bold' }}>
+                    {viewingCaste.name}
+                  </h1>
+                  <p style={{ margin: '0.5rem 0 0 0', opacity: 0.9 }}>
+                    Caste Category Details
+                  </p>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  {/* Basic Information Card */}
+                  <IonCard style={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                    <IonCardHeader>
+                      <IonCardTitle style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '0.5rem',
+                        color: '#667eea'
+                      }}>
+                        <IonIcon icon={documentTextOutline} />
+                        Basic Information
+                      </IonCardTitle>
+                    </IonCardHeader>
+                    <IonCardContent>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontWeight: '600', color: '#555' }}>Caste Name:</span>
+                          <span style={{ 
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            color: 'white',
+                            padding: '0.5rem 1rem',
+                            borderRadius: '20px',
+                            fontSize: '0.9rem',
+                            fontWeight: '500'
+                          }}>
+                            {viewingCaste.name}
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontWeight: '600', color: '#555' }}>Caste ID:</span>
+                          <code style={{ 
+                            background: '#f5f5f5',
+                            padding: '0.5rem 1rem',
+                            borderRadius: '8px',
+                            fontSize: '0.85rem',
+                            color: '#666'
+                          }}>
+                            {viewingCaste.id}
+                          </code>
+                        </div>
+                        {viewingCaste.description && (
+                          <div style={{ marginTop: '1rem' }}>
+                            <span style={{ fontWeight: '600', color: '#555', display: 'block', marginBottom: '0.5rem' }}>
+                              Description:
+                            </span>
+                            <p style={{ 
+                              background: '#f8f9fa',
+                              padding: '1rem',
+                              borderRadius: '8px',
+                              margin: 0,
+                              lineHeight: '1.5',
+                              color: '#555'
+                            }}>
+                              {viewingCaste.description}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </IonCardContent>
+                  </IonCard>
+
+                  {/* Status and Metadata Card */}
+                  <IonCard style={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                    <IonCardHeader>
+                      <IonCardTitle style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '0.5rem',
+                        color: '#667eea'
+                      }}>
+                        <IonIcon icon={timeOutline} />
+                        Status & Metadata
+                      </IonCardTitle>
+                    </IonCardHeader>
+                    <IonCardContent>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontWeight: '600', color: '#555' }}>Status:</span>
+                          <IonBadge color="success" style={{ fontSize: '0.8rem' }}>
+                            Active
+                          </IonBadge>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontWeight: '600', color: '#555' }}>Created:</span>
+                          <span style={{ color: '#666', fontSize: '0.9rem' }}>
+                            {new Date(viewingCaste.createdAt).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontWeight: '600', color: '#555' }}>Last Updated:</span>
+                          <span style={{ color: '#666', fontSize: '0.9rem' }}>
+                            {new Date(viewingCaste.updatedAt).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </span>
+                        </div>
+                      </div>
+                    </IonCardContent>
+                  </IonCard>
+
+                  {/* Action Buttons */}
+                  <div style={{ 
+                    display: 'flex', 
+                    gap: '1rem', 
+                    marginTop: '1rem',
+                    justifyContent: 'center'
+                  }}>
+                    <IonButton 
+                      fill="outline"
+                      style={{ 
+                        '--border-color': '#667eea',
+                        '--color': '#667eea',
+                        '--border-radius': '12px',
+                        flex: 1
+                      }}
+                      onClick={() => {
+                        setShowViewModal(false);
+                        handleEdit(viewingCaste);
+                      }}
+                    >
+                      <IonIcon icon={createOutline} slot="start" />
+                      Edit
+                    </IonButton>
+                    <IonButton 
+                      fill="outline"
+                      style={{ 
+                        '--border-color': '#4ecdc4',
+                        '--color': '#4ecdc4',
+                        '--border-radius': '12px',
+                        flex: 1
+                      }}
+                      onClick={() => {
+                        handleCopyName(viewingCaste.name);
+                      }}
+                    >
+                      <IonIcon icon={copyOutline} slot="start" />
+                      Copy Name
+                    </IonButton>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </IonContent>
+      </IonModal>
 
       {/* Toast for notifications */}
       <IonToast

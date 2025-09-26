@@ -4,7 +4,7 @@ import {
   IonButton, IonIcon, IonCard, IonCardContent, IonCardHeader, IonCardTitle,
   IonGrid, IonRow, IonCol, IonSpinner, IonAlert, IonToast, IonSearchbar,
   IonModal, IonButtons, IonInput, IonTextarea, IonSelect, IonSelectOption,
-  IonBadge, IonChip, IonFab, IonFabButton
+  IonBadge, IonChip, IonFab, IonFabButton, IonLabel
 } from '@ionic/react';
 import { 
   addOutline, createOutline, trashOutline, searchOutline,
@@ -32,6 +32,8 @@ const StatusMaster: React.FC = () => {
   const [toastMessage, setToastMessage] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingStatus, setEditingStatus] = useState<StatusMasterData | null>(null);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [viewingStatus, setViewingStatus] = useState<StatusMasterData | null>(null);
   const [editForm, setEditForm] = useState({
     name: ''
   });
@@ -97,8 +99,8 @@ const StatusMaster: React.FC = () => {
   };
 
   const handleView = (status: StatusMasterData) => {
-    setToastMessage(`Viewing status: ${status.name}`);
-    setShowToast(true);
+    setViewingStatus(status);
+    setShowViewModal(true);
   };
 
   const handleCopyName = (statusName: string) => {
@@ -274,7 +276,7 @@ const StatusMaster: React.FC = () => {
                         </th>
                         <th>
                           <div className="table-header">
-                            <span>Status Code</span>
+                            <span>ID</span>
                             <IonIcon icon={searchOutline} className="filter-icon" />
                           </div>
                         </th>
@@ -358,29 +360,34 @@ const StatusMaster: React.FC = () => {
         </IonHeader>
         <IonContent className="page-modal-content">
           <div style={{ padding: '2rem' }}>
-            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Create New Status</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <IonInput
-                label="Status Name"
-                labelPlacement="stacked"
-                placeholder="Enter status name"
-                value={addForm.name}
-                onIonInput={(e) => setAddForm({ ...addForm, name: e.detail.value! })}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonInput
-                label="Status Code"
-                labelPlacement="stacked"
-                placeholder="Enter status code"
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonTextarea
-                label="Description (Optional)"
-                labelPlacement="stacked"
-                placeholder="Enter description"
-                rows={3}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea', textAlign: 'center' }}>Create New Status</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Status Name
+                </IonLabel>
+                <IonInput
+                  placeholder="Enter status name"
+                  value={addForm.name}
+                  onIonInput={(e) => setAddForm({ ...addForm, name: e.detail.value! })}
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
               <IonButton 
                 expand="block" 
                 style={{ 
@@ -413,28 +420,34 @@ const StatusMaster: React.FC = () => {
         </IonHeader>
         <IonContent className="page-modal-content">
           <div style={{ padding: '2rem' }}>
-            <h2 style={{ marginBottom: '1.5rem', color: '#667eea' }}>Edit Status: {editingStatus?.name}</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <IonInput
-                label="Status Name"
-                labelPlacement="stacked"
-                value={editForm.name}
-                onIonChange={(e) => setEditForm({...editForm, name: e.detail.value!})}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonInput
-                label="Status Code"
-                labelPlacement="stacked"
-                placeholder="Enter status code"
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
-              <IonTextarea
-                label="Description (Optional)"
-                labelPlacement="stacked"
-                placeholder="Enter description"
-                rows={3}
-                style={{ '--background': 'rgba(255, 255, 255, 0.9)', '--border-radius': '12px' }}
-              />
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea', textAlign: 'center' }}>Edit Status: {editingStatus?.name}</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <IonLabel style={{ 
+                  display: 'block', 
+                  marginBottom: '0.75rem', 
+                  fontWeight: '600', 
+                  color: '#333',
+                  fontSize: '1rem'
+                }}>
+                  Status Name
+                </IonLabel>
+                <IonInput
+                  value={editForm.name}
+                  onIonChange={(e) => setEditForm({...editForm, name: e.detail.value!})}
+                  placeholder="Enter status name"
+                  style={{ 
+                    '--background': '#e8e8e8',
+                    '--border-radius': '12px',
+                    '--padding-start': '16px',
+                    '--padding-end': '16px',
+                    '--padding-top': '12px',
+                    '--padding-bottom': '12px',
+                    '--color': '#333',
+                    '--placeholder-color': '#666'
+                  }}
+                />
+              </div>
               <IonButton 
                 expand="block" 
                 style={{ 
@@ -449,6 +462,145 @@ const StatusMaster: React.FC = () => {
                 Update Status
               </IonButton>
             </div>
+          </div>
+        </IonContent>
+      </IonModal>
+
+      {/* View Status Modal */}
+      <IonModal isOpen={showViewModal} onDidDismiss={() => setShowViewModal(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>View Status</IonTitle>
+            <IonButtons slot="end">
+              <IonButton onClick={() => setShowViewModal(false)}>
+                <IonIcon icon={closeOutline} />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="page-modal-content">
+          <div style={{ padding: '2rem' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#667eea', textAlign: 'center' }}>
+              Status Details
+            </h2>
+            
+            {viewingStatus && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <div style={{
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  borderRadius: '16px',
+                  padding: '1.5rem',
+                  color: 'white',
+                  textAlign: 'center'
+                }}>
+                  <IonIcon 
+                    icon={checkmarkOutline} 
+                    style={{ fontSize: '3rem', marginBottom: '1rem' }}
+                  />
+                  <h3 style={{ margin: 0, fontSize: '1.5rem', fontWeight: '600' }}>
+                    {viewingStatus.name}
+                  </h3>
+                  <p style={{ margin: '0.5rem 0 0 0', opacity: 0.9 }}>
+                    Status Information
+                  </p>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div style={{
+                    background: '#f8f9fa',
+                    borderRadius: '12px',
+                    padding: '1rem',
+                    border: '1px solid #e9ecef'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                      <IonIcon icon={documentTextOutline} style={{ color: '#667eea', fontSize: '1.2rem' }} />
+                      <span style={{ fontWeight: '600', color: '#333' }}>Status Name</span>
+                    </div>
+                    <p style={{ margin: 0, color: '#666', fontSize: '1rem' }}>
+                      {viewingStatus.name}
+                    </p>
+                  </div>
+
+                  <div style={{
+                    background: '#f8f9fa',
+                    borderRadius: '12px',
+                    padding: '1rem',
+                    border: '1px solid #e9ecef'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                      <IonIcon icon={timeOutline} style={{ color: '#667eea', fontSize: '1.2rem' }} />
+                      <span style={{ fontWeight: '600', color: '#333' }}>Created</span>
+                    </div>
+                    <p style={{ margin: 0, color: '#666', fontSize: '1rem' }}>
+                      {new Date(viewingStatus.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </p>
+                  </div>
+
+                  <div style={{
+                    background: '#f8f9fa',
+                    borderRadius: '12px',
+                    padding: '1rem',
+                    border: '1px solid #e9ecef'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                      <IonIcon icon={timeOutline} style={{ color: '#667eea', fontSize: '1.2rem' }} />
+                      <span style={{ fontWeight: '600', color: '#333' }}>Last Updated</span>
+                    </div>
+                    <p style={{ margin: 0, color: '#666', fontSize: '1rem' }}>
+                      {new Date(viewingStatus.updatedAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                  <IonButton 
+                    expand="block" 
+                    fill="outline"
+                    style={{ 
+                      '--color': '#667eea',
+                      '--border-color': '#667eea',
+                      '--border-radius': '12px',
+                      flex: 1
+                    }}
+                    onClick={() => {
+                      setShowViewModal(false);
+                      handleCopyName(viewingStatus.name);
+                    }}
+                  >
+                    <IonIcon icon={copyOutline} slot="start" />
+                    Copy Name
+                  </IonButton>
+                  <IonButton 
+                    expand="block" 
+                    style={{ 
+                      '--background': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      '--color': 'white',
+                      '--border-radius': '12px',
+                      flex: 1
+                    }}
+                    onClick={() => {
+                      setShowViewModal(false);
+                      handleEdit(viewingStatus.id);
+                    }}
+                  >
+                    <IonIcon icon={createOutline} slot="start" />
+                    Edit Status
+                  </IonButton>
+                </div>
+              </div>
+            )}
           </div>
         </IonContent>
       </IonModal>

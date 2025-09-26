@@ -668,6 +668,31 @@
   border: 1px solid var(--color-border-light);
 }
 
+/* Form Group Styles */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  color: var(--color-text-primary, #2d3748);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* Master Access Cell */
+.master-access-cell {
+  min-width: 200px;
+  white-space: normal;
+}
+
+.master-access {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
 /* Add Access Modal Styles */
 .add-access-modal {
   --background: var(--color-bg-primary, #ffffff);
