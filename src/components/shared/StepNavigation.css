@@ -1,0 +1,260 @@
+/* Step Navigation Container */
+.step-navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0.5rem;
+  position: sticky;
+  bottom: 0;
+  z-index: 25;
+  background: transparent;
+}
+
+/* Step Navigation Button - Base Styles */
+.step-nav-button {
+  --border-radius: 8px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+  font-weight: 600;
+  text-transform: none;
+  min-width: 100px;
+  min-height: 40px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  border: none;
+}
+
+.step-nav-button ion-icon {
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+}
+
+/* Previous Button */
+.step-previous-button {
+  --color: #64748b;
+  --border-color: transparent;
+  --background: transparent;
+}
+
+.step-previous-button:hover:not(.disabled) {
+  --color: #475569;
+  --border-color: transparent;
+  --background: rgba(100, 116, 139, 0.1);
+}
+
+.step-previous-button:hover:not(.disabled) ion-icon {
+  transform: translateX(-1px);
+}
+
+.step-previous-button.disabled,
+.step-previous-button:disabled {
+  --color: #cbd5e1;
+  --border-color: transparent;
+  --background: transparent;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Next Button */
+.step-next-button {
+  --background: #3b82f6;
+  --color: #ffffff;
+  --box-shadow: 0 1px 4px rgba(59, 130, 246, 0.2);
+  position: relative;
+  border: none;
+}
+
+.step-next-button:hover:not(.disabled) {
+  --background: #2563eb;
+  --box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.step-next-button:hover:not(.disabled) ion-icon {
+  transform: translateX(1px);
+}
+
+.step-next-button.disabled,
+.step-next-button:disabled {
+  --background: #9ca3af !important;
+  --color: white !important;
+  --box-shadow: none !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Submit Button */
+.step-submit-button {
+  --background: #059669;
+  --color: #ffffff;
+  --border-radius: 8px;
+  --padding-start: 1.25rem;
+  --padding-end: 1.25rem;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+  --box-shadow: 0 1px 4px rgba(5, 150, 105, 0.2);
+  font-size: 0.9rem;
+  font-weight: 600;
+  min-height: 40px;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.step-submit-button:hover:not(.disabled) {
+  --background: #047857;
+  --box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+}
+
+.step-submit-button:hover:not(.disabled) ion-icon {
+  transform: scale(1.05);
+}
+
+.step-submit-button.disabled,
+.step-submit-button:disabled {
+  --background: #9ca3af !important;
+  --color: white !important;
+  --box-shadow: none !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.step-submit-button ion-icon {
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+}
+
+/* Validation Message */
+.step-validation-message {
+  background: linear-gradient(135deg, #fef3cd 0%, #fde68a 100%);
+  border: 1px solid #f59e0b;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0.75rem 0.5rem;
+  text-align: center;
+  animation: slideIn 0.3s ease-out;
+}
+
+.step-validation-message p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #92400e;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .step-navigation-buttons {
+    flex-direction: row;
+    gap: 0.75rem;
+    padding: 1rem 0.5rem;
+    background: linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.9) 20%);
+  }
+
+  .step-nav-button {
+    flex: 1;
+    min-width: unset;
+    justify-content: center;
+    font-size: 0.85rem;
+    --padding-start: 0.75rem;
+    --padding-end: 0.75rem;
+    --padding-top: 0.6rem;
+    --padding-bottom: 0.6rem;
+    min-height: 42px;
+  }
+
+  .step-nav-button ion-icon {
+    font-size: 1.1rem;
+  }
+
+  .step-previous-button {
+    max-width: 120px;
+  }
+
+  .step-validation-message {
+    margin: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+  }
+
+  .step-validation-message p {
+    font-size: 0.8rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+  .step-navigation-buttons {
+    gap: 0.5rem;
+    padding: 0.75rem 0.25rem;
+  }
+
+  .step-nav-button {
+    font-size: 0.8rem;
+    min-height: 40px;
+  }
+
+  .step-nav-button ion-icon {
+    font-size: 1rem;
+  }
+
+  .step-previous-button {
+    max-width: 100px;
+  }
+}
+
+/* Admin-specific styling */
+.admin-loan-application .step-navigation-buttons {
+  background: linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.95) 20%, rgba(255,255,255,0.98) 100%);
+  padding: 1rem 0.5rem;
+  backdrop-filter: blur(8px);
+}
+
+@media (max-width: 768px) {
+  .admin-loan-application .step-navigation-buttons {
+    gap: 0.75rem;
+    padding: 1rem 0.5rem 0.75rem 0.5rem;
+  }
+
+  .admin-loan-application .step-nav-button {
+    font-size: 0.85rem;
+    min-height: 42px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-loan-application .step-navigation-buttons {
+    gap: 0.5rem;
+    padding: 0.75rem 0.25rem 0.5rem 0.25rem;
+  }
+
+  .admin-loan-application .step-nav-button {
+    font-size: 0.8rem;
+    min-height: 40px;
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+  }
+
+  .admin-loan-application .step-previous-button {
+    max-width: 100px;
+  }
+}

@@ -10,3 +10,5 @@ export type { RBACControlsProps } from './RBACControls';
 export { default as RBACHeader } from './RBACHeader';
 export { default as ScrollableTableContainer } from './ScrollableTableContainer';
 export type { ScrollableTableContainerProps } from './ScrollableTableContainer';
+export { default as StepNavigation } from './StepNavigation';
+

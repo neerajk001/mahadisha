@@ -1,0 +1,437 @@
+/* Admin Loan Application - Mobile Optimizations */
+
+/* Desktop - maintain admin layout */
+@media (min-width: 992px) {
+  .admin-loan-application .loan-application {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Mobile - optimize for admin sidebar layout */
+@media (max-width: 991px) {
+  /* Ensure proper spacing with collapsed sidebar */
+  .admin-loan-application .loan-application {
+    padding: 0.5rem;
+    width: 100%;
+  }
+
+  .admin-loan-application .container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+  }
+
+  /* Adjust for dashboard header on mobile */
+  .admin-loan-application ion-content {
+    --padding-top: 0;
+    --padding-bottom: 0;
+  }
+
+  /* Application header - reduce top margin on mobile admin */
+  .admin-loan-application .application-header {
+    margin-top: 0;
+  }
+
+  /* Progress steps - sticky positioning accounting for admin header */
+  .admin-loan-application .progress-steps {
+    top: 0;
+    position: sticky;
+  }
+
+  /* Navigation buttons - ensure they're visible above admin footer if any */
+  .admin-loan-application .navigation-buttons {
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.95) 20%, rgba(255,255,255,0.98) 100%);
+    padding: 1rem 0.5rem;
+    backdrop-filter: blur(8px);
+    z-index: 25;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Full mobile optimization */
+  .admin-loan-application .loan-application {
+    padding: 0.5rem 0.5rem 0.25rem 0.5rem;
+    min-height: calc(100vh - 60px);
+  }
+
+  /* Compact spacing for mobile admin */
+  .admin-loan-application .application-card {
+    margin-bottom: 0.75rem;
+  }
+
+  .admin-loan-application .form-grid {
+    gap: 0.75rem;
+  }
+
+  /* Ensure sidebar doesn't interfere on mobile */
+  .admin-loan-application ion-split-pane {
+    --side-width: 0;
+  }
+
+  /* Optimize header for mobile admin view */
+  .admin-loan-application .application-header {
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .admin-loan-application .application-header h1 {
+    font-size: 1.15rem;
+  }
+
+  /* Progress steps optimization */
+  .admin-loan-application .progress-steps {
+    background: #ffffff;
+    padding: 0.5rem 0.25rem;
+    gap: 0.3rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .admin-loan-application .step {
+    min-width: 62px;
+  }
+
+  /* Card content optimization */
+  .admin-loan-application .application-card ion-card-header {
+    padding: 1rem 1rem 0.75rem 1rem;
+  }
+
+  .admin-loan-application .application-card ion-card-content {
+    padding: 0 1rem 1rem 1rem;
+  }
+
+  /* Section title */
+  .admin-loan-application .section-title {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Form optimization */
+  .admin-loan-application .form-item {
+    margin-bottom: 0.75rem;
+  }
+
+  .admin-loan-application .form-item ion-label {
+    font-size: 0.9rem;
+  }
+
+  .admin-loan-application .form-item ion-input,
+  .admin-loan-application .form-item ion-select {
+    font-size: 0.95rem;
+    min-height: 44px;
+  }
+
+  /* Navigation buttons - optimized for admin */
+  .admin-loan-application .navigation-buttons {
+    gap: 0.75rem;
+    padding: 1rem 0.5rem 0.75rem 0.5rem;
+  }
+
+  .admin-loan-application .nav-button {
+    font-size: 0.85rem;
+    min-height: 42px;
+  }
+
+  /* Personal details card */
+  .admin-loan-application .personal-details-card {
+    padding: 1rem;
+  }
+
+  .admin-loan-application .personal-info {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Aadhaar input */
+  .admin-loan-application .aadhar-input-container {
+    gap: 0.3rem;
+    justify-content: space-between;
+  }
+
+  .admin-loan-application .aadhar-digit-input {
+    width: 7%;
+    min-width: 30px;
+    max-width: 38px;
+    height: 44px;
+    font-size: 1.1rem;
+  }
+
+  /* Address sections */
+  .admin-loan-application .address-section {
+    margin-bottom: 1.25rem;
+  }
+
+  .admin-loan-application .address-section-title {
+    font-size: 0.95rem;
+  }
+
+  /* Searchable dropdown */
+  .admin-loan-application .search-dropdown {
+    max-width: calc(100vw - 3rem);
+  }
+
+  /* OTP modal */
+  .admin-loan-application .otp-content {
+    padding: 1rem;
+  }
+
+  .admin-loan-application .otp-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .admin-loan-application .otp-header p {
+    font-size: 0.85rem;
+  }
+
+  /* Family members */
+  .admin-loan-application .family-member-row {
+    padding: 1rem;
+  }
+
+  /* Witness section */
+  .admin-loan-application .witness-section {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Documents */
+  .admin-loan-application .document-row {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  /* Vendor form */
+  .admin-loan-application .vendor-form .form-grid {
+    gap: 0.75rem;
+  }
+
+  /* Validation message */
+  .admin-loan-application .validation-message {
+    margin: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  /* Collateral section */
+  .admin-loan-application .collateral-section {
+    margin-bottom: 1rem;
+  }
+
+  .admin-loan-application .collateral-section-title {
+    font-size: 0.95rem;
+  }
+
+  /* Warning messages */
+  .admin-loan-application .warning-message {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .admin-loan-application .warning-message p {
+    font-size: 0.85rem;
+  }
+}
+
+/* Extra small devices - further optimization */
+@media (max-width: 480px) {
+  .admin-loan-application .loan-application {
+    padding: 0.25rem 0.25rem 0.25rem 0.25rem;
+  }
+
+  .admin-loan-application .application-header {
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .admin-loan-application .application-header h1 {
+    font-size: 1.05rem;
+  }
+
+  .admin-loan-application .subsidy-label,
+  .admin-loan-application .subsidy-amount {
+    font-size: 0.85rem;
+  }
+
+  .admin-loan-application .progress-steps {
+    background: #ffffff;
+    padding: 0.4rem 0.15rem;
+    gap: 0.2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .admin-loan-application .step {
+    min-width: 52px;
+    padding: 0.3rem 0.35rem;
+  }
+
+  .admin-loan-application .step-number {
+    font-size: 0.75rem;
+  }
+
+  .admin-loan-application .step-title {
+    font-size: 0.6rem;
+  }
+
+  .admin-loan-application .application-card ion-card-header {
+    padding: 0.75rem;
+  }
+
+  .admin-loan-application .application-card ion-card-content {
+    padding: 0 0.75rem 0.75rem 0.75rem;
+  }
+
+  .admin-loan-application .section-title {
+    font-size: 0.92rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .admin-loan-application .form-item ion-label {
+    font-size: 0.85rem;
+  }
+
+  .admin-loan-application .form-item ion-input,
+  .admin-loan-application .form-item ion-select {
+    font-size: 0.88rem;
+    min-height: 42px;
+    --padding-start: 10px;
+    --padding-end: 10px;
+  }
+
+  .admin-loan-application .aadhar-digit-input {
+    min-width: 28px;
+    max-width: 34px;
+    height: 42px;
+    font-size: 1rem;
+  }
+
+  .admin-loan-application .navigation-buttons {
+    gap: 0.5rem;
+    padding: 0.75rem 0.25rem 0.5rem 0.25rem;
+  }
+
+  .admin-loan-application .nav-button {
+    font-size: 0.8rem;
+    min-height: 40px;
+    --padding-start: 0.5rem;
+    --padding-end: 0.5rem;
+  }
+
+  .admin-loan-application .nav-button ion-icon {
+    font-size: 1rem;
+  }
+
+  .admin-loan-application .previous-button {
+    max-width: 100px;
+  }
+
+  .admin-loan-application .info-row {
+    font-size: 0.8rem;
+  }
+
+  .admin-loan-application .dropdown-trigger {
+    padding: 8px 10px;
+    font-size: 0.88rem;
+  }
+
+  .admin-loan-application .search-dropdown-item {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+
+  .admin-loan-application .amount-in-words {
+    font-size: 0.72rem;
+  }
+
+  .admin-loan-application .otp-input {
+    font-size: 1.1rem;
+  }
+
+  .admin-loan-application .family-member-row,
+  .admin-loan-application .witness-section,
+  .admin-loan-application .document-row {
+    padding: 0.75rem;
+  }
+
+  .admin-loan-application .file-name {
+    font-size: 0.75rem;
+  }
+
+  .admin-loan-application .upload-btn {
+    font-size: 0.85rem;
+    --padding-start: 0.75rem;
+    --padding-end: 0.75rem;
+  }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .admin-loan-application .progress-steps {
+    position: static;
+  }
+
+  .admin-loan-application .navigation-buttons {
+    position: relative;
+    background: transparent;
+  }
+
+  .admin-loan-application .personal-info {
+    flex-direction: row;
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .admin-loan-application .profile-picture {
+    margin: 0;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .admin-loan-application .nav-button,
+  .admin-loan-application .form-item ion-input,
+  .admin-loan-application .form-item ion-select,
+  .admin-loan-application .dropdown-trigger,
+  .admin-loan-application .upload-btn {
+    min-height: 44px;
+  }
+
+  .admin-loan-application .aadhar-digit-input {
+    min-height: 44px;
+  }
+
+  .admin-loan-application .checkbox-item {
+    min-height: 44px;
+  }
+
+  .admin-loan-application .search-dropdown-item {
+    min-height: 44px;
+  }
+}
+
+/* Safari iOS specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .admin-loan-application .loan-application {
+    min-height: -webkit-fill-available;
+  }
+
+  .admin-loan-application .aadhar-digit-input,
+  .admin-loan-application .form-item ion-input {
+    font-size: 16px; /* Prevents zoom on focus */
+  }
+}
+
+/* Prevent zoom on input focus for small screens */
+@media (max-width: 768px) {
+  .admin-loan-application .form-item ion-input,
+  .admin-loan-application .form-item ion-select,
+  .admin-loan-application .dropdown-search-input {
+    font-size: max(16px, 0.95rem);
+  }
+
+  .admin-loan-application .aadhar-digit-input {
+    font-size: max(16px, 1.1rem);
+  }
+}

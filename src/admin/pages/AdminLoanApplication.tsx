@@ -5,11 +5,13 @@ import {
   IonSelect, IonSelectOption, IonButton, IonItem, IonLabel, IonIcon, IonModal, IonCheckbox, IonChip, IonToast, IonLoading 
 } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
-import { chevronBackOutline, chevronForwardOutline, checkmarkCircle, searchOutline, chevronDownOutline } from 'ionicons/icons';
+import { searchOutline, chevronDownOutline, checkmarkCircle } from 'ionicons/icons';
 import Sidebar from '../components/sidebar/Sidebar';
 import DashboardHeader from '../components/header/DashboardHeader';
+import { StepNavigation } from '../../components/shared';
 import '../../pages/LoanApplication.css';
 import './Schemes.css';
+import './AdminLoanApplication.css';
 
 const AdminLoanApplication: React.FC = () => {
   const history = useHistory();
@@ -1189,7 +1191,7 @@ const AdminLoanApplication: React.FC = () => {
   };
 
   return (
-    <IonPage>
+    <IonPage className="admin-loan-application">
       <IonSplitPane contentId="main-content" when="lg">
         <Sidebar />
         <div className="ion-page" id="main-content">
@@ -2916,46 +2918,15 @@ const AdminLoanApplication: React.FC = () => {
             </IonCard>
 
             {/* Navigation Buttons */}
-            <div className="navigation-buttons">
-              <IonButton
-                fill="outline"
-                className={`nav-button previous-button ${currentStep === 1 ? 'disabled' : ''}`}
-                onClick={handlePrevious}
-                disabled={currentStep === 1}
-              >
-                <IonIcon icon={chevronBackOutline} slot="start" />
-                Previous
-              </IonButton>
-              
-              {currentStep === 10 ? (
-                <IonButton
-                  className={`nav-button submit-button ${!getCurrentStepValidation() ? 'disabled' : ''}`}
-                  onClick={handleSubmitApplication}
-                  disabled={!getCurrentStepValidation()}
-                >
-                  <IonIcon icon={checkmarkCircle} slot="start" />
-                  Submit Application
-                </IonButton>
-              ) : (
-                <IonButton
-                  className={`nav-button next-button ${!getCurrentStepValidation() ? 'disabled' : ''}`}
-                  onClick={handleNext}
-                  disabled={!getCurrentStepValidation()}
-                >
-                  Next
-                  <IonIcon icon={chevronForwardOutline} slot="end" />
-                </IonButton>
-              )}
-            </div>
-            
-            {/* Validation Status Indicator */}
-            {!getCurrentStepValidation() && (
-              <div className="validation-message">
-                <IonText color="warning">
-                  <p>⚠️ Please complete all required fields to proceed</p>
-                </IonText>
-              </div>
-            )}
+            <StepNavigation
+              currentStep={currentStep}
+              totalSteps={10}
+              onPrevious={handlePrevious}
+              onNext={handleNext}
+              onSubmit={handleSubmitApplication}
+              isValid={getCurrentStepValidation()}
+              isFinalStep={currentStep === 10}
+            />
           </div>
         </div>
 
