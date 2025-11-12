@@ -164,8 +164,8 @@ const Schemes: React.FC = () => {
 
 
   const handleApply = (schemeId: string) => {
-    // Navigate to Loan Application page and pass the schemeId
-    history.push(`/loan-application?schemeId=${schemeId}`);
+    // Navigate to Admin Loan Application page and pass the schemeId
+    history.push(`/admin/loan-application?schemeId=${schemeId}`);
   };
 
   const handleAddNew = () => {

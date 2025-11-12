@@ -30,12 +30,12 @@ import BranchMapping from './pages/BranchMapping';
 import PincodeMapping from './pages/PincodeMapping';
 import Members from './pages/Members';
 import Config from './pages/Config';
-import Reports from './pages/Reports';
 import AdminReport from './admin/pages/Report';
 import Others from './pages/Others';
 import PublicSchemesPage from './pages/PublicSchemesPage';
 import About from './pages/About';
 import LoanApplication from './pages/LoanApplication';
+import AdminLoanApplication from './admin/pages/AdminLoanApplication';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -167,6 +167,11 @@ const App: React.FC = () => (
         {/* Admin Schemes Page */}
         <Route exact path="/admin/schemes">
           <Schemes />
+        </Route>
+
+        {/* Admin Loan Application Page */}
+        <Route exact path="/admin/loan-application">
+          <AdminLoanApplication />
         </Route>
 
         {/* Public Schemes Page */}

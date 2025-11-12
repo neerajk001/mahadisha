@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton } from '@ionic/react';
+import { IonPage, IonContent, IonSplitPane, IonHeader, IonToolbar, IonTitle, IonButtons } from '@ionic/react';
 import { 
   IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonText, IonInput, 
   IonSelect, IonSelectOption, IonButton, IonItem, IonLabel, IonIcon, IonModal, IonCheckbox, IonChip, IonToast, IonLoading 
 } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import { chevronBackOutline, chevronForwardOutline, checkmarkCircle, searchOutline, chevronDownOutline } from 'ionicons/icons';
-// import Header from '../components/header/Header';
-import './LoanApplication.css';
+import Sidebar from '../components/sidebar/Sidebar';
+import DashboardHeader from '../components/header/DashboardHeader';
+import '../../pages/LoanApplication.css';
+import './Schemes.css';
 
-const LoanApplication: React.FC = () => {
+const AdminLoanApplication: React.FC = () => {
   const history = useHistory();
   const [currentStep, setCurrentStep] = useState(1);
   const [loanAmount, setLoanAmount] = useState('');
@@ -1188,10 +1190,13 @@ const LoanApplication: React.FC = () => {
 
   return (
     <IonPage>
-      <Header />
-      <IonContent fullscreen>
-        <div className="loan-application">
-          <div className="container">
+      <IonSplitPane contentId="main-content" when="lg">
+        <Sidebar />
+        <div className="ion-page" id="main-content">
+          <DashboardHeader />
+          <IonContent fullscreen>
+            <div className="loan-application">
+              <div className="container">
             {/* Header with Loan Name and Subsidy */}
             <div className="application-header">
               <h1>Subsidy Scheme (State)</h1>
@@ -3068,9 +3073,11 @@ const LoanApplication: React.FC = () => {
         position="bottom"
         onDidDismiss={() => setToast({open: false, message: ''})}
       />
-      </IonContent>
+          </IonContent>
+        </div>
+      </IonSplitPane>
     </IonPage>
   );
 };
 
-export default LoanApplication;
+export default AdminLoanApplication;

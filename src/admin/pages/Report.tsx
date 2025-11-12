@@ -727,9 +727,7 @@ const Report: React.FC = () => {
       setToastMessage('Report generated successfully');
       setShowToast(true);
     }, 2000);
-  };
-
-  const handleExportReport = (format: string) => {
+  };  const handleExportReport = (format: string) => {
     setToastMessage(`Exporting report as ${format.toUpperCase()}...`);
     setShowToast(true);
     setShowExportModal(false);
